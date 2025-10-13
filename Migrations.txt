@@ -1,0 +1,6 @@
+// MIGRATION: Execute from solution directory
+dotnet ef migrations add [MigrationName] --project LinoVative.Service.Backend --startup-project LinoVative.Web.Api --output-dir DatabaseService\DbMigrations
+
+
+// UPDATE DATABASE: Execute from LinoVative.Web.Api
+dotnet ef database update.
