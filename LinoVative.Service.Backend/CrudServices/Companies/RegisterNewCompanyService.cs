@@ -5,10 +5,10 @@ using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Commons;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Interfaces;
-using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.Localization;
 
 namespace LinoVative.Service.Backend.CrudServices.Companies
 {
@@ -21,9 +21,10 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
     public class RegisterNewCompanyService : SaveNewServiceBase<Company, RegisterNewCompanyServiceCommand>, IRequestHandler<RegisterNewCompanyServiceCommand, Result>, IScoopService
     {
-        public RegisterNewCompanyService(IAppDbContext dbContext, ISystemAdministrator actor, IMapper mapper, IAppCache appCache, IActionContextAccessor actionContext) : base(dbContext, actor, mapper, appCache, actionContext)
+        private readonly IStringLocalizer _lang;
+        public RegisterNewCompanyService(IAppDbContext dbContext, ISystemAdministrator actor, IMapper mapper, IAppCache appCache, IActionContextAccessor actionContext, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, actionContext)
         {
-
+            _lang = localizer;
         }
 
 
@@ -38,11 +39,13 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
                 Id = newUserId,
                 NikName = request.NickName,
                 EmailAddress = request.EmailAddress!,
-                Password = PasswordHelper.CreateHashedPassword(request.Password!, newUserId)
+                Password = PasswordHelper.CreateHashedPassword(request.Password!, newUserId),
+                ForceChangePasswordOnLogin = false,
+                IsActive = true,
+                HasConfirmed = false,
             };
 
             
-
             var newCompany = new Company()
             {
                 Id = request.Id,
@@ -68,20 +71,20 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
         {
             var isValid = await base.Validate(request, token);
             
-            if (!_dbContext.Set<Country>().Any(x => x.Id == request.CountryId))
-                isValid.AddInvalidProperty(nameof(request.CountryId), $"Country with ID: {request.CountryId} not found");
+            if (!_dbContext.Countries.Any(x => x.Id == request.CountryId))
+                isValid.AddInvalidProperty(nameof(request.CountryId), _lang[Message.Entity.NotFound, _lang[Message.EntityName.Country], request.CountryId!]);
 
-            if (!_dbContext.Set<Currency>().Any(x => x.Id == request.CurrencyId))
-                isValid.AddInvalidProperty(nameof(request.CurrencyId), $"Currency with ID: {request.CountryId} not found");
+            if (!_dbContext.Currencies.Any(x => x.Id == request.CurrencyId))
+                isValid.AddInvalidProperty(nameof(request.CurrencyId), _lang[Message.Entity.NotFound, _lang[Message.EntityName.Currency], request.CurrencyId!]);
 
             if (PasswordHelper.IsPasswordStrong(request.Password!))
-                isValid.AddInvalidProperty(nameof(request.Password), "Password is not strong enough");
+                isValid.AddInvalidProperty(nameof(request.Password), _lang[Message.Password.NotStrong]);
 
-            if (!_dbContext.Set<AppUser>().Where(x => x.EmailAddress == request.EmailAddress).Any())
-                isValid.AddInvalidProperty(nameof(request.EmailAddress), $"An account with email address: {request.EmailAddress} is exist");
+            if (_dbContext.Users.Where(x => x.EmailAddress == request.EmailAddress).Any())
+                isValid.AddInvalidProperty(nameof(request.EmailAddress), _lang[Message.User.EmailAlreadyExist, request.EmailAddress!]);
 
-            if (!_dbContext.Set<AppTimeZone>().Any(x => !x.IsDeleted && x.TimeZone == request.TimeZone))
-                isValid.AddInvalidProperty(nameof(request.TimeZone), "Invalid TimeZone");
+            if (!_dbContext.TimeZones.Any(x => !x.IsDeleted && x.TimeZone == request.TimeZone))
+                isValid.AddInvalidProperty(nameof(request.TimeZone), _lang[Message.Entity.NotFound, _lang[Message.EntityName.TimeZone], request.TimeZone!]);
 
             return isValid;
         }

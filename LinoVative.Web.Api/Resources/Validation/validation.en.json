@@ -1,0 +1,8 @@
+{
+  "Entity.NotFound": "{0} with ID {1} not found.",
+  "EntityName.Country": "Country",
+  "EntityName.Currency": "Currency",
+  "EntityName.TimeZone": "TimeZone",
+  "Password.NotStrong": "Password is not strong enough",
+  "User.EmailAlreadyExist": "User with email: {0}, already exist in the system"
+}

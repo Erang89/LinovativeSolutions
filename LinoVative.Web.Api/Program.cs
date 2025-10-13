@@ -8,6 +8,9 @@ using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core;
 using LinoVative.Service.Backend.MediaTRs;
 using LinoVative.Service.Core.Interfaces;
+using LinoVative.Service.Backend.LocalizerServices;
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddLogging();
+
+
+// Register Localizers
+builder.Services.AddJsonLocalization(opt =>
+{
+    opt.BasePath = Path.Combine(builder.Environment.ContentRootPath, "Resources");
+});
+var supportedCultures = new[] { "en", "id" }
+    .Select(c => new CultureInfo(c))
+    .ToList();
+
 
 // Register Services
 builder.Services.Scan(scan => scan
@@ -55,8 +69,6 @@ builder.Services.AddMapster();
 
 var app = builder.Build();
 
-
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -69,13 +81,29 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.UseEndpoints(endpoints =>
+app.UseRequestLocalization(new RequestLocalizationOptions
 {
-    endpoints.MapControllerRoute(
-      name: "areas",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
-    );
+    DefaultRequestCulture = new RequestCulture("en"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures,
+    RequestCultureProviders = new List<IRequestCultureProvider>
+    {
+        // 1) Prefer JWT claim "lang"
+        new ClaimsRequestCultureProvider { ClaimType = "lang" },
+
+        // 2) Fallback to query/header if no claim
+        // new QueryStringRequestCultureProvider(),  // optional (?culture=id)
+        new AcceptLanguageHeaderRequestCultureProvider()
+    }
 });
+
+//app.UseEndpoints(endpoints =>
+//{
+//    endpoints.MapControllerRoute(
+//      name: "areas",
+//      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+//    );
+//});
 
 app.MapControllers();
 

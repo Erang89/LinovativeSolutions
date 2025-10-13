@@ -1,0 +1,8 @@
+{
+  "Entity.NotFound": "{0} dengan ID {1} tidak ditemukan.",
+  "EntityName.Country": "Negara",
+  "EntityName.Currency": "Mata Uang",
+  "EntityName.TimeZone": "Timezone",
+  "Password.NotStrong": "Password lemah",
+  "User.EmailAlreadyExist": "User dengan email: {0}, sudah ada"
+}
