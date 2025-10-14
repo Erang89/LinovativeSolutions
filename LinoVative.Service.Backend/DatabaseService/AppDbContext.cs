@@ -1,11 +1,11 @@
 ﻿using LinoVative.Service.Backend.Configurations;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Auth;
-using LinoVative.Service.Core.Commons;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
 using LinoVative.Service.Core.Sources;
+using LinoVative.Shared.Dto;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.DatabaseService

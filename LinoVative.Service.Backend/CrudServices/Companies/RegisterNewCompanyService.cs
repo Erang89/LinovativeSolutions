@@ -1,16 +1,16 @@
 ﻿using LinoVative.Service.Backend.AuthServices;
+using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Helpers;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Auth;
-using LinoVative.Service.Core.Commons;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
 using MapsterMapper;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Localization;
+using System.Linq.Expressions;
 
 namespace LinoVative.Service.Backend.CrudServices.Companies
 {
@@ -33,6 +33,7 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
         public Task<Result> Handle(RegisterNewCompanyServiceCommand req, CancellationToken token) => base.SaveNew(req, token);
 
+        
 
         protected override async Task<List<Company>> OnCreatingEntity(RegisterNewCompanyServiceCommand request, CancellationToken token = default)
         {
@@ -88,24 +89,24 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
         void ValidateData(RegisterNewCompanyServiceCommand request, Result result)
         {
-
             if (!_dbContext.Countries.Any(x => x.Id == request.CountryId))
-                result.AddInvalidProperty(nameof(request.CountryId), _lang.EntityNotFound<Country>(request.CountryId));
+                AddError(result, x => x.CountryId!, _lang.EntityNotFound<Country>(request.CountryId));
 
             if (!_dbContext.Currencies.Any(x => x.Id == request.CurrencyId))
-                result.AddInvalidProperty(nameof(request.CurrencyId), _lang.EntityNotFound<Currency>(request.CurrencyId));
+                AddError(result, x => x.CurrencyId!, _lang.EntityNotFound<Currency>(request.CurrencyId));
 
-            if (PasswordHelper.IsPasswordStrong(request.Password!))
-                result.AddInvalidProperty(nameof(request.Password), _localizer["Password.NotStrong"]);
+            var (isPassStrong, passErrors) = PasswordHelper.IsPasswordStrong(request.Password!, _localizer);
+            if (!isPassStrong)
+                AddError(result, x => x.Password!, passErrors);
 
-            if (EmailHelper.IsValidEmailAddress(request.EmailAddress ?? ""))
-                result.AddInvalidProperty(nameof(request.EmailAddress), _localizer["Property.InvalidEmailFormat"]);
+            if (!EmailHelper.IsValidEmailAddress(request.EmailAddress ?? ""))
+                AddError(result, x => x.EmailAddress!, _localizer["Property.InvalidEmailFormat"]);
 
             if (_dbContext.Users.Where(x => x.EmailAddress == request.EmailAddress).Any())
-                result.AddInvalidProperty(nameof(request.EmailAddress), _localizer["User.EmailAlreadyExist"]);
+                AddError(result, x => x.EmailAddress!, _localizer["User.EmailAlreadyExist"]);
 
             if (!_dbContext.TimeZones.Any(x => !x.IsDeleted && x.TimeZone == request.TimeZone))
-                result.AddInvalidProperty(nameof(request.TimeZone), _lang.EntityNotFound<AppTimeZone>(request.TimeZone));
+                AddError(result, x => x.TimeZone!, _lang.EntityNotFound<AppTimeZone>(request.TimeZone));
 
         }
 

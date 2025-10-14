@@ -1,5 +1,6 @@
 ﻿using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Core.Interfaces;
+using LinoVative.Shared.Dto.Extensions;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
 

@@ -1,16 +1,18 @@
-﻿using System.Text.RegularExpressions;
+﻿using Microsoft.Extensions.Localization;
+using System.Text.RegularExpressions;
 
 
 namespace LinoVative.Service.Backend.Helpers
 {
     public static class PasswordHelper
     {
-        public static bool IsPasswordStrong(string passwordPlainText)
+        public static (bool, List<string>) IsPasswordStrong(string passwordPlainText, IStringLocalizer localizer)
         {
+            var errorList = new List<string>();
             // 1. Memeriksa panjang minimum
             if (passwordPlainText.Length < 8)
             {
-                return false;
+                errorList.Add(localizer["Password.MinLenght", 8]);
             }
 
             // 2. Memeriksa keberadaan huruf besar dan kecil
@@ -18,14 +20,14 @@ namespace LinoVative.Service.Backend.Helpers
             bool hasUpper = passwordPlainText.Any(char.IsUpper);
             if (!hasLower || !hasUpper)
             {
-                return false;
+                errorList.Add(localizer["Password.MustHasLowerOrUppercase"]);
             }
 
             // 3. Memeriksa keberadaan angka
             bool hasDigit = passwordPlainText.Any(char.IsDigit);
             if (!hasDigit)
             {
-                return false;
+                errorList.Add(localizer["Password.MustHasNumber"]);
             }
 
             // 4. Memeriksa keberadaan karakter unik (non-alphanumeric)
@@ -33,11 +35,11 @@ namespace LinoVative.Service.Backend.Helpers
             var hasSpecialChar = new Regex(@"[^\da-zA-Z]").IsMatch(passwordPlainText);
             if (!hasSpecialChar)
             {
-                return false;
+                errorList.Add(localizer["Password.MustHasSpecialChar"]);
             }
 
             // 5. Jika semua kriteria terpenuhi, kata sandi dianggap kuat.
-            return true;
+            return (errorList.Count() == 0, errorList);
         }
 
 

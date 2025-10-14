@@ -1,6 +1,8 @@
-﻿using System.Net;
+﻿using LinoVative.Shared.Dto.Extensions;
+using System.Linq.Expressions;
+using System.Net;
 
-namespace LinoVative.Service.Core.Commons
+namespace LinoVative.Shared.Dto
 {
     public class Result
     {
@@ -23,7 +25,7 @@ namespace LinoVative.Service.Core.Commons
 
         public void AddInvalidProperty(string key, string value)
         {
-            if(!Errors.ContainsKey(key))
+            if (!Errors.ContainsKey(key))
             {
                 Errors.Add(key, new List<string>() { value });
             }
@@ -44,6 +46,11 @@ namespace LinoVative.Service.Core.Commons
             Status = HttpStatusCode.BadRequest;
         }
 
+        public void AddInvalidProperty<T>(Expression<Func<T, object>> expresion, string message) where T : class
+        {
+            this.AddInvalidProperty(DtoExtensions.GetPropertyName(expresion), message);
+        }
+
         public static Result OK(object? data = default, string? message = default, string? title = default)
         {
             return new Result() { Message = message, Title = title };
@@ -51,11 +58,12 @@ namespace LinoVative.Service.Core.Commons
 
         public static Result Failed(string message, string? messageTitle = default, Dictionary<string, object>? errorDetails = default, HttpStatusCode? errorCode = default)
         {
-            return new Result() { 
-                Message = message, 
+            return new Result()
+            {
+                Message = message,
                 Title = messageTitle,
-                Errors = errorDetails?? new(),
-                Status = errorCode?? HttpStatusCode.BadRequest
+                Errors = errorDetails ?? new(),
+                Status = errorCode ?? HttpStatusCode.BadRequest
             };
         }
 
@@ -63,8 +71,8 @@ namespace LinoVative.Service.Core.Commons
         {
             return new()
             {
-                Status =  HttpStatusCode.BadRequest,
-                Errors = new Dictionary<string, object>() { {propertyName, message } }
+                Status = HttpStatusCode.BadRequest,
+                Errors = new Dictionary<string, object>() { { propertyName, message } }
             };
         }
 

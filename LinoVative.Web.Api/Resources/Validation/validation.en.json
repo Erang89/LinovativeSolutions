@@ -1,5 +1,5 @@
 {
-  "Entity.NotFound": "{0} with ID {1} is not found in the system",
+  "Entity.NotFound": "{0} with ID {1} was not found in the system",
   "Entity.Name.Company": "Company",
   "Entity.Name.User": "User",
   "Entity.Name.Currency": "Currency",
@@ -13,7 +13,10 @@
 
   "Property.Required": "{0} is required.",
   "Property.InvalidEmailFormat": "Invalid email address.",
-  "Password.NotStrong": "Password is not strong enough",
+  "Password.MinLenght": "Password must be at least {0} characters long.",
+  "Password.MustHasLowerOrUppercase": "Password must contain both uppercase and lowercase letters.",
+  "Password.MustHasNumber": "Password must contain at least one number.",
+  "Password.MustHasSpecialChar": "Password must contain at least one special character.",
   "User.EmailAlreadyExist": "User with the same email already exist",
 
 

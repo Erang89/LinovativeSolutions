@@ -13,7 +13,10 @@
 
   "Property.Required": "{0} tidak boleh kosong.",
   "Property.InvalidEmailFormat": "Alamat email salah.",
-  "Password.NotStrong": "Password lemah",
+  "Password.MinLenght": "Kata sandi harus memiliki setidaknya {0} karakter.",
+  "Password.MustHasLowerOrUppercase": "Kata sandi harus mengandung huruf besar dan huruf kecil.",
+  "Password.MustHasNumber": "Kata sandi harus mengandung setidaknya satu angka.",
+  "Password.MustHasSpecialChar": "Kata sandi harus mengandung setidaknya satu karakter khusus.",
   "User.EmailAlreadyExist": "Pengguna dengan email yang sama, sudah ada",
 
 

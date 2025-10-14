@@ -1,6 +1,5 @@
 ﻿using Linovative.Shared.Interface;
 using LinoVative.Shared.Dto.Attributes;
-using System.ComponentModel.DataAnnotations;
 
 namespace LinoVative.Shared.Dto
 {
@@ -9,28 +8,28 @@ namespace LinoVative.Shared.Dto
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        [InputRequiredAttribute]
+        [InputRequired]
         public string? Name { get; set; }
 
-        [InputRequiredAttribute]
+        [InputRequired]
         public string? Address { get; set; }
 
-        [InputRequiredAttribute]
+        [InputRequired]
         public Guid? CountryId{ get; set; }
 
-        [InputRequiredAttribute]
+        [InputRequired]
         public string? TimeZone { get; set; }
 
-        [InputRequiredAttribute]
+        [InputRequired]
         public Guid? CurrencyId { get; set; }
 
-        [InputRequiredAttribute]
+        [InputRequired]
         public string? EmailAddress { get; set; }
 
-        [InputRequiredAttribute]
+        [InputRequired]
         public string? Password { get; set; }
 
-        [InputRequiredAttribute]
+        [InputRequired]
         public string? NickName { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using LinoVative.Service.Backend.CrudServices.Companies;
-using LinoVative.Service.Core.Commons;
 using LinoVative.Service.Core.Interfaces;
+using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

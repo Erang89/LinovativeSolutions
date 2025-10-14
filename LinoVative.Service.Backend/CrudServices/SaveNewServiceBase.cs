@@ -1,19 +1,20 @@
 ﻿using Linovative.Shared.Interface;
-using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Core.Commons;
 using LinoVative.Service.Core.Interfaces;
 using MapsterMapper;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Localization;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
 using System.Reflection;
 using LinoVative.Shared.Dto.Attributes;
+using LinoVative.Service.Backend.Extensions;
+using System.Linq.Expressions;
+using Azure.Core;
+using LinoVative.Service.Backend.CrudServices.Companies;
+using LinoVative.Shared.Dto;
+using LinoVative.Shared.Dto.Extensions;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
-    public abstract class SaveNewServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId
+    public abstract class SaveNewServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class
     {
         protected IStringLocalizer _localizer;
         protected SaveNewServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) 
@@ -62,70 +63,19 @@ namespace LinoVative.Service.Backend.CrudServices
 
         protected virtual async Task<Result> Validate(TRequest request, CancellationToken token)
         {
-            var validate = await ValidateRequiredPropery(request, token);
+            var validate = request.ValidateRequiredPropery(_localizer);
             if (!validate) return validate;
-
-
             await Task.CompletedTask;
             return Result.OK();
         }
 
-        protected virtual async Task<Result> ValidateRequiredPropery(TRequest request, CancellationToken token)
-        {
-            var errors = new Dictionary<string, List<string>>();
-            var props = typeof(TRequest).GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        protected string Prop(Expression<Func<TRequest, object>> expresion) => DtoExtensions.GetPropertyName(expresion);
 
-            foreach (var prop in props)
-            {
-                // only properties with [Required]
-                var required = prop.GetCustomAttribute<InputRequiredAttribute>(inherit: true);
-                if (required is null) continue;
+        protected void AddError(Result result, Expression<Func<TRequest, object>> expresion, string message) =>
+            result.AddInvalidProperty(Prop(expresion), message);
 
-                // current value
-                var value = prop.GetValue(request);
+        protected void AddError(Result result, Expression<Func<TRequest, object>> expresion, object obj) =>
+            result.AddInvalidProperty(Prop(expresion), obj);
 
-                // missing?
-                bool isMissing =
-                    value is null
-                    || (value is string s && string.IsNullOrWhiteSpace(s))
-                    || (prop.PropertyType == typeof(Guid) && (Guid)value == Guid.Empty)
-                    || (prop.PropertyType == typeof(Guid?) && (!((Guid?)value).HasValue || ((Guid?)value).Value == Guid.Empty));
-
-                if (!isMissing) continue;
-
-
-                var propertyName = prop.Name;
-                var dtoName = typeof(TRequest).Name.Replace("ServiceCommand", "Dto");
-                    dtoName = dtoName.Replace("Command", "Dto");
-
-                var propertyNameLoc = _localizer[$"{dtoName}.PropertyName.{propertyName}"];
-                var message = _localizer[$"Property.Required", propertyNameLoc];
-
-                if (errors.ContainsKey(propertyName))
-                {
-                    var errStrings = errors[propertyName];
-                    if(!errStrings.Contains(message))
-                        errStrings.Add(message);
-
-                    errors[propertyName] = errStrings;
-                    continue;
-                }
-
-                errors[prop.Name] = new List<string>() { message};
-            }
-
-            if (errors.Count > 0)
-            {
-                var errorDetails = new Dictionary<string, object>();
-                foreach (var error in errors)
-                    errorDetails.Add(error.Key, error.Value);
-
-                return Result.Failed(string.Empty, null, errorDetails);
-            }
-
-            await Task.CompletedTask;
-            return Result.OK();
-
-        }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Linovative.Shared.Interface;
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Core.Commons;
 using LinoVative.Service.Core.Interfaces;
+using LinoVative.Shared.Dto;
 using Mapster;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
