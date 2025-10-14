@@ -1,8 +1,29 @@
 {
-  "Entity.NotFound": "{0} with ID {1} not found.",
-  "EntityName.Country": "Country",
-  "EntityName.Currency": "Currency",
-  "EntityName.TimeZone": "TimeZone",
+  "Entity.NotFound": "{0} with ID {1} is not found in the system",
+  "Entity.Name.Company": "Company",
+  "Entity.Name.User": "User",
+  "Entity.Name.Currency": "Currency",
+  "Entity.Name.Country": "Country",
+  "Entity.Name.Item": "Item",
+  "Entity.Name.ItemUnit": "Item Unit",
+  "Entity.Name.ItemGroup": "Item Group",
+  "Entity.Name.ItemCategory": "Item Category",
+  "Entity.Name.AppTimeZone": "Timezone",
+
+
+  "Property.Required": "{0} is required.",
+  "Property.InvalidEmailFormat": "Invalid email address.",
   "Password.NotStrong": "Password is not strong enough",
-  "User.EmailAlreadyExist": "User with email: {0}, already exist in the system"
+  "User.EmailAlreadyExist": "User with the same email already exist",
+
+
+
+  "RegisterNewCompanyDto.PropertyName.Name": "Company name",
+  "RegisterNewCompanyDto.PropertyName.Address": "Address",
+  "RegisterNewCompanyDto.PropertyName.Country": "Country",
+  "RegisterNewCompanyDto.PropertyName.TimeZone": "Timezone",
+  "RegisterNewCompanyDto.PropertyName.Currency": "Currency",
+  "RegisterNewCompanyDto.PropertyName.EmailAddress": "Email address",
+  "RegisterNewCompanyDto.PropertyName.Password": "Password",
+  "RegisterNewCompanyDto.PropertyName.NickName": "Nickname"
 }

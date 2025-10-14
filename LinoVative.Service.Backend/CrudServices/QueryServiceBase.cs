@@ -14,16 +14,14 @@ namespace LinoVative.Service.Backend.CrudServices
         protected readonly IActor _actor;
         protected readonly IAppCache _appCache;
         protected readonly IMapper _mapper;
-        protected readonly IActionContextAccessor _actionAccessor;
 
-        protected QueryServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IActionContextAccessor actionContext)
+        protected QueryServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache)
         {
             _dbContext = dbContext;
             _dbSet = dbContext.Set<T>();
             _actor = actor;
             _appCache = appCache;
             _mapper = mapper;
-            _actionAccessor = actionContext;
         }
 
 

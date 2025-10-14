@@ -12,7 +12,7 @@ namespace LinoVative.Service.Backend.CrudServices
 {
     public abstract class SaveDeleteServiceBase<T> : QueryServiceBase<T> where T : class, IEntityId
     {
-        protected SaveDeleteServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IActionContextAccessor actionContext) : base(dbContext, actor, mapper, appCache, actionContext)
+        protected SaveDeleteServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IActionContextAccessor actionContext) : base(dbContext, actor, mapper, appCache)
         { 
         }
 
@@ -60,14 +60,6 @@ namespace LinoVative.Service.Backend.CrudServices
         protected virtual Task BeforeSaveDelete<TRequest>(TRequest request, List<T> entities, CancellationToken token = default) => Task.CompletedTask;
         protected virtual async Task<Result> ValidateSaveDelete<TRequest>(TRequest request, List<T> entities, CancellationToken token = default)
         {
-
-            var actionContext = _actionAccessor.ActionContext;
-            if (actionContext != null && !actionContext.ModelState.IsValid)
-            {
-                var errorMessage = actionContext?.ModelState.GetErrorMessages();
-                return Result.Failed("Some Input Error", "Input Error", errorMessage, System.Net.HttpStatusCode.BadRequest);
-            }
-
             var entityIds = entities.Select(x => x.Id).ToList();
             var anyFalseId = GetAll().Where(x => entityIds.Contains(x.Id)).Select(x => x.Id).ToList().Any(x => !entityIds.Contains(x));
             

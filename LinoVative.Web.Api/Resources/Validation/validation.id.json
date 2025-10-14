@@ -1,8 +1,29 @@
 {
-  "Entity.NotFound": "{0} dengan ID {1} tidak ditemukan.",
-  "EntityName.Country": "Negara",
-  "EntityName.Currency": "Mata Uang",
-  "EntityName.TimeZone": "Timezone",
+  "Entity.NotFound": "{0} dengan ID {1} tidak ditemukan",
+  "Entity.Name.Company": "Perusahaan",
+  "Entity.Name.User": "Pengguna",
+  "Entity.Name.Currency": "Mata uang",
+  "Entity.Name.Country": "Negara",
+  "Entity.Name.Item": "Item",
+  "Entity.Name.ItemUnit": "Item Unit",
+  "Entity.Name.ItemGroup": "Group Item",
+  "Entity.Name.ItemCategory": "Kategori Item",
+  "Entity.Name.AppTimeZone": "Zona Waktu",
+
+
+  "Property.Required": "{0} tidak boleh kosong.",
+  "Property.InvalidEmailFormat": "Alamat email salah.",
   "Password.NotStrong": "Password lemah",
-  "User.EmailAlreadyExist": "User dengan email: {0}, sudah ada"
+  "User.EmailAlreadyExist": "Pengguna dengan email yang sama, sudah ada",
+
+
+
+  "RegisterNewCompanyDto.PropertyName.Name": "Nama perusahaan",
+  "RegisterNewCompanyDto.PropertyName.Address": "Alamat",
+  "RegisterNewCompanyDto.PropertyName.Country": "Negara",
+  "RegisterNewCompanyDto.PropertyName.TimeZone": "Zona waktu",
+  "RegisterNewCompanyDto.PropertyName.Currency": "Mata uang",
+  "RegisterNewCompanyDto.PropertyName.EmailAddress": "Alamat email",
+  "RegisterNewCompanyDto.PropertyName.Password": "Password",
+  "RegisterNewCompanyDto.PropertyName.NickName": "Nama"
 }

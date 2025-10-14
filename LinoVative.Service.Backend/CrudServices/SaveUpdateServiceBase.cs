@@ -3,16 +3,13 @@ using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Commons;
 using LinoVative.Service.Core.Interfaces;
-using Mapster;
 using MapsterMapper;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
     public abstract class SaveUpdateServiceBase<T> : QueryServiceBase<T> where T : class, IEntityId
     {
-        protected SaveUpdateServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IActionContextAccessor actionContext) : base(dbContext, actor, mapper, appCache, actionContext)
+        protected SaveUpdateServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
         { 
         }
 
@@ -58,13 +55,7 @@ namespace LinoVative.Service.Backend.CrudServices
         protected virtual Task BeforeSaveNew<TRequest>(TRequest request, T entity, CancellationToken token) => Task.CompletedTask;
         protected virtual async Task<Result> ValidateSaveNew<TRequest>(TRequest request, CancellationToken token)
         {
-            var actionContext = _actionAccessor.ActionContext;
-            if (actionContext != null && !actionContext.ModelState.IsValid)
-            {
-                var errorMessage = actionContext?.ModelState.GetErrorMessages();
-                return Result.Failed("Some Input Error", "Input Error", errorMessage, System.Net.HttpStatusCode.BadRequest);
-            }
-
+            
             await Task.CompletedTask;
             return Result.OK();
         }
@@ -94,13 +85,7 @@ namespace LinoVative.Service.Backend.CrudServices
         protected virtual Task BeforeSaveUpdate<TRequest>(TRequest request, T entity, CancellationToken token) => Task.CompletedTask;
         protected virtual async Task<Result> ValidateSaveUpdate<TRequest>(TRequest request, CancellationToken token) where TRequest : class, IEntityId
         {
-            var actionContext = _actionAccessor.ActionContext;
-            if (actionContext != null && !actionContext.ModelState.IsValid)
-            {
-                var errorMessage = actionContext?.ModelState.GetErrorMessages();
-                return Result.Failed("Some Input Error", "Input Error", errorMessage, System.Net.HttpStatusCode.BadRequest);
-            }
-
+            
             var entity = await GetById(request.Id);
             if (entity is null)
                 return Result.Failed($"Entity with Id: {request.Id} not found");
@@ -161,13 +146,7 @@ namespace LinoVative.Service.Backend.CrudServices
         protected virtual async Task<Result> ValidateSaveDelete<TRequest>(TRequest request, List<T> entities, CancellationToken token = default)
         {
 
-            var actionContext = _actionAccessor.ActionContext;
-            if (actionContext != null && !actionContext.ModelState.IsValid)
-            {
-                var errorMessage = actionContext?.ModelState.GetErrorMessages();
-                return Result.Failed("Some Input Error", "Input Error", errorMessage, System.Net.HttpStatusCode.BadRequest);
-            }
-
+            
             var entityIds = entities.Select(x => x.Id).ToList();
             var anyFalseId = GetAll().Where(x => entityIds.Contains(x.Id)).Select(x => x.Id).ToList().Any(x => !entityIds.Contains(x));
             

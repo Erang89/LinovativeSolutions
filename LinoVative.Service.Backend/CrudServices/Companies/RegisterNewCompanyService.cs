@@ -1,10 +1,12 @@
 ﻿using LinoVative.Service.Backend.AuthServices;
 using LinoVative.Service.Backend.Helpers;
 using LinoVative.Service.Backend.Interfaces;
+using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Commons;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Interfaces;
+using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
 using MapsterMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -21,10 +23,11 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
     public class RegisterNewCompanyService : SaveNewServiceBase<Company, RegisterNewCompanyServiceCommand>, IRequestHandler<RegisterNewCompanyServiceCommand, Result>, IScoopService
     {
-        private readonly IStringLocalizer _lang;
-        public RegisterNewCompanyService(IAppDbContext dbContext, ISystemAdministrator actor, IMapper mapper, IAppCache appCache, IActionContextAccessor actionContext, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, actionContext)
+        private readonly ILanguageService _lang;
+        public RegisterNewCompanyService(IAppDbContext dbContext, ISystemAdministrator actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, ILanguageService lang) 
+            : base(dbContext, actor, mapper, appCache, localizer)
         {
-            _lang = localizer;
+            _lang = lang;
         }
 
 
@@ -69,24 +72,41 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
         protected override async Task<Result> Validate(RegisterNewCompanyServiceCommand request, CancellationToken token)
         {
-            var isValid = await base.Validate(request, token);
-            
+            var result = (await base.Validate(request, token))!;
+            if (!result) return result;
+
+            ValidateData(request, result);
+            if (!result) return result;
+
+            // Validate your bussiness rules here
+            // ...
+
+            return result;
+
+        }
+
+
+        void ValidateData(RegisterNewCompanyServiceCommand request, Result result)
+        {
+
             if (!_dbContext.Countries.Any(x => x.Id == request.CountryId))
-                isValid.AddInvalidProperty(nameof(request.CountryId), _lang[Message.Entity.NotFound, _lang[Message.EntityName.Country], request.CountryId!]);
+                result.AddInvalidProperty(nameof(request.CountryId), _lang.EntityNotFound<Country>(request.CountryId));
 
             if (!_dbContext.Currencies.Any(x => x.Id == request.CurrencyId))
-                isValid.AddInvalidProperty(nameof(request.CurrencyId), _lang[Message.Entity.NotFound, _lang[Message.EntityName.Currency], request.CurrencyId!]);
+                result.AddInvalidProperty(nameof(request.CurrencyId), _lang.EntityNotFound<Currency>(request.CurrencyId));
 
             if (PasswordHelper.IsPasswordStrong(request.Password!))
-                isValid.AddInvalidProperty(nameof(request.Password), _lang[Message.Password.NotStrong]);
+                result.AddInvalidProperty(nameof(request.Password), _localizer["Password.NotStrong"]);
+
+            if (EmailHelper.IsValidEmailAddress(request.EmailAddress ?? ""))
+                result.AddInvalidProperty(nameof(request.EmailAddress), _localizer["Property.InvalidEmailFormat"]);
 
             if (_dbContext.Users.Where(x => x.EmailAddress == request.EmailAddress).Any())
-                isValid.AddInvalidProperty(nameof(request.EmailAddress), _lang[Message.User.EmailAlreadyExist, request.EmailAddress!]);
+                result.AddInvalidProperty(nameof(request.EmailAddress), _localizer["User.EmailAlreadyExist"]);
 
             if (!_dbContext.TimeZones.Any(x => !x.IsDeleted && x.TimeZone == request.TimeZone))
-                isValid.AddInvalidProperty(nameof(request.TimeZone), _lang[Message.Entity.NotFound, _lang[Message.EntityName.TimeZone], request.TimeZone!]);
+                result.AddInvalidProperty(nameof(request.TimeZone), _lang.EntityNotFound<AppTimeZone>(request.TimeZone));
 
-            return isValid;
         }
 
     }
