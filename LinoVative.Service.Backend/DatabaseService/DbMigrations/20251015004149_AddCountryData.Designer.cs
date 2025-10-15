@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.DatabaseService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251015004149_AddCountryData")]
+    partial class AddCountryData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,7 +412,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 
                     b.HasIndex("RegionId");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Country", (string)null);
                 });
 
             modelBuilder.Entity("LinoVative.Service.Core.Sources.CountryRegion", b =>
@@ -438,7 +441,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CountryRegions", (string)null);
+                    b.ToTable("CountryRegion", (string)null);
                 });
 
             modelBuilder.Entity("LinoVative.Service.Core.Sources.Currency", b =>

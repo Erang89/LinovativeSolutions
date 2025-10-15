@@ -44,7 +44,12 @@ namespace LinoVative.Service.Backend.Configurations
 
 
             // Mapping Sources
-            modelBuilder.Entity<Country>().ToTable("Countries");
+            modelBuilder.Entity<Country>(x => 
+            { 
+                x.ToTable("Countries");
+                x.HasOne(x => x.Region).WithMany(x => x.Countries).HasPrincipalKey(x => x.Id);
+            });
+            modelBuilder.Entity<CountryRegion>().ToTable("CountryRegions");
             modelBuilder.Entity<Currency>().ToTable("Currencies");
             modelBuilder.Entity<AppTimeZone>().ToTable("TimeZones");
 
