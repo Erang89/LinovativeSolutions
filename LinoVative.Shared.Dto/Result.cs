@@ -11,6 +11,7 @@ namespace LinoVative.Shared.Dto
         public object? Data { get; private set; }
         public Dictionary<string, object> Errors { get; private set; } = new Dictionary<string, object>();
         public HttpStatusCode Status { get; private set; } = HttpStatusCode.OK;
+        public int Count { get; private set; }
         public string? TraceId { get; private set; }
 
         public void SetTraceId(string traceId) => TraceId = traceId;
@@ -54,6 +55,11 @@ namespace LinoVative.Shared.Dto
         public static Result OK(object? data = default, string? message = default, string? title = default)
         {
             return new Result() { Message = message, Title = title };
+        }
+
+        public static Result ListOfData(object data, int recordCount)
+        {
+            return new Result() { Data = data, Count = recordCount };
         }
 
         public static Result Failed(string message, string? messageTitle = default, Dictionary<string, object>? errorDetails = default, HttpStatusCode? errorCode = default)

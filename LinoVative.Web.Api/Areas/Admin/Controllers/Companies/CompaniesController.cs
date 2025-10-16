@@ -8,20 +8,18 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompaniesController : ControllerBase
+    public class CompaniesController : APIBaseController
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger _logger;
 
         public CompaniesController(IMediator mediator, ILogger<CompaniesController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
+            : base(mediator, logger) 
+        { }
 
 
         [HttpPost]
         [Route("Register")]
+        [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RegisterNew(RegisterNewCompanyServiceCommand c, CancellationToken token)
         {
             try

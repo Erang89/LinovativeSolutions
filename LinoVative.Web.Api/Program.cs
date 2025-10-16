@@ -11,6 +11,8 @@ using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Backend.LocalizerServices;
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
+using LinoVative.Service.Backend.Configurations;
+using MapsterMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,8 +66,10 @@ services.AddDbContext<IAppDbContext, AppDbContext>((options) =>
 
 
 // Configure Mapper
-TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
-builder.Services.AddMapster();
+// Register Mapster mapper
+TypeAdapterConfig.GlobalSettings.Scan(typeof(MapsterConfigs).Assembly);
+builder.Services.AddSingleton(TypeAdapterConfig.GlobalSettings);
+builder.Services.AddScoped<IMapper, ServiceMapper>();
 
 var app = builder.Build();
 

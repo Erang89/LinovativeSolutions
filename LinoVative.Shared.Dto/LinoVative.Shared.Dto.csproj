@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Linovative.Shared.Interface\Linovative.Shared.Interface.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Sources\" />
+  </ItemGroup>
+
 </Project>

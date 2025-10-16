@@ -1,4 +1,6 @@
-﻿using Mapster;
+﻿using LinoVative.Service.Core.Sources;
+using LinoVative.Shared.Dto.Commons;
+using Mapster;
 
 namespace LinoVative.Service.Backend.Configurations
 {
@@ -6,7 +8,13 @@ namespace LinoVative.Service.Backend.Configurations
     {
         public void Register(TypeAdapterConfig config)
         {
-            // Map your entity here
+            // IdCode Mapping
+            config.NewConfig<Currency, IdWithCodeDto>();
+            config.NewConfig<Country, IdWithCodeDto>();
+            config.NewConfig<AppTimeZone, IdWithCodeDto>()
+                .Map(des => des.Code, src => src.TimeZone)
+                .Map(des => des.Name, src => src.Name);
+
         }
     }
 }
