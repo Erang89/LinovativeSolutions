@@ -56,6 +56,7 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
                 Name = request.Name,
                 CountryId = request.CountryId,
                 TimeZoneId = request.TimeZoneId,
+                CurrencyId = request.CurrencyId,
                 OwnByUserId = newUser.Id
             };
 

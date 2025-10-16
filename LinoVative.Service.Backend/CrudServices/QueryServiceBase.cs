@@ -71,20 +71,31 @@ namespace LinoVative.Service.Backend.CrudServices
                 .Skip((pagination.Page!.Value - 1) * pagination.PageSize!.Value)
                 .Take(pagination.PageSize!.Value);
         }
-        protected virtual IQueryable<TResponse> PaginationQuery<TResponse>(TReq request, IPagination? pagination = default)
+
+
+        protected virtual IQueryable<TResponse> PaginationQuery<TResponse>(TReq request)
         {
             var query = GetAll();
             query = OnPaginationQueryFilter(query, request);
             var responseQuery = OnPaginationMapping<TResponse>(query);
             
-            return OnApplyPagination(responseQuery, pagination);
+            if(request is IPagination pagination)
+                return OnApplyPagination(responseQuery, pagination);
+
+            return responseQuery;
         }
 
-        protected virtual async Task<Result> GetPaginationResult<TResult>(TReq request, IPagination? pagination = default)
+
+        protected virtual async Task<Result> GetPaginationResult<TResult>(TReq request)
         {
-            var query = PaginationQuery<TResult>(request, pagination);
-            var recordCount = await query.CountAsync();
-            var data = await query.ToListAsync();
+            var filteredQuery = OnPaginationQueryFilter(GetAll(), request);
+            var recordCount = await filteredQuery.CountAsync();
+
+            var paginationQuery = OnPaginationMapping<TResult>(filteredQuery);
+            if (request is IPagination pagination)
+                paginationQuery =  OnApplyPagination(paginationQuery, pagination);
+
+            var data = await paginationQuery.ToListAsync();
             return Result.ListOfData(data, recordCount);
         }
     }
