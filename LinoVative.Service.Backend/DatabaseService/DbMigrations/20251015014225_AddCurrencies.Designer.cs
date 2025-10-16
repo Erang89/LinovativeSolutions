@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.DatabaseService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251015014225_AddCurrencies")]
+    partial class AddCurrencies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,8 +225,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("SellPrice")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<bool>("SellPriceIncludeTaxService")
                         .HasColumnType("bit");
@@ -296,8 +298,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(18, 4)
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -360,9 +361,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("GMT")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -372,13 +370,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Property<Guid?>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("TimeZone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Zona")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

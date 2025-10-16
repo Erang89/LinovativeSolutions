@@ -1,4 +1,5 @@
-﻿using LinoVative.Service.Backend.Helpers;
+﻿using LinoVative.Service.Backend.Constans;
+using LinoVative.Service.Backend.Helpers;
 using Microsoft.EntityFrameworkCore.Migrations;
 #nullable disable
 
@@ -10,7 +11,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            var userId = new Guid("7d35452e-5aa9-432e-a091-743c6ce7aacf");
+            var userId = UserConstants.SystemAdministratorId;
             var haspass = PasswordHelper.CreateHashedPassword("NotSecure!@25", userId);
 
             migrationBuilder.InsertData(

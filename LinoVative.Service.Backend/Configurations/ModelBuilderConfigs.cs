@@ -32,7 +32,7 @@ namespace LinoVative.Service.Backend.Configurations
             modelBuilder.Entity<Item>(x =>
             {
                 x.ToTable("Items");
-
+                x.Property(x => x.SellPrice).HasPrecision(18, 4);
             });
 
             modelBuilder.Entity<ItemCostumePrice>(x =>
@@ -40,6 +40,7 @@ namespace LinoVative.Service.Backend.Configurations
                 x.ToTable("ItemCustomePrices");
                 x.HasOne(x => x.CostumePriceTag).WithMany().HasForeignKey(x => x.CostumePriceTagId).IsRequired();
                 x.HasOne(x => x.Item).WithMany(x => x.CostumePrices).HasForeignKey(x => x.ItemId).IsRequired();
+                x.Property(x => x.Price).HasPrecision(18, 4);
             });
 
 
