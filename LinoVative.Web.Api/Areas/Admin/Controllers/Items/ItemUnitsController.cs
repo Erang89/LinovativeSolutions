@@ -1,27 +1,21 @@
-﻿using LinoVative.Service.Backend.CrudServices.Sources;
-using LinoVative.Service.Core.Interfaces;
+﻿using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
-using LinoVative.Shared.Dto.Commons;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using LinoVative.Service.Backend.CrudServices.Items.Units;
 
-namespace LinoVative.Web.Api.Areas.Admin.Controllers.Sources
+namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
 {
-    [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]
-    public class SourcesController : APIBaseController
+    public class ItemUnitsController : APIBaseController
     {
-        public SourcesController(IMediator mediator, ILogger<SourcesController> logger)
-            : base(mediator, logger)
-        { }
+        public ItemUnitsController(IMediator mediator, ILogger<ItemUnitsController> logger) : base(mediator, logger)
+        {
+        }
 
-
-
-        [Route("Currencies")]
+        [Route(CREATE)]
         [HttpPost]
-        [ProducesResponseType(typeof(APIListResponse<IdWithCodeDto>), StatusCodes.Status200OK)]
-        
-        public async Task<IActionResult> Currencies(GetAllCurrencyCommand c, CancellationToken token)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Create(CreateItemUnitCommand c, CancellationToken token)
         {
             try
             {
@@ -39,10 +33,10 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Sources
         }
 
 
-        [Route("Countries")]
-        [HttpPost]
-        [ProducesResponseType(typeof(APIListResponse<IdWithCodeDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Countries(GetAllCountryCommand c, CancellationToken token)
+        [Route(UPDATE)]
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Update(UpdateItemUnitCommand c, CancellationToken token)
         {
             try
             {
@@ -60,14 +54,14 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Sources
         }
 
 
-        [Route("Timezones")]
-        [HttpPost]
-        [ProducesResponseType(typeof(APIListResponse<IdWithCodeDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Timezones(GetAllTimezoneCommand c, CancellationToken token)
+        [Route(DELETE)]
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Delete([FromRoute]Guid id, CancellationToken token)
         {
             try
             {
-                var result = await _mediator.Send(c, token);
+                var result = await _mediator.Send(new DeleteItemUnitCommand() { Id = id}, token);
                 return StatusCode((int)result.Status, result);
             }
             catch (Exception ex)

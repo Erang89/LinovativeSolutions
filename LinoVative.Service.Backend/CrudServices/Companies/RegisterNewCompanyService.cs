@@ -1,5 +1,4 @@
 ﻿using LinoVative.Service.Backend.AuthServices;
-using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Helpers;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Backend.LocalizerServices;
@@ -29,6 +28,7 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
             _lang = lang;
         }
 
+        protected override string LocalizerPrefix => nameof(RegisterNewCompanyDto);
 
         public Task<Result> Handle(RegisterNewCompanyServiceCommand req, CancellationToken token) => base.SaveNew(req, token);
 

@@ -1,4 +1,6 @@
 {
+  "Operation.UnAuthorized.Title": "Unauthorized Operation",
+  "Operation.UnAuthorized.Message": "You don't have permission for operation",
   "Entity.NotFound": "{0} with ID {1} was not found in the system",
   "Entity.Name.Company": "Company",
   "Entity.Name.User": "User",
@@ -10,7 +12,6 @@
   "Entity.Name.ItemCategory": "Item Category",
   "Entity.Name.AppTimeZone": "Timezone",
 
-
   "Property.Required": "{0} is required.",
   "Property.InvalidEmailFormat": "Invalid email address.",
   "Password.MinLenght": "Password must be at least {0} characters long.",
@@ -19,8 +20,6 @@
   "Password.MustHasSpecialChar": "Password must contain at least one special character.",
   "User.EmailAlreadyExist": "User with the same email already exist",
 
-
-
   "RegisterNewCompanyDto.PropertyName.Name": "Company name",
   "RegisterNewCompanyDto.PropertyName.Address": "Address",
   "RegisterNewCompanyDto.PropertyName.Country": "Country",
@@ -28,5 +27,10 @@
   "RegisterNewCompanyDto.PropertyName.Currency": "Currency",
   "RegisterNewCompanyDto.PropertyName.EmailAddress": "Email address",
   "RegisterNewCompanyDto.PropertyName.Password": "Password",
-  "RegisterNewCompanyDto.PropertyName.NickName": "Nickname"
+  "RegisterNewCompanyDto.PropertyName.NickName": "Nickname",
+
+  "ItemUnitDto.PropertyName.Name": "Name",
+  "ItemUnitDto.PropertyName.Description": "Description"
+
+
 }

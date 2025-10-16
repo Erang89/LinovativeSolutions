@@ -28,5 +28,8 @@
   "RegisterNewCompanyDto.PropertyName.Currency": "Mata uang",
   "RegisterNewCompanyDto.PropertyName.EmailAddress": "Alamat email",
   "RegisterNewCompanyDto.PropertyName.Password": "Password",
-  "RegisterNewCompanyDto.PropertyName.NickName": "Nama"
+  "RegisterNewCompanyDto.PropertyName.NickName": "Nama",
+
+  "ItemUnitDto.PropertyName.Name": "Nama",
+  "ItemUnitDto.PropertyName.Description": "Deskripsi"
 }

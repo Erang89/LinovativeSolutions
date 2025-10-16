@@ -7,9 +7,9 @@ namespace LinoVative.Service.Backend.Extensions
     {
         public static async Task<bool> CanDeleteEntity<T>(this IActor actor, T entity, IAppDbContext dbContext)
         {
-            if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
+            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
             {
-                if(actor.CompanyId != ((IsEntityManageByClinet)entity!).ClientId!.Value)
+                if(actor.CompanyId != ((IsEntityManageByCompany)entity!).CompanyId!.Value)
                     return false;
             }
 
@@ -27,9 +27,9 @@ namespace LinoVative.Service.Backend.Extensions
        
         public static async Task<bool> CanUpdateEntity<T>(this IActor actor, T entity, IAppDbContext dbContext)
         {
-            if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
+            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
             {
-                if (actor.CompanyId != ((IsEntityManageByClinet)entity!).ClientId!.Value)
+                if (actor.CompanyId != ((IsEntityManageByCompany)entity!).CompanyId!.Value)
                     return false;
             }
 

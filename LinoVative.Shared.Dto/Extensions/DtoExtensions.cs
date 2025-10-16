@@ -43,7 +43,7 @@ namespace LinoVative.Shared.Dto.Extensions
             throw new ArgumentException("Invalid expression");
         }
 
-        public static Result ValidateRequiredPropery<TRequest>(this TRequest request, IStringLocalizer localizer) where TRequest : class
+        public static Result ValidateRequiredPropery<TRequest>(this TRequest request, IStringLocalizer localizer, string? localizerPrefix = default) where TRequest : class
         {
             var errors = new Dictionary<string, List<string>>();
             var props = typeof(TRequest).GetProperties(BindingFlags.Instance | BindingFlags.Public);
@@ -66,12 +66,17 @@ namespace LinoVative.Shared.Dto.Extensions
 
                 if (!isMissing) continue;
 
-
                 var propertyName = prop.Name;
-                var dtoName = typeof(TRequest).Name.Replace("ServiceCommand", "Dto");
-                dtoName = dtoName.Replace("Command", "Dto");
-
-                var propertyNameLoc = localizer[$"{dtoName}.PropertyName.{propertyName}"];
+                var localizerPrefixName = localizerPrefix;
+                
+                if(localizerPrefix is null)
+                {
+                    localizerPrefixName = typeof(TRequest).Name;
+                    localizerPrefixName = localizerPrefixName.Replace("ServiceCommand", "Dto");
+                    localizerPrefixName = localizerPrefixName.Replace("Command", "Dto");
+                }
+                
+                var propertyNameLoc = localizer[$"{localizerPrefixName}.PropertyName.{propertyName}"];
                 var message = localizer[$"Property.Required", propertyNameLoc];
 
                 if (errors.ContainsKey(propertyName))

@@ -3,12 +3,7 @@ using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using MapsterMapper;
 using Microsoft.Extensions.Localization;
-using System.Reflection;
-using LinoVative.Shared.Dto.Attributes;
-using LinoVative.Service.Backend.Extensions;
 using System.Linq.Expressions;
-using Azure.Core;
-using LinoVative.Service.Backend.CrudServices.Companies;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.Extensions;
 
@@ -17,6 +12,7 @@ namespace LinoVative.Service.Backend.CrudServices
     public abstract class SaveNewServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class
     {
         protected IStringLocalizer _localizer;
+        protected abstract string LocalizerPrefix { get; }
         protected SaveNewServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) 
             : base(dbContext, actor, mapper, appCache)
         { 
@@ -42,7 +38,7 @@ namespace LinoVative.Service.Backend.CrudServices
             _dbSet.AddRange(creatingResult);
 
             var result = await _dbContext.SaveAsync(_actor, token);
-            if(result) return Result.OK(creatingResult);
+            if(result) return Result.OK(creatingResult.Select(x => x.Id).ToList());
 
             return result;
         }
@@ -52,9 +48,9 @@ namespace LinoVative.Service.Backend.CrudServices
         {
             T entity = await OnMapping(request!);
 
-            if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
+            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
             {
-                ((IsEntityManageByClinet)entity).ClientId = _actor.CompanyId;
+                ((IsEntityManageByCompany)entity).CompanyId = _actor.CompanyId;
             }
 
             return new() { entity };
@@ -63,10 +59,10 @@ namespace LinoVative.Service.Backend.CrudServices
 
         protected virtual async Task<Result> Validate(TRequest request, CancellationToken token)
         {
-            var validate = request.ValidateRequiredPropery(_localizer);
-            if (!validate) return validate;
+            var validate = request.ValidateRequiredPropery(_localizer, LocalizerPrefix);
+
             await Task.CompletedTask;
-            return Result.OK();
+            return validate;
         }
 
         protected string Prop(Expression<Func<TRequest, object>> expresion) => DtoExtensions.GetPropertyName(expresion);

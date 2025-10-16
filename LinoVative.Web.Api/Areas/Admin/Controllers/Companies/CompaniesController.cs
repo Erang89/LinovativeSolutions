@@ -1,13 +1,12 @@
 ﻿using LinoVative.Service.Backend.CrudServices.Companies;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
+using LinoVative.Shared.Dto.CompanyDtos;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class CompaniesController : APIBaseController
     {
 
@@ -18,8 +17,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
 
         [HttpPost]
         [Route("Register")]
-        [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> RegisterNew(RegisterNewCompanyServiceCommand c, CancellationToken token)
         {
             try
@@ -30,8 +28,8 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
             catch (Exception ex)
             {
                 var routeName = ControllerContext.ActionDescriptor.DisplayName;
-                _logger.LogError(ex, "An error occurred in {Route}", routeName);
-                var responseObject = Result.Failed($"An error occurred while handling {routeName}. Please contact your administrator");
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
                 responseObject.SetTraceId(HttpContext.TraceIdentifier);
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }
@@ -39,9 +37,8 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
 
 
         [HttpPost]
-        [Route("GetAll")]
-        [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]
+        [Route(GETALL)]
+        [ProducesResponseType(typeof(APIListResponse<CompanyDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(GetAllCompanyCommand c, CancellationToken token)
         {
             try
@@ -52,8 +49,8 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
             catch (Exception ex)
             {
                 var routeName = ControllerContext.ActionDescriptor.DisplayName;
-                _logger.LogError(ex, "An error occurred in {Route}", routeName);
-                var responseObject = Result.Failed($"An error occurred while handling {routeName}. Please contact your administrator");
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
                 responseObject.SetTraceId(HttpContext.TraceIdentifier);
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }

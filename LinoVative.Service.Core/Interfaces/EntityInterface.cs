@@ -21,8 +21,8 @@
         public void Delete(IActor actor);
     }
 
-    public interface IsEntityManageByClinet
+    public interface IsEntityManageByCompany
     {
-        public Guid? ClientId { get; set; }
+        public Guid? CompanyId { get; set; }
     }
 }

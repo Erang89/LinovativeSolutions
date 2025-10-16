@@ -1,21 +1,26 @@
 ﻿using Linovative.Shared.Interface;
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
+using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Interfaces;
+using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.Extensions;
 using MapsterMapper;
 using Microsoft.Extensions.Localization;
+using System.Linq.Expressions;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
     public abstract class SaveUpdateServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class, IEntityId
     {
         private readonly IStringLocalizer _stringLocalizer;
-
-        protected SaveUpdateServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer stringLocalizer) : base(dbContext, actor, mapper, appCache)
+        private readonly ILanguageService _lang;
+        protected abstract string LocalizerPrefix { get; }
+        protected SaveUpdateServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer stringLocalizer, ILanguageService langService) : base(dbContext, actor, mapper, appCache)
         { 
             _stringLocalizer = stringLocalizer;
+            _lang = langService;
         }
 
 
@@ -33,40 +38,6 @@ namespace LinoVative.Service.Backend.CrudServices
         }
 
 
-        // ============================== Save New ==============================
-        protected virtual async Task<Result> SaveNew(TRequest request, CancellationToken token)
-        {
-            var validate = await ValidateSaveNew(request, token);
-            if (!validate)
-                return validate;
-            
-            T entity = await OnMapping(request!);
-
-            if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
-            {
-               ((IsEntityManageByClinet)entity).ClientId = _actor.CompanyId;
-            }
-
-            await BeforeSaveNew(request, entity, token);
-
-            _dbSet.Add(entity);
-
-            var result = await _dbContext.SaveAsync(_actor, token);
-            if(result) return Result.OK(entity);
-
-            return result;
-
-        }
-        protected virtual Task BeforeSaveNew(TRequest request, T entity, CancellationToken token) => Task.CompletedTask;
-        protected virtual async Task<Result> ValidateSaveNew<TRequest>(TRequest request, CancellationToken token)
-        {
-            
-            await Task.CompletedTask;
-            return Result.OK();
-        }
-
-
-
         // ============================== Update ==============================
         protected virtual async Task<Result> SaveUpdate(TRequest request, CancellationToken token)
         {
@@ -80,9 +51,9 @@ namespace LinoVative.Service.Backend.CrudServices
 
             await BeforeSaveUpdate(request, entity, token);
             
-            if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
+            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
             {
-                ((IsEntityManageByClinet)entity!).ClientId = _actor.CompanyId;
+                ((IsEntityManageByCompany)entity!).CompanyId = _actor.CompanyId;
             }
 
             return await _dbContext.SaveAsync(_actor, token);
@@ -95,18 +66,19 @@ namespace LinoVative.Service.Backend.CrudServices
             
             var entity = await GetById(request.Id);
             if (entity is null)
-                return Result.Failed($"Entity with Id: {request.Id} not found");
+                AddError(validate, x => x.Id!, _lang.EntityNotFound<Currency>(request.Id));
 
-            if (!await _actor.CanUpdateEntity(entity, _dbContext))
-            {
-                return Result.Failed("Unauthorized Operation", "You don't have permission to run the operation", new(), System.Net.HttpStatusCode.Unauthorized);
-            }
-
-            await Task.CompletedTask;
-            return Result.OK();
+            return validate;
         }
 
 
+        protected string Prop(Expression<Func<TRequest, object>> expresion) => DtoExtensions.GetPropertyName(expresion);
+
+        protected void AddError(Result result, Expression<Func<TRequest, object>> expresion, string message) =>
+            result.AddInvalidProperty(Prop(expresion), message);
+
+        protected void AddError(Result result, Expression<Func<TRequest, object>> expresion, object obj) =>
+            result.AddInvalidProperty(Prop(expresion), obj);
 
 
     }

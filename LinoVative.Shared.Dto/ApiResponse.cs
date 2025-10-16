@@ -6,14 +6,19 @@
         public List<T> Data { get; set; } = new();
     }
 
+    public class APIDataResponse<T>
+    {
+        public T? Data { get; set; }
+    }
+
     public class APIInputErrorResponse
     {
-        public string? TraceId { get; private set; }
-        public Dictionary<string, object>? Errors { get; set; }
+        public Dictionary<string, string[]>? Errors { get; set; }
     }
 
     public class APIInternalErrorResponse
     {
+        public string? TraceId { get; private set; }
         public string? Title { get; private set; }
         public string? Message { get; private set; } = string.Empty;
     }
