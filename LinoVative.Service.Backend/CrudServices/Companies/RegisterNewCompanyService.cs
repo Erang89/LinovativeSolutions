@@ -60,7 +60,7 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
                 OwnByUserId = newUser.Id
             };
 
-            var actor = new ActorService() { UserId = newUserId, ClientId = newCompany.Id };
+            var actor = new ActorService() { UserId = newUserId, CompanyId = newCompany.Id };
             newUser.CreateBy(actor);
             newCompany.CreateBy(actor);
 

@@ -44,7 +44,7 @@ namespace LinoVative.Service.Backend.CrudServices
 
             if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
             {
-               ((IsEntityManageByClinet)entity).ClientId = _actor.ClientId;
+               ((IsEntityManageByClinet)entity).ClientId = _actor.CompanyId;
             }
 
             await BeforeSaveNew(request, entity, token);
@@ -82,7 +82,7 @@ namespace LinoVative.Service.Backend.CrudServices
             
             if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
             {
-                ((IsEntityManageByClinet)entity!).ClientId = _actor.ClientId;
+                ((IsEntityManageByClinet)entity!).ClientId = _actor.CompanyId;
             }
 
             return await _dbContext.SaveAsync(_actor, token);

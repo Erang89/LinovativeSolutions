@@ -39,7 +39,7 @@ namespace LinoVative.Service.Backend.CrudServices
 
             if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
             {
-                query = query.Where(e => ((IsEntityManageByClinet)e).ClientId == _actor.ClientId);
+                query = query.Where(e => ((IsEntityManageByClinet)e).ClientId == _actor.CompanyId);
             }
 
             return query;

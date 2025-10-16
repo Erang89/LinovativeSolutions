@@ -9,7 +9,7 @@ namespace LinoVative.Service.Backend.Extensions
         {
             if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
             {
-                if(actor.ClientId != ((IsEntityManageByClinet)entity!).ClientId!.Value)
+                if(actor.CompanyId != ((IsEntityManageByClinet)entity!).ClientId!.Value)
                     return false;
             }
 
@@ -29,7 +29,7 @@ namespace LinoVative.Service.Backend.Extensions
         {
             if (typeof(IsEntityManageByClinet).IsAssignableFrom(typeof(T)))
             {
-                if (actor.ClientId != ((IsEntityManageByClinet)entity!).ClientId!.Value)
+                if (actor.CompanyId != ((IsEntityManageByClinet)entity!).ClientId!.Value)
                     return false;
             }
 

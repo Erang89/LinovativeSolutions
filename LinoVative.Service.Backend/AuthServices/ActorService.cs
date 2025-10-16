@@ -12,7 +12,7 @@ namespace LinoVative.Service.Backend.AuthServices
 
         public string EmailAddress { get; set; } = string.Empty;
 
-        public Guid ClientId { get; set; }
+        public Guid? CompanyId { get; set; }
 
         public List<Guid> PrivilegesId { get; set; } = new();
 
