@@ -24,7 +24,7 @@
   "RegisterNewCompanyDto.PropertyName.Name": "Company name",
   "RegisterNewCompanyDto.PropertyName.Address": "Address",
   "RegisterNewCompanyDto.PropertyName.Country": "Country",
-  "RegisterNewCompanyDto.PropertyName.TimeZone": "Timezone",
+  "RegisterNewCompanyDto.PropertyName.TimeZoneId": "Timezone",
   "RegisterNewCompanyDto.PropertyName.Currency": "Currency",
   "RegisterNewCompanyDto.PropertyName.EmailAddress": "Email address",
   "RegisterNewCompanyDto.PropertyName.Password": "Password",

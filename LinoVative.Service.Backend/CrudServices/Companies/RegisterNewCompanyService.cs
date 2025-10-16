@@ -10,7 +10,6 @@ using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
 using MapsterMapper;
 using Microsoft.Extensions.Localization;
-using System.Linq.Expressions;
 
 namespace LinoVative.Service.Backend.CrudServices.Companies
 {
@@ -49,13 +48,14 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
                 HasConfirmed = false,
             };
 
+            var timezone = _dbContext.TimeZones.FirstOrDefault(x => x.Id == request.TimeZoneId);
             
             var newCompany = new Company()
             {
                 Id = request.Id,
                 Name = request.Name,
                 CountryId = request.CountryId,
-                TimeZone = request.TimeZone,
+                TimeZoneId = request.TimeZoneId,
                 OwnByUserId = newUser.Id
             };
 
@@ -105,8 +105,8 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
             if (_dbContext.Users.Where(x => x.EmailAddress == request.EmailAddress).Any())
                 AddError(result, x => x.EmailAddress!, _localizer["User.EmailAlreadyExist"]);
 
-            if (!_dbContext.TimeZones.Any(x => !x.IsDeleted && x.TimeZone == request.TimeZone))
-                AddError(result, x => x.TimeZone!, _lang.EntityNotFound<AppTimeZone>(request.TimeZone));
+            if (!_dbContext.TimeZones.Any(x => !x.IsDeleted && x.Id == request.TimeZoneId))
+                AddError(result, x => x.TimeZoneId!, _lang.EntityNotFound<AppTimeZone>(request.TimeZoneId));
 
         }
 

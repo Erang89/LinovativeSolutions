@@ -18,7 +18,7 @@ namespace LinoVative.Shared.Dto
         public Guid? CountryId{ get; set; }
 
         [InputRequired]
-        public string? TimeZone { get; set; }
+        public Guid? TimeZoneId { get; set; }
 
         [InputRequired]
         public Guid? CurrencyId { get; set; }

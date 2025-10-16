@@ -24,7 +24,7 @@
   "RegisterNewCompanyDto.PropertyName.Name": "Nama perusahaan",
   "RegisterNewCompanyDto.PropertyName.Address": "Alamat",
   "RegisterNewCompanyDto.PropertyName.Country": "Negara",
-  "RegisterNewCompanyDto.PropertyName.TimeZone": "Zona waktu",
+  "RegisterNewCompanyDto.PropertyName.TimeZoneId": "Zona waktu",
   "RegisterNewCompanyDto.PropertyName.Currency": "Mata uang",
   "RegisterNewCompanyDto.PropertyName.EmailAddress": "Alamat email",
   "RegisterNewCompanyDto.PropertyName.Password": "Password",

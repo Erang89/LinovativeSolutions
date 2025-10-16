@@ -1,4 +1,5 @@
 ﻿using LinoVative.Service.Core.Auth;
+using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Items;
 using LinoVative.Service.Core.Sources;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,15 @@ namespace LinoVative.Service.Backend.Configurations
             modelBuilder.Entity<AppUserApplication>().ToTable("UserApplications");
             modelBuilder.Entity<AppUserCompany>().ToTable("UserCompanies");
 
+
+            // Company Mappings
+            modelBuilder.Entity<Company>(x =>
+            {
+                x.ToTable("Companies");
+                x.HasOne<AppTimeZone>().WithMany().HasForeignKey(x => x.TimeZoneId).IsRequired();
+                x.HasOne(x => x.Country).WithMany().HasForeignKey(x => x.CountryId).IsRequired();
+                x.HasOne(x => x.Currency).WithMany().HasForeignKey(x => x.CurrencyId).IsRequired();
+            });
 
             // Maping Items
             modelBuilder.Entity<ItemUnit>().ToTable("ItemUnits");

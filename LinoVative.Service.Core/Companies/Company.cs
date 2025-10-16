@@ -10,7 +10,7 @@ namespace LinoVative.Service.Core.Companies
 
         public Guid? CountryId { get; set; }
         public Country? Country { get; set; }
-        public string? TimeZone { get; set; }
+        public Guid? TimeZoneId { get; set; }
         public Guid? OwnByUserId { get; set; }
         public Guid? CurrencyId { get; set; }
         public Currency? Currency { get; set; }
