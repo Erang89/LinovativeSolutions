@@ -89,16 +89,6 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
         void ValidateData(RegisterNewCompanyServiceCommand request, Result result)
         {
-            var countryDisplayName = _localizer["Entity.Name.Country"];
-            var currencyDisplayName = _localizer["Entity.Name.Currency"];
-            var appTypeZoneDisplayName = _localizer["Entity.Name.AppTimeZone"];
-
-            if (!_dbContext.Countries.Any(x => x.Id == request.CountryId))
-                AddError(result, x => x.CountryId!, _localizer["Entity.IdNotFound", countryDisplayName]);
-
-            if (!_dbContext.Currencies.Any(x => x.Id == request.CurrencyId))
-                AddError(result, x => x.CurrencyId!, _localizer["Entity.IdNotFound", currencyDisplayName]);
-
             var (isPassStrong, passErrors) = PasswordHelper.IsPasswordStrong(request.Password!, _localizer);
             if (!isPassStrong)
                 AddError(result, x => x.Password!, passErrors);
@@ -108,9 +98,6 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
             if (_dbContext.Users.Where(x => x.EmailAddress == request.EmailAddress).Any())
                 AddError(result, x => x.EmailAddress!, _localizer["User.EmailAlreadyExist"]);
-
-            if (!_dbContext.TimeZones.Any(x => !x.IsDeleted && x.Id == request.TimeZoneId))
-                AddError(result, x => x.TimeZoneId!, _localizer["Entity.IdNotFound", appTypeZoneDisplayName]);
 
         }
 

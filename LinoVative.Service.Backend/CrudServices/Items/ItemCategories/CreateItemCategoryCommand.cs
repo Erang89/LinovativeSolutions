@@ -26,14 +26,5 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategories
 
         public Task<Result> Handle(CreateItemCategoryCommand request, CancellationToken ct) => base.SaveNew(request, ct);
 
-        protected async override Task<Result> Validate(CreateItemCategoryCommand request, CancellationToken token)
-        {
-            var result = await base.Validate(request, token);
-
-            var isNameExist = GetAll().Where(x => x.Name!.Contains(request.Name!)).Any();
-            if (isNameExist) AddError(result, x => x.Name!, _localizer["Property.AreadyExist", request.Name!]);
-
-            return result;
-        }
     }
 }

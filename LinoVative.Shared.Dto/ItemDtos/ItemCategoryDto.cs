@@ -10,7 +10,7 @@ namespace LinoVative.Shared.Dto.ItemDtos
         public string? Name { get; set; }
         public string? Description { get; set; }
 
-        [LocalizedRequired]
+        [LocalizedRequired, EntityID(EntityTypes.ItemGroup)]
         public Guid? ItemGroupId { get; set; }
     }
 

@@ -4,6 +4,6 @@ namespace Linovative.Shared.Interface
 {
     public interface IUniqueFieldValidatorService
     {
-        public bool IsValid(EntityTypes? entityType, string fieldName, object fieldValue, IActor actor);
+        public bool IsValid(EntityTypes? entityType, Guid entityId, string fieldName, object fieldValue, IActor actor);
     }
 }

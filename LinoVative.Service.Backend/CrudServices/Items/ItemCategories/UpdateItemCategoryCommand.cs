@@ -24,15 +24,5 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategories
         protected override string LocalizerPrefix => nameof(ItemCategoryDto);
 
         public Task<Result> Handle(UpdateItemCategoryCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
-
-        protected override async Task<Result> ValidateSaveUpdate(UpdateItemCategoryCommand request, CancellationToken token)
-        {
-            var result = await  base.ValidateSaveUpdate(request, token);
-
-            var isNameExist = GetAll().Where(x => x.Name!.Contains(request.Name!) && x.Id != request.Id).Any();
-            if (isNameExist) if (isNameExist) AddError(result, x => x.Name!, _localizer["Property.AreadyExist", request.Name!]);
-
-            return result;
-        }
     }
 }

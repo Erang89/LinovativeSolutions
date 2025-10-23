@@ -10,6 +10,7 @@ namespace LinoVative.Shared.Dto.Attributes
     {
         public EntityTypes EntityType { get; set; }
         public string? FieldName { get; set; }
+        public string? IdFieldName { get; set; } = "Id";
 
         public UniqueFieldAttribute(EntityTypes entityType) : base()
         {
@@ -27,9 +28,23 @@ namespace LinoVative.Shared.Dto.Attributes
             var uniqueValidator = (IUniqueFieldValidatorService)validationContext.GetService(typeof(IUniqueFieldValidatorService))!;
             var localizer = (IStringLocalizer)validationContext.GetService(typeof(IStringLocalizer))!;
             var actor = (IActor)validationContext.GetService(typeof(IActor))!;
+          
+            var objectType = validationContext.ObjectType;
+            var instance = validationContext.ObjectInstance;
+            Guid id = Guid.Empty;
+            var idProp = objectType.GetProperty(IdFieldName!, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+
+            if (idProp is not null && idProp.CanRead)
+            {
+                var idVal = idProp.GetValue(instance);
+                if(idVal is Guid idValGuid)
+                {
+                    id = idValGuid;
+                }
+            }
 
             var fieldName = FieldName??validationContext.MemberName;
-            if(value is not null && !uniqueValidator.IsValid(EntityType, fieldName!, value!, actor))
+            if(value is not null && !uniqueValidator.IsValid(EntityType, id, fieldName!, value!, actor))
             {
                 var classType = validationContext.ObjectType;
                 var className = validationContext.ObjectType.Name;
