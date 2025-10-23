@@ -1,6 +1,16 @@
-@LinoVative.Web.Api_HostAddress = http://localhost:5165
+@LinoVative.Web.BaseUrl = http://localhost:5165/api
+@LinoVative.Web.ODataBaseUrl = https://localhost:5165/api/odata
+@LinoVative.Web.Base_Address = http://localhost:5165
 
-GET {{LinoVative.Web.Api_HostAddress}}/weatherforecast/
+GET {{LinoVative.Web.Base_Address}}/weatherforecast/
 Accept: application/json
 
-###
+
+
+POST {{LinoVative.Web.ODataBaseUrl}}/ItemUnits
+Accept: application/json
+Content-Type: application/json
+
+{
+  SearchKeyword : ""
+}

@@ -1,4 +1,5 @@
-﻿using LinoVative.Service.Core.Auth;
+﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
@@ -37,5 +38,7 @@ namespace LinoVative.Service.Backend.Interfaces
 
         public DbSet<T> Set<T>() where T : class;
         public Task<Result> SaveAsync(IActor actor, CancellationToken token = default);
+        public Type GetModelType(string modelName);
+        public string? GetTableName(string modelName);
     }
 }

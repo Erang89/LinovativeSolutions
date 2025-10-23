@@ -15,7 +15,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
         [Route(CREATE)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create(CreateItemUnitCommand c, CancellationToken token)
+        public async Task<IActionResult> Create([FromBody] CreateItemUnitCommand c, CancellationToken token)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
         [Route(UPDATE)]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update(UpdateItemUnitCommand c, CancellationToken token)
+        public async Task<IActionResult> Update([FromBody] UpdateItemUnitCommand c, CancellationToken token)
         {
             try
             {

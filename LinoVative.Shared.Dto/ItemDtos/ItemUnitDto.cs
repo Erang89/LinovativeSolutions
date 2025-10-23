@@ -1,12 +1,13 @@
-﻿using Linovative.Shared.Interface;
-using LinoVative.Shared.Dto.Attributes;
+﻿using LinoVative.Shared.Dto.Attributes;
+using Linovative.Shared.Interface.Enums;
 
 namespace LinoVative.Shared.Dto.ItemDtos
 {
-    public class ItemUnitDto : IEntityId
+
+    [LocalizerKey(nameof(ItemUnitDto))]
+    public class ItemUnitDto : EntityDtoBase
     {
-        public Guid Id { get; set; }
-        [InputRequired]
+        [LocalizedRequired, UniqueField(EntityTypes.ItemUnit)]
         public string? Name { get; set; }
         public string? Description { get; set; }
     }

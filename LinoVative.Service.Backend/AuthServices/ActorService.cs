@@ -1,4 +1,5 @@
-﻿using LinoVative.Service.Core.Interfaces;
+﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Core.Interfaces;
 
 namespace LinoVative.Service.Backend.AuthServices
 {

@@ -1,4 +1,5 @@
-﻿using LinoVative.Service.Backend.Interfaces;
+﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;

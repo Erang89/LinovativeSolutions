@@ -1,4 +1,6 @@
-﻿namespace LinoVative.Service.Core.Interfaces
+﻿using Linovative.Shared.Interface;
+
+namespace LinoVative.Service.Core.Interfaces
 {
    
 

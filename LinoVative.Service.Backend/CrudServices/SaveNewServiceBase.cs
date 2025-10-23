@@ -5,7 +5,10 @@ using MapsterMapper;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
 using LinoVative.Shared.Dto;
-using LinoVative.Shared.Dto.Extensions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using LinoVative.Service.Backend.LocalizerServices;
+using Microsoft.AspNetCore.Mvc;
+using LinoVative.Service.Backend.Extensions;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
@@ -40,7 +43,7 @@ namespace LinoVative.Service.Backend.CrudServices
             var result = await _dbContext.SaveAsync(_actor, token);
             if(result) return Result.OK(creatingResult.Select(x => x.Id).ToList());
 
-            return result;
+            return Result.OK(creatingResult.Select(x => x.Id).ToList());
         }
         
 
@@ -57,13 +60,7 @@ namespace LinoVative.Service.Backend.CrudServices
         }
 
 
-        protected virtual async Task<Result> Validate(TRequest request, CancellationToken token)
-        {
-            var validate = request.ValidateRequiredPropery(_localizer, LocalizerPrefix);
-
-            await Task.CompletedTask;
-            return validate;
-        }
+        protected virtual async Task<Result> Validate(TRequest request, CancellationToken token) => Result.OK();
 
         protected string Prop(Expression<Func<TRequest, object>> expresion) => DtoExtensions.GetPropertyName(expresion);
 

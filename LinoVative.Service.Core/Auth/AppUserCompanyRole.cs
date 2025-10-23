@@ -1,4 +1,4 @@
-﻿using Linovative.Shared.Cores.Enums;
+﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Service.Core.EntityBases;
 
 namespace LinoVative.Service.Core.Auth

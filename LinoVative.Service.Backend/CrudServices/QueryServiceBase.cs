@@ -9,6 +9,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
+    public abstract class QueryServiceBase<T, TReq> : QueryServiceBase<T> where T : class, IEntityId
+    {
+        protected QueryServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache)
+            : base(dbContext, actor, mapper, appCache)
+        {
+            
+        }
+        protected IQueryable<T> GetAll(TReq reqeust, bool includeDeleted = false)
+        {
+            var query = base.GetAll(includeDeleted);
+            return OnGetAllFilter(query, reqeust);
+        }
+        protected virtual IQueryable<T> OnGetAllFilter(IQueryable<T> query, TReq req) => query;
+    }
+
     public abstract class QueryServiceBase<T> where T : class, IEntityId
     {
         protected DbSet<T> _dbSet { get; set; }
@@ -42,8 +57,11 @@ namespace LinoVative.Service.Backend.CrudServices
                 query = query.Where(e => ((IsEntityManageByCompany)e).CompanyId == _actor.CompanyId);
             }
 
-            return query;
+            return OnGetAllFilter(query);
         }
+
+        protected virtual IQueryable<T> OnGetAllFilter(IQueryable<T> query) => query;
+
         protected async Task<T?> GetById(Guid id) => await _appCache.Get<T>($"entity{id}", async () => await _dbSet.FirstOrDefaultAsync(x => x.Id == id));
 
 

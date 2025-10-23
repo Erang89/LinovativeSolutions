@@ -1,6 +1,4 @@
-﻿using LinoVative.Shared.Dto.Extensions;
-using System.Linq.Expressions;
-using System.Net;
+﻿using System.Net;
 
 namespace LinoVative.Shared.Dto
 {
@@ -47,10 +45,7 @@ namespace LinoVative.Shared.Dto
             Status = HttpStatusCode.BadRequest;
         }
 
-        public void AddInvalidProperty<T>(Expression<Func<T, object>> expresion, string message) where T : class
-        {
-            this.AddInvalidProperty(DtoExtensions.GetPropertyName(expresion), message);
-        }
+        
 
         public static Result OK(object? data = default, string? message = default, string? title = default)
         {

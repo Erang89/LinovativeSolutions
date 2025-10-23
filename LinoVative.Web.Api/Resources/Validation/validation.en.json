@@ -1,7 +1,7 @@
 {
   "Operation.UnAuthorized.Title": "Unauthorized Operation",
   "Operation.UnAuthorized.Message": "You don't have permission for operation",
-  "Entity.NotFound": "{0} with ID {1} was not found in the system",
+  "Entity.IdNotFound": "{0} with ID {1} was not found in the system",
   "Entity.Name.Company": "Company",
   "Entity.Name.User": "User",
   "Entity.Name.Currency": "Currency",
@@ -12,7 +12,9 @@
   "Entity.Name.ItemCategory": "Item Category",
   "Entity.Name.AppTimeZone": "Timezone",
 
+  "Property.IdMustBeUnique": "The same ID already exist. ID must be unique",
   "Property.Required": "{0} is required.",
+  "Property.AreadyExist": "Field value must be unique. '{0}' already exist",
   "Property.InvalidEmailFormat": "Invalid email address.",
   "Password.MinLenght": "Password must be at least {0} characters long.",
   "Password.MustHasLowerOrUppercase": "Password must contain both uppercase and lowercase letters.",
@@ -20,17 +22,22 @@
   "Password.MustHasSpecialChar": "Password must contain at least one special character.",
   "User.EmailAlreadyExist": "User with the same email already exist",
 
-  "RegisterNewCompanyDto.PropertyName.Name": "Company name",
-  "RegisterNewCompanyDto.PropertyName.Address": "Address",
-  "RegisterNewCompanyDto.PropertyName.Country": "Country",
-  "RegisterNewCompanyDto.PropertyName.TimeZoneId": "Timezone",
-  "RegisterNewCompanyDto.PropertyName.Currency": "Currency",
-  "RegisterNewCompanyDto.PropertyName.EmailAddress": "Email address",
-  "RegisterNewCompanyDto.PropertyName.Password": "Password",
-  "RegisterNewCompanyDto.PropertyName.NickName": "Nickname",
 
-  "ItemUnitDto.PropertyName.Name": "Name",
-  "ItemUnitDto.PropertyName.Description": "Description"
+  "RegisterNewCompanyDto.Required.Name.ErrorMessage": "Company name is required",
+  "RegisterNewCompanyDto.Required.Address.ErrorMessage": "Address is required",
+  "RegisterNewCompanyDto.Required.CountryId.ErrorMessage": "Country is required",
+  "RegisterNewCompanyDto.Required.TimeZoneId.ErrorMessage": "Timezone is required",
+  "RegisterNewCompanyDto.Required.CurrencyId.ErrorMessage": "Currency is required",
+  "RegisterNewCompanyDto.Required.EmailAddress.ErrorMessage": "Email Address is required",
+  "RegisterNewCompanyDto.Required.Password.ErrorMessage": "Password is required",
+  "RegisterNewCompanyDto.Required.NickName.ErrorMessage": "Nikename is required",
 
+  "ItemUnitDto.Unique.Name.ErrorMessage": "Unit name must be unique. {0} already exist",
+  "ItemUnitDto.Required.Name.ErrorMessage": "Unit name is required",
 
+  "ItemGroupDto.Unique.Name.ErrorMessage": "Group name must be unique. {0} already exist",
+  "ItemGroupDto.Required.Name.ErrorMessage": "Group name is required",
+
+  "ItemCategoryDto.Unique.Name.ErrorMessage": "Category name must be unique. {0} already exist",
+  "ItemCategoryDto.Required.Name.ErrorMessage": "Category name is required"
 }

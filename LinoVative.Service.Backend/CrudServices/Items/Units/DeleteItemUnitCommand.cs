@@ -17,8 +17,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Units
 
     public class DeleteItemUnitHandlerService : SaveDeleteServiceBase<ItemUnit, DeleteItemUnitCommand>, IRequestHandler<DeleteItemUnitCommand, Result>
     {
-        public DeleteItemUnitHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, ILanguageService langService) : 
-            base(dbContext, actor, mapper, appCache, localizer, langService)
+        public DeleteItemUnitHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : 
+            base(dbContext, actor, mapper, appCache, localizer)
         {
         }
 

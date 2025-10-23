@@ -5,7 +5,7 @@ using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
-using LinoVative.Shared.Dto.Extensions;
+using Mapster.Utils;
 using MapsterMapper;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
@@ -14,15 +14,14 @@ namespace LinoVative.Service.Backend.CrudServices
 {
     public abstract class SaveUpdateServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class, IEntityId
     {
-        private readonly IStringLocalizer _stringLocalizer;
-        private readonly ILanguageService _lang;
+        protected readonly IStringLocalizer _localizer;
         protected abstract string LocalizerPrefix { get; }
-        protected SaveUpdateServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer stringLocalizer, ILanguageService langService) : base(dbContext, actor, mapper, appCache)
+        protected SaveUpdateServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer stringLocalizer) : base(dbContext, actor, mapper, appCache)
         { 
-            _stringLocalizer = stringLocalizer;
-            _lang = langService;
+            _localizer = stringLocalizer;
         }
 
+        protected string EntityName => _localizer[$"Entity.Name.{typeof(T).Name}"];
 
         // ============================== Maping Entity ==============================
         protected virtual async Task<T> OnMapping(TRequest request)
@@ -61,12 +60,11 @@ namespace LinoVative.Service.Backend.CrudServices
         protected virtual Task BeforeSaveUpdate(TRequest request, T entity, CancellationToken token) => Task.CompletedTask;
         protected virtual async Task<Result> ValidateSaveUpdate(TRequest request, CancellationToken token)
         {
-            var validate = request.ValidateRequiredPropery(_stringLocalizer);
-            if (!validate) return validate;
+            var validate = Result.OK();
             
             var entity = await GetById(request.Id);
             if (entity is null)
-                AddError(validate, x => x.Id!, _lang.EntityNotFound<Currency>(request.Id));
+                AddError(validate, x => x.Id!, _localizer["Entity.IdNotFound", EntityName, request.Id]);
 
             return validate;
         }

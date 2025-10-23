@@ -1,9 +1,8 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
-using LinoVative.Shared.Dto.Extensions;
 using MapsterMapper;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
@@ -12,15 +11,14 @@ namespace LinoVative.Service.Backend.CrudServices
 {
     public abstract class SaveDeleteServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class, IEntityId
     {
-        protected readonly ILanguageService _lang;
         protected IStringLocalizer _loc;
 
-        protected SaveDeleteServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache,  IStringLocalizer log, ILanguageService langService) : base(dbContext, actor, mapper, appCache)
+        protected SaveDeleteServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache,  IStringLocalizer log) : base(dbContext, actor, mapper, appCache)
         {
-            _lang = langService;
             _loc = log;
         }
 
+        protected string EntityName => _loc[$"Entity.Name.{typeof(T).Name}"];
 
         // ==============================  Delete ==============================
         protected virtual async Task<Result> SaveDelete(TRequest request, CancellationToken token = default)
@@ -29,7 +27,7 @@ namespace LinoVative.Service.Backend.CrudServices
             var entity = await GetById(request.Id);
             
             if (entity is null)
-                AddError(result, x => x.Id!, _lang.EntityNotFound<T>(request.Id));
+                AddError(result, x => x.Id!, _loc["Entity.IdNotFound", EntityName, request.Id]);
 
             if (!result) return result;
 
@@ -75,7 +73,7 @@ namespace LinoVative.Service.Backend.CrudServices
             var result = Result.OK();
 
             if (anyFalseId)
-                AddError(result, x => x.Id!, _lang.EntityNotFound<T>(request.Id));
+                AddError(result, x => x.Id!, _loc["Entity.IdNotFound", EntityName, request.Id]);
 
             await Task.CompletedTask;
             return Result.OK();

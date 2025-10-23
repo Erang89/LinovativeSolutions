@@ -1,4 +1,5 @@
-﻿using LinoVative.Service.Backend.Configurations;
+﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.Configurations;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
@@ -6,6 +7,7 @@ using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
 using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
+using LinoVative.Shared.Dto.CompanyDtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.DatabaseService
@@ -54,6 +56,40 @@ namespace LinoVative.Service.Backend.DatabaseService
         {
             await this.SaveChangesAsync(token);
             return Result.OK();
+        }
+
+        public Type? GetModelType(string modelName)
+        {
+            var type = this.Model
+                .GetEntityTypes()
+                .Where(x => x.ClrType.Name.ToLower() == modelName!.ToLower())
+                .FirstOrDefault()?.ClrType;
+
+            return type;
+        }
+
+        public string? GetTableName(string modelName)
+        {
+            var tableName = this.Model
+                .GetEntityTypes()
+                .Where(x => x.ClrType.Name.ToLower() == modelName.ToLower())
+                .FirstOrDefault()?.GetTableName();
+
+
+            return tableName;
+        }
+
+        public IQueryable GetAll<T>() where T : IDto
+        {
+            var queries = new Dictionary<Type, IQueryable>()
+            {
+                {typeof(CompanyDto), this.Set<Company>().Where(x => !x.IsDeleted)}
+            };
+
+            if (!queries.ContainsKey(typeof(T)))
+                throw new Exception(string.Format("Query is not difined for the {0} yet", typeof(T).Name));
+
+            return queries[typeof(T)];
         }
     }
 }

@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 using LinoVative.Service.Backend.Configurations;
 using MapsterMapper;
+using LinoVative.Web.Api.Extensions;
+using LinoVative.Web.Api.Middlewares;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,38 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddLogging();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.ReferenceHandler = null;
+    })
+    .ConfigureOData(builder.Services);
+
+builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var errors = context.ModelState
+                .Where(kvp => kvp.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,                 // "Name", "Email", etc.
+                    kvp => kvp.Value!.Errors.Select(e => e.ErrorMessage).ToArray()
+                );
+
+            var problem = new
+            {
+                status = StatusCodes.Status400BadRequest,
+                //title = "One or more validation errors occurred.",
+                errors
+            };
+
+            return new BadRequestObjectResult(problem);
+        };
+    });
 
 
 // Register Localizers
@@ -81,7 +116,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseHttpsRedirection();
-
+app.UseMiddleware<ODataMiddleware>();
 app.UseAuthorization();
 
 app.UseRequestLocalization(new RequestLocalizationOptions

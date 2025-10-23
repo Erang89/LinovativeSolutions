@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Linovative.Shared.Cores\Linovative.Shared.Cores.csproj" />
     <ProjectReference Include="..\Linovative.Shared.Interface\Linovative.Shared.Interface.csproj" />
   </ItemGroup>
 

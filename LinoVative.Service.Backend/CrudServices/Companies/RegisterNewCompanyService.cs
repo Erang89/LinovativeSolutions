@@ -1,4 +1,5 @@
-﻿using LinoVative.Service.Backend.AuthServices;
+﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.AuthServices;
 using LinoVative.Service.Backend.Helpers;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Backend.LocalizerServices;
@@ -21,11 +22,9 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
     public class RegisterNewCompanyService : SaveNewServiceBase<Company, RegisterNewCompanyServiceCommand>, IRequestHandler<RegisterNewCompanyServiceCommand, Result>, IScoopService
     {
-        private readonly ILanguageService _lang;
-        public RegisterNewCompanyService(IAppDbContext dbContext, ISystemAdministrator actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, ILanguageService lang) 
+        public RegisterNewCompanyService(IAppDbContext dbContext, ISystemAdministrator actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) 
             : base(dbContext, actor, mapper, appCache, localizer)
         {
-            _lang = lang;
         }
 
         protected override string LocalizerPrefix => nameof(RegisterNewCompanyDto);
@@ -90,11 +89,15 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
         void ValidateData(RegisterNewCompanyServiceCommand request, Result result)
         {
+            var countryDisplayName = _localizer["Entity.Name.Country"];
+            var currencyDisplayName = _localizer["Entity.Name.Currency"];
+            var appTypeZoneDisplayName = _localizer["Entity.Name.AppTimeZone"];
+
             if (!_dbContext.Countries.Any(x => x.Id == request.CountryId))
-                AddError(result, x => x.CountryId!, _lang.EntityNotFound<Country>(request.CountryId));
+                AddError(result, x => x.CountryId!, _localizer["Entity.IdNotFound", countryDisplayName]);
 
             if (!_dbContext.Currencies.Any(x => x.Id == request.CurrencyId))
-                AddError(result, x => x.CurrencyId!, _lang.EntityNotFound<Currency>(request.CurrencyId));
+                AddError(result, x => x.CurrencyId!, _localizer["Entity.IdNotFound", currencyDisplayName]);
 
             var (isPassStrong, passErrors) = PasswordHelper.IsPasswordStrong(request.Password!, _localizer);
             if (!isPassStrong)
@@ -107,7 +110,7 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
                 AddError(result, x => x.EmailAddress!, _localizer["User.EmailAlreadyExist"]);
 
             if (!_dbContext.TimeZones.Any(x => !x.IsDeleted && x.Id == request.TimeZoneId))
-                AddError(result, x => x.TimeZoneId!, _lang.EntityNotFound<AppTimeZone>(request.TimeZoneId));
+                AddError(result, x => x.TimeZoneId!, _localizer["Entity.IdNotFound", appTypeZoneDisplayName]);
 
         }
 
