@@ -26,9 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Shared.Interface
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontent.WebBlazor", "Linovative.Frontent.WebBlazor\Linovative.Frontent.WebBlazor.csproj", "{124B2C99-D20F-47EE-8475-ACD33EAF628C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.Shared", "Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj", "{2AB0DD1D-7B58-4196-A851-18C86FC3FE23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.Shared", "Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj", "{2AB0DD1D-7B58-4196-A851-18C86FC3FE23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.POSComponents", "Linovative.Frontend.POSComponents\Linovative.Frontend.POSComponents.csproj", "{A267FF92-4F92-46A8-88D7-716AD50C561D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.POSComponents", "Linovative.Frontend.POSComponents\Linovative.Frontend.POSComponents.csproj", "{A267FF92-4F92-46A8-88D7-716AD50C561D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
