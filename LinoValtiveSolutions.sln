@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.Shared"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.POSComponents", "Linovative.Frontend.POSComponents\Linovative.Frontend.POSComponents.csproj", "{A267FF92-4F92-46A8-88D7-716AD50C561D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.Services", "Linovative.Frontend.Services\Linovative.Frontend.Services.csproj", "{B93BCDFF-C9C6-45A2-A521-CDECF4A3D549}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.Services", "Linovative.Frontend.Services\Linovative.Frontend.Services.csproj", "{B93BCDFF-C9C6-45A2-A521-CDECF4A3D549}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

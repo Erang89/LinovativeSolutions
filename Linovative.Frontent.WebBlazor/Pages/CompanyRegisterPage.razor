@@ -1,7 +1,7 @@
 ﻿@page "/register/new/company"
 @layout UnAuthorizedLayout
 @using System.Text.RegularExpressions
-@inject IJsonLocalizer _loc
+@inherits LinovativePageBase
 
 
 <MudPaper Class="d-flex justify-center flex-grow-1 gap-4" Elevation="0">
@@ -34,11 +34,12 @@
 </MudPaper>
 
 @code {
-    private string Lang(string key) => _loc[$"{nameof(CompanyRegisterPage)}.{key}"];
     bool success;
     string[] errors = { };
     MudTextField<string> pwField1 = default!;
     MudForm form = default!;
+
+    protected override string LocalizerKey => nameof(CompanyRegisterPage);
 
     private IEnumerable<string> PasswordStrength(string pw)
     {
@@ -72,7 +73,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await _loc.EnsureLoadedAsync(nameof(CompanyRegisterPage));
         await base.OnInitializedAsync();
     }
 }

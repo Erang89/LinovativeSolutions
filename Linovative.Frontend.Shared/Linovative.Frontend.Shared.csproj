@@ -18,7 +18,10 @@
 
   <ItemGroup>
     <Folder Include="Layouts\" />
-    <Folder Include="Pages\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Linovative.Frontend.Services\Linovative.Frontend.Services.csproj" />
   </ItemGroup>
 
 </Project>
