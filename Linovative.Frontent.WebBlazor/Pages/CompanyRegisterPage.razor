@@ -4,34 +4,95 @@
 @inherits LinovativePageBase
 
 
-<MudPaper Class="d-flex justify-center flex-grow-1 gap-4" Elevation="0">
-    <div Style="min-width: 450px; max-width: 600px">
-        <MudText Typo="Typo.h4">@Lang("Title")</MudText>
+<PageTitle>@Lang("Title")</PageTitle>
 
-        <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-            <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" />
-            <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
-                           />
-            <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
-                          InputType="InputType.Password"
-                          Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
-                          RequiredError="Password is required!" />
-            <MudTextField T="string"
-                          Label="Password" HelperText="Repeat the password" InputType="InputType.Password"
-                          Validation="@(new Func<string, string?>(PasswordMatch))" />
-            <div class="d-flex">
-                <MudRadioGroup T="string" Required="true" RequiredError="Account type is required!">
-                    <MudRadio Value="@("Personal")">Personal</MudRadio>
-                    <MudRadio Value="@("Professional")">Professional</MudRadio>
-                </MudRadioGroup>
-            </div>
-            <div class="d-flex align-center justify-space-between">
-                <MudCheckBox T="bool" Required="true" RequiredError="You must agree" Label="I agree!" />
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!success)" Class="ml-auto">Register</MudButton>
-            </div>
-        </MudForm>
+
+<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+
+    <div style="max-width: 900px; margin: auto;">
+
+        <MudGrid Spacing="20">
+
+            <MudItem xs="12" lg="12">
+                <MudText Align="Align.Center" Typo="Typo.h4">@Lang("Title")</MudText>
+            </MudItem>
+
+
+
+            <MudItem xs="12" lg="6">
+
+                <MudText Typo="Typo.h6">@Lang("SubTitle.CompanyDetail"):</MudText>
+                <LinovativeGap />
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("Name")"
+                                     Label="@Label("Name")" />
+                <LinovativeGap />
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("Address")"
+                                     Label="@Label("Address")" />
+                <LinovativeGap />
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("Country")"
+                                     Label="@Label("Country")" />
+                <LinovativeGap />
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("TimeZone")"
+                                     Label="@Label("TimeZone")" />
+                <LinovativeGap />
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("Currency")"
+                                     Label="@Label("Currency")" />
+            </MudItem>
+
+
+
+
+            <MudItem xs="12" lg="6">
+
+                <MudText Typo="Typo.h6">@Lang("SubTitle.UserDetail"):</MudText>
+                <LinovativeGap />
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("NikeName")"
+                                     Label="@Label("NikeName")" />
+                <LinovativeGap />
+
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("EmailAddress")"
+                                     Label="@Label("EmailAddress")" />
+                <LinovativeGap />
+
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("Password")"
+                                     Label="@Label("Password")" />
+                <LinovativeGap />
+
+                <LinovativeInputText IsRequired=true
+                                     RequiredMessage="@Required("ConfirmPassword")"
+                                     Label="@Label("ConfirmPassword")" />
+                <LinovativeGap />
+
+            </MudItem>
+
+
+            <MudItem xs="12" lg="12">
+                <LinovativeButton Size="LinoSize.Large" FullWidth="true" Text="@Text("Register")" />
+                <LinovativeGap />
+                <LinovativeButton Variant="LinoVariant.Text" Size="LinoSize.Large" FullWidth="true" Text="@Text("Login")" />
+            </MudItem>
+
+
+        </MudGrid>
     </div>
-</MudPaper>
+
+</MudForm>
 
 @code {
     bool success;

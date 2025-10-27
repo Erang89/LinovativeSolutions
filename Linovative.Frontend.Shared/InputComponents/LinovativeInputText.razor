@@ -1,0 +1,16 @@
+﻿@inherits LinovativeInputComponentBase<string?>
+
+<MudTextField 
+    @bind-Value="@Value" 
+    Required="IsRequired" 
+    ReadOnly="ReadOnly" 
+    Error="Error"
+    Label="@Label"
+    ErrorText="@ErrorMessage"
+    RequiredError="@RequiredMessage"
+    Variant="@variant"></MudTextField>
+
+@code {
+    MudBlazor.Variant variant => Variant.ToMudBlazorVariant();
+
+}

@@ -11,8 +11,12 @@ namespace Linovative.Frontend.Shared.Pages
         protected abstract string LocalizerKey { get; }
         protected string Lang(string key, params object[] args) 
             => args?.Count() == 0?  
-            JsonLocalizer[$"{LocalizerKey}.key"] 
+            JsonLocalizer[$"{LocalizerKey}.{key}"] 
             : JsonLocalizer.Format(key, args);
+
+        public string Required(string inputName) => Lang($"{inputName}.Required.ErrorMessage"); 
+        public string Label(string inputName) => Lang($"{inputName}.Label"); 
+        public string Text(string inputName) => Lang($"{inputName}.Text"); 
 
         protected override async Task OnInitializedAsync()
         {
