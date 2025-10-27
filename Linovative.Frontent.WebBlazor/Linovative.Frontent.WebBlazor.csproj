@@ -12,11 +12,13 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.12" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.12" PrivateAssets="all" />
 	  <PackageReference Include="MudBlazor" Version="8.13.0" />
+	  <PackageReference Include="Scrutor" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Linovative.Frontend.POSComponents\Linovative.Frontend.POSComponents.csproj" />
 	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.POSComponents.dll" />
+	<ProjectReference Include="..\Linovative.Frontend.Services\Linovative.Frontend.Services.csproj" />
     <ProjectReference Include="..\Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj" />
   </ItemGroup>
 

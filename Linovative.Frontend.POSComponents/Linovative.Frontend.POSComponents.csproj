@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Linovative.Frontend.Services\Linovative.Frontend.Services.csproj" />
     <ProjectReference Include="..\Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj" />
   </ItemGroup>
 
