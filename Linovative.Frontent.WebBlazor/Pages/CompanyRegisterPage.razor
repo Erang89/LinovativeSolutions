@@ -1,16 +1,17 @@
 ﻿@page "/register/new/company"
 @layout UnAuthorizedLayout
 @using System.Text.RegularExpressions
-@using System.ComponentModel.DataAnnotations
+@inject IJsonLocalizer _loc
 
 
 <MudPaper Class="d-flex justify-center flex-grow-1 gap-4" Elevation="0">
     <div Style="min-width: 450px; max-width: 600px">
-        <MudText Typo="Typo.h4">Register</MudText>
+        <MudText Typo="Typo.h4">@Lang("Title")</MudText>
+
         <MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
             <MudTextField T="string" Label="Username" Required="true" RequiredError="User name is required!" />
             <MudTextField T="string" Label="Email" Required="true" RequiredError="Email is required!"
-                          Validation="@(new EmailAddressAttribute() {ErrorMessage = "The email address is invalid"})" />
+                           />
             <MudTextField T="string" Label="Password" HelperText="Choose a strong password" @ref="pwField1"
                           InputType="InputType.Password"
                           Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))" Required="true"
@@ -30,10 +31,10 @@
             </div>
         </MudForm>
     </div>
-    <div Style="min-width: 450px; max-width: 600px">this is test</div>
 </MudPaper>
 
 @code {
+    private string Lang(string key) => _loc[$"{nameof(CompanyRegisterPage)}.{key}"];
     bool success;
     string[] errors = { };
     MudTextField<string> pwField1 = default!;
@@ -41,19 +42,19 @@
 
     private IEnumerable<string> PasswordStrength(string pw)
     {
-        
+
         if (string.IsNullOrWhiteSpace(pw))
         {
             yield return "Password is required!";
             yield break;
         }
-        
+
         if (pw.Length < 8)
             yield return "Password must be at least of length 8";
-        
+
         if (!Regex.IsMatch(pw, @"[A-Z]"))
             yield return "Password must contain at least one capital letter";
-        
+
         if (!Regex.IsMatch(pw, @"[a-z]"))
             yield return "Password must contain at least one lowercase letter";
 
@@ -67,5 +68,11 @@
             return "Passwords don't match";
 
         return null;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _loc.EnsureLoadedAsync(nameof(CompanyRegisterPage));
+        await base.OnInitializedAsync();
     }
 }

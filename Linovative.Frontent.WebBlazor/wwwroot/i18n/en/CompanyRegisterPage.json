@@ -1,0 +1,22 @@
+{
+  "Title": "Register New Company",
+  "Name.Label": "Name",
+  "Address.Label": "Address",
+  "Country.Label": "Country",
+  "TimeZone.Label": "Timezone",
+  "Currency.Label": "Currency",
+  "EmailAddress.Label": "Email Address",
+  "Password.Label": "Password",
+  "ConfirmPassword.Label": "Confirm",
+  "ConfirmPassword.NikeName": "Nikname",
+
+  "Name.Required.ErrorMessage": "Name is required",
+  "Address.Required.ErrorMessage": "Address is required",
+  "Country.Required.ErrorMessage": "Country is required",
+  "TimeZone.Required.ErrorMessage": "Timezone is required",
+  "Currency.Required.ErrorMessage": "Currency is required",
+  "EmailAddress.Required.ErrorMessage": "Email Address",
+  "Password.Required.ErrorMessage": "Password required",
+  "ConfirmPassword.Required.ErrorMessage": "Confirm is required",
+  "Password.NotMatch": "Password don't match"
+}

@@ -4,7 +4,7 @@
     {
         string this[string key] { get; }
         string Format(string key, params object[] args);
-        Task EnsureLoadedAsync(string culture);    // load file JSON untuk culture tsb
-        string CurrentCulture { get; }
+        Task EnsureLoadedAsync(string key);    // load file JSON untuk culture tsb
+        //string CurrentCulture { get; }
     }
 }

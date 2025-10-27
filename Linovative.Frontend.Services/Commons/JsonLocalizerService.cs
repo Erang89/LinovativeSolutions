@@ -1,4 +1,5 @@
 ﻿using Linovative.Frontend.Services.Interfaces;
+using System.Globalization;
 using System.Net.Http.Json;
 using System.Text.Json;
 
@@ -8,8 +9,8 @@ namespace Linovative.Frontend.Services.Commons
     {
         private readonly HttpClient _http;
         private readonly ILanguageProvider _lang;
-        private Dictionary<string, string> _dict = new();
-        public string CurrentCulture { get; private set; } = "";
+        private static Dictionary<string, string> _dict = new();
+        private static List<string> _keys = new();
 
         public JsonLocalizerService(HttpClient http, ILanguageProvider lang)
         {
@@ -17,42 +18,45 @@ namespace Linovative.Frontend.Services.Commons
             _lang = lang;
         }
 
-        public async Task EnsureLoadedAsync(string culture)
+        public async Task EnsureLoadedAsync(string key)
         {
-            if (!string.IsNullOrWhiteSpace(CurrentCulture) && string.Equals(CurrentCulture, culture, StringComparison.OrdinalIgnoreCase))
+            var culture = CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName?? "en";
+
+            if (_keys.Contains(key.ToLower()))
                 return;
 
-            // contoh path: /i18n/id.json
-            var path = $"i18n/{culture}.json";
+            _keys.Add(key.ToLower());
 
-            // options agar case-insensitive
+            var path = $"i18n/{culture}/{key}.json";
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            Action<Dictionary<string, string>> registerLocalizer = (sources) =>
+            {
+                foreach(var l in sources)
+                {
+                    var dicKey = $"{key}.{l.Key}";
+                    if(!_dict.ContainsKey(dicKey))
+                    {
+                        _dict.Add(dicKey, l.Value);
+                    }
+                }
+            };
+
 
             try
             {
-                var json = await _http.GetFromJsonAsync<Dictionary<string, string>>(path, options);
-                _dict = json ?? new Dictionary<string, string>();
-                CurrentCulture = culture;
+                var json = (await _http.GetFromJsonAsync<Dictionary<string, string>>(path, options)) ?? new Dictionary<string, string>();
+                registerLocalizer(json);
             }
             catch
             {
-                // fallback ke default culture dari provider
-                var fallback = _lang.DefaultCulture;
-                if (!string.Equals(culture, fallback, StringComparison.OrdinalIgnoreCase))
-                {
-                    var json = await _http.GetFromJsonAsync<Dictionary<string, string>>($"i18n/{fallback}.json", options);
-                    _dict = json ?? new Dictionary<string, string>();
-                    CurrentCulture = fallback;
-                    return;
-                }
-
-                _dict = new Dictionary<string, string>();
-                CurrentCulture = culture;
+                var json = (await _http.GetFromJsonAsync<Dictionary<string, string>>($"i18n/en/{key}.json", options)) ?? new Dictionary<string, string>();
+                registerLocalizer(json);
+                return;
             }
         }
 
         public string this[string key]
-            => _dict.TryGetValue(key, out var v) ? v : key; // jika tidak ada, kembalikan key
+            => _dict.TryGetValue(key, out var v) ? v : key;
 
         public string Format(string key, params object[] args)
         {
