@@ -38,6 +38,12 @@
 
     public class Response : Response<bool>
     {
+        public Response()
+        {
+            Data = true;
+            IsValid = true;
+        }
+
         public static Response Ok() => new Response
         {
             IsValid = true,

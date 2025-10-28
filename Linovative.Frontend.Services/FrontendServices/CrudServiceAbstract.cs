@@ -31,71 +31,71 @@ namespace Linovative.Frontend.Services.FrontendServices
 
 
         // Create 
-        protected async Task<Response<Guid>> Create(object obj, CancellationToken token)
+        protected async Task<Response> Create(object obj, CancellationToken token)
         {
             try
             {
                 var url = $"{_uriPrefix}/{CREATE}";
 
                 var response = await _httpClient.PostAsJsonAsync(url, obj, token);
-                return await response.ToAppResponse<Guid>(token);
+                return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Response<Guid>.Failed(Messages.GeneralErrorMessage);
+                return Response.Failed(Messages.GeneralErrorMessage);
             }
         }
 
         //Update
-        protected async Task<Response<Guid>> Update(object obj, CancellationToken token)
+        protected async Task<Response> Update(object obj, CancellationToken token)
         {
             try
             {
                 var url = $"{_uriPrefix}/{UPDATE}";
 
                 var response = await _httpClient.PutAsJsonAsync(url, obj, token);
-                return await response.ToAppResponse<Guid>(token);
+                return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Response<Guid>.Failed(Messages.GeneralErrorMessage);
+                return Response.Failed(Messages.GeneralErrorMessage);
             }
         }
 
 
         //Delete
-        protected async Task<Response<Guid>> Delete(Guid id, CancellationToken token)
+        protected async Task<Response> Delete(Guid id, CancellationToken token)
         {
             try
             {
                 var url = $"{_uriPrefix}/{DELETE}";
                 var obj = new BulkDeleteDto() { Ids = new() { id } };
                 var response = await _httpClient.PostAsJsonAsync(url, obj, token);
-                return await response.ToAppResponse<Guid>(token);
+                return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Response<Guid>.Failed(Messages.GeneralErrorMessage);
+                return Response.Failed(Messages.GeneralErrorMessage);
             }
         }
 
 
         //Delete List
-        protected async Task<Response<bool>> Delete(object obj, CancellationToken token)
+        protected async Task<Response> Delete(object obj, CancellationToken token)
         {
             try
             {
                 var url = $"{_uriPrefix}/{DELETE}";
                 var response = await _httpClient.PostAsJsonAsync(url, obj, token);
-                return await response.ToAppResponse<bool>(token);
+                return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return Response<bool>.Failed(Messages.GeneralErrorMessage);
+                return Response.Failed(Messages.GeneralErrorMessage);
             }
         }
 
@@ -291,10 +291,10 @@ namespace Linovative.Frontend.Services.FrontendServices
         }
 
 
-        public new Task<Response<Guid>> Create(object obj, CancellationToken token) => base.Create(obj, token);
-        public new Task<Response<Guid>> Update(object obj, CancellationToken token) => base.Update(obj, token);
-        public new Task<Response<Guid>> Delete(Guid id, CancellationToken token) => base.Delete(id, token);
-        public Task<Response<bool>> Delete(List<Guid> ids, CancellationToken token) => base.Delete(new BulkDeleteDto() { Ids = ids }, token);
+        public new Task<Response> Create(object obj, CancellationToken token) => base.Create(obj, token);
+        public new Task<Response> Update(object obj, CancellationToken token) => base.Update(obj, token);
+        public new Task<Response> Delete(Guid id, CancellationToken token) => base.Delete(id, token);
+        public Task<Response> Delete(List<Guid> ids, CancellationToken token) => base.Delete(new BulkDeleteDto() { Ids = ids }, token);
         public new Task<Response<List<T>>> Get(ODataFilter oDataFilter, CancellationToken token) => base.Get(oDataFilter, token);
         public new Task<Response<List<T>>> Get(ODataFilter oDataFilter, object filterObject, CancellationToken token) => base.Get(oDataFilter, filterObject, token);
         public new Task<Response<List<T>>> Get(CancellationToken token) => base.Get(token);
