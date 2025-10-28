@@ -4,6 +4,8 @@ using LinoVative.Shared.Dto.Commons;
 
 namespace LinoVative.Shared.Dto.ItemDtos
 {
+
+    [LocalizerKey(nameof(ItemCategoryDto))]
     public class ItemCategoryDto : EntityDtoBase
     {
         [LocalizedRequired, UniqueField(EntityTypes.ItemCategory)]

@@ -16,6 +16,14 @@
         Country, 
         CountryRegion,
         Currency,
-        AppTimeZone
+        AppTimeZone,
+
+        PaymentMethod,
+        PaymentMethodGroup,
+        Outlet,
+        OrderType,
+        Shift,
+        OutletArea,
+        BankNote,
     }
 }

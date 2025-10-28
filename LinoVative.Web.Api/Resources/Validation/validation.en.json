@@ -22,7 +22,6 @@
   "Password.MustHasSpecialChar": "Password must contain at least one special character.",
   "User.EmailAlreadyExist": "User with the same email already exist",
 
-
   "RegisterNewCompanyDto.Required.Name.ErrorMessage": "Company name is required",
   "RegisterNewCompanyDto.Required.Address.ErrorMessage": "Address is required",
   "RegisterNewCompanyDto.Required.CountryId.ErrorMessage": "Country is required",
@@ -39,5 +38,46 @@
   "ItemGroupDto.Required.Name.ErrorMessage": "Group name is required",
 
   "ItemCategoryDto.Unique.Name.ErrorMessage": "Category name must be unique. {0} already exist",
-  "ItemCategoryDto.Required.Name.ErrorMessage": "Category name is required"
+  "ItemCategoryDto.Required.Name.ErrorMessage": "Category name is required",
+
+  "BankNoteDto.Required.Note.ErrorMessage": "Banknote is required",
+
+  "PaymentMethodDto.Required.PaymentMethodGroupId.ErrorMessage": "Payment method group is required",
+  "PaymentMethodDto.Required.Name.ErrorMessage": "Name is required",
+  "PaymentMethodDto.Required.Type.ErrorMessage": "Payment method type is required",
+
+  "PaymentMethodGroupDto.Required.Name.ErrorMessage": "Name is required",
+  "PersonDto.Required.FirstName.ErrorMessage": "First name is required",
+  "PersonDto.Required.PhoneNumber.ErrorMessage": "Phone number is required",
+  "PersonDto.Required.Title.ErrorMessage": "Title is required",
+  "ShiftDto.Required.Name.ErrorMessage": "Name is required",
+  "ShiftDto.Required.StartTime.ErrorMessage": "Name is required",
+  "ShiftDto.Required.EndTime.ErrorMessage": "End Time is required",
+  "WarehouseDto.Required.Code.ErrorMessage": "Code is required",
+  "WarehouseDto.Required.Name.ErrorMessage": "Name is required",
+  "OrderTypeDto.Required.Name.ErrorMessage": "Name is required",
+  "OutletAreaDto.Required.Name.ErrorMessage": "Name is required",
+  "OutletAreaDto.Required.AreaId.ErrorMessage": "Area is required",
+  "OutletAreaDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletBankNoteDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletBankNoteDto.Required.BankNoteId.ErrorMessage": "Banknote is required",
+  "OutletDiscountSourceDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletDto.Required.Name.ErrorMessage": "Name is required",
+  "OutletDto.Required.OutletType.ErrorMessage": "Type is required",
+  "OutletItemCategoryDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletItemCategoryDto.Required.ItemCategoryId.ErrorMessage": "Item Category is required",
+  "OutletItemGroupDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletItemGroupDto.Required.ItemGroupId.ErrorMessage": "Item Group is required",
+  "OutletOrderTypeDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletOrderTypeDto.Required.OrderTypeId.ErrorMessage": "Order Type is required",
+  "OutletPaymentMethodDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletPaymentMethodDto.Required.PaymentMethodId.ErrorMessage": "Payment method is required",
+  "OutletShiftDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletShiftDto.Required.ShiftId.ErrorMessage": "Shift is required",
+  "OutletTableDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletTableDto.Required.AreaId.ErrorMessage": "Area is required",
+  "OutletTaxAndServiceDto.Required.OutletId.ErrorMessage": "Outlet is required",
+  "OutletTaxAndServiceDto.Required.OrderTypeId.ErrorMessage": "Order type is required",
+  "OutletUserDto.Required.OutletId.ErrorMessage": "Otlet is required",
+  "OutletUserDto.Required.UserId.ErrorMessage": "User is required"
 }
