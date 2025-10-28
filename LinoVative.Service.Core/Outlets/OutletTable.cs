@@ -1,4 +1,5 @@
 ﻿using LinoVative.Service.Core.EntityBases;
+using LinoVative.Service.Core.Interfaces;
 
 namespace LinoVative.Service.Core.Outlets
 {

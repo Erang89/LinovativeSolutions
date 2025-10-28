@@ -1,13 +1,22 @@
-﻿using LinoVative.Service.Core.Auth;
+﻿using LinoVative.Service.Core.Accountings;
+using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
+using LinoVative.Service.Core.Customers;
 using LinoVative.Service.Core.Items;
+using LinoVative.Service.Core.OrderTypes;
+using LinoVative.Service.Core.Outlets;
+using LinoVative.Service.Core.Payments;
+using LinoVative.Service.Core.People;
+using LinoVative.Service.Core.Shifts;
 using LinoVative.Service.Core.Sources;
+using LinoVative.Service.Core.Warehoses;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.Configurations
 {
     internal static class ModelBuilderConfigs
     {
+       
         public static void ConfigureDatabaseRelationship(this ModelBuilder modelBuilder)
         {
             // Mapping Auth
@@ -64,9 +73,198 @@ namespace LinoVative.Service.Backend.Configurations
             modelBuilder.Entity<Currency>().ToTable("Currencies");
             modelBuilder.Entity<AppTimeZone>().ToTable("TimeZones");
 
+
+            // Person
+            modelBuilder.Entity<Person>(x =>
+            {
+                x.ToTable("People");
+                x.Property(x => x.Firstname).IsRequired();
+                x.Property(x => x.Title).HasColumnType("varchar(10)").IsRequired();
+            });
+
+
+            // Shift
+            modelBuilder.Entity<Shift>(x =>
+            {
+                x.ToTable("Shifts");
+                x.Property(x => x.Name).IsRequired();
+                x.Property(x => x.StartTime).IsRequired();
+                x.Property(x => x.EndTime).IsRequired();
+            });
+
+
+
+            // Warehouse
+            modelBuilder.Entity<Warehouse>(x =>
+            {
+                x.ToTable("Warehouses");
+                x.Property(x => x.Name).IsRequired();
+                x.Property(x => x.Code).IsRequired();
+            });
+
+
+            modelBuilder.ConfigurePaymentEntities();
+            modelBuilder.ConfigureOutletEntities();
+            modelBuilder.ConfigureOrderTypeEntities();
+            modelBuilder.ConfigureCustomerEntities();
+            modelBuilder.ConfigureAccountingEntities();
+
         }
 
 
+        
+        static void ConfigurePaymentEntities(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<BankNote>(x =>
+            {
+                x.ToTable("BankNotes");
+                x.Property(x => x.Note).HasPrecision(14, 2).IsRequired();
+            });
 
+            modelBuilder.Entity<PaymentMethodGroup>(x => {
+                x.ToTable("PaymentMethodGroups");
+                x.Property(x => x.Name).IsRequired();
+            });
+
+            modelBuilder.Entity<PaymentMethod>(x =>
+            {
+                x.ToTable("PaymentMethods");
+                x.Property(x => x.Name).IsRequired();
+                x.Property(x => x.Type).HasColumnType("Varchar(10)");
+                x.Property(x => x.PaymentMethodGroupId).IsRequired();
+                x.HasOne(x => x.PaymentMethodGroup).WithMany(x => x.PaymentMethods).HasForeignKey(x => x.PaymentMethodGroupId);
+            });
+
+        }
+
+        static void ConfigureOutletEntities(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Outlet>(x =>
+            {
+                x.ToTable("Outlets");
+                x.Property(x => x.Name).IsRequired();
+                x.Property(x => x.DefaultServicePercent).HasPrecision(14,2);
+                x.Property(x => x.DefaultTaxPercent).HasPrecision(14,2);
+            });
+
+            modelBuilder.Entity<OutletArea>(x =>
+            {
+                x.ToTable("OutletAreas");
+                x.Property(x => x.Name).IsRequired();
+                x.HasOne(x => x.Outlet).WithMany(x => x.Areas).HasForeignKey(x => x.OutletId).IsRequired();
+            });
+
+
+            modelBuilder.Entity<OutletUser>(x =>
+            {
+                x.ToTable("OutletUsers");
+                x.HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).IsRequired();
+                x.HasOne(x => x.Outlet).WithMany(x => x.Users).HasForeignKey(x => x.OutletId).IsRequired();
+            });
+
+            modelBuilder.Entity<OutletTable>(x =>
+            {
+                x.ToTable("OutletTable");
+                x.Property(x => x.Name).IsRequired();
+                x.HasOne(x => x.Area).WithMany(x => x.Tables).HasForeignKey(x => x.AreaId).IsRequired().OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<OutletShift>(x =>
+            {
+                x.ToTable("OutletShifts");
+                x.HasOne(x => x.Outlet).WithMany(x => x.Shifts).HasForeignKey(x => x.OutletId).IsRequired();
+                x.HasOne(x => x.Shift).WithMany().HasForeignKey(x => x.ShiftId).IsRequired();
+            });
+
+            modelBuilder.Entity<OutletPaymentMethod>(x =>
+            {
+                x.ToTable("OutletPaymentMethods");
+                x.HasOne(x => x.Outlet).WithMany(x => x.PaymentMethods).HasForeignKey(x => x.OutletId).IsRequired();
+                x.HasOne(x => x.PaymentMethod).WithMany().HasForeignKey(x => x.PaymentMethodId).IsRequired();
+            });
+
+            modelBuilder.Entity<OutletOrderType>(x =>
+            {
+                x.ToTable("OutletOrderTypes");
+                x.HasOne(x => x.Outlet).WithMany(x => x.OrderTypes).HasForeignKey(x => x.OutletId).IsRequired();
+                x.HasOne(x => x.OrderType).WithMany().HasForeignKey(x => x.OrderTypeId).IsRequired();
+                x.Property(x => x.TaxPercent).HasPrecision(14,2);
+                x.Property(x => x.ServicePercent).HasPrecision(14,2);
+            });
+
+
+            modelBuilder.Entity<OutletItemGroup>(x =>
+            {
+                x.ToTable("OutletItemGroups");
+                x.HasOne(x => x.Outlet).WithMany(x => x.ItemGroups).HasForeignKey(x => x.OutletId).IsRequired();
+                x.HasOne(x => x.ItemGroup).WithMany().HasForeignKey(x => x.ItemGroupId).IsRequired();
+            });
+
+
+            modelBuilder.Entity<OutletItemCategory>(x =>
+            {
+                x.ToTable("OutletItemCategories");
+                x.HasOne(x => x.Outlet).WithMany(x => x.ItemCategories).HasForeignKey(x => x.OutletId).IsRequired();
+                x.HasOne(x => x.ItemCategory).WithMany().HasForeignKey(x => x.ItemCategoryId).IsRequired();
+            });
+
+            modelBuilder.Entity<OutletBankNote>(x =>
+            {
+                x.ToTable("OutletBankNotes");
+                x.HasOne(x => x.Outlet).WithMany(x => x.BankNotes).HasForeignKey(x => x.OutletId).IsRequired();
+                x.HasOne(x => x.BankNote).WithMany().HasForeignKey(x => x.BankNoteId).IsRequired();
+            });
+
+
+            modelBuilder.Entity<OutletArea>(x =>
+            {
+                x.ToTable("OutletAreas");
+                x.HasOne(x => x.Outlet).WithMany(x => x.Areas).HasForeignKey(x => x.OutletId).IsRequired();
+                x.Property(x => x.Name).IsRequired();
+            });
+        }
+
+        static void ConfigureOrderTypeEntities(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<OrderType>(x =>
+            {
+                x.ToTable("OrderTypes");
+                x.Property(x => x.Name).IsRequired();
+            });
+        }
+
+        static void ConfigureCustomerEntities(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Customer>(x =>
+            {
+                x.ToTable("Customers");
+                x.HasOne(x => x.Person).WithOne().HasForeignKey<Customer>(x => x.PersonId);
+            });
+        }
+
+        static void ConfigureAccountingEntities(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Account>(x =>
+            {
+                x.ToTable("Accounts");
+                x.Property(x => x.Name).IsRequired();
+                x.HasOne(x => x.Parent).WithMany(x => x.Childs).HasForeignKey(x => x.ParentAccountId);
+            });
+
+            modelBuilder.Entity<COAGroup>(x =>
+            {
+                x.ToTable("COAGroup");
+                x.Property(x => x.Name).IsRequired();
+                x.Property(x => x.Type).HasColumnType("Varchar(15)");
+            });
+
+            modelBuilder.Entity<SalesCOAMapping>(x =>
+            {
+                x.ToTable("SalesCoaMappings");
+                x.HasOne(x => x.Outlet).WithMany().HasForeignKey(x => x.OutletId).IsRequired();
+                x.HasOne(x => x.Account).WithMany().HasForeignKey(x => x.AccountId).IsRequired();
+
+            });
+        }
     }
 }
