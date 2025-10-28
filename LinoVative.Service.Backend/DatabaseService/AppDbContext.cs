@@ -3,9 +3,15 @@ using LinoVative.Service.Backend.Configurations;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
+using LinoVative.Service.Core.Customers;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
+using LinoVative.Service.Core.OrderTypes;
+using LinoVative.Service.Core.Outlets;
+using LinoVative.Service.Core.Payments;
+using LinoVative.Service.Core.People;
 using LinoVative.Service.Core.Sources;
+using LinoVative.Service.Core.Warehoses;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.CompanyDtos;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +54,39 @@ namespace LinoVative.Service.Backend.DatabaseService
         public DbSet<CostumePriceTag> ItemPriceTags { get; set; }
         public DbSet<ItemCostumePrice> ItemCostumePrices { get; set; }
 
+
+        // Customers DbSets
+        public DbSet<Customer> Customers { get; set; }
+
+        // Order Type DbSets
+        public DbSet<OrderType> OrderTypes { get; set; }
+
+
+        // Outlet DbSets
+        public DbSet<Outlet> Outlets { get; set; }
+        public DbSet<OutletArea> OutletAreas { get; set; }
+        public DbSet<OutletBankNote> OutletBankNotes { get; set; }
+        public DbSet<OutletItemCategory> OutletItemCategories { get; set; }
+        public DbSet<OutletItemGroup> OutletItemGroups { get; set; }
+        public DbSet<OutletOrderType> OutletOrderTypes { get; set; }
+        public DbSet<OutletPaymentMethod> OutletPaymentMethods { get; set; }
+        public DbSet<OutletShift> OutletShifts { get; set; }
+        public DbSet<OutletTable> OutletTables { get; set; }
+        public DbSet<OutletUser> OutletUsers { get; set; }
+
+
+        // DbSet Payments
+        public DbSet<BankNote> BankNotes { get; set; }
+        public DbSet<PaymentMethod> PaymentMethods { get; set; }
+        public DbSet<PaymentMethodGroup> PaymentMethodGroups { get; set; }
+
+
+        // DbSet Peoples
+        public DbSet<Person> People { get; set; }
+
+
+        // DbSet WhareHouses
+        public DbSet<Warehouse> WareHouses { get; set; }
 
         // Companies DbSet
         public DbSet<Company> Companies { get; set; }
