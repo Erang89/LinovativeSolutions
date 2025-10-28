@@ -1,6 +1,7 @@
 ﻿@page "/register/new/company"
 @layout UnAuthorizedLayout
 @using System.Text.RegularExpressions
+@using LinoVative.Shared.Dto
 @inherits LinovativePageBase
 
 
@@ -25,11 +26,12 @@
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true
+                                     @bind-Value="@dto.Name"
                                      RequiredMessage="@Required("Name")"
                                      Label="@Label("Name")" />
                 <LinovativeGap />
 
-                <LinovativeInputText IsRequired=true
+                <LinovativeInputText IsRequired=true                    
                                      RequiredMessage="@Required("Address")"
                                      Label="@Label("Address")" />
                 <LinovativeGap />
@@ -99,7 +101,7 @@
     string[] errors = { };
     MudTextField<string> pwField1 = default!;
     MudForm form = default!;
-
+    private RegisterNewCompanyDto dto = new();
     protected override string LocalizerKey => nameof(CompanyRegisterPage);
 
     private IEnumerable<string> PasswordStrength(string pw)
