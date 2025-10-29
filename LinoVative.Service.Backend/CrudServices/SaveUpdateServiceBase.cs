@@ -62,6 +62,15 @@ namespace LinoVative.Service.Backend.CrudServices
             if (entity is null)
                 AddError(validate, x => x.Id!, _localizer["Entity.IdNotFound", EntityName, request.Id]);
 
+
+            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
+            {
+                var companyEntity = (IsEntityManageByCompany)entity!;
+
+                if(companyEntity.CompanyId != _actor.CompanyId)
+                    AddError(validate, x => x.Id!, _localizer["Entity.IdNotFound", EntityName, request.Id]);
+            }
+
             return validate;
         }
 
