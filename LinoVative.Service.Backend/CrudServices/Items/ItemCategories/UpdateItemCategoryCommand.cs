@@ -1,6 +1,5 @@
 ﻿using Linovative.Shared.Interface;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto;
@@ -21,7 +20,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategories
         {
         }
 
-        protected override string LocalizerPrefix => nameof(ItemCategoryDto);
 
         public Task<Result> Handle(UpdateItemCategoryCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
     }

@@ -30,6 +30,11 @@ namespace LinoVative.Web.Api.Extensions
             {
                 options.TokenValidationParameters = GenerateTokenValidatorParameter(jwtSettings!);
                 options.Events = new JwtBearerEvents { OnTokenValidated = context => ValidateContext(context, AppSchemeNames.MainAPIScheme) };
+            })
+            .AddJwtBearer(AppSchemeNames.ManagementAPI, options =>
+            {
+                options.TokenValidationParameters = GenerateTokenValidatorParameter(jwtSettings!);
+                options.Events = new JwtBearerEvents { OnTokenValidated = context => ValidateContext(context, AppSchemeNames.ManagementAPI) };
             });
 
             services.ConfigureRole();
@@ -100,8 +105,19 @@ namespace LinoVative.Web.Api.Extensions
                 //var priviligeClaims = identity.FindAll(AdditionalClaimTypes.Priviliges).Select(c => c.Value).ToList();
 
                 if(schemeName == AppSchemeNames.MainAPIScheme && companyId is null)
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     context.Fail("Invalid identity. Token does not contain required scope claims.");
+                    return Task.CompletedTask;
+                }
 
+
+                if (schemeName == AppSchemeNames.ManagementAPI)
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    context.Fail("Invalid identity. Management Scheme is not configured yet.");
+                    return Task.CompletedTask;
+                }
 
                 //if (scopeClaims == null || scopeClaims.Length == 0 || !scopeClaims.Any(x => x.ToLower() == serviceId.ToString().ToLower()))
                 //{

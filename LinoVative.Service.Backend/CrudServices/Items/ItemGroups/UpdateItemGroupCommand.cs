@@ -21,7 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemGroups
         {
         }
 
-        protected override string LocalizerPrefix => nameof(ItemGroupDto);
 
         public Task<Result> Handle(UpdateItemGroupCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
 

@@ -1,6 +1,5 @@
 ﻿using Linovative.Shared.Interface;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto;
@@ -22,7 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Units
           
         }
 
-        protected override string LocalizerPrefix => nameof(ItemUnitDto);
 
         public Task<Result> Handle(CreateItemUnitCommand request, CancellationToken ct) => base.SaveNew(request, ct);
 

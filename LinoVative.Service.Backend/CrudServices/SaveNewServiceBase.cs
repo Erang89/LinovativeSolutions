@@ -5,9 +5,6 @@ using MapsterMapper;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
 using LinoVative.Shared.Dto;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using LinoVative.Service.Backend.LocalizerServices;
-using Microsoft.AspNetCore.Mvc;
 using LinoVative.Service.Backend.Extensions;
 
 namespace LinoVative.Service.Backend.CrudServices
@@ -15,7 +12,6 @@ namespace LinoVative.Service.Backend.CrudServices
     public abstract class SaveNewServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class
     {
         protected IStringLocalizer _localizer;
-        protected abstract string LocalizerPrefix { get; }
         protected SaveNewServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) 
             : base(dbContext, actor, mapper, appCache)
         { 

@@ -1,6 +1,7 @@
 ﻿using LinoVative.Service.Backend.AuthServices;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
+using LinoVative.Web.Api.Areas.Admin.Controllers;
 using LinoVative.Web.Api.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,18 +11,10 @@ namespace LinoVative.Web.Api.Areas.Auth
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : MediatorControllerBase
     {
-        protected const string LOG_ERRROR_MESSAGE = "An error occurred in {Route}";
-        protected const string DISPLAY_ERROR_MESSAGE = "An error occurred while handling {routeName}. Please contact your administrator";
-
-        private readonly IMediator _mediator;
-        private readonly ILogger _logger;
-        public AuthController(IMediator mediator, ILogger<AuthController> logger)
+        public AuthController(IMediator mediator, ILogger<AuthController> logger) : base(mediator, logger)
         {
-            _mediator = mediator;
-            _logger = logger;
-
         }
 
 

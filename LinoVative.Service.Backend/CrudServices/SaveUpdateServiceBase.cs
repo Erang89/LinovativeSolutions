@@ -1,11 +1,8 @@
 ﻿using Linovative.Shared.Interface;
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Interfaces;
-using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
-using Mapster.Utils;
 using MapsterMapper;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
@@ -15,7 +12,6 @@ namespace LinoVative.Service.Backend.CrudServices
     public abstract class SaveUpdateServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class, IEntityId
     {
         protected readonly IStringLocalizer _localizer;
-        protected abstract string LocalizerPrefix { get; }
         protected SaveUpdateServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer stringLocalizer) : base(dbContext, actor, mapper, appCache)
         { 
             _localizer = stringLocalizer;

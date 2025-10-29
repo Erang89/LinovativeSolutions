@@ -30,7 +30,6 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
             _httpContext = httpContextAccessor;
         }
 
-        protected override string LocalizerPrefix => nameof(RegisterNewCompanyDto);
 
         public Task<Result> Handle(RegisterNewCompanyServiceCommand req, CancellationToken token) => base.SaveNew(req, token);
 

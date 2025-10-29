@@ -6,17 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers
 {
+
+
     [Route("api/[controller]")]
     [ApiController]
     [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]
-    [Authorize(AuthenticationSchemes = AppSchemeNames.MainAPIScheme)]
-    public abstract class APIBaseController : ControllerBase
+    public abstract class MediatorControllerBase : ControllerBase
     {
         protected readonly IMediator _mediator;
         protected readonly ILogger _logger;
 
-        public APIBaseController(IMediator mediator, ILogger logger)
+        public MediatorControllerBase(IMediator mediator, ILogger logger)
         {
             _mediator = mediator;
             _logger = logger;
@@ -28,6 +29,16 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers
         protected const string UPDATE = "Update";
         protected const string DELETE = "Delete/{id}";
         protected const string GETALL = "Getall";
+    }
+
+
+    [Authorize(AuthenticationSchemes = AppSchemeNames.MainAPIScheme)]
+    public abstract class APIBaseController : MediatorControllerBase
+    {
+        public APIBaseController(IMediator mediator, ILogger logger) : base(mediator, logger) 
+        {
+
+        }
 
     }
 }

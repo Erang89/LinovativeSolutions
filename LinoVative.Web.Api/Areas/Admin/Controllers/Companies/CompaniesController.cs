@@ -9,12 +9,12 @@ using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
 {
-    public class CompaniesController : APIBaseController
+    public class CompaniesController : MediatorControllerBase
     {
 
-        public CompaniesController(IMediator mediator, ILogger<CompaniesController> logger)
-            : base(mediator, logger) 
-        { }
+        public CompaniesController(IMediator mediator, ILogger<CompaniesController> logger) : base(mediator, logger)
+        { 
+        }
 
 
         [HttpPost]

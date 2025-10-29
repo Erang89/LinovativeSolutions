@@ -1,12 +1,8 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 
 namespace LinoVative.Shared.Dto.Outlets
 {
-
-
     [LocalizerKey(nameof(OutletDto))]
     public class OutletDto : EntityDtoBase
     {

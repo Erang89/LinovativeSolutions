@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategories
       
         }
 
-        protected override string LocalizerPrefix => nameof(ItemGroupDto);
-
         public Task<Result> Handle(CreateItemCategoryCommand request, CancellationToken ct) => base.SaveNew(request, ct);
 
     }
