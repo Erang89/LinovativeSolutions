@@ -26,7 +26,13 @@ namespace LinoVative.Service.Backend.Configurations
             });
             modelBuilder.Entity<AppUserApplication>().ToTable("UserApplications");
             modelBuilder.Entity<AppUserCompany>().ToTable("UserCompanies");
-
+            modelBuilder.Entity<RefreshToken>(e =>
+            {
+                e.ToTable("RefreshTokens");
+                e.Property(x => x.Token).IsRequired();
+                e.Property(x => x.IPAddressLogin).IsRequired();
+                e.Property(x => x.UserId).IsRequired();
+            });
 
             // Company Mappings
             modelBuilder.Entity<Company>(x =>

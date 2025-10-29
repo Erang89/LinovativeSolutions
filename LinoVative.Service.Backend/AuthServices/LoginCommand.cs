@@ -1,6 +1,4 @@
-﻿using IdentityModel;
-using LinoVative.Service.Backend.Constans;
-using LinoVative.Service.Backend.Helpers;
+﻿using LinoVative.Service.Backend.Helpers;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Interfaces;
@@ -9,16 +7,13 @@ using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.Auth;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace LinoVative.Service.Backend.AuthServices
 {
     public class LoginCommand : LoginDto, IRequest<Result>
     {
-
+        public string? RequestIPAddress { get; private set; }
+        public void SetRequestIP(string? requestIP) => RequestIPAddress = requestIP;
     }
 
     public class LoginHandlerService : IRequestHandler<LoginCommand, Result>
@@ -41,7 +36,7 @@ namespace LinoVative.Service.Backend.AuthServices
             var validate = await Validate(request, ct);
             if (!validate) return validate;
 
-            var response = JwtTokeProvider.Generate(_user!, _jwtSettings, _user!.DefaultCompanyId);
+            var response = await JwtTokeProvider.Generate(_user!, _jwtSettings, _user!.DefaultCompanyId, request.RequestIPAddress!, _dbContext);
 
             return Result.OK(response);
         }

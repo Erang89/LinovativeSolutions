@@ -5,7 +5,6 @@ using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Settings;
 using LinoVative.Shared.Dto;
 using Microsoft.Extensions.Options;
-using System.Globalization;
 
 namespace LinoVative.Service.Backend.AuthServices
 {
@@ -13,6 +12,8 @@ namespace LinoVative.Service.Backend.AuthServices
     {
         public bool SetAsDefaultCompany { get; set; }
         public Guid CompanyId { get; set; }
+        public string? RequestIPAddress { get; private set; }
+        public void SetRequestIP(string? requestIP) => RequestIPAddress = requestIP;
     }
 
 
@@ -45,7 +46,7 @@ namespace LinoVative.Service.Backend.AuthServices
                 await _dbContext.SaveAsync(_actor, ct);
             }
 
-            var jwt = JwtTokeProvider.Generate(user!, _jwtSettings, request.CompanyId);
+            var jwt = await JwtTokeProvider.Generate(user!, _jwtSettings, request.CompanyId, request.RequestIPAddress!, _dbContext);
             return Result.OK(jwt);
         }
 

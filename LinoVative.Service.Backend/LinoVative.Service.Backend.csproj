@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Bases\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

@@ -22,6 +22,7 @@ namespace LinoVative.Service.Backend.Interfaces
         public DbSet<AppUser> Users { get; set; }
         public DbSet<AppUserCompany> UserCompanies { get; set; }
         public DbSet<AppUserApplication> UserApplications { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
 
         // Source DbSets

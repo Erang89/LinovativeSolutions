@@ -1,0 +1,4 @@
+{
+  "CompanyId.NotFound" :  "Company with ID: {0} was not found.",
+  "Token.NotFound" :  "Token is invalid."
+}

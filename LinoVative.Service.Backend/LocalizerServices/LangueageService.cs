@@ -11,7 +11,7 @@ namespace LinoVative.Service.Backend.LocalizerServices
 
         public string this[string key] => !_dics.ContainsKey(key)? key : _dics[key];
 
-        public async Task EnsureLoad(string key)
+        public void EnsureLoad(string key)
         {
             if(_loadedKey.Contains(key.ToLower()))
             {
@@ -42,9 +42,6 @@ namespace LinoVative.Service.Backend.LocalizerServices
             {
                 throw new FileNotFoundException($"Message file not found: {pathToLoad}");
             }
-
-            await Task.CompletedTask;
-            throw new NotImplementedException();
         }
 
         public string Format(string key, object value)
@@ -54,5 +51,8 @@ namespace LinoVative.Service.Backend.LocalizerServices
 
             return string.Format(_dics["key"], value);
         }
+
+        readonly AvailableLanguageKeys avaKeys = new AvailableLanguageKeys();
+        public void EnsureLoad(Func<AvailableLanguageKeys, string> key) => EnsureLoad(key(avaKeys));
     }
 }

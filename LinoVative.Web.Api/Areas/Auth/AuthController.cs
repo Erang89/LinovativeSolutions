@@ -24,6 +24,7 @@ namespace LinoVative.Web.Api.Areas.Auth
         {
             try
             {
+                c.SetRequestIP(GetClientIp());
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
@@ -45,6 +46,7 @@ namespace LinoVative.Web.Api.Areas.Auth
         {
             try
             {
+                c.SetRequestIP(GetClientIp());
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
@@ -56,6 +58,34 @@ namespace LinoVative.Web.Api.Areas.Auth
                 responseObject.SetTraceId(HttpContext.TraceIdentifier);
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }
+        }
+
+
+        [HttpPost]
+        [Route("Jwt/Refresh")]
+        [Authorize(AuthenticationSchemes = AppSchemeNames.CommonApiScheme)]
+        public async Task<IActionResult> JwtRefresh([FromBody] RefreshTokenCommand c, CancellationToken token)
+        {
+            try
+            {
+                c.SetRequestIP(GetClientIp());
+                var result = await _mediator.Send(c, token);
+                return StatusCode((int)result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
+        }
+
+        string GetClientIp()
+        {
+            var remoteIp = HttpContext.Connection.RemoteIpAddress;
+            return remoteIp?.MapToIPv4().ToString() ?? "0.0.0.0";
         }
     }
 }
