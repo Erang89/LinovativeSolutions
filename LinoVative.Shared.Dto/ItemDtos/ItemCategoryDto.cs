@@ -13,7 +13,7 @@ namespace LinoVative.Shared.Dto.ItemDtos
         public string? Description { get; set; }
 
         [LocalizedRequired, EntityID(EntityTypes.ItemGroup)]
-        public Guid? ItemGroupId { get; set; }
+        public Guid? GroupId { get; set; }
     }
 
     public class ItemCategoryViewDto : ItemCategoryDto {

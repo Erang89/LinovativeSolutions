@@ -9,7 +9,7 @@ using Microsoft.Extensions.Localization;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategories
 {
-    public class CreateItemCategoryCommand : ItemGroupDto, IRequest<Result>
+    public class CreateItemCategoryCommand : ItemCategoryDto, IRequest<Result>
     {
 
     }
@@ -22,6 +22,18 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategories
         }
 
         public Task<Result> Handle(CreateItemCategoryCommand request, CancellationToken ct) => base.SaveNew(request, ct);
+
+        protected override async Task<Result> Validate(CreateItemCategoryCommand request, CancellationToken token)
+        {
+            var validate  = await base.Validate(request, token);
+            if (!validate) return validate;
+
+            var isExist = GetAll().Where(x => x.GroupId == request.GroupId && x.Name == request.Name).Any();
+            if (isExist) Result.Failed(_localizer[$"ItemCategoryDto.Unique.Name.ErrorMessage", request.Name!]);
+
+
+            return Result.OK();
+        }
 
     }
 }

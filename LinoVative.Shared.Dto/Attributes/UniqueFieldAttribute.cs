@@ -44,7 +44,7 @@ namespace LinoVative.Shared.Dto.Attributes
             }
 
             var fieldName = FieldName??validationContext.MemberName;
-            if(value is not null && !uniqueValidator.IsValid(EntityType, id, fieldName!, value!, actor))
+            if(value is not null && !uniqueValidator.IsValid(EntityType, id, fieldName!, value!, actor, instance))
             {
                 var classType = validationContext.ObjectType;
                 var className = validationContext.ObjectType.Name;

@@ -46,7 +46,7 @@ namespace LinoVative.Service.Backend.CrudServices
 
             await BeforeSaveUpdate(request, entity, token);
             
-            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
+            if(entity is not null && typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
             {
                 ((IsEntityManageByCompany)entity!).CompanyId = _actor.CompanyId;
             }
@@ -63,7 +63,7 @@ namespace LinoVative.Service.Backend.CrudServices
                 AddError(validate, x => x.Id!, _localizer["Entity.IdNotFound", EntityName, request.Id]);
 
 
-            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
+            if (entity is not null && typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
             {
                 var companyEntity = (IsEntityManageByCompany)entity!;
 

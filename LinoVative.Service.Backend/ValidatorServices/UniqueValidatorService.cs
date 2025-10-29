@@ -2,6 +2,8 @@
 using Linovative.Shared.Interface.Enums;
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
+using LinoVative.Service.Core.Items;
+using LinoVative.Shared.Dto.ItemDtos;
 
 namespace LinoVative.Service.Backend.ValidatorServices
 {
@@ -13,27 +15,35 @@ namespace LinoVative.Service.Backend.ValidatorServices
             _appDbContext = dbContext;
         }
 
-        public bool IsValid(EntityTypes? entityType, Guid id, string fieldName, object fieldValue, IActor actor)
+        Dictionary<EntityTypes, IQueryable>? _queryDic { get; set; } = null;
+
+        public bool IsValid(EntityTypes? entityType, Guid id, string fieldName, object fieldValue, IActor actor, object dto)
         {
-            if(entityType == null) 
+            if (entityType == null)
                 throw new ArgumentNullException($"{nameof(entityType)} is null");
 
-            var queryDictionary = new Dictionary<EntityTypes, IQueryable>()
-            {
-                {EntityTypes.ItemUnit, _appDbContext.ItemUnits.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
-                {EntityTypes.ItemCategory, _appDbContext.ItemCategories.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
-                {EntityTypes.ItemGroup, _appDbContext.ItemGroups.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
-                {EntityTypes.Item, _appDbContext.Items.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
-                {EntityTypes.Currency, _appDbContext.Currencies.Where(x => x.Id != id && !x.IsDeleted )},
-                {EntityTypes.AppTimeZone, _appDbContext.TimeZones.Where(x => x.Id != id && !x.IsDeleted) },
-                {EntityTypes.Company, _appDbContext.Companies.Where(x => x.Id != id && !x.IsDeleted) },
-                {EntityTypes.CountryRegion, _appDbContext.CountryRegions.Where(x => x.Id != id && !x.IsDeleted) },
-            };
+            if (_queryDic is null)
+                _queryDic = new Dictionary<EntityTypes, IQueryable>()
+                {
+                    {EntityTypes.ItemUnit, _appDbContext.ItemUnits.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.ItemCategory, _appDbContext.ItemCategories.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.ItemGroup, _appDbContext.ItemGroups.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.Item, _appDbContext.Items.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.Currency, _appDbContext.Currencies.Where(x => x.Id != id && !x.IsDeleted )},
+                    {EntityTypes.AppTimeZone, _appDbContext.TimeZones.Where(x => x.Id != id && !x.IsDeleted) },
+                    {EntityTypes.Company, _appDbContext.Companies.Where(x => x.Id != id && !x.IsDeleted) },
+                    {EntityTypes.CountryRegion, _appDbContext.CountryRegions.Where(x => x.Id != id && !x.IsDeleted) },
+                };
 
-            if(!queryDictionary.ContainsKey(entityType.Value))
+            if (!_queryDic.ContainsKey(entityType.Value))
                 throw new NotImplementedException($"{entityType} is not in the dictionary yet");
 
-            var query = queryDictionary[entityType.Value]!.WhereEquals(fieldName, fieldValue);
+            var query = _queryDic[entityType.Value]!.WhereEquals(fieldName, fieldValue);
+
+            
+            if (dto is ItemCategoryDto categoryDto)
+                query = ((IQueryable<ItemCategory>)query).Where(x => x.GroupId == categoryDto.GroupId);
+
 
             return !query.AnyDynamic();
         }

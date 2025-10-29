@@ -59,6 +59,7 @@
 
   "ItemCategoryDto.Unique.Name.ErrorMessage": "Category name must be unique. '{0}' already exist",
   "ItemCategoryDto.Required.Name.ErrorMessage": "Category name is required",
+  "ItemCategoryDto.Required.GroupId.ErrorMessage": "Group is required",
 
   "BankNoteDto.Required.Note.ErrorMessage": "Banknote is required",
 
