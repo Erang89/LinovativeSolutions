@@ -25,5 +25,8 @@
         Shift,
         OutletArea,
         BankNote,
+
+        Account,
+        COAGroup,
     }
 }
