@@ -106,5 +106,8 @@
   "COAGroupDto.Required.Name.ErrorMessage": "Name is required",
   "COAGroupDto.Required.Type.ErrorMessage": "Type is required",
   "SalesCOAMappingDto.Required.OutletId.ErrorMessage": "Outlet is required",
-  "SalesCOAMappingDto.Required.AccountId.ErrorMessage": "Account is required"
+  "SalesCOAMappingDto.Required.AccountId.ErrorMessage": "Account is required",
+  "LoginDto.Required.UserName.ErrorMessage": "UserName is required",
+  "LoginDto.Required.Password.ErrorMessage": "Password is required",
+  "LoginDto.Validate.LoginFailed": "Incorect username or password"
 }

@@ -1,6 +1,5 @@
 ﻿using Linovative.Shared.Interface;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto;

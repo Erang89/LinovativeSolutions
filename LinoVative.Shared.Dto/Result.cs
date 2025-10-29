@@ -49,7 +49,7 @@ namespace LinoVative.Shared.Dto
 
         public static Result OK(object? data = default, string? message = default, string? title = default)
         {
-            return new Result() { Message = message, Title = title };
+            return new Result() { Message = message, Title = title, Data = data };
         }
 
         public static Result ListOfData(object data, int recordCount)

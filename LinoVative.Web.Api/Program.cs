@@ -15,6 +15,7 @@ using MapsterMapper;
 using LinoVative.Web.Api.Extensions;
 using LinoVative.Web.Api.Middlewares;
 using Microsoft.AspNetCore.Mvc;
+using LinoVative.Service.Core.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +36,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = null;
     })
     .ConfigureOData(builder.Services);
+
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
 builder.Services.AddControllers()
     .ConfigureApiBehaviorOptions(options =>
