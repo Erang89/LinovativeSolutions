@@ -1,4 +1,6 @@
 ﻿using LinoVative.Service.Core.Interfaces;
+using LinoVative.Web.Api.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ODController = Microsoft.AspNetCore.OData.Routing.Controllers;
 
@@ -6,7 +8,8 @@ using ODController = Microsoft.AspNetCore.OData.Routing.Controllers;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
     [Controller]
-    public class ODataControllerBaseController : ODController.ODataController
+    [Authorize(AuthenticationSchemes = AppSchemeNames.MainAPIScheme)]
+    public class MainApiODataBaseController : ODController.ODataController
     {
         private IMediator? mediator;
         protected IMediator _mediator => mediator ??= HttpContext.RequestServices.GetService<IMediator>()!;

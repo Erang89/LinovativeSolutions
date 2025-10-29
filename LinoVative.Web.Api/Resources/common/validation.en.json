@@ -1,7 +1,7 @@
 {
   "Operation.UnAuthorized.Title": "Unauthorized Operation",
   "Operation.UnAuthorized.Message": "You don't have permission for operation",
-  "Entity.IdNotFound": "{0} with ID {1} was not found in the system",
+  "Entity.IdNotFound": "{0} with ID '{1}' was not found in the system",
   "Entity.Name.Company": "Company",
   "Entity.Name.User": "User",
   "Entity.Name.Currency": "Currency",
@@ -51,13 +51,13 @@
   "RegisterNewCompanyDto.Required.Password.ErrorMessage": "Password is required",
   "RegisterNewCompanyDto.Required.NickName.ErrorMessage": "Nikename is required",
 
-  "ItemUnitDto.Unique.Name.ErrorMessage": "Unit name must be unique. {0} already exist",
+  "ItemUnitDto.Unique.Name.ErrorMessage": "Unit name must be unique. '{0}' already exist",
   "ItemUnitDto.Required.Name.ErrorMessage": "Unit name is required",
 
-  "ItemGroupDto.Unique.Name.ErrorMessage": "Group name must be unique. {0} already exist",
+  "ItemGroupDto.Unique.Name.ErrorMessage": "Group name must be unique. '{0}' already exist",
   "ItemGroupDto.Required.Name.ErrorMessage": "Group name is required",
 
-  "ItemCategoryDto.Unique.Name.ErrorMessage": "Category name must be unique. {0} already exist",
+  "ItemCategoryDto.Unique.Name.ErrorMessage": "Category name must be unique. '{0}' already exist",
   "ItemCategoryDto.Required.Name.ErrorMessage": "Category name is required",
 
   "BankNoteDto.Required.Note.ErrorMessage": "Banknote is required",
