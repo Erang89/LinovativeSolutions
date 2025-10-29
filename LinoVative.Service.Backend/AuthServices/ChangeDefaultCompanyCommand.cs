@@ -37,13 +37,15 @@ namespace LinoVative.Service.Backend.AuthServices
             var validate = await Validate(request, ct);
             if (!validate) return validate;
 
-            var user = _dbContext.Users.FirstOrDefault(x => x.Id == _actor.UserId);
-            user!.DefaultCompanyId = request.CompanyId;
+            var user = _dbContext.Users.FirstOrDefault(x => x.Id == _actor.UserId)!;
 
-            var jwt = JwtTokeProvider.Generate(user, _jwtSettings, request.CompanyId);
+            if (request.SetAsDefaultCompany)
+            {
+                user.DefaultCompanyId = request.CompanyId;
+                await _dbContext.SaveAsync(_actor, ct);
+            }
 
-            await _dbContext.SaveAsync(_actor, ct);
-
+            var jwt = JwtTokeProvider.Generate(user!, _jwtSettings, request.CompanyId);
             return Result.OK(jwt);
         }
 
