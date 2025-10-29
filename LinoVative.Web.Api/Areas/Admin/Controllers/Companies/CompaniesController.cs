@@ -20,6 +20,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
         [HttpPost]
         [Route("Register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [AllowAnonymous]
         public async Task<IActionResult> RegisterNew(RegisterNewCompanyServiceCommand c, CancellationToken token)
         {
             try
@@ -38,10 +39,10 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
         }
 
 
-        [Authorize(AuthenticationSchemes = AppSchemeNames.CommonApiScheme)]
         [HttpPost]
         [Route(GETALL)]
         [ProducesResponseType(typeof(APIListResponse<CompanyDto>), StatusCodes.Status200OK)]
+        [Authorize(AuthenticationSchemes = AppSchemeNames.ManagementAPI)]
         public async Task<IActionResult> GetAll(GetAllCompanyCommand c, CancellationToken token)
         {
             try
@@ -59,11 +60,10 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
             }
         }
 
-
-        [Authorize(AuthenticationSchemes = AppSchemeNames.CommonApiScheme)]
         [HttpPost]
         [Route("MyCompanies")]
         [ProducesResponseType(typeof(APIListResponse<CompanyDto>), StatusCodes.Status200OK)]
+        [Authorize(AuthenticationSchemes = AppSchemeNames.CommonApiScheme)]
         public async Task<IActionResult> MyCompanies(GetAllMyCompaniesCommand c, CancellationToken token)
         {
             try

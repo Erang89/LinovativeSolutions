@@ -1,5 +1,7 @@
 ﻿using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
+using LinoVative.Web.Api.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers
@@ -8,6 +10,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers
     [ApiController]
     [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]
+    [Authorize(AuthenticationSchemes = AppSchemeNames.MainAPIScheme)]
     public abstract class APIBaseController : ControllerBase
     {
         protected readonly IMediator _mediator;

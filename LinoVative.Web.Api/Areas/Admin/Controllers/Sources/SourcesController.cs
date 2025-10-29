@@ -2,13 +2,16 @@
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.Commons;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Sources
 {
+    [Route("public/api/[controller]")]
     [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
     public class SourcesController : APIBaseController
     {
         public SourcesController(IMediator mediator, ILogger<SourcesController> logger)

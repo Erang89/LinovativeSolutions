@@ -8,7 +8,7 @@ using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Auth
 {
-    [Route("public/api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
