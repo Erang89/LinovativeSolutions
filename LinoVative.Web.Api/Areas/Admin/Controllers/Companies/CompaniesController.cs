@@ -59,5 +59,27 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
             }
         }
 
+
+        [Authorize(AuthenticationSchemes = AppSchemeNames.CommonApiScheme)]
+        [HttpPost]
+        [Route("MyCompanies")]
+        [ProducesResponseType(typeof(APIListResponse<CompanyDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> MyCompanies(GetAllMyCompaniesCommand c, CancellationToken token)
+        {
+            try
+            {
+                var result = await _mediator.Send(c, token);
+                return StatusCode((int)result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
+        }
+
     }
 }
