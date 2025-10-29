@@ -25,8 +25,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddLogging();
+builder.Services.AddAuthenticationConfiguration(builder.Configuration);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -119,8 +121,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 app.UseHttpsRedirection();
-app.UseMiddleware<ODataMiddleware>();
 app.UseAuthorization();
+app.UseMiddleware<ODataMiddleware>();
 
 app.UseRequestLocalization(new RequestLocalizationOptions
 {

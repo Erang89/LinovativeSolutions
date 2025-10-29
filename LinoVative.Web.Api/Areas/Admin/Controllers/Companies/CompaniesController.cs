@@ -2,6 +2,8 @@
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.CompanyDtos;
+using LinoVative.Web.Api.Constants;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -36,6 +38,8 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
         }
 
 
+
+        [Authorize(AuthenticationSchemes = AuthenticationSchemeName.MainAPIScheme)]
         [HttpPost]
         [Route(GETALL)]
         [ProducesResponseType(typeof(APIListResponse<CompanyDto>), StatusCodes.Status200OK)]

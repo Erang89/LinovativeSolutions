@@ -9,6 +9,7 @@ using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
 using MapsterMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
 
 namespace LinoVative.Service.Backend.CrudServices.Companies
@@ -22,9 +23,11 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
 
     public class RegisterNewCompanyService : SaveNewServiceBase<Company, RegisterNewCompanyServiceCommand>, IRequestHandler<RegisterNewCompanyServiceCommand, Result>, IScoopService
     {
-        public RegisterNewCompanyService(IAppDbContext dbContext, ISystemAdministrator actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) 
-            : base(dbContext, actor, mapper, appCache, localizer)
+        private readonly IHttpContextAccessor _httpContext;
+        public RegisterNewCompanyService(IAppDbContext dbContext, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, IHttpContextAccessor httpContextAccessor) 
+            : base(dbContext, new SystemAdministrator(), mapper, appCache, localizer)
         {
+            _httpContext = httpContextAccessor;
         }
 
         protected override string LocalizerPrefix => nameof(RegisterNewCompanyDto);
@@ -59,7 +62,7 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
                 OwnByUserId = newUser.Id
             };
 
-            var actor = new ActorService() { UserId = newUserId, CompanyId = newCompany.Id };
+            var actor = new ActorService(_httpContext) { UserId = newUserId, CompanyId = newCompany.Id };
             newUser.CreateBy(actor);
             newCompany.CreateBy(actor);
 
