@@ -1,5 +1,6 @@
 ﻿using IdentityModel;
 using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.Constans;
 using LinoVative.Service.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 
@@ -21,8 +22,8 @@ namespace LinoVative.Service.Backend.AuthServices
                     EmailAddress = user?.Claims.FirstOrDefault(x => x.Properties.FirstOrDefault().Value == JwtClaimTypes.Email)!.Value!;
                     //UserName =  user?.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.PreferredUserName)!.Value!;
 
-                    //if (user?.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.ClientId) is not null)
-                    //    ClientId = new Guid(user?.Claims.FirstOrDefault(x => x.Type == JwtClaimTypes.ClientId)!.Value!);
+                    if (user?.Claims.FirstOrDefault(x => x.Type == AppJwtClaims.CompanyId) is not null)
+                        CompanyId = new Guid(user?.Claims.FirstOrDefault(x => x.Type == AppJwtClaims.CompanyId)!.Value!);
 
 
                     //Privilages = user?.Claims

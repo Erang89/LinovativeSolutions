@@ -1,4 +1,5 @@
 ﻿using IdentityModel;
+using LinoVative.Service.Backend.Constans;
 using LinoVative.Service.Core.Constants;
 using LinoVative.Service.Core.Settings;
 using LinoVative.Web.Api.Constants;
@@ -20,14 +21,18 @@ namespace LinoVative.Web.Api.Extensions
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(AuthenticationSchemeName.MainAPIScheme, options =>
+            .AddJwtBearer(AppSchemeNames.CommonApiScheme, options =>
             {
                 options.TokenValidationParameters = GenerateTokenValidatorParameter(jwtSettings!);
-                options.Events = new JwtBearerEvents { OnTokenValidated = context => ValidateContext(context, AppServices.MainAPI) };
+                options.Events = new JwtBearerEvents { OnTokenValidated = context => ValidateContext(context, AppSchemeNames.CommonApiScheme) };
+            })
+            .AddJwtBearer(AppSchemeNames.MainAPIScheme, options =>
+            {
+                options.TokenValidationParameters = GenerateTokenValidatorParameter(jwtSettings!);
+                options.Events = new JwtBearerEvents { OnTokenValidated = context => ValidateContext(context, AppSchemeNames.MainAPIScheme) };
             });
 
             services.ConfigureRole();
-
             return services;
         }
 
@@ -85,14 +90,18 @@ namespace LinoVative.Web.Api.Extensions
             };
         }
 
-        private static Task ValidateContext(TokenValidatedContext context, Guid serviceId)
+        private static Task ValidateContext(TokenValidatedContext context, string schemeName)
         {
             var identity = context.Principal?.Identity as ClaimsIdentity;
 
             if (identity != null)
             {
-                //var scopeClaims = identity.FindAll(JwtClaimTypes.Scope).Select(c => c.Value).ToArray();
+                var companyId = identity.FindAll(AppJwtClaims.CompanyId).Select(c => c.Value).FirstOrDefault();
                 //var priviligeClaims = identity.FindAll(AdditionalClaimTypes.Priviliges).Select(c => c.Value).ToList();
+
+                if(schemeName == AppSchemeNames.MainAPIScheme && companyId is null)
+                    context.Fail("Invalid identity. Token does not contain required scope claims.");
+
 
                 //if (scopeClaims == null || scopeClaims.Length == 0 || !scopeClaims.Any(x => x.ToLower() == serviceId.ToString().ToLower()))
                 //{

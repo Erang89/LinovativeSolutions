@@ -1,4 +1,5 @@
 ﻿using IdentityModel;
+using LinoVative.Service.Backend.Constans;
 using LinoVative.Service.Backend.Helpers;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Auth;
@@ -40,40 +41,7 @@ namespace LinoVative.Service.Backend.AuthServices
             var validate = await Validate(request, ct);
             if (!validate) return validate;
 
-            var claims = new List<Claim>
-            {
-                new Claim(JwtClaimTypes.Subject, _user!.Id.ToString()),
-                new Claim(JwtClaimTypes.Email, _user!.EmailAddress),
-                new Claim(JwtClaimTypes.NickName, _user!.NikName!),
-                //new Claim(JwtClaimTypes.PreferredUserName, user.UserName!),
-                //new Claim(JwtClaimTypes.ClientId, clientId.ToString())
-            };
-
-
-            //var roles = user.UserRoles;
-
-            //foreach (var role in roles)
-            //{
-            //    if (string.IsNullOrEmpty(role?.AppRole?.Name))
-            //        continue;
-
-            //    claims.Add(new Claim(JwtClaimTypes.Role, role.AppRole.Name));
-            //}
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var expires = DateTime.UtcNow.AddMinutes(_jwtSettings.TokenExpiryMinutes);
-
-
-            var token = new JwtSecurityToken(
-                _jwtSettings.Issuer,
-                _jwtSettings.Audience,
-                claims,
-                expires: expires,
-                signingCredentials: creds
-            );
-
-            var response = new { Token = new JwtSecurityTokenHandler().WriteToken(token), ExpiryUtcTime = expires };
+            var response = JwtTokeProvider.Generate(_user!, _jwtSettings, _user!.DefaultCompanyId);
 
             return Result.OK(response);
         }

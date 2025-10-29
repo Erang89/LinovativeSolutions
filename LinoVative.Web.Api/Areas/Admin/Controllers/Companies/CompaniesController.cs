@@ -38,8 +38,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
         }
 
 
-
-        [Authorize(AuthenticationSchemes = AuthenticationSchemeName.MainAPIScheme)]
+        [Authorize(AuthenticationSchemes = AppSchemeNames.CommonApiScheme)]
         [HttpPost]
         [Route(GETALL)]
         [ProducesResponseType(typeof(APIListResponse<CompanyDto>), StatusCodes.Status200OK)]
@@ -59,5 +58,6 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Companies
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }
         }
+
     }
 }

@@ -50,13 +50,13 @@ namespace LinoVative.Service.Backend.LocalizerServices
             var cacheKey = $"{_resourceName}:{culture.Name}";
             return _cache.GetOrAdd(cacheKey, _ =>
             {
-                var file = Path.Combine(_basePath, "Validation", $"{_resourceName}.{culture.Name}.json");
+                var file = Path.Combine(_basePath, "common", $"{_resourceName}.{culture.Name}.json");
                 if (!File.Exists(file))
                 {
                     // try neutral culture (e.g., "id" from "id-ID")
                     if (!string.IsNullOrEmpty(culture.TwoLetterISOLanguageName))
                     {
-                        var neutral = Path.Combine(_basePath, "Validation", $"{_resourceName}.{culture.TwoLetterISOLanguageName}.json");
+                        var neutral = Path.Combine(_basePath, "common", $"{_resourceName}.{culture.TwoLetterISOLanguageName}.json");
                         if (File.Exists(neutral)) file = neutral;
                     }
                 }

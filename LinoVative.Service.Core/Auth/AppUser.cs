@@ -20,6 +20,7 @@ namespace LinoVative.Service.Core.Auth
         public DateTime? LastModifiedAtUtcTime { get; set; }
 
         public Guid? LastModifiedBy { get; set; }
+        public Guid? DefaultCompanyId { get; set; }
 
         public void CreateBy(IActor actor)
         {
