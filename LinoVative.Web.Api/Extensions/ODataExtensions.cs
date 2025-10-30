@@ -1,4 +1,5 @@
-﻿using LinoVative.Shared.Dto.ItemDtos;
+﻿using Linovative.Dto.MasterData.People;
+using LinoVative.Shared.Dto.ItemDtos;
 using LinoVative.Shared.Dto.MasterData.Outlets;
 using LinoVative.Shared.Dto.Outlets;
 using Microsoft.AspNetCore.OData;
@@ -47,6 +48,9 @@ namespace LinoVative.Web.Api.Extensions
             shiftEntity.Ignore(s => s.EndTime);
             shiftEntity.Property(s => s.StartTimeFormatted).Name = nameof(ShiftDto.StartTime);
             shiftEntity.Property(s => s.EndTimeFormatted).Name = nameof(ShiftDto.EndTime);
+
+
+            modelBuilder.EntitySet<PersonViewDto>("People");
 
             return modelBuilder.GetEdmModel();
         }

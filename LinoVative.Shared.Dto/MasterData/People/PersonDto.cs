@@ -4,8 +4,6 @@ using LinoVative.Shared.Dto.Attributes;
 
 namespace Linovative.Dto.MasterData.People
 {
-
-
     [LocalizerKey(nameof(PersonDto))]
     public class PersonDto : EntityDtoBase
     {
@@ -15,7 +13,7 @@ namespace Linovative.Dto.MasterData.People
         [LocalizedRequired]
         public PersonTitles? Title { get; set; }
         public string? Nikname { get; set; }
-        [LocalizedRequired]
+        [LocalizedRequired, LocalizedPhone, UniqueField(EntityTypes.Person, fieldName: nameof(PhoneNumber))]
         public string? PhoneNumber { get; set; }
     }
 

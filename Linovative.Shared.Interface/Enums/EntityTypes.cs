@@ -28,5 +28,6 @@
 
         Account,
         COAGroup,
+        Person
     }
 }

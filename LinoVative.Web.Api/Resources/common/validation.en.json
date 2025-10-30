@@ -1,4 +1,5 @@
 {
+  "Validate.PhoneInvalid": "Invalid Phone Number",
   "Operation.UnAuthorized.Title": "Unauthorized Operation",
   "Operation.UnAuthorized.Message": "You don't have permission for operation",
   "Entity.IdNotFound": "{0} with ID '{1}' was not found in the system",
@@ -70,6 +71,7 @@
   "PaymentMethodGroupDto.Required.Name.ErrorMessage": "Name is required",
   "PersonDto.Required.FirstName.ErrorMessage": "First name is required",
   "PersonDto.Required.PhoneNumber.ErrorMessage": "Phone number is required",
+  "PersonDto.Unique.PhoneNumber.ErrorMessage": "This phone number has been used. Phone number must be unique for each person",
   "PersonDto.Required.Title.ErrorMessage": "Title is required",
   "ShiftDto.Required.Name.ErrorMessage": "Name is required",
   "ShiftDto.Required.StartTime.ErrorMessage": "Name is required",
