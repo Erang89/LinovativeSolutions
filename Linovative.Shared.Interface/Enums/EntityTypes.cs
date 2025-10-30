@@ -29,6 +29,7 @@
         Account,
         COAGroup,
         Person,
+        SalesCOAMapping,
 
         Warehouse
     }

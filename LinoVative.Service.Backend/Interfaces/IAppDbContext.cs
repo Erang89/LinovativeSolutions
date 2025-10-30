@@ -85,6 +85,7 @@ namespace LinoVative.Service.Backend.Interfaces
         // Accountings
         public DbSet<Account> Accounts { get; set; }
         public DbSet<COAGroup> CoaGroups { get; set; }
+        public DbSet<SalesCOAMapping> SalesCOAMappings { get; set; }
 
 
         // Functions

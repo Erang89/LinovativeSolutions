@@ -63,6 +63,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<WarehouseDto>("Warehouses");
             modelBuilder.EntitySet<COAGroupDto>("COAGroups");
             modelBuilder.EntitySet<AccountViewDto>("Accounts");
+            modelBuilder.EntitySet<SalesCOAMappingViewDto>("SalesCOAMappings");
 
             return modelBuilder.GetEdmModel();
         }

@@ -8,12 +8,13 @@ namespace LinoVative.Shared.Dto.MasterData.Accountings
     [LocalizerKey(nameof(SalesCOAMappingDto))]
     public class SalesCOAMappingDto : EntityDtoBase
     {
-
+        
         [LocalizedRequired, EntityID(EntityTypes.Outlet)]
         public Guid? OutletId { get; set; }
 
         [LocalizedRequired, EntityID(EntityTypes.Account)]
         public Guid? AccountId { get; set; }
+
         public bool AutoPushWhenPOSClosing { get; set; }
     }
 

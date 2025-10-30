@@ -45,6 +45,7 @@ namespace LinoVative.Service.Backend.ValidatorServices
                 {EntityTypes.BankNote, _appDbContext.BankNotes.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
                 {EntityTypes.Account, _appDbContext.Accounts.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
                 {EntityTypes.COAGroup, _appDbContext.CoaGroups.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.SalesCOAMapping, _appDbContext.SalesCOAMappings.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
             };
 
             if (!queryDictionary.ContainsKey(entityType.Value))

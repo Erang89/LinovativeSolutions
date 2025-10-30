@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LinoVative.Service.Backend.CrudServices.COAGroups;
 
-namespace LinoVative.Web.Api.Areas.Admin.Controllers.COAGroups
+namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accountings
 {
     public class COAGroupsController : APIBaseController
     {
@@ -57,11 +57,11 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.COAGroups
         [Route(DELETE)]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Delete([FromRoute]Guid id, CancellationToken token)
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
         {
             try
             {
-                var result = await _mediator.Send(new DeleteCOAGroupCommand() { Id = id}, token);
+                var result = await _mediator.Send(new DeleteCOAGroupCommand() { Id = id }, token);
                 return StatusCode((int)result.Status, result);
             }
             catch (Exception ex)

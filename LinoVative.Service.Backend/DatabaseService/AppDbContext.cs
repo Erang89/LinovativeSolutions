@@ -93,10 +93,11 @@ namespace LinoVative.Service.Backend.DatabaseService
         // DbSet WhareHouses
         public DbSet<Warehouse> WareHouses { get; set; }
 
+
         // Accountings
         public DbSet<Account> Accounts { get; set; }
         public DbSet<COAGroup> CoaGroups { get; set; }
-
+        public DbSet<SalesCOAMapping> SalesCOAMappings { get; set; }
 
         // Companies DbSet
         public DbSet<Company> Companies { get; set; }

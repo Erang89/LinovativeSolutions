@@ -5,7 +5,7 @@ namespace LinoVative.Service.Core.EntityBases
 {
     public abstract class AuditableEntity : IEntityId, IAuditableEntity, IDeleteableEntity
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public DateTime? CreatedAtUtcTime { get; set; } = DateTime.UtcNow;
 

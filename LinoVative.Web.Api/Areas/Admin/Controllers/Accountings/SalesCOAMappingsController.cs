@@ -2,20 +2,21 @@
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using LinoVative.Service.Backend.CrudServices.Accounts;
+using LinoVative.Service.Backend.CrudServices.COAGroups;
+using LinoVative.Service.Backend.CrudServices.SalesCOAMappings;
 
-namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accounts
+namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accountings
 {
-    public class AccountsController : APIBaseController
+    public class SalesCOAMappingsController : APIBaseController
     {
-        public AccountsController(IMediator mediator, ILogger<AccountsController> logger) : base(mediator, logger)
+        public SalesCOAMappingsController(IMediator mediator, ILogger<SalesCOAMappingsController> logger) : base(mediator, logger)
         {
         }
 
         [Route(CREATE)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] CreateAccountCommand c, CancellationToken token)
+        public async Task<IActionResult> Create([FromBody] CreateSalesCOAMappingCommand c, CancellationToken token)
         {
             try
             {
@@ -36,7 +37,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accounts
         [Route(UPDATE)]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update([FromBody] UpdateAccountCommand c, CancellationToken token)
+        public async Task<IActionResult> Update([FromBody] UpdateSalesCOAMappingCommand c, CancellationToken token)
         {
             try
             {
@@ -57,11 +58,11 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accounts
         [Route(DELETE)]
         [HttpDelete]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Delete([FromRoute]Guid id, CancellationToken token)
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken token)
         {
             try
             {
-                var result = await _mediator.Send(new DeleteAccountCommand() { Id = id}, token);
+                var result = await _mediator.Send(new DeleteSalesCOAmappingCommand() { Id = id }, token);
                 return StatusCode((int)result.Status, result);
             }
             catch (Exception ex)
