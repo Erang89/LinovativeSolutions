@@ -13,10 +13,10 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.PaymentMethodGroups
     {
     }
 
-    public class CreatePersonHandlerService : SaveNewServiceBase<PaymentMethodGroup, CreatePaymentMethodGroupCommand>, IRequestHandler<CreatePaymentMethodGroupCommand, Result>
+    public class CreatePaymentMethodGroupHandlerService : SaveNewServiceBase<PaymentMethodGroup, CreatePaymentMethodGroupCommand>, IRequestHandler<CreatePaymentMethodGroupCommand, Result>
     {
         
-        public CreatePersonHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, localizer)
+        public CreatePaymentMethodGroupHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, localizer)
         {
           
         }

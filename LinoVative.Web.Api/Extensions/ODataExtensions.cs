@@ -53,6 +53,7 @@ namespace LinoVative.Web.Api.Extensions
 
             modelBuilder.EntitySet<PersonViewDto>("People");
             modelBuilder.EntitySet<PaymentMethodGroupViewDto>("PaymentMethodGroups");
+            modelBuilder.EntitySet<PaymentMethodViewDto>("PaymentMethods");
 
             return modelBuilder.GetEdmModel();
         }

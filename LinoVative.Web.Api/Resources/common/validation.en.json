@@ -67,6 +67,7 @@
   "PaymentMethodDto.Required.PaymentMethodGroupId.ErrorMessage": "Payment method group is required",
   "PaymentMethodDto.Required.Name.ErrorMessage": "Name is required",
   "PaymentMethodDto.Required.Type.ErrorMessage": "Payment method type is required",
+  "PaymentMethodDto.Unique.Name.ErrorMessage": "'{0}' already exist. Name must be unique",
 
   "PaymentMethodGroupDto.Required.Name.ErrorMessage": "Name is required",
   "PaymentMethodGroupDto.Unique.Name.ErrorMessage": "'{0}' is already exist. Group name must be unique",
