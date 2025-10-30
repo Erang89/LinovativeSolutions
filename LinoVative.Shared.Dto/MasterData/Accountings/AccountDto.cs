@@ -1,6 +1,5 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
-using LinoVative.Shared.Dto.Outlets;
 
 namespace LinoVative.Shared.Dto.MasterData.Accountings
 {
@@ -9,10 +8,10 @@ namespace LinoVative.Shared.Dto.MasterData.Accountings
     public class AccountDto : EntityDtoBase
     {
 
-        [LocalizedRequired]
+        [LocalizedRequired, UniqueField(EntityTypes.Account)]
         public string? AccountCode { get; set; }
 
-        [LocalizedRequired]
+        [LocalizedRequired, UniqueField(EntityTypes.Account)]
         public string? Name { get; set; } = default!;
 
         [LocalizedRequired, EntityID(EntityTypes.COAGroup)]

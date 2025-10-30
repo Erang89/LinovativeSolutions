@@ -113,6 +113,8 @@
   "AccountDto.Required.AccountCode.ErrorMessage": "Code is required",
   "AccountDto.Required.Name.ErrorMessage": "Nae is required",
   "AccountDto.Required.GroupId.ErrorMessage": "Group is required",
+  "AccountDto.Unique.Name.ErrorMessage": "'{0}' is already exist. Name must be unique",
+  "AccountDto.Unique.AccountCode.ErrorMessage": "'{0}' is already exist. Code must be unique",
   "COAGroupDto.Required.Name.ErrorMessage": "Name is required",
   "COAGroupDto.Required.Type.ErrorMessage": "Type is required",
   "COAGroupDto.Unique.Name.ErrorMessage": "'{0}' is already exist. Name must be unique.",
