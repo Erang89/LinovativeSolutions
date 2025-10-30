@@ -1,5 +1,6 @@
 {
   "Validate.PhoneInvalid": "Invalid Phone Number",
+  "Validate.MinDecimalValue": "The value can't be less than '{0}'",
   "Operation.UnAuthorized.Title": "Unauthorized Operation",
   "Operation.UnAuthorized.Message": "You don't have permission for operation",
   "Entity.IdNotFound": "{0} with ID '{1}' was not found in the system",
@@ -63,6 +64,7 @@
   "ItemCategoryDto.Required.GroupId.ErrorMessage": "Group is required",
 
   "BankNoteDto.Required.Note.ErrorMessage": "Banknote is required",
+  "BankNoteDto.Unique.Note.ErrorMessage": "'{0}' already exist. Banknote must be unique.",
 
   "PaymentMethodDto.Required.PaymentMethodGroupId.ErrorMessage": "Payment method group is required",
   "PaymentMethodDto.Required.Name.ErrorMessage": "Name is required",

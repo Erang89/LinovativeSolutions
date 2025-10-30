@@ -1,4 +1,5 @@
-﻿using LinoVative.Shared.Dto.Attributes;
+﻿using Linovative.Shared.Interface.Enums;
+using LinoVative.Shared.Dto.Attributes;
 
 namespace LinoVative.Shared.Dto.MasterData.Payments
 {
@@ -6,7 +7,7 @@ namespace LinoVative.Shared.Dto.MasterData.Payments
     [LocalizerKey(nameof(BankNoteDto))]
     public class BankNoteDto : EntityDtoBase
     {
-        [LocalizedRequired]
+        [LocalizedRequired, LocalizeMinDecimalValue(0.01f), UniqueField(EntityTypes.BankNote)]
         public decimal Note { get; set; }
     }
 }
