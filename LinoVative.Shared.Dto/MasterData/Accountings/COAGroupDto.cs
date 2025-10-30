@@ -6,7 +6,7 @@ namespace LinoVative.Shared.Dto.MasterData.Accountings
     [LocalizerKey(nameof(COAGroupDto))]
     public class COAGroupDto : EntityDtoBase
     {
-        [LocalizedRequired]
+        [LocalizedRequired, UniqueField(EntityTypes.COAGroup)]
         public string? Name { get; set; }
         public COATypes? Type { get; set; }
     }

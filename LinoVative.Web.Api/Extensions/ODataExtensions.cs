@@ -1,6 +1,7 @@
 ﻿using Linovative.Dto.MasterData.People;
 using LinoVative.Service.Core.Payments;
 using LinoVative.Shared.Dto.ItemDtos;
+using LinoVative.Shared.Dto.MasterData.Accountings;
 using LinoVative.Shared.Dto.MasterData.Outlets;
 using LinoVative.Shared.Dto.MasterData.Payments;
 using LinoVative.Shared.Dto.MasterData.Warehouses;
@@ -60,6 +61,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<BankNoteDto>("BankNotes");
             modelBuilder.EntitySet<OrderTypeViewDto>("OrderTypes");
             modelBuilder.EntitySet<WarehouseDto>("Warehouses");
+            modelBuilder.EntitySet<COAGroupDto>("COAGroups");
 
             return modelBuilder.GetEdmModel();
         }

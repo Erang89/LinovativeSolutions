@@ -115,6 +115,7 @@
   "AccountDto.Required.GroupId.ErrorMessage": "Group is required",
   "COAGroupDto.Required.Name.ErrorMessage": "Name is required",
   "COAGroupDto.Required.Type.ErrorMessage": "Type is required",
+  "COAGroupDto.Unique.Name.ErrorMessage": "'{0}' is already exist. Name must be unique.",
   "SalesCOAMappingDto.Required.OutletId.ErrorMessage": "Outlet is required",
   "SalesCOAMappingDto.Required.AccountId.ErrorMessage": "Account is required",
   "LoginDto.Required.UserName.ErrorMessage": "UserName is required",
