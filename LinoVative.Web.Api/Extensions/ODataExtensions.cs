@@ -3,6 +3,7 @@ using LinoVative.Service.Core.Payments;
 using LinoVative.Shared.Dto.ItemDtos;
 using LinoVative.Shared.Dto.MasterData.Outlets;
 using LinoVative.Shared.Dto.MasterData.Payments;
+using LinoVative.Shared.Dto.MasterData.Warehouses;
 using LinoVative.Shared.Dto.OrderTypes;
 using LinoVative.Shared.Dto.Outlets;
 using Microsoft.AspNetCore.OData;
@@ -58,6 +59,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<PaymentMethodViewDto>("PaymentMethods");
             modelBuilder.EntitySet<BankNoteDto>("BankNotes");
             modelBuilder.EntitySet<OrderTypeViewDto>("OrderTypes");
+            modelBuilder.EntitySet<WarehouseDto>("Warehouses");
 
             return modelBuilder.GetEdmModel();
         }

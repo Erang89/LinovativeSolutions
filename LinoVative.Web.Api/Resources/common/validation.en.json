@@ -82,6 +82,8 @@
   "ShiftDto.Required.EndTime.ErrorMessage": "End Time is required",
   "WarehouseDto.Required.Code.ErrorMessage": "Code is required",
   "WarehouseDto.Required.Name.ErrorMessage": "Name is required",
+  "WarehouseDto.Unique.Code.ErrorMessage": "'{0}' is already exist. Code must be unique",
+  "WarehouseDto.Unique.Name.ErrorMessage": "'{0}' is already exist. Name must be unique",
   "OrderTypeDto.Required.Name.ErrorMessage": "Name is required",
   "OrderTypeDto.Unique.Name.ErrorMessage": "'{0}' already exist, Order type must be unique",
   "OutletAreaDto.Required.Name.ErrorMessage": "Name is required",

@@ -28,6 +28,8 @@
 
         Account,
         COAGroup,
-        Person
+        Person,
+
+        Warehouse
     }
 }
