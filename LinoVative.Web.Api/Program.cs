@@ -16,6 +16,7 @@ using LinoVative.Web.Api.Extensions;
 using LinoVative.Web.Api.Middlewares;
 using Microsoft.AspNetCore.Mvc;
 using LinoVative.Service.Core.Settings;
+using LinoVative.Web.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,8 +37,16 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
         options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
         options.JsonSerializerOptions.ReferenceHandler = null;
+        options.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
+        options.JsonSerializerOptions.Converters.Add(new NullableTimeSpanConverter());
     })
     .ConfigureOData(builder.Services);
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.Converters.Add(new TimeSpanConverter());
+    options.SerializerOptions.Converters.Add(new NullableTimeSpanConverter());
+});
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 
