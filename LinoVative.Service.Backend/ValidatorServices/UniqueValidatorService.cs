@@ -33,6 +33,14 @@ namespace LinoVative.Service.Backend.ValidatorServices
                     {EntityTypes.AppTimeZone, _appDbContext.TimeZones.Where(x => x.Id != id && !x.IsDeleted) },
                     {EntityTypes.Company, _appDbContext.Companies.Where(x => x.Id != id && !x.IsDeleted) },
                     {EntityTypes.CountryRegion, _appDbContext.CountryRegions.Where(x => x.Id != id && !x.IsDeleted) },
+                    {EntityTypes.Outlet, _appDbContext.Outlets.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.OutletArea, _appDbContext.OutletAreas.Where(x => x.Id != id && !x.IsDeleted && x.Outlet!.CompanyId == actor.CompanyId) },
+                    {EntityTypes.PaymentMethod, _appDbContext.PaymentMethods.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.PaymentMethodGroup, _appDbContext.PaymentMethodGroups.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.OrderType, _appDbContext.OrderTypes.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.BankNote, _appDbContext.BankNotes.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.Account, _appDbContext.Accounts.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.COAGroup, _appDbContext.CoaGroups.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                 };
 
             if (!_queryDic.ContainsKey(entityType.Value))

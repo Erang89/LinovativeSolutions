@@ -1,4 +1,5 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Customers;
@@ -7,6 +8,7 @@ using LinoVative.Service.Core.OrderTypes;
 using LinoVative.Service.Core.Outlets;
 using LinoVative.Service.Core.Payments;
 using LinoVative.Service.Core.People;
+using LinoVative.Service.Core.Shifts;
 using LinoVative.Service.Core.Sources;
 using LinoVative.Service.Core.Warehoses;
 using LinoVative.Shared.Dto;
@@ -66,6 +68,8 @@ namespace LinoVative.Service.Backend.Interfaces
         public DbSet<PaymentMethod> PaymentMethods{ get; set; }
         public DbSet<PaymentMethodGroup> PaymentMethodGroups{ get; set; }
 
+        // Shift
+        public DbSet<Shift> Shifts { get; set; }
 
         // DbSet Peoples
         public DbSet<Person> People { get; set; }
@@ -77,6 +81,10 @@ namespace LinoVative.Service.Backend.Interfaces
 
         // DbSet WhareHouses
         public DbSet<Warehouse> WareHouses { get; set; }
+
+        // Accountings
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<COAGroup> CoaGroups { get; set; }
 
 
         // Functions

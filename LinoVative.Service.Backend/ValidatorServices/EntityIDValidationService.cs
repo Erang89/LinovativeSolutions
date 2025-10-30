@@ -2,6 +2,7 @@
 using Linovative.Shared.Interface.Enums;
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
+using LinoVative.Service.Core.Shifts;
 
 namespace LinoVative.Service.Backend.ValidatorServices
 {
@@ -34,12 +35,24 @@ namespace LinoVative.Service.Backend.ValidatorServices
                 {EntityTypes.AppTimeZone, _appDbContext.TimeZones.Where(x => !x.IsDeleted && x.Id == id) },
                 {EntityTypes.Company, _appDbContext.Companies.Where(x => !x.IsDeleted && x.Id == id) },
                 {EntityTypes.CountryRegion, _appDbContext.CountryRegions.Where(x => !x.IsDeleted && x.Id == id) },
+                // outlets
+                {EntityTypes.Outlet, _appDbContext.Outlets.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.PaymentMethod, _appDbContext.PaymentMethods.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.PaymentMethodGroup, _appDbContext.PaymentMethodGroups.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.OrderType, _appDbContext.OrderTypes.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.Shift, _appDbContext.Shifts.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.OutletArea, _appDbContext.OutletAreas.Where(x => !x.IsDeleted && x.Id == id && x.Outlet!.CompanyId == actor.CompanyId) },
+                {EntityTypes.BankNote, _appDbContext.BankNotes.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.Account, _appDbContext.Accounts.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.COAGroup, _appDbContext.CoaGroups.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
             };
 
             if (!queryDictionary.ContainsKey(entityType.Value))
                 throw new NotImplementedException($"{entityType} not in the dictionary");
 
-            var isAny = queryDictionary[entityType.Value].AnyDynamic();
+            var query = queryDictionary[entityType.Value];
+
+            var isAny = query.AnyDynamic();
             return isAny;
         }
     }
