@@ -83,6 +83,7 @@
   "WarehouseDto.Required.Code.ErrorMessage": "Code is required",
   "WarehouseDto.Required.Name.ErrorMessage": "Name is required",
   "OrderTypeDto.Required.Name.ErrorMessage": "Name is required",
+  "OrderTypeDto.Unique.Name.ErrorMessage": "'{0}' already exist, Order type must be unique",
   "OutletAreaDto.Required.Name.ErrorMessage": "Name is required",
   "OutletAreaDto.Required.AreaId.ErrorMessage": "Area is required",
   "OutletAreaDto.Required.OutletId.ErrorMessage": "Outlet is required",

@@ -1,7 +1,5 @@
 ﻿using Linovative.Shared.Interface.Enums;
-using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.Attributes;
-using LinoVative.Shared.Dto.ItemDtos;
 
 namespace LinoVative.Shared.Dto.OrderTypes
 {
@@ -9,7 +7,7 @@ namespace LinoVative.Shared.Dto.OrderTypes
     [LocalizerKey(nameof(OrderTypeDto))]
     public class OrderTypeDto : EntityDtoBase
     {
-        [LocalizedRequired]
+        [LocalizedRequired, UniqueField( EntityTypes.OrderType)]
         public string? Name { get; set; }
         public OrderBehaviors Behavior { get; set; }
     }
