@@ -8,7 +8,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers
 {
 
 
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]

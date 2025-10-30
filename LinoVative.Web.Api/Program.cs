@@ -25,7 +25,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+//builder.Services.AddSwaggerGen();
+builder.Services.AddConfigureSwagger();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddLogging();
@@ -132,7 +133,7 @@ app.UseRouting();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.UseMiddleware<ODataMiddleware>();
-
+app.UseStaticFiles();
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
     DefaultRequestCulture = new RequestCulture("en"),
@@ -156,7 +157,6 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 //      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 //    );
 //});
-
 app.MapControllers();
 
 

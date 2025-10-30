@@ -1,0 +1,4 @@
+﻿/* hide authorize button when we tag body with "public-api" */
+body.public-api .swagger-ui .auth-wrapper {
+    display: none !important;
+}

@@ -12,6 +12,9 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accountings
         {
         }
 
+        /// <remarks>
+        /// Test Remark API, Your comment should be here
+        /// </remarks>
         [Route(CREATE)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]

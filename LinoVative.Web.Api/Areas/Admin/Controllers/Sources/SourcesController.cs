@@ -8,7 +8,7 @@ using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Sources
 {
-    [Route("public/api/[controller]")]
+    [Route("public/api/v1/[controller]")]
     [ProducesResponseType(typeof(APIInputErrorResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(APIInternalErrorResponse), StatusCodes.Status500InternalServerError)]
     [AllowAnonymous]

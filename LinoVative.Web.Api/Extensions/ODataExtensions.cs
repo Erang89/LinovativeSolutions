@@ -25,7 +25,7 @@ namespace LinoVative.Web.Api.Extensions
                     .Expand()
                     .SetMaxTop(100)
                     .EnableQueryFeatures()
-                    .AddRouteComponents("api/odata", GetEdmModel(), serviceProvider =>
+                    .AddRouteComponents("api/v1/odata", GetEdmModel(), serviceProvider =>
                     {
                         
                     });
