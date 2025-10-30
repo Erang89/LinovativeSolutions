@@ -1,6 +1,7 @@
 ﻿using Linovative.Dto.MasterData.People;
 using LinoVative.Shared.Dto.ItemDtos;
 using LinoVative.Shared.Dto.MasterData.Outlets;
+using LinoVative.Shared.Dto.MasterData.Payments;
 using LinoVative.Shared.Dto.Outlets;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.Edm;
@@ -51,6 +52,7 @@ namespace LinoVative.Web.Api.Extensions
 
 
             modelBuilder.EntitySet<PersonViewDto>("People");
+            modelBuilder.EntitySet<PaymentMethodGroupViewDto>("PaymentMethodGroups");
 
             return modelBuilder.GetEdmModel();
         }

@@ -69,6 +69,7 @@
   "PaymentMethodDto.Required.Type.ErrorMessage": "Payment method type is required",
 
   "PaymentMethodGroupDto.Required.Name.ErrorMessage": "Name is required",
+  "PaymentMethodGroupDto.Unique.Name.ErrorMessage": "'{0}' is already exist. Group name must be unique",
   "PersonDto.Required.FirstName.ErrorMessage": "First name is required",
   "PersonDto.Required.PhoneNumber.ErrorMessage": "Phone number is required",
   "PersonDto.Unique.PhoneNumber.ErrorMessage": "This phone number has been used. Phone number must be unique for each person",

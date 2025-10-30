@@ -13,6 +13,6 @@ namespace LinoVative.Shared.Dto.MasterData.Payments
 
     public class PaymentMethodGroupViewDto : PaymentMethodGroupDto
     {
-        public List<PaymentMethodViewDto> PaymentMethods { get; set; } = new();
+        public List<PaymentMethodViewDto> PaymentMethods { get; set; } = new List<PaymentMethodViewDto>();
     }
 }

@@ -75,8 +75,9 @@ namespace LinoVative.Service.Backend.Configurations
             
             // Mapping paymens
             config.NewConfig<BankNote, BankNoteDto>();
-            config.NewConfig<PaymentMethod, PaymentMethodDto>();
-            config.NewConfig<PaymentMethodGroup, PaymentMethodDto>();
+            config.NewConfig<PaymentMethod, PaymentMethodViewDto>()
+                .Map(x => x.PaymentMethodGroup, src => src.PaymentMethodGroup);
+            config.NewConfig<PaymentMethodGroup, PaymentMethodGroupViewDto>();
             
             // Mapping People
             config.NewConfig<Person, PersonViewDto>();
