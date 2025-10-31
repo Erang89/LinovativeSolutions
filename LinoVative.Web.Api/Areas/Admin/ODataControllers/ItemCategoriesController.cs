@@ -8,7 +8,7 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class ItemCategoriesController : ODataBaseController
+    public class ItemCategoriesController : PrivateODataBaseController
     {
         private readonly ILogger _logger;
         public ItemCategoriesController(ILogger<ItemCategoriesController> log) => _logger = log;

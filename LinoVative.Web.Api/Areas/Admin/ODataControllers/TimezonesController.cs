@@ -8,7 +8,7 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class TimezonesController : ODataBaseController
+    public class TimezonesController : PublicODataBaseController
     {
         private readonly ILogger _logger;
         public TimezonesController(ILogger<TimezonesController> log) => _logger = log;
