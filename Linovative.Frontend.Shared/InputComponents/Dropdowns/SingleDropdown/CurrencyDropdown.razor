@@ -1,8 +1,8 @@
 ﻿@using LinoVative.Shared.Dto.Sources
 @using Linovative.Frontend.Services.FrontendServices
-@inherits SearchableDropdownBase<CountryDto>
+@inherits SearchableDropdownBase<CurrencyDto>
 
-@inject ICountryService _service
+@inject ICurrencyService _service
 @inject IApplicationState _state
 
 <SearchableDropdown Required=@Required
@@ -10,32 +10,34 @@
                     Immediate=true
                     Label=@Label
                     Value=@Value
+                    Text=@text
+                    TextChanged="@(x => text = x)"
                     ValueChanged=@ValueChanged
                     StringConvert="@((x) => $"{x.Name}")"
                     PageSize=@PageSize
                     Clearable="@Clearable"
-                    TItem="CountryDto" 
+                    TItem="CurrencyDto"
                     SearchFunction="LoadData" />
 
 @code {
     private CancellationTokenSource cts { get; set; } = new();
-
+    string text = "";
     protected override Task OnInitializedAsync()
     {
         _state.OnChange += StateHasChanged;
-        Label = Label is null ? "Country" : Label;
+        Label = Label is null ? "Currency" : Label;
         PageSize = PageSize == 0 ? 10 : PageSize;
         return base.OnInitializedAsync();
     }
 
-    async Task<Response<List<CountryDto>>> LoadData(string? keyword, int page)
+    async Task<Response<List<CurrencyDto>>> LoadData(string? keyword, int page)
     {
         var odataFilter = new ODataFilter()
             {
                 PageNumber = page,
                 PageSize = PageSize,
                 SortDirection = ShortDirections.Asc,
-                OrderFiled = nameof(CountryDto.Name),
+                OrderFiled = nameof(CurrencyDto.Name),
                 FilterPayload = new { searchkeyword = keyword }
             };
 

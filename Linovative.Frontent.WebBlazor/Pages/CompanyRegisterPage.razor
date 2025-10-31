@@ -37,17 +37,20 @@
                 <LinovativeGap />
 
 
-                <CountryDropdown Required="true" RequiredError="@Required("Country")" Label="@Label("Country")" />
+                <CountryDropdown 
+                    Required="true" 
+                    RequiredError="@Required("Country")" 
+                    Label="@Label("Country")" />
                 <LinovativeGap />
 
-                <LinovativeInputText IsRequired=true
-                                     RequiredMessage="@Required("TimeZone")"
-                                     Label="@Label("TimeZone")" />
+                <TimezoneDropdown Required="true"
+                                  RequiredError="@Required("TimeZone")"
+                                  Label="@Label("TimeZone")" />
                 <LinovativeGap />
 
-                <LinovativeInputText IsRequired=true
-                                     RequiredMessage="@Required("Currency")"
-                                     Label="@Label("Currency")" />
+                <CurrencyDropdown Required="true"
+                                 RequiredError="@Required("Currency")"
+                                 Label="@Label("Currency")" />
             </MudItem>
 
 

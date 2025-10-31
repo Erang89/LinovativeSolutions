@@ -13,6 +13,7 @@ namespace Linovative.Frontend.Shared.InputComponents.Dropdowns
         [Parameter] public string? RequiredError { get; set; }
         [Parameter] public string? Label { get; set; }
         [Parameter] public string? Text { get; set; }
+        [Parameter] public EventCallback<string?> TextChanged { get; set; }
         [Parameter] public EventCallback<TItem?> ValueChanged { get; set; }
         [Parameter] public Func<TItem?, string?> StringConvert { get; set; } = (x) => null;
         [Parameter] public Func<string?, int, Task<Response<List<TItem>>>> SearchFunction { get; set; } = (x, _) => Task.FromResult((new Response<List<TItem>>() { Data = new() }).Result(true));
