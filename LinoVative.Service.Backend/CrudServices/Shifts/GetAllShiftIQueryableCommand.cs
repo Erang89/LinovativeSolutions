@@ -2,7 +2,7 @@
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Shifts;
-using LinoVative.Shared.Dto.MasterData.Outlets;
+using LinoVative.Shared.Dto.MasterData.Shifts;
 using Mapster;
 using MapsterMapper;
 

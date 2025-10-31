@@ -9,7 +9,8 @@ namespace Linovative.Frontend.Services.FrontendServices
 {
     internal abstract class CrudServiceAbstract<T>
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _privateHttpClient;
+        private readonly HttpClient _publicHttpClient;
         private readonly ILogger _logger;
 
         const string CREATE = "create";
@@ -25,7 +26,8 @@ namespace Linovative.Frontend.Services.FrontendServices
             )
         {
             _logger = logger;
-            _httpClient = httpFactory.CreateClient(EndpointNames.API);
+            _privateHttpClient = httpFactory.CreateClient(EndpointNames.PrivateApi);
+            _publicHttpClient = httpFactory.CreateClient(EndpointNames.PublicApi);
             _uriPrefix = uriPrefix;
         }
 
@@ -37,7 +39,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             {
                 var url = $"{_uriPrefix}/{CREATE}";
 
-                var response = await _httpClient.PostAsJsonAsync(url, obj, token);
+                var response = await _privateHttpClient.PostAsJsonAsync(url, obj, token);
                 return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
@@ -54,7 +56,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             {
                 var url = $"{_uriPrefix}/{UPDATE}";
 
-                var response = await _httpClient.PutAsJsonAsync(url, obj, token);
+                var response = await _privateHttpClient.PutAsJsonAsync(url, obj, token);
                 return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
@@ -72,7 +74,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             {
                 var url = $"{_uriPrefix}/{DELETE}";
                 var obj = new BulkDeleteDto() { Ids = new() { id } };
-                var response = await _httpClient.PostAsJsonAsync(url, obj, token);
+                var response = await _privateHttpClient.PostAsJsonAsync(url, obj, token);
                 return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
@@ -89,7 +91,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             try
             {
                 var url = $"{_uriPrefix}/{DELETE}";
-                var response = await _httpClient.PostAsJsonAsync(url, obj, token);
+                var response = await _privateHttpClient.PostAsJsonAsync(url, obj, token);
                 return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
@@ -105,7 +107,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             try
             {
                 var url = $"oData/{_uriPrefix}?$count=true";
-                var response = await _httpClient.GetAsync(url, token);
+                var response = await _privateHttpClient.GetAsync(url, token);
                 return await response.ToAppResponse<List<T>>(token);
             }
             catch (Exception ex)
@@ -121,7 +123,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             {
                 odataOption = odataOption is not null ? $"&{odataOption}" : null;
                 var url = $"oData/{_uriPrefix}?$filter=id eq ({id}){odataOption}";
-                var httpResponse = await _httpClient.GetAsync(url, token);
+                var httpResponse = await _privateHttpClient.GetAsync(url, token);
                 var response = await httpResponse.ToAppResponse<List<T>>(token);
                 if (response)
                     return Response<T>.Ok((response.Data ?? new()).FirstOrDefault());
@@ -141,7 +143,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             try
             {
                 var url = oDataFilter.GetODataUrl(_uriPrefix);
-                var response = await _httpClient.GetAsync(url, token);
+                var response = await _privateHttpClient.GetAsync(url, token);
                 return await response.ToAppResponse<List<T>>(token);
             }
             catch (Exception ex)
@@ -156,7 +158,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             try
             {
                 var url = oDataFilter.GetODataUrl(_uriPrefix);
-                var response = await _httpClient.PostAsJsonAsync(url, new { FilterConditions = filterConditions }, token);
+                var response = await _privateHttpClient.PostAsJsonAsync(url, new { FilterConditions = filterConditions }, token);
                 return await response.ToAppResponse<List<T>>(token);
             }
             catch (Exception ex)
@@ -173,7 +175,7 @@ namespace Linovative.Frontend.Services.FrontendServices
             try
             {
                 var url = oDataFilter.GetODataUrl(_uriPrefix);
-                var response = await _httpClient.PostAsJsonAsync(url, filterObject, token);
+                var response = await _privateHttpClient.PostAsJsonAsync(url, filterObject, token);
                 return await response.ToAppResponse<List<T>>(token);
             }
             catch (Exception ex)

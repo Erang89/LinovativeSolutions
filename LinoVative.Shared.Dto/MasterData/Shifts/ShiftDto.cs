@@ -1,8 +1,6 @@
 ﻿using LinoVative.Shared.Dto.Attributes;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
-namespace LinoVative.Shared.Dto.MasterData.Outlets
+namespace LinoVative.Shared.Dto.MasterData.Shifts
 {
 
     [LocalizerKey(nameof(ShiftDto))]
@@ -13,7 +11,7 @@ namespace LinoVative.Shared.Dto.MasterData.Outlets
 
         [LocalizedRequired]
         public TimeSpan? StartTime { get; set; }
-        public string? StartTimeFormatted  => StartTime?.ToString(@"hh\:mm\:ss");
+        public string? StartTimeFormatted => StartTime?.ToString(@"hh\:mm\:ss");
 
 
         [LocalizedRequired]

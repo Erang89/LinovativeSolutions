@@ -1,6 +1,6 @@
 ﻿using LinoVative.Service.Backend.CrudServices.Shifts;
 using LinoVative.Shared.Dto;
-using LinoVative.Shared.Dto.MasterData.Outlets;
+using LinoVative.Shared.Dto.MasterData.Shifts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using System.Net;
@@ -8,7 +8,7 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class ShiftsController : MainApiODataBaseController
+    public class ShiftsController : ODataBaseController
     {
         private readonly ILogger _logger;
         public ShiftsController(ILogger<ShiftsController> log) => _logger = log;

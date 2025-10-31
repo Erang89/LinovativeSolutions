@@ -1,6 +1,6 @@
-﻿using LinoVative.Service.Backend.CrudServices.SalesCOAMappings;
+﻿using LinoVative.Service.Backend.CrudServices.Sources;
 using LinoVative.Shared.Dto;
-using LinoVative.Shared.Dto.MasterData.Accountings;
+using LinoVative.Shared.Dto.Sources;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using System.Net;
@@ -8,16 +8,16 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class SalesCOAMappingsController : ODataBaseController
+    public class TimezonesController : ODataBaseController
     {
         private readonly ILogger _logger;
-        public SalesCOAMappingsController(ILogger<SalesCOAMappingsController> log) => _logger = log;
+        public TimezonesController(ILogger<TimezonesController> log) => _logger = log;
 
 
 
         [EnableQuery]
-        [ProducesResponseType(typeof(APIListResponse<SalesCOAMappingViewDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] GetAllSalesCOAMappingIQueryableCommand c, CancellationToken token)
+        [ProducesResponseType(typeof(APIListResponse<TimezoneDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Post([FromBody] GetAllTimezoneIQueryableCommand c, CancellationToken token)
         {
             try
             {

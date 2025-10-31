@@ -1,6 +1,6 @@
 ﻿using LinoVative.Service.Backend.CrudServices.OrderTypes;
 using LinoVative.Shared.Dto;
-using LinoVative.Shared.Dto.MasterData.Outlets;
+using LinoVative.Shared.Dto.MasterData.Shifts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using System.Net;
@@ -8,7 +8,7 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class OrderTypesController : MainApiODataBaseController
+    public class OrderTypesController : ODataBaseController
     {
         private readonly ILogger _logger;
         public OrderTypesController(ILogger<OrderTypesController> log) => _logger = log;

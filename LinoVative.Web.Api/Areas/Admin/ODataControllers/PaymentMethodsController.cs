@@ -8,7 +8,7 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class PaymentMethodsController : MainApiODataBaseController
+    public class PaymentMethodsController : ODataBaseController
     {
         private readonly ILogger _logger;
         public PaymentMethodsController(ILogger<PaymentMethodsController> log) => _logger = log;

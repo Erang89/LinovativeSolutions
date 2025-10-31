@@ -23,7 +23,7 @@ namespace Linovative.Frontend.Shared.ShareServices
             using var scope = _serviceProvider.CreateScope();
             var jwtTokenProvider = scope.ServiceProvider.GetRequiredService<IJwtTokenProvider>();
             var httpFactory = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>();
-            var httpClient = httpFactory.CreateClient(EndpointNames.RefreshAPI);
+            var httpClient = httpFactory.CreateClient(EndpointNames.PublicApi);
             var jwtToken = await jwtTokenProvider.GetJwtToken(httpClient);
 
             if (jwtToken == null)

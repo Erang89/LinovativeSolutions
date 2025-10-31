@@ -1,6 +1,6 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
-using LinoVative.Shared.Dto.MasterData.Outlets;
+using LinoVative.Shared.Dto.MasterData.Shifts;
 
 namespace LinoVative.Shared.Dto.Outlets
 {

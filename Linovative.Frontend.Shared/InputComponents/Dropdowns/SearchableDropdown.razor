@@ -1,0 +1,123 @@
+﻿@inject IApplicationState _state
+@typeparam TItem
+@inherits SearchableDropdownBase<TItem>
+
+<MudAutocomplete @ref="@autoComplete"
+                 AfterItemsTemplate="@Pageination"
+                 SearchFunc="Search"
+                 Variant="ComponentSettings.InputVariant"
+                 Label="@Label"
+                 T="TItem"
+                 Immediate="false"
+                 @bind-Text="@Text"
+                 Value="@Value"
+                 ValueChanged="@((e) => Select(e))"
+                 ToStringFunc="@((v) => StringConvert(v))"
+                 Disabled="@Disabled"
+                 ReadOnly="@ReadOnly"
+                 Strict="true"
+                 Required="@Required"
+                 RequiredError="@RequiredError"
+                 Error="@IsError"
+                 Placeholder="@Placeholder"
+                 OnClearButtonClick="@Clear"
+                 OpenChanged="@OnOpenChanged"
+                 @onblur="@(() => autoComplete.Validate())"
+                 Clearable="@Clearable" />
+
+
+@code {
+
+    [Parameter] public EventCallback OnDropdownClose { get; set; }
+    private Response<List<TItem>> data { get; set; } = new Response<List<TItem>>();
+    private int selectedPage { get; set; } = 1;
+    private MudAutocomplete<TItem> autoComplete { get; set; } = default!;
+    private RenderFragment Pageination => PageCount() > 1 ?@<MudPagination ShowPageButtons="false"
+               ShowFirstButton="true"
+               Selected="@selectedPage"
+               ShowLastButton="true"
+               Count="@PageCount()"
+               SelectedChanged="@((e) => PageChanges(e))" /> : @<div></div>;
+
+    public async Task OpenDropDown()
+    {
+        await autoComplete.OpenMenuAsync();
+        await autoComplete.FocusAsync();
+    }
+    protected override Task OnInitializedAsync()
+    {
+        if (Text is null && Value is not null && StringConvert is not null)
+        {
+            Text = StringConvert(Value);
+        }
+
+        _state.OnChange += StateHasChanged;
+        return base.OnInitializedAsync();
+    }
+
+
+    async Task<IEnumerable<TItem>> Search(string value, CancellationToken token)
+    {
+        data = await SearchFunction(value, selectedPage);
+        return data.Data ?? new();
+    }
+
+    async Task Select(TItem item)
+    {
+        Value = item;
+        await ValueChanged.InvokeAsync(item);
+        await OnDropdownClose.InvokeAsync();
+        _state.NotifyStateChanged();
+    }
+
+    async Task Clear()
+    {
+        Value = default(TItem);
+        await SetPage(1);
+        await ValueChanged.InvokeAsync(default!);
+        _state.NotifyStateChanged();
+    }
+
+    bool pageChanging = false;
+    async Task PageChanges(int page)
+    {
+        await SetPage(page);
+        _state.NotifyStateChanged();
+    }
+
+    async Task SetPage(int page)
+    {
+        selectedPage = page;
+        pageChanging = true;
+        await autoComplete.CloseMenuAsync();
+        await autoComplete.OpenMenuAsync();
+        await autoComplete.FocusAsync();
+        pageChanging = false;
+    }
+
+    public bool hasOpened = false;
+    async Task OnOpenChanged()
+    {
+        if (pageChanging)
+            return;
+
+        if (!autoComplete.Open && hasOpened)
+        {
+            await OnDropdownClose.InvokeAsync();
+        }
+        else
+        {
+            hasOpened = true;
+            if (Value is not null)
+                Text = StringConvert(Value);
+        }
+    }
+
+    int PageCount()
+    {
+        if (data.Count == 0) return 0;
+        int page = data.Count / PageSize;
+        page += data.Count % PageSize > 0 ? 1 : 0;
+        return page;
+    }
+}

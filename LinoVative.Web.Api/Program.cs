@@ -41,7 +41,8 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.Converters.Add(new TimeSpanConverter());
         options.JsonSerializerOptions.Converters.Add(new NullableTimeSpanConverter());
     })
-    .ConfigureOData(builder.Services);
+    .ConfigurePrivateOData(builder.Services)
+    .ConfigurePublicOData(builder.Services);
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {

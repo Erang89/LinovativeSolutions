@@ -9,7 +9,7 @@ namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
     [Controller]
     [Authorize(AuthenticationSchemes = AppSchemeNames.MainAPIScheme)]
-    public class MainApiODataBaseController : ODController.ODataController
+    public class ODataBaseController : ODController.ODataController
     {
         private IMediator? mediator;
         protected IMediator _mediator => mediator ??= HttpContext.RequestServices.GetService<IMediator>()!;

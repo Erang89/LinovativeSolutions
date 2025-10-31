@@ -2,6 +2,7 @@
 {
     public class ClientAppConfig 
     {
-        public string ApiEndpoint { get; set; } = null!;
+        public string PrivateEndpoint { get; set; } = null!;
+        public string PublicEndpoint { get; set; } = null!;
     }
 }

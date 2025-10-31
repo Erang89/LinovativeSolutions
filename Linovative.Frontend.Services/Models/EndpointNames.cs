@@ -2,7 +2,7 @@
 {
     public class EndpointNames
     {
-        public const string API = nameof(API);
-        public const string RefreshAPI = nameof(RefreshAPI);
+        public const string PrivateApi = nameof(PrivateApi);
+        public const string PublicApi = nameof(PublicApi);
     }
 }

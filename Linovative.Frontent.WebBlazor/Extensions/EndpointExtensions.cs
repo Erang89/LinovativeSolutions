@@ -11,14 +11,14 @@ namespace Linovative.Frontent.WebBlazor.Extensions
 
             var appConfig = new ClientAppConfig();
             builder.Configuration.Bind("AppConfig", appConfig);
-            builder.Services.AddHttpClient(EndpointNames.API, client =>
+            builder.Services.AddHttpClient(EndpointNames.PrivateApi, client =>
             {
-                client.BaseAddress = new Uri(appConfig.ApiEndpoint ?? throw new NotImplementedException("Api Endpoint Not Configure"));
+                client.BaseAddress = new Uri(appConfig.PrivateEndpoint ?? throw new NotImplementedException("Api Endpoint Not Configure"));
             }).AddHttpMessageHandler<HttpClientHeaderService>(); ;
 
-            builder.Services.AddHttpClient(EndpointNames.RefreshAPI, client =>
+            builder.Services.AddHttpClient(EndpointNames.PublicApi, client =>
             {
-                client.BaseAddress = new Uri(appConfig.ApiEndpoint ?? throw new NotImplementedException("Api Endpoint Not Configure"));
+                client.BaseAddress = new Uri(appConfig.PrivateEndpoint ?? throw new NotImplementedException("Api Endpoint Not Configure"));
             });
 
         }

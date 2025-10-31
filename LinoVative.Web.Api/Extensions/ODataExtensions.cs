@@ -2,11 +2,12 @@
 using LinoVative.Service.Core.Payments;
 using LinoVative.Shared.Dto.ItemDtos;
 using LinoVative.Shared.Dto.MasterData.Accountings;
-using LinoVative.Shared.Dto.MasterData.Outlets;
 using LinoVative.Shared.Dto.MasterData.Payments;
+using LinoVative.Shared.Dto.MasterData.Shifts;
 using LinoVative.Shared.Dto.MasterData.Warehouses;
 using LinoVative.Shared.Dto.OrderTypes;
 using LinoVative.Shared.Dto.Outlets;
+using LinoVative.Shared.Dto.Sources;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
@@ -15,7 +16,7 @@ namespace LinoVative.Web.Api.Extensions
 {
     public static class ODataExtensions
     {
-        public static IMvcBuilder ConfigureOData(this IMvcBuilder builder, IServiceCollection services)
+        public static IMvcBuilder ConfigurePrivateOData(this IMvcBuilder builder, IServiceCollection services)
         {
             builder.AddOData(option => {
                 option.Select()
@@ -25,7 +26,7 @@ namespace LinoVative.Web.Api.Extensions
                     .Expand()
                     .SetMaxTop(100)
                     .EnableQueryFeatures()
-                    .AddRouteComponents("api/v1/odata", GetEdmModel(), serviceProvider =>
+                    .AddRouteComponents("api/v1/odata", GetPrivateEdmModel(), serviceProvider =>
                     {
                         
                     });
@@ -35,7 +36,7 @@ namespace LinoVative.Web.Api.Extensions
         }
 
 
-        static IEdmModel GetEdmModel()
+        static IEdmModel GetPrivateEdmModel()
         {
 
             ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
@@ -64,6 +65,38 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<COAGroupDto>("COAGroups");
             modelBuilder.EntitySet<AccountViewDto>("Accounts");
             modelBuilder.EntitySet<SalesCOAMappingViewDto>("SalesCOAMappings");
+
+            return modelBuilder.GetEdmModel();
+        }
+
+        public static IMvcBuilder ConfigurePublicOData(this IMvcBuilder builder, IServiceCollection services)
+        {
+            builder.AddOData(option => {
+                option.Select()
+                    .Filter()
+                    .Count()
+                    .OrderBy()
+                    .Expand()
+                    .SetMaxTop(100)
+                    .EnableQueryFeatures()
+                    .AddRouteComponents("public/api/v1/odata", GetPublicteEdmModel(), serviceProvider =>
+                    {
+
+                    });
+            });
+
+            return builder;
+        }
+
+        static IEdmModel GetPublicteEdmModel()
+        {
+
+            ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
+            modelBuilder.EnableLowerCamelCase();
+
+            modelBuilder.EntitySet<CurrencyDto>("Currencies");
+            modelBuilder.EntitySet<CountryDto>("Countries");
+            modelBuilder.EntitySet<TimezoneDto>("Timezones");
 
             return modelBuilder.GetEdmModel();
         }
