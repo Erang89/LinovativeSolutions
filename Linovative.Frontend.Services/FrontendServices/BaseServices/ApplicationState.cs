@@ -2,7 +2,7 @@
 
 namespace Linovative.Frontend.Services.FrontendServices.BaseServices
 {
-    public class ApplicationState : IApplicationState
+    public class ApplicationStateService : IApplicationState
     {
         public event Action? OnChange;
 

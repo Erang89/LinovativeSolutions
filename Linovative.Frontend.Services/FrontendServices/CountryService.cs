@@ -5,11 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Linovative.Frontend.Services.FrontendServices
 {
-    public interface ICountryService : IReadOnlyService<CountryDto> { }
+    public interface ICountryService : IReadOnlyService<CountryDto> {
+        
+    }
 
-    internal class CountryService : ReadOnlyServiceAbstract<CountryDto>, ICountryService
+    public class CountryService : ReadOnlyServiceAbstract<CountryDto>, ICountryService
     {
-        public CountryService(IHttpClientFactory httpFactory, ILogger logger) : base(httpFactory, logger, "/currencies")
+        public CountryService(IHttpClientFactory httpFactory, ILogger<CountryService> logger) : base(httpFactory, logger, "countries")
         {
             
         }

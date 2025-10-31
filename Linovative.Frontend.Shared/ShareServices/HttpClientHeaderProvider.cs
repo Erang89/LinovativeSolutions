@@ -6,12 +6,12 @@ using System.Net;
 
 namespace Linovative.Frontend.Shared.ShareServices
 {
-    public class HttpClientHeaderService : DelegatingHandler
+    public class HttpClientHeaderProvider : DelegatingHandler
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IUnauthorizeHandler _unauthorizeHandler;
 
-        public HttpClientHeaderService(IServiceProvider serviceProvider, IUnauthorizeHandler unauthorizeHandler)
+        public HttpClientHeaderProvider(IServiceProvider serviceProvider, IUnauthorizeHandler unauthorizeHandler)
         {
             _serviceProvider = serviceProvider;
             _unauthorizeHandler = unauthorizeHandler;

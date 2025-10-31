@@ -7,8 +7,9 @@ using System.Net.Http.Json;
 
 namespace Linovative.Frontend.Services.FrontendServices.BaseServices
 {
-    internal abstract class ReadOnlyServiceAbstract<T> : IReadOnlyService<T>
+    public abstract class ReadOnlyServiceAbstract<T> : IReadOnlyService<T>
     {
+        protected HttpClient _httpClient => IsPublicEndpoint? _publicHttpClient : _privateHttpClient ?? new HttpClient();
         protected readonly HttpClient _privateHttpClient;
         protected readonly HttpClient _publicHttpClient;
         protected readonly ILogger _logger;
@@ -40,7 +41,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             try
             {
                 var url = $"oData/{_uriPrefix}?$count=true";
-                var response = await _privateHttpClient.GetAsync(url, token);
+                var response = await _httpClient.PostAsJsonAsync(url, token);
                 return await response.ToAppResponse<List<T>>(token);
             }
             catch (Exception ex)
@@ -56,7 +57,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             {
                 odataOption = odataOption is not null ? $"&{odataOption}" : null;
                 var url = $"oData/{_uriPrefix}?$filter=id eq ({id}){odataOption}";
-                var httpResponse = await _privateHttpClient.GetAsync(url, token);
+                var httpResponse = await _httpClient.GetAsync(url, token);
                 var response = await httpResponse.ToAppResponse<List<T>>(token);
                 if (response)
                     return Response<T>.Ok((response.Data ?? new()).FirstOrDefault());
@@ -76,7 +77,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             try
             {
                 var url = oDataFilter.GetODataUrl(_uriPrefix);
-                var response = await _privateHttpClient.GetAsync(url, token);
+                var response = await _httpClient.PostAsJsonAsync(url, oDataFilter.FilterPayload, token);
                 return await response.ToAppResponse<List<T>>(token);
             }
             catch (Exception ex)
@@ -91,7 +92,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             try
             {
                 var url = oDataFilter.GetODataUrl(_uriPrefix);
-                var response = await _privateHttpClient.PostAsJsonAsync(url, new { FilterConditions = filterConditions }, token);
+                var response = await _httpClient.PostAsJsonAsync(url, new { FilterConditions = filterConditions }, token);
                 return await response.ToAppResponse<List<T>>(token);
             }
             catch (Exception ex)
@@ -108,7 +109,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             try
             {
                 var url = oDataFilter.GetODataUrl(_uriPrefix);
-                var response = await _privateHttpClient.PostAsJsonAsync(url, filterObject, token);
+                var response = await _httpClient.PostAsJsonAsync(url, filterObject, token);
                 return await response.ToAppResponse<List<T>>(token);
             }
             catch (Exception ex)

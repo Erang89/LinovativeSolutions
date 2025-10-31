@@ -1,8 +1,47 @@
-﻿@inherits SearchableDropdownBase<ShiftDto>
-@using LinoVative.Shared.Dto.MasterData.Shifts
+﻿@using LinoVative.Shared.Dto.Sources
+@using Linovative.Frontend.Services.FrontendServices
+@inherits SearchableDropdownBase<CountryDto>
 
-<SearchableDropdown TItem="ShiftDto" />
+@inject ICountryService _service
+@inject IApplicationState _state
+
+<SearchableDropdown Required=@Required
+                    RequiredError=@RequiredError
+                    Immediate=@Immediate
+                    Label=@Label
+                    Value=@Value
+                    ValueChanged=@ValueChanged
+                    StringConvert="@((x) => $"{x.Name}")"
+                    PageSize=@PageSize
+                    Clearable="@Clearable"
+                    TItem="CountryDto" 
+                    SearchFunction="LoadData" />
 
 @code {
+    private CancellationTokenSource cts { get; set; } = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        Label = Label is null ? "Country" : Label;
+        PageSize = PageSize == 0 ? 10 : PageSize;
+        return base.OnInitializedAsync();
+    }
+
+    async Task<Response<List<CountryDto>>> LoadData(string? keyword, int page)
+    {
+        var odataFilter = new ODataFilter()
+            {
+                PageNumber = page,
+                PageSize = PageSize,
+                SortDirection = ShortDirections.Asc,
+                OrderFiled = nameof(CountryDto.Name)
+            };
+
+        var result = await _service.Get(odataFilter, cts.Token);
+        if (!result) return new();
+
+        return result;
+    }
 
 }

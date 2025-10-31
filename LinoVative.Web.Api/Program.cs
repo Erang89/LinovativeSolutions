@@ -31,6 +31,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddLogging();
 builder.Services.AddAuthenticationConfiguration(builder.Configuration);
+builder.Services.AddCorsPolicyConfiguration(builder.Configuration);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -130,6 +131,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(PolicyConfigurationExtensions.CorsPolicyName);
 app.UseRouting();
 app.UseHttpsRedirection();
 app.UseAuthorization();

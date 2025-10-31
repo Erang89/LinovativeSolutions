@@ -7,6 +7,7 @@
         public string? OrderFiled { get; set; }
         public string? Options { get; set; }
         private string? _sortDirection;
+        public object? FilterPayload { get; set; } = new { searchKeyword = "" };
         public string? SortDirection
         {
             get { return _sortDirection; }

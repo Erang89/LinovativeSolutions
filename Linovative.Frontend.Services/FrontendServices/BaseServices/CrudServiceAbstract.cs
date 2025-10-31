@@ -23,7 +23,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             {
                 var url = $"{_uriPrefix}/{CREATE}";
 
-                var response = await _privateHttpClient.PostAsJsonAsync(url, obj, token);
+                var response = await _httpClient.PostAsJsonAsync(url, obj, token);
                 return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
@@ -40,7 +40,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             {
                 var url = $"{_uriPrefix}/{UPDATE}";
 
-                var response = await _privateHttpClient.PutAsJsonAsync(url, obj, token);
+                var response = await _httpClient.PutAsJsonAsync(url, obj, token);
                 return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
@@ -58,7 +58,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             {
                 var url = $"{_uriPrefix}/{DELETE}";
                 var obj = new BulkDeleteDto() { Ids = new() { id } };
-                var response = await _privateHttpClient.PostAsJsonAsync(url, obj, token);
+                var response = await _httpClient.PostAsJsonAsync(url, obj, token);
                 return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)
@@ -75,7 +75,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             try
             {
                 var url = $"{_uriPrefix}/{DELETE}";
-                var response = await _privateHttpClient.PostAsJsonAsync(url, obj, token);
+                var response = await _httpClient.PostAsJsonAsync(url, obj, token);
                 return await response.ToAppBoolResponse(token);
             }
             catch (Exception ex)

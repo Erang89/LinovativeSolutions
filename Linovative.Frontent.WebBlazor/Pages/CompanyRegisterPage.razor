@@ -37,10 +37,7 @@
                 <LinovativeGap />
 
 
-                @* <CountryDropdown /> *@
-                <LinovativeInputText IsRequired=true
-                                     RequiredMessage="@Required("Country")"
-                                     Label="@Label("Country")" />
+                <CountryDropdown Required="true" RequiredError="@Required("Country")" Label="@Label("Country")" />
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true

@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Linovative.Frontend.Shared.ShareServices;
 using Linovative.Frontent.WebBlazor;
 using Linovative.Frontent.WebBlazor.Extensions;
 using Microsoft.AspNetCore.Components.Web;
@@ -9,6 +10,8 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddMudServices();
+builder.Services.AddLogging();
+builder.Services.AddScoped<HttpClientHeaderProvider>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.ConfigureEndpoints();
 builder.Services.AddLocalization();
