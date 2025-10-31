@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Xml;
 
-namespace Linovative.Frontend.Services.FrontendServices
+namespace Linovative.Frontend.Services.Converter
 {
     public class Iso8601TimeSpanConverter : JsonConverter<TimeSpan?>
     {

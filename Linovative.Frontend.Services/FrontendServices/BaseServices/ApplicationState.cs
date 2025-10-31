@@ -1,6 +1,6 @@
 ﻿using Linovative.Frontend.Services.Interfaces;
 
-namespace Linovative.Frontend.Services.FrontendServices
+namespace Linovative.Frontend.Services.FrontendServices.BaseServices
 {
     public class ApplicationState : IApplicationState
     {
