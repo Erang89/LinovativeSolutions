@@ -90,6 +90,7 @@
 
                 <LinovativeInputText IsRequired=true
                                      LocalizerKey="EmailAddress"
+                                     InputType="InputType.Email"
                                      LocalizerResource="@LocalizerResource"
                                      Errors="@formResponse?.Errors"
                                      @bind-Value="@item.EmailAddress" />
@@ -98,12 +99,14 @@
 
                 <LinovativeInputText IsRequired=true
                                      LocalizerKey="Password"
+                                     InputType="InputType.Password"
                                      LocalizerResource="@LocalizerResource"
                                      Errors="@formResponse?.Errors"
                                      @bind-Value="@item.Password" />
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true
+                                     InputType="InputType.Password"
                                      LocalizerKey="ConfirmPassword"
                                      LocalizerResource="@LocalizerResource"
                                      Errors="@formResponse?.Errors"

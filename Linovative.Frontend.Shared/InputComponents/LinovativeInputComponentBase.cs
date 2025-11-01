@@ -1,6 +1,7 @@
 ﻿using Linovative.Frontend.Services.Interfaces;
 using Linovative.Frontend.Shared.Enums;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using System.Linq.Expressions;
 
 namespace Linovative.Frontend.Shared.InputComponents
@@ -60,5 +61,6 @@ namespace Linovative.Frontend.Shared.InputComponents
         [Parameter] public string? LocalizerResource { get; set; }
 
         [Inject] public IJsonLocalizer JsonLocalizer { get; set; }
+        [Parameter] public InputType InputType { get; set; } = InputType.Text;
     }
 }
