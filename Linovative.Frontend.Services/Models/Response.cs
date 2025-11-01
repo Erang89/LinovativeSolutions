@@ -36,18 +36,18 @@
         public static implicit operator bool(Response<T> response) => response.Errors.Count() == 0 && (response?.IsValid ?? false);
     }
 
-    public class Response : Response<bool>
+    public class Response : Response<object?>
     {
         public Response()
         {
-            Data = true;
+            Data = null;
             IsValid = Errors.Count() == 0;
         }
 
         public static Response Ok() => new Response
         {
             IsValid = true,
-            Data = true
+            Data = null
         };
 
         public static new Response Failed(string? message, IDictionary<string, List<string>>? errors = default) => new Response

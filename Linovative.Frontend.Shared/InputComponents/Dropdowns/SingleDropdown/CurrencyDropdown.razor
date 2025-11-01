@@ -6,7 +6,7 @@
 @inject IApplicationState _state
 
 <SearchableDropdown Required=@Required
-                    RequiredError=@RequiredError
+                    RequiredMessage=@RequiredMessage
                     Immediate=true
                     Label=@Label
                     Value=@Value
@@ -17,6 +17,12 @@
                     PageSize=@PageSize
                     Clearable="@Clearable"
                     TItem="CurrencyDto"
+                    ErrorKey="@ErrorKey"
+                    LocalizerResource="@LocalizerResource"
+                    LocalizerKey="@LocalizerKey"
+                    Error="@Error"
+                    Errors="@Errors"
+                    ErrorMessage="@ErrorMessage"
                     SearchFunction="LoadData" />
 
 @code {

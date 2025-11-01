@@ -1,12 +1,9 @@
-﻿using Linovative.Shared.Interface;
-using LinoVative.Service.Backend.AuthServices;
+﻿using LinoVative.Service.Backend.AuthServices;
 using LinoVative.Service.Backend.Helpers;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Backend.LocalizerServices;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Interfaces;
-using LinoVative.Service.Core.Sources;
 using LinoVative.Shared.Dto;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
@@ -55,6 +52,7 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
             {
                 Id = request.Id,
                 Name = request.Name,
+                Address = request.Address,
                 CountryId = request.CountryId,
                 TimeZoneId = request.TimeZoneId,
                 CurrencyId = request.CurrencyId,

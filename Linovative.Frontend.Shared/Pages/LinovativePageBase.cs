@@ -8,10 +8,10 @@ namespace Linovative.Frontend.Shared.Pages
         [Inject]
         public IJsonLocalizer JsonLocalizer { get; set; }
 
-        protected abstract string LocalizerKey { get; }
+        protected abstract string LocalizerResource { get; }
         protected string Lang(string key, params object[] args) 
             => args?.Count() == 0?  
-            JsonLocalizer[$"{LocalizerKey}.{key}"] 
+            JsonLocalizer[$"{LocalizerResource}.{key}"] 
             : JsonLocalizer.Format(key, args);
 
         public string Required(string inputName) => Lang($"{inputName}.Required.ErrorMessage"); 
@@ -20,7 +20,7 @@ namespace Linovative.Frontend.Shared.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            await JsonLocalizer.EnsureLoadedAsync(LocalizerKey); 
+            await JsonLocalizer.EnsureLoadedAsync(LocalizerResource); 
             await base.OnInitializedAsync();
         }
     }

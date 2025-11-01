@@ -1,4 +1,5 @@
-﻿using Linovative.Frontend.Shared.Enums;
+﻿using Linovative.Frontend.Services.Interfaces;
+using Linovative.Frontend.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 using System.Linq.Expressions;
 
@@ -15,7 +16,13 @@ namespace Linovative.Frontend.Shared.InputComponents
         public bool IsRequired { get; set; }
 
         [Parameter]
-        public string? RequiredMessage { get; set; } = "This field is required";
+        public string? RequiredMessage { get; set; }
+
+        [Parameter]
+        public string? ErrorKey { get; set; }
+
+        [Parameter]
+        public IDictionary<string, List<string>> Errors { get; set; } =  new Dictionary<string, List<string>>();
 
         [Parameter]
         public string? ErrorMessage { get; set; }
@@ -48,5 +55,10 @@ namespace Linovative.Frontend.Shared.InputComponents
 
         [Parameter]
         public bool Error { get; set; }
+
+        [Parameter] public string? LocalizerKey { get; set; }
+        [Parameter] public string? LocalizerResource { get; set; }
+
+        [Inject] public IJsonLocalizer JsonLocalizer { get; set; }
     }
 }

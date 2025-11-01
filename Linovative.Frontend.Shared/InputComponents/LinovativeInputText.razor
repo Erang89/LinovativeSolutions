@@ -1,19 +1,22 @@
 ﻿@inherits LinovativeInputComponentBase<string?>
 
-<MudTextField 
-    Value="@Value" 
-    ValueChanged="@(x => ValueChanged.InvokeAsync(x))"
-    Required="IsRequired" 
-    ReadOnly="ReadOnly" 
-    Error="Error"
-    Label="@Label"
-    Immediate="true"
-    T="string"
-    ErrorText="@ErrorMessage"
-    RequiredError="@RequiredMessage"
-    Variant="@variant"></MudTextField>
+<MudTextField Value="@Value"
+              ValueChanged="@(x => ValueChanged.InvokeAsync(x))"
+              Required="IsRequired"
+              ReadOnly="ReadOnly"
+              Label="@_label"
+              Immediate="true"
+              T="string"
+              Error="@_isError"
+              ErrorText="@_errorMessage"
+              RequiredError="@_requiredMessage"
+              Variant="@variant"></MudTextField>
 
 @code {
     MudBlazor.Variant variant => Variant.ToMudBlazorVariant();
-
+    bool _isError => Error || _containErrors;
+    bool _containErrors => (ErrorKey is not null && Errors.Count() > 0 && Errors.ContainsKey(ErrorKey));
+    string? _errorMessage => _isError ? ErrorMessage : _containErrors ? string.Join(", ", Errors[ErrorKey!]) : (IsRequired && string.IsNullOrEmpty(Value)) ? _requiredMessage : null;
+    string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
+    string? _requiredMessage => !string.IsNullOrWhiteSpace(RequiredMessage) ? RequiredMessage : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Required.ErrorMessage"];
 }

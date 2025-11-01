@@ -7,6 +7,7 @@
 @using Linovative.Frontend.Services.FrontendServices
 @inject IRegisterCompanyService _service
 @inject IApplicationState _state
+@inject IAppNavigationManager _nav
 
 <PageTitle>@Lang("Title")</PageTitle>
 
@@ -34,38 +35,41 @@
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true
-                                     RequiredMessage="@Required("Name")"
-                                     Label="@Label("Name")"
-                                     @bind-Value="@item.Name"/>
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="Name"
+                                     Errors="@formResponse?.Errors"
+                                     @bind-Value="@item.Name" />
                 <LinovativeGap />
 
-                <LinovativeInputText IsRequired=true                    
-                                     RequiredMessage="@Required("Address")"
-                                     Label="@Label("Address")" 
+                <LinovativeInputText IsRequired=true
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="Address"
+                                     Errors="@formResponse?.Errors"
                                      @bind-Value="@item.Address" />
                 <LinovativeGap />
 
 
-                <CountryDropdown 
-                    Required="true" 
-                    RequiredError="@Required("Country")" 
-                    Label="@Label("Country")"
-                    Value="@country" 
-                    ValueChanged="@(x => country = x)"/>
+                <CountryDropdown LocalizerKey="Country"
+                                 LocalizerResource="@LocalizerResource"
+                                 Errors="@formResponse?.Errors"
+                                 Required="true"
+                                 Value="@country"
+                                 ValueChanged="@(x => country = x)" />
                 <LinovativeGap />
 
                 <TimezoneDropdown Required="true"
-                                  RequiredError="@Required("TimeZone")"
-                                  Label="@Label("TimeZone")" 
+                                  LocalizerKey="TimeZone"
+                                  LocalizerResource="@LocalizerResource"
+                                  Errors="@formResponse?.Errors"
                                   Value="@timezone"
-                                  ValueChanged="@(x => timezone = x)"/>
+                                  ValueChanged="@(x => timezone = x)" />
                 <LinovativeGap />
 
                 <CurrencyDropdown Required="true"
-                                 RequiredError="@Required("Currency")"
-                                 Label="@Label("Currency")"
-                                 Value="@currency"
-                                 ValueChanged="@(x => currency = x)" />
+                                  LocalizerKey="Currency"
+                                  LocalizerResource="@LocalizerResource"
+                                  Value="@currency"
+                                  ValueChanged="@(x => currency = x)" />
             </MudItem>
 
 
@@ -77,28 +81,32 @@
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true
-                                     RequiredMessage="@Required("NikeName")"
-                                     Label="@Label("NikeName")"
+                                     LocalizerKey="NikeName"
+                                     LocalizerResource="@LocalizerResource"
+                                     Errors="@formResponse?.Errors"
                                      @bind-Value="@item.NickName" />
                 <LinovativeGap />
 
 
                 <LinovativeInputText IsRequired=true
-                                     RequiredMessage="@Required("EmailAddress")"
-                                     Label="@Label("EmailAddress")"
+                                     LocalizerKey="EmailAddress"
+                                     LocalizerResource="@LocalizerResource"
+                                     Errors="@formResponse?.Errors"
                                      @bind-Value="@item.EmailAddress" />
                 <LinovativeGap />
 
 
                 <LinovativeInputText IsRequired=true
-                                     RequiredMessage="@Required("Password")"
-                                     Label="@Label("Password")"
+                                     LocalizerKey="Password"
+                                     LocalizerResource="@LocalizerResource"
+                                     Errors="@formResponse?.Errors"
                                      @bind-Value="@item.Password" />
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true
-                                     RequiredMessage="@Required("ConfirmPassword")"
-                                     Label="@Label("ConfirmPassword")"
+                                     LocalizerKey="ConfirmPassword"
+                                     LocalizerResource="@LocalizerResource"
+                                     Errors="@formResponse?.Errors"
                                      @bind-Value="@confirmPassword" />
                 <LinovativeGap />
 
@@ -122,7 +130,7 @@
     string[] errors = { };
     MudTextField<string> pwField1 = default!;
     MudForm form = default!;
-    protected override string LocalizerKey => nameof(CompanyRegisterPage);
+    protected override string LocalizerResource => nameof(CompanyRegisterPage);
     private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private RegisterNewCompanyDto item = new();
@@ -133,42 +141,13 @@
     private CancellationTokenSource cts = new();
     private Response? formResponse { get; set; } = null;
     private bool isFormSubmitting = false;
-    private IEnumerable<string> PasswordStrength(string pw)
-    {
-
-        if (string.IsNullOrWhiteSpace(pw))
-        {
-            yield return "Password is required!";
-            yield break;
-        }
-
-        if (pw.Length < 8)
-            yield return "Password must be at least of length 8";
-
-        if (!Regex.IsMatch(pw, @"[A-Z]"))
-            yield return "Password must contain at least one capital letter";
-
-        if (!Regex.IsMatch(pw, @"[a-z]"))
-            yield return "Password must contain at least one lowercase letter";
-
-        if (!Regex.IsMatch(pw, @"[0-9]"))
-            yield return "Password must contain at least one digit";
-    }
-
-    private string? PasswordMatch(string arg)
-    {
-        if (pwField1.Value != arg)
-            return "Passwords don't match";
-
-        return null;
-    }
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
     }
 
-    
+
     async Task HideAllAllert()
     {
         if (form is not null) await form.ResetAsync();
@@ -190,12 +169,33 @@
     async Task Submit()
     {
         isFormSubmitting = true;
+        await form!.Validate();
+
+        if (!success)
+        {
+            isFormSubmitting = false;
+            return;
+        }
+
+        item.CountryId = country!.Id;
+        item.CurrencyId = currency!.Id;
+        item.TimeZoneId = timezone!.Id;
+        item.Id = Guid.NewGuid();
 
         formResponse = await _service.Register(item, cts.Token);
         if (formResponse)
         {
             await Reset();
             successAllert!.ShowAlert(Lang("Register.Success"));
+
+            var task = new Task(async () =>
+            {
+                await Task.Delay(1000 * 5);
+                _nav.NavigateTo("/login");
+            });
+
+            task.RunSynchronously();
+
             return;
         }
 
