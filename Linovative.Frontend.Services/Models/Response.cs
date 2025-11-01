@@ -3,7 +3,7 @@
     public class ResponseBase
     {
         public int Count { get; set; }
-        public bool IsValid { get; protected set; } = true;
+        public bool IsValid { get; set; } = false;
         public string Title { get; set; } = default!;
         public IDictionary<string, List<string>> Errors { get; set; } = new Dictionary<string, List<string>>();
 
@@ -33,7 +33,7 @@
             Data = data
         };
 
-        public static implicit operator bool(Response<T> response) => response?.IsValid ?? false;
+        public static implicit operator bool(Response<T> response) => response.Errors.Count() == 0 && (response?.IsValid ?? false);
     }
 
     public class Response : Response<bool>
@@ -41,7 +41,7 @@
         public Response()
         {
             Data = true;
-            IsValid = true;
+            IsValid = Errors.Count() == 0;
         }
 
         public static Response Ok() => new Response

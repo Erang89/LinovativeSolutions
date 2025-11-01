@@ -6,7 +6,7 @@ using LinoVative.Service.Backend.CrudServices.Payments.PaymentMethods;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Payments
 {
-    public class PaymentMethodsController : APIBaseController
+    public class PaymentMethodsController : PrivateAPIBaseController
     {
         public PaymentMethodsController(IMediator mediator, ILogger<PaymentMethodsController> logger) : base(mediator, logger)
         {

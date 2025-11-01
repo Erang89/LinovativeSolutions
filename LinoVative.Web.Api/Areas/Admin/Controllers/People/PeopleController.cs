@@ -7,7 +7,7 @@ using LinoVative.Service.Backend.CrudServices.People;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.People
 {
-    public class PeopleController : APIBaseController
+    public class PeopleController : PrivateAPIBaseController
     {
         public PeopleController(IMediator mediator, ILogger<PeopleController> logger) : base(mediator, logger)
         {

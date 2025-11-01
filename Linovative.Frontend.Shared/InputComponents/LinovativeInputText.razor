@@ -1,11 +1,14 @@
 ﻿@inherits LinovativeInputComponentBase<string?>
 
 <MudTextField 
-    @bind-Value="@Value" 
+    Value="@Value" 
+    ValueChanged="@(x => ValueChanged.InvokeAsync(x))"
     Required="IsRequired" 
     ReadOnly="ReadOnly" 
     Error="Error"
     Label="@Label"
+    Immediate="true"
+    T="string"
     ErrorText="@ErrorMessage"
     RequiredError="@RequiredMessage"
     Variant="@variant"></MudTextField>

@@ -1,0 +1,76 @@
+﻿@inject IApplicationState _state;
+
+@if (Response is not null && !Response)
+{
+    <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Left" ShowCloseIcon="true" CloseIconClicked="(HideAlert)">
+        
+        @if(Response?.Errors is not null)
+        {
+            <MudText Typo="Typo.h6">@Response?.Title</MudText>
+            <ul style="margin-left: 10px">
+                @foreach(var error in GetErrorList())
+                {
+                    <li>@error</li>
+                }
+            </ul>
+        }
+            
+        @if (Response?.Errors.Count == 0)
+        {
+            @Response?.Title
+        }
+    </MudAlert>
+}
+
+@code {
+
+    [Parameter]
+    public int Duration { get; set; } = 10000;
+
+    [Parameter]
+    public bool AutoClose { get; set; }
+
+
+    private ResponseBase? Response { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+    public void HideAlert()
+    {
+        Response = null;
+        _state.NotifyStateChanged();
+    }
+
+    public void ShowAlert(ResponseBase response)
+    {
+        Response = response;
+        _state.NotifyStateChanged();
+
+        if (!AutoClose) return;
+
+        _ = Task.Run(async () =>
+       {
+           await Task.Delay(5000);
+           Response = null;
+           _state.NotifyStateChanged();
+       });
+    }
+
+    public List<string> GetErrorList()
+    {
+        var result = new List<string>();
+        if (Response?.Errors is null) return result;
+
+        foreach(var error in Response!.Errors)
+        {
+            result.Add(string.Join(". ", error.Value));
+        }
+
+        return result;
+    }
+}

@@ -6,7 +6,7 @@ using LinoVative.Service.Backend.CrudServices.Shifts;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Shifts
 {
-    public class ShiftsController : APIBaseController
+    public class ShiftsController : PrivateAPIBaseController
     {
         public ShiftsController(IMediator mediator, ILogger<ShiftsController> logger) : base(mediator, logger)
         {

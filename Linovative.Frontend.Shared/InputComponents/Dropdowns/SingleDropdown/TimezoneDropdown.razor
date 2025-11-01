@@ -10,8 +10,8 @@
                     Immediate=true
                     Label=@Label
                     Value=@Value
-                    Text=@text
-                    TextChanged="@(x => text = x)"
+                    Text=@Text
+                    TextChanged="@(x => Text = x)"
                     ValueChanged=@ValueChanged
                     StringConvert="@((x) => $"{x.Name}")"
                     PageSize=@PageSize
@@ -21,7 +21,6 @@
 
 @code {
     private CancellationTokenSource cts { get; set; } = new();
-    string text = "";
     protected override Task OnInitializedAsync()
     {
         _state.OnChange += StateHasChanged;

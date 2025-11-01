@@ -30,7 +30,7 @@ namespace Linovative.Frontend.Services.Extensions
 
             var result = JsonConvert.DeserializeObject<Response> (jsonString, settings);
 
-            if (result is null || !result)
+            if (result is null)
                 result = Response.Failed("An error accourred. Please contact your adminstrator.");
 
             return result!;

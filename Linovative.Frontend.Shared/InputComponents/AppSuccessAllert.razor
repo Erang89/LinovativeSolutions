@@ -1,0 +1,48 @@
+﻿@inject IApplicationState _state;
+
+@if (Message is not null)
+{
+    <MudAlert Severity="Severity.Success" ContentAlignment="HorizontalAlignment.Left" ShowCloseIcon="true" CloseIconClicked="(HideAlert)">
+        @Message
+    </MudAlert>
+}
+
+@code {
+
+    [Parameter]
+    public int Duration { get; set; } = 10000;
+
+    [Parameter]
+    public bool AutoClose { get; set; }
+
+
+    private string? Message { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+    public void HideAlert()
+    {
+        Message = null;
+        _state.NotifyStateChanged();
+    }
+
+    public void ShowAlert(string response)
+    {
+        Message = response;
+        _state.NotifyStateChanged();
+        
+        if (!AutoClose) return;
+
+        _ = Task.Run(async () =>
+       {
+           await Task.Delay(5000);
+           Message = null;
+           _state.NotifyStateChanged();
+       });
+    }
+}

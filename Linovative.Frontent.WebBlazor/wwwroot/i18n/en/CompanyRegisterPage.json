@@ -26,5 +26,6 @@
   "NikeName.Required.ErrorMessage": "Nikename is required",
   "ConfirmPassword.Required.ErrorMessage": "Password must be confirmed",
 
-  "Password.NotMatch": "Password don't match"
+  "Password.NotMatch": "Password don't match",
+  "Register.Success": "Your company has been registered successfully, please check your email for confirmation"
 }

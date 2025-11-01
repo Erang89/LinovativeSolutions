@@ -6,7 +6,7 @@ using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Outlets
 {
-    public class OutletsController : APIBaseController
+    public class OutletsController : PrivateAPIBaseController
     {
         public OutletsController(IMediator mediator, ILogger<OutletsController> logger) : base(mediator, logger)
         {

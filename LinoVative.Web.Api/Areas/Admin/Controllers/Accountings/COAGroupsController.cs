@@ -6,7 +6,7 @@ using LinoVative.Service.Backend.CrudServices.COAGroups;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accountings
 {
-    public class COAGroupsController : APIBaseController
+    public class COAGroupsController : PrivateAPIBaseController
     {
         public COAGroupsController(IMediator mediator, ILogger<COAGroupsController> logger) : base(mediator, logger)
         {

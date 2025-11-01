@@ -6,7 +6,7 @@ using LinoVative.Service.Backend.CrudServices.Accounts;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accountings
 {
-    public class AccountsController : APIBaseController
+    public class AccountsController : PrivateAPIBaseController
     {
         public AccountsController(IMediator mediator, ILogger<AccountsController> logger) : base(mediator, logger)
         {

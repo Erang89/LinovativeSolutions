@@ -7,9 +7,11 @@ namespace Linovative.Frontend.Shared.InputComponents
     {
         [Parameter] public string? Text { get; set; }
         [Parameter] public bool FullWidth { get; set; }
+        [Parameter] public bool Disabled { get; set; }
         [Parameter] public LinovativeSize Size { get; set; } = LinovativeSize.Medium;
         [Parameter] public LinovativeColor Color { get; set; }
         [Parameter] public LinovativeInputComponentVariant Variant { get; set; }
         [Parameter] public EventCallback OnClicked { get; set; }
+        
     }
 }

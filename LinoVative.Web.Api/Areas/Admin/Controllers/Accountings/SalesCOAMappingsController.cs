@@ -7,7 +7,7 @@ using LinoVative.Service.Backend.CrudServices.SalesCOAMappings;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accountings
 {
-    public class SalesCOAMappingsController : APIBaseController
+    public class SalesCOAMappingsController : PrivateAPIBaseController
     {
         public SalesCOAMappingsController(IMediator mediator, ILogger<SalesCOAMappingsController> logger) : base(mediator, logger)
         {

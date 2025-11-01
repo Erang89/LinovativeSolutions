@@ -6,7 +6,7 @@ using LinoVative.Service.Backend.CrudServices.Items.Units;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
 {
-    public class ItemUnitsController : APIBaseController
+    public class ItemUnitsController : PrivateAPIBaseController
     {
         public ItemUnitsController(IMediator mediator, ILogger<ItemUnitsController> logger) : base(mediator, logger)
         {

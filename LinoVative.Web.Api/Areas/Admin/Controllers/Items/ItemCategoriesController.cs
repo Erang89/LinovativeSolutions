@@ -7,7 +7,7 @@ using LinoVative.Service.Backend.CrudServices.Items.ItemCategries;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
 {
-    public class ItemCategoriesController : APIBaseController
+    public class ItemCategoriesController : PrivateAPIBaseController
     {
         public ItemCategoriesController(IMediator mediator, ILogger<ItemCategoriesController> logger) : base(mediator, logger)
         {

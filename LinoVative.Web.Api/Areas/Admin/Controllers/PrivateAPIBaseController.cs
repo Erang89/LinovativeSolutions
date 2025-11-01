@@ -33,9 +33,20 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers
 
 
     [Authorize(AuthenticationSchemes = AppSchemeNames.MainAPIScheme)]
-    public abstract class APIBaseController : MediatorControllerBase
+    public abstract class PrivateAPIBaseController : MediatorControllerBase
     {
-        public APIBaseController(IMediator mediator, ILogger logger) : base(mediator, logger) 
+        public PrivateAPIBaseController(IMediator mediator, ILogger logger) : base(mediator, logger) 
+        {
+
+        }
+
+    }
+
+
+    [Route("public/api/v1/[controller]")]
+    public abstract class PublicAPIBaseController : MediatorControllerBase
+    {
+        public PublicAPIBaseController(IMediator mediator, ILogger logger) : base(mediator, logger)
         {
 
         }

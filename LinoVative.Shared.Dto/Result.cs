@@ -4,6 +4,7 @@ namespace LinoVative.Shared.Dto
 {
     public class Result
     {
+        public bool IsValid => Status == HttpStatusCode.OK;
         public string? Title { get; private set; }
         public string? Message { get; private set; } = string.Empty;
         public object? Data { get; private set; }

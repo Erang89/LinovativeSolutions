@@ -6,7 +6,7 @@ using LinoVative.Service.Backend.CrudServices.OrderTypes;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.OrderTypes
 {
-    public class OrderTypesController : APIBaseController
+    public class OrderTypesController : PrivateAPIBaseController
     {
         public OrderTypesController(IMediator mediator, ILogger<OrderTypesController> logger) : base(mediator, logger)
         {

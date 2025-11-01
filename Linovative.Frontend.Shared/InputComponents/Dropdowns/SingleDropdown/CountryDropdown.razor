@@ -10,6 +10,8 @@
                     Immediate=true
                     Label=@Label
                     Value=@Value
+                    Text=@Text
+                    TextChanged="@(x => Text = x)"
                     ValueChanged=@ValueChanged
                     StringConvert="@((x) => $"{x.Name}")"
                     PageSize=@PageSize

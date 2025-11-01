@@ -7,31 +7,17 @@ using System.Net.Http.Json;
 
 namespace Linovative.Frontend.Services.FrontendServices.BaseServices
 {
-    public abstract class ReadOnlyServiceAbstract<T> : IReadOnlyService<T>
+    public abstract class ReadOnlyServiceAbstract<T> : RequeserServiceBase, IReadOnlyService<T>
     {
-        protected HttpClient _httpClient => IsPublicEndpoint? _publicHttpClient : _privateHttpClient ?? new HttpClient();
-        protected readonly HttpClient _privateHttpClient;
-        protected readonly HttpClient _publicHttpClient;
-        protected readonly ILogger _logger;
-
-        protected const string CREATE = "create";
-        protected const string UPDATE = "update";
-        protected const string DELETE = "delete";
-
-        protected readonly string _uriPrefix;
-
-        protected abstract bool IsPublicEndpoint { get; }
+        
 
         protected ReadOnlyServiceAbstract(
             IHttpClientFactory httpFactory,
             ILogger logger,
             string uriPrefix
-            )
+            ) : base(httpFactory, logger, uriPrefix)
         {
-            _logger = logger;
-            _privateHttpClient = httpFactory.CreateClient(EndpointNames.PrivateApi);
-            _publicHttpClient = httpFactory.CreateClient(EndpointNames.PublicApi);
-            _uriPrefix = uriPrefix;
+           
         }
 
 

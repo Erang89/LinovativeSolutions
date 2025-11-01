@@ -2,20 +2,28 @@
 @layout UnAuthorizedLayout
 @using System.Text.RegularExpressions
 @using LinoVative.Shared.Dto
+@using LinoVative.Shared.Dto.Sources
 @inherits LinovativePageBase
-
+@using Linovative.Frontend.Services.FrontendServices
+@inject IRegisterCompanyService _service
+@inject IApplicationState _state
 
 <PageTitle>@Lang("Title")</PageTitle>
 
 
-<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" @onkeypress="@(() => formErrorAlert?.HideAlert())">
 
     <div style="max-width: 900px; margin: auto;">
 
-        <MudGrid Spacing="20">
+        <MudGrid Spacing="10">
 
             <MudItem xs="12" lg="12">
                 <MudText Align="Align.Center" Typo="Typo.h4">@Lang("Title")</MudText>
+
+                <LinovativeGap />
+                <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+                <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
+
             </MudItem>
 
 
@@ -26,31 +34,38 @@
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true
-                                     @bind-Value="@dto.Name"
                                      RequiredMessage="@Required("Name")"
-                                     Label="@Label("Name")" />
+                                     Label="@Label("Name")"
+                                     @bind-Value="@item.Name"/>
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true                    
                                      RequiredMessage="@Required("Address")"
-                                     Label="@Label("Address")" />
+                                     Label="@Label("Address")" 
+                                     @bind-Value="@item.Address" />
                 <LinovativeGap />
 
 
                 <CountryDropdown 
                     Required="true" 
                     RequiredError="@Required("Country")" 
-                    Label="@Label("Country")" />
+                    Label="@Label("Country")"
+                    Value="@country" 
+                    ValueChanged="@(x => country = x)"/>
                 <LinovativeGap />
 
                 <TimezoneDropdown Required="true"
                                   RequiredError="@Required("TimeZone")"
-                                  Label="@Label("TimeZone")" />
+                                  Label="@Label("TimeZone")" 
+                                  Value="@timezone"
+                                  ValueChanged="@(x => timezone = x)"/>
                 <LinovativeGap />
 
                 <CurrencyDropdown Required="true"
                                  RequiredError="@Required("Currency")"
-                                 Label="@Label("Currency")" />
+                                 Label="@Label("Currency")"
+                                 Value="@currency"
+                                 ValueChanged="@(x => currency = x)" />
             </MudItem>
 
 
@@ -63,31 +78,35 @@
 
                 <LinovativeInputText IsRequired=true
                                      RequiredMessage="@Required("NikeName")"
-                                     Label="@Label("NikeName")" />
+                                     Label="@Label("NikeName")"
+                                     @bind-Value="@item.NickName" />
                 <LinovativeGap />
 
 
                 <LinovativeInputText IsRequired=true
                                      RequiredMessage="@Required("EmailAddress")"
-                                     Label="@Label("EmailAddress")" />
+                                     Label="@Label("EmailAddress")"
+                                     @bind-Value="@item.EmailAddress" />
                 <LinovativeGap />
 
 
                 <LinovativeInputText IsRequired=true
                                      RequiredMessage="@Required("Password")"
-                                     Label="@Label("Password")" />
+                                     Label="@Label("Password")"
+                                     @bind-Value="@item.Password" />
                 <LinovativeGap />
 
                 <LinovativeInputText IsRequired=true
                                      RequiredMessage="@Required("ConfirmPassword")"
-                                     Label="@Label("ConfirmPassword")" />
+                                     Label="@Label("ConfirmPassword")"
+                                     @bind-Value="@confirmPassword" />
                 <LinovativeGap />
 
             </MudItem>
 
 
             <MudItem xs="12" lg="12">
-                <LinovativeButton Size="LinoSize.Large" FullWidth="true" Text="@Text("Register")" />
+                <LinovativeButton OnClicked="@Submit" Disabled="isFormSubmitting" Size="LinoSize.Large" FullWidth="true" Text="@Text("Register")" />
                 <LinovativeGap />
                 <LinovativeButton Variant="LinoVariant.Text" Size="LinoSize.Large" FullWidth="true" Text="@Text("Login")" />
             </MudItem>
@@ -103,9 +122,17 @@
     string[] errors = { };
     MudTextField<string> pwField1 = default!;
     MudForm form = default!;
-    private RegisterNewCompanyDto dto = new();
     protected override string LocalizerKey => nameof(CompanyRegisterPage);
-
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private AppSuccessAllert? successAllert { get; set; }
+    private RegisterNewCompanyDto item = new();
+    private CountryDto? country = null;
+    private TimezoneDto? timezone = null;
+    private CurrencyDto? currency = null;
+    private string confirmPassword = "";
+    private CancellationTokenSource cts = new();
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting = false;
     private IEnumerable<string> PasswordStrength(string pw)
     {
 
@@ -140,4 +167,41 @@
     {
         await base.OnInitializedAsync();
     }
+
+    
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        successAllert?.HideAlert();
+        formErrorAlert?.HideAlert();
+    }
+
+
+    async Task Reset()
+    {
+        item = new();
+        formResponse = null;
+        isFormSubmitting = false;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+
+    async Task Submit()
+    {
+        isFormSubmitting = true;
+
+        formResponse = await _service.Register(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            successAllert!.ShowAlert(Lang("Register.Success"));
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+
 }

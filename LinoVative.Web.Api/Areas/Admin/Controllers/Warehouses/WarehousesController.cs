@@ -7,7 +7,7 @@ using LinoVative.Service.Backend.CrudServices.Warehouses;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Shifts
 {
-    public class WarehousesController : APIBaseController
+    public class WarehousesController : PrivateAPIBaseController
     {
         public WarehousesController(IMediator mediator, ILogger<WarehousesController> logger) : base(mediator, logger)
         {

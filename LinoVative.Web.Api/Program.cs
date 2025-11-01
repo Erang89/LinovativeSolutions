@@ -67,6 +67,7 @@ builder.Services.AddControllers()
 
             var problem = new
             {
+                isValid = false,
                 status = StatusCodes.Status400BadRequest,
                 //title = "One or more validation errors occurred.",
                 errors
