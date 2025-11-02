@@ -119,7 +119,11 @@
             <MudItem xs="12" lg="12">
                 <LinovativeButton OnClicked="@Submit" Disabled="isFormSubmitting" Size="LinoSize.Large" FullWidth="true" Text="@Text("Register")" />
                 <LinovativeGap />
-                <LinovativeButton Variant="LinoVariant.Text" Size="LinoSize.Large" FullWidth="true" Text="@Text("Login")" />
+                <div style="text-align: center">
+                    <MudText Align="Align.Center" Typo="Typo.caption">@Text("Login.Description")</MudText>
+                </div>
+                <LinovativeGap />
+                <LinovativeButton OnClicked="@Login" Variant="LinoVariant.Text" Size="LinoSize.Large" FullWidth="true" Text="@Text("Login")" />
             </MudItem>
 
 
@@ -206,5 +210,7 @@
         formErrorAlert!.ShowAlert(formResponse);
     }
 
+
+    void Login() => _nav.NavigateTo("/login");
 
 }

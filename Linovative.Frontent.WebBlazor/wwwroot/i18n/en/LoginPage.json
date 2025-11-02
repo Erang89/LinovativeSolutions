@@ -1,0 +1,15 @@
+{
+  "Title": "Login",
+  "Invalid.Message": "Invalid username or password",
+  "UserName.Label": "User Name",
+  "Password.Label": "Password",
+
+  "UserName.Required.ErrorMessage": "User Name is required",
+  "Password.Required.ErrorMessage": "Password is required",
+
+  "Login.Button.Text": "Login",
+  "Register.Button.Text": "Register",
+
+  "Register.Description.Text": "Or register now if you don't have an account yet"
+
+}

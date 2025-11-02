@@ -5,6 +5,7 @@
         public int Count { get; set; }
         public bool IsValid { get; set; } = false;
         public string Title { get; set; } = default!;
+        public string? Message { get; set; } = default!;
         public IDictionary<string, List<string>> Errors { get; set; } = new Dictionary<string, List<string>>();
 
         public static implicit operator bool(ResponseBase response) => response?.IsValid ?? false;

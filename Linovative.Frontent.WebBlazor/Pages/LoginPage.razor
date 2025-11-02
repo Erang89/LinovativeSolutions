@@ -1,8 +1,124 @@
 ﻿@page "/login"
+@inherits LinovativePageBase
 @layout UnAuthorizedLayout
+@using LinoVative.Shared.Dto.Auth
+@using Linovative.Frontend.Services.FrontendServices
+@inject IAppNavigationManager _nav
+@inject ILoginService _service
+@inject IApplicationState _state
 
-<h3>Login Page</h3>
+
+<PageTitle>@Lang("Title")</PageTitle>
+
+<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" @onkeypress="@(() => formErrorAlert?.HideAlert())">
+
+    <div style="max-width: 400px; margin: auto;">
+        <MudGrid Spacing="10">
+
+            
+            <MudItem xs="12" lg="12">
+                <MudText Align="Align.Center" Typo="Typo.h4">@Lang("Title")</MudText>
+
+                <LinovativeGap />
+                <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+                <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
+
+            </MudItem>
+
+            <MudItem xs="12" lg="12">
+
+                <LinovativeInputText IsRequired=true
+                                     LocalizerResource="@LocalizerResource"
+                                     InputType="@InputType.Email"
+                                     LocalizerKey="UserName"
+                                     Errors="@formResponse?.Errors"
+                                     @bind-Value="@item.UserName" />
+                <LinovativeGap />
+
+
+                <LinovativeInputText IsRequired=true
+                                     LocalizerResource="@LocalizerResource"
+                                     InputType="@InputType.Password"
+                                     LocalizerKey="Password"
+                                     Errors="@formResponse?.Errors"
+                                     @bind-Value="@item.Password" />
+
+            </MudItem>
+
+            <MudItem xs="12" lg="12">
+                <LinovativeButton OnClicked="@Submit" Disabled="isFormSubmitting" Size="LinoSize.Large" FullWidth="true" Text="@Text("Login.Button")" />
+                <LinovativeGap />
+                <div style="text-align: center">
+                    <MudText Align="Align.Center" Typo="Typo.caption">@Text("Register.Description")</MudText>
+                </div>
+                <LinovativeGap />
+                <LinovativeButton OnClicked="@Register" Variant="LinoVariant.Text" Size="LinoSize.Large" FullWidth="true" Text="@Text("Register.Button")" />
+            </MudItem>
+
+
+        </MudGrid>
+    </div>
+
+</MudForm>
+
+
 
 @code {
 
+    private LoginDto item = new();
+    MudForm form = default!;
+    protected override string LocalizerResource => nameof(LoginPage);
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private AppSuccessAllert? successAllert { get; set; }
+    bool success;
+    string[] errors = { };
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting = false;
+    private CancellationTokenSource cts = new();
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    async Task Submit()
+    {
+        isFormSubmitting = true;
+        await form!.Validate();
+
+        if (!success)
+        {
+            isFormSubmitting = false;
+            return;
+        }
+
+        formResponse = await _service.Login(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _nav.NavigateTo("/");
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+
+    async Task Reset()
+    {
+        item = new();
+        formResponse = null;
+        isFormSubmitting = false;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        successAllert?.HideAlert();
+        formErrorAlert?.HideAlert();
+    }
+
+   void Register() => _nav.NavigateTo("/register/new/company");
 }
