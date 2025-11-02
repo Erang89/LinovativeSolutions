@@ -8,7 +8,7 @@
 <SearchableDropdown Required=@Required
                     RequiredMessage=@RequiredMessage
                     Immediate=true
-                    Label=@Label
+                    Label=@_label
                     Value=@Value
                     Text=@Text
                     TextChanged="@(x => Text = x)"
@@ -30,11 +30,12 @@
 
     protected override Task OnInitializedAsync()
     {
-        _state.OnChange += StateHasChanged;
-        Label = Label is null ? "Country" : Label;
+        _state.OnChange += StateHasChanged;        
         PageSize = PageSize == 0 ? 10 : PageSize;
         return base.OnInitializedAsync();
     }
+
+    string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
 
     async Task<Response<List<CountryDto>>> LoadData(string? keyword, int page)
     {

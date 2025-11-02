@@ -12,7 +12,7 @@
 <PageTitle>@Lang("Title")</PageTitle>
 
 
-<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors" @onkeypress="@(() => formErrorAlert?.HideAlert())">
+<MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@errors" @onkeypress="@HideErrors">
 
     <div style="max-width: 900px; margin: auto;">
 
@@ -66,7 +66,7 @@
                 <LinovativeGap />
 
                 <CurrencyDropdown Required="true"
-                                  LocalizerKey="Currency"
+                                  LocalizerKey="TimeZone"
                                   LocalizerResource="@LocalizerResource"
                                   Value="@currency"
                                   ValueChanged="@(x => currency = x)" />
@@ -107,9 +107,11 @@
 
                 <LinovativeInputText IsRequired=true
                                      InputType="InputType.Password"
+                                     Error="!IsPasswordMatch()"
                                      LocalizerKey="ConfirmPassword"
                                      LocalizerResource="@LocalizerResource"
                                      Errors="@formResponse?.Errors"
+                                     ErrorMessage="@confirmMessage"
                                      @bind-Value="@confirmPassword" />
                 <LinovativeGap />
 
@@ -133,7 +135,7 @@
 </MudForm>
 
 @code {
-    bool success;
+    bool isFormValid;
     string[] errors = { };
     MudTextField<string> pwField1 = default!;
     MudForm form = default!;
@@ -162,6 +164,11 @@
         formErrorAlert?.HideAlert();
     }
 
+    void HideErrors()
+    {
+        formErrorAlert?.HideAlert();
+        formResponse = null;
+    }
 
     async Task Reset()
     {
@@ -178,9 +185,17 @@
         isFormSubmitting = true;
         await form!.Validate();
 
-        if (!success)
+        if (!isFormValid)
         {
             isFormSubmitting = false;
+            return;
+        }
+
+        if(!IsPasswordMatch())
+        {
+            formErrorAlert!.ShowAlert(new() { Message = Lang("ConfirmPassword.NotMatch")});
+            isFormSubmitting = false;
+            _state.NotifyStateChanged();
             return;
         }
 
@@ -210,6 +225,15 @@
         formErrorAlert!.ShowAlert(formResponse);
     }
 
+
+    bool IsPasswordMatch()
+    {
+        if(string.IsNullOrEmpty(item.Password)) return true;
+
+        return (item!.Password!.Equals(confirmPassword));
+    }
+
+    string? confirmMessage => IsPasswordMatch() ? null : Lang("ConfirmPassword.NotMatch");
 
     void Login() => _nav.NavigateTo("/login");
 
