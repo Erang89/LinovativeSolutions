@@ -69,7 +69,7 @@
 
         foreach(var error in Response!.Errors)
         {
-            result.Add(string.Join(". ", error.Value));
+            result.Add(string.Join(" ", error.Value));
         }
 
         return result;
