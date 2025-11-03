@@ -9,9 +9,9 @@ namespace Linovative.Frontend.Shared.ShareServices
     public class HttpClientHeaderProvider : DelegatingHandler
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IUnauthorizeHandler _unauthorizeHandler;
+        private readonly IUnauthorizeHandlerService _unauthorizeHandler;
 
-        public HttpClientHeaderProvider(IServiceProvider serviceProvider, IUnauthorizeHandler unauthorizeHandler)
+        public HttpClientHeaderProvider(IServiceProvider serviceProvider, IUnauthorizeHandlerService unauthorizeHandler)
         {
             _serviceProvider = serviceProvider;
             _unauthorizeHandler = unauthorizeHandler;
@@ -33,7 +33,7 @@ namespace Linovative.Frontend.Shared.ShareServices
 
             // Clear and set headers for each request
             request.Headers.Clear();
-            request.Headers.Authorization = new AuthenticationHeaderValue(HttpHeaderKeys.Bearer, jwtToken!.AccessToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue(HttpHeaderKeys.Bearer, jwtToken!.Token);
 
 
             // Continue the request pipeline

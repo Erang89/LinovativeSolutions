@@ -1,4 +1,5 @@
 using Blazored.LocalStorage;
+using Blazored.SessionStorage;
 using Linovative.Frontend.Shared.ShareServices;
 using Linovative.Frontent.WebBlazor;
 using Linovative.Frontent.WebBlazor.Extensions;
@@ -15,7 +16,11 @@ builder.Services.AddScoped<HttpClientHeaderProvider>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.ConfigureEndpoints();
 builder.Services.AddLocalization();
-builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddBlazoredLocalStorage(config =>
+    config.JsonSerializerOptions.WriteIndented = true);
+builder.Services.AddBlazoredSessionStorage(config =>
+    config.JsonSerializerOptions.WriteIndented = true);
+
 builder.RegisterAllServices();
 await builder.RegisterLocalizer();
 

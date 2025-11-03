@@ -24,9 +24,10 @@ namespace LinoVative.Service.Backend.Helpers
                 //new Claim(JwtClaimTypes.PreferredUserName, user.UserName!),
             };
 
-            if (user.DefaultCompanyId is not null)
-                claims.Add(new Claim(AppJwtClaims.CompanyId, user.DefaultCompanyId.Value.ToString()));
+            if (user.DefaultCompanyId is not null || companyId is not null)
+                claims.Add(new Claim(AppJwtClaims.CompanyId, (companyId??user.DefaultCompanyId)!.Value.ToString()));
 
+            var company = dbCtx.Companies.FirstOrDefault(x => x.Id == companyId);
 
             //var roles = user.UserRoles;
 
@@ -53,7 +54,14 @@ namespace LinoVative.Service.Backend.Helpers
 
             var refreshToken = await GetRefreshToken(ipAddress, user, dbCtx);
 
-            return new LoginResponseDto() { Token = new JwtSecurityTokenHandler().WriteToken(token), ExpiryUTCTime = expires, RefreshToken = refreshToken };
+            return new LoginResponseDto() { 
+                Token = new JwtSecurityTokenHandler().WriteToken(token), 
+                ExpireAtUtcTime = expires,
+                RefreshToken = refreshToken,
+                CompanyId = companyId,
+                CompanyName = company?.Name,
+                Nikname = user?.NikName,
+            };
 
         }
 

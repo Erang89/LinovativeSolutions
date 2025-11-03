@@ -1,6 +1,6 @@
 ﻿namespace Linovative.Frontend.Services.Interfaces
 {
-    public interface IUnauthorizeHandler
+    public interface IUnauthorizeHandlerService
     {
         Task Handle(CancellationToken token = default);
     }

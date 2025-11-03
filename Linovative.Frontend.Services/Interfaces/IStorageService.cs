@@ -1,6 +1,6 @@
 ﻿namespace Linovative.Frontend.Services.Interfaces
 {
-    public interface IStorage
+    public interface IStorageService
     {
         Task SetValue(string key, object value);
         Task<T?> GetValue<T>(string key);

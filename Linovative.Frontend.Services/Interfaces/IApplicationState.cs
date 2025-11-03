@@ -1,6 +1,6 @@
 ﻿namespace Linovative.Frontend.Services.Interfaces
 {
-    public interface IApplicationState
+    public interface IApplicationStateService
     {
         public event Action? OnChange;
         void NotifyStateChanged();

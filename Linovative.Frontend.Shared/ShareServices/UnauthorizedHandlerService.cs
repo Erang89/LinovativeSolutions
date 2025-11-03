@@ -2,10 +2,10 @@
 
 namespace Linovative.Frontend.Shared.ShareServices
 {
-    public class UnauthorizedHandlerService : IUnauthorizeHandler
+    public class UnauthorizedHandlerService : IUnauthorizeHandlerService
     {
-        private readonly IAppNavigationManager _nav;
-        public UnauthorizedHandlerService(IAppNavigationManager nav)
+        private readonly IAppNavigationService _nav;
+        public UnauthorizedHandlerService(IAppNavigationService nav)
         {
             _nav = nav;
         }

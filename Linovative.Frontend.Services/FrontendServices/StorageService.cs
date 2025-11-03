@@ -1,8 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using Linovative.Frontend.Services.Interfaces;
 
-namespace Linovative.Frontend.Shared.ShareServices
+namespace Linovative.Frontend.Services.FrontendServices
 {
+
     public class StorageService : IStorageService
     {
         private readonly ILocalStorageService _storage;

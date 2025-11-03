@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Linovative.Frontend.Shared.ShareServices
 {
-    public class AppNavigationService : IAppNavigationManager
+    public class AppNavigationService : IAppNavigationService
     {
         private readonly NavigationManager _navigationManager;
         public AppNavigationService(NavigationManager navigationManager)
@@ -12,6 +12,6 @@ namespace Linovative.Frontend.Shared.ShareServices
         }
 
         public string Uri => _navigationManager.Uri;
-        void IAppNavigationManager.NavigateTo(string url, bool forceLoad) => _navigationManager.NavigateTo(url, forceLoad);
+        void IAppNavigationService.NavigateTo(string url, bool forceLoad) => _navigationManager.NavigateTo(url, forceLoad);
     }
 }
