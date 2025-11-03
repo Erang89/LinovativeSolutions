@@ -1,19 +1,30 @@
-﻿@inherits LayoutComponentBase
+﻿@using Linovative.Frontend.Shared.ShareServices
+
+@inherits LayoutComponentBase
 @inject IThemeService _themeProvider
 @inject IApplicationStateService _state
 @inject IStorageService _storage
-@inject IAppNavigationService _navigationManager;
-@inject IAuthenticationService _authProvider;
+@inject IAppNavigationService _navigationManager
+@inject IAuthenticationService _authProvider
 
 <MudThemeProvider IsDarkMode="@_themeProvider.IsDarkTheme" DefaultScrollbar="false" />
-<MudThemeProvider/>
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
+<MainAppMenus />
 
 <MudLayout>
-    <MudAppBar>
+    <MudAppBar Fixed="true" Elevation="1" Color="Color.Inherit">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudText Style="margin-right: 10px" Typo="Typo.button">@companyName</MudText>
+
+        <MudIconButton @onclick="@((e) => _themeProvider.SetDarkTheme(!_themeProvider.IsDarkTheme))" Color="Color.Inherit" Icon="@(!_themeProvider.IsDarkTheme? Icons.Material.Outlined.DarkMode : Icons.Material.Outlined.LightMode)" />
+
+        <AppBarRightMenu>
+            <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Settings">Settings</MudMenuItem>
+        </AppBarRightMenu>
+
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
         <NavMenu/>
@@ -32,6 +43,7 @@
     }
 
     CancellationTokenSource _cts = new();
+    string? companyName = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -47,8 +59,15 @@
             return;
         }
 
-        if (result?.Data?.CompanyId is null)
-            _navigationManager.NavigateTo("/select-company");
 
+
+        if (result?.Data?.CompanyId is null)
+        {
+
+            _navigationManager.NavigateTo("/select-company");
+            return;
+        }
+
+        companyName = result.Data?.CompanyName;
     }
 }

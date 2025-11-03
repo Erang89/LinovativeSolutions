@@ -1,0 +1,91 @@
+﻿
+.mud-breadcrumb-item > a{
+    font-size: small;
+}
+
+.w-100-important{
+    width: 100% !important;
+}
+
+.mud-table-row .item-show-on-hover,
+.show-on-hover .item-show-on-hover {
+    display: none;
+}
+
+
+.mud-table-row:hover .item-show-on-hover,
+.show-on-hover:hover .item-show-on-hover {
+    display: block !important;
+    cursor: pointer;
+}
+
+.searchable-dropdown {
+    position: relative;
+}
+
+.searchable-dropdown .dropdown-table {
+    position: absolute;
+    width: 100%;
+    top: 68px;
+    z-index: 1;
+}
+
+.searchable-dropdown.variant-text .dropdown-table {
+    top: 52px;
+}
+
+.searchable-dropdown.variant-filled .dropdown-table {
+    top: 58px;
+}
+
+.searchable-dropdown .togle-icon,
+.searchable-dropdown .close-icon {
+    position: absolute;
+    right: 5px;
+    top: 25px;
+    color: #9c9d9d;
+}
+
+.searchable-dropdown .close-icon {
+    right: 37px;
+}
+
+.searchable-dropdown .togle-icon {
+    top: 16px;
+}
+
+.searchable-dropdown.variant-text .togle-icon {
+    top: 2px;
+}
+
+.searchable-dropdown.variant-text .close-icon {
+    top: 10px;
+}
+
+
+.searchable-dropdown.variant-filled .togle-icon {
+    top: 12px;
+}
+
+.searchable-dropdown.variant-filled .close-icon {
+    top: 21px;
+}
+
+.searchable-dropdown .togle-icon:hover, .searchable-dropdown .close-icon:hover {
+    color: dimgray !important;
+    cursor: pointer;
+}
+
+.topbar-company-dropdown .searchable-dropdown .togle-icon,
+.topbar-company-dropdown .searchable-dropdown .close-icon {
+    top: calc(50% - 12px);
+}
+
+.topbar-company-dropdown .searchable-dropdown .togle-icon {
+    top: calc(50% - 20px);
+}
+
+.mud-nav-link .mud-nav-link-expand-icon
+{
+    font-size: large;
+}

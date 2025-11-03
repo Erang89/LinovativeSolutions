@@ -1,14 +1,17 @@
-﻿<MudNavMenu Class="mud-width-full">
+﻿@inject IMainMenuService _mainMenuService
+
+<MudNavMenu Class="mud-width-full">
     @* <MudText Typo="Typo.h6" Class="px-4">Material</MudText>
     <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Icons</MudText> 
-    <MudDivider Class="my-2" />*@
+    <MudDivider Class="my-2" />
+    <MudIconButton OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn" Class="ms-2" Color="Color.Inherit" Edge="Edge.Start" />
+   *@
+    <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">Apps</MudNavLink>
     <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
     <MudNavLink Href="/servers" Icon="@Icons.Material.Filled.Storage">Servers</MudNavLink>
     <MudNavLink Href="/billing" Icon="@Icons.Material.Filled.Receipt" Disabled="true">Billing</MudNavLink>
     <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.Settings" Expanded="true">
         <MudNavLink Href="/users" Icon="@Icons.Material.Filled.People" IconColor="Color.Success">Users</MudNavLink>
         <MudNavLink Href="/pos/items" Icon="@Icons.Material.Filled.Security" IconColor="Color.Info">Security</MudNavLink>
-        <MudNavLink Href="/register/new/company" Icon="@Icons.Material.Filled.Security" IconColor="Color.Info">Register</MudNavLink>
-        <MudNavLink Href="/logout" Icon="@Icons.Material.Filled.Security" IconColor="Color.Info">Logout</MudNavLink>
     </MudNavGroup>
 </MudNavMenu>

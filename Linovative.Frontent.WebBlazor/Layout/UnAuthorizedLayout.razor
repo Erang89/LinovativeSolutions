@@ -1,6 +1,9 @@
 ﻿@inherits LayoutComponentBase
+@inject IThemeService _themeProvider
+@inject IApplicationStateService _state
+@inject IStorageService _storage
 
-<MudThemeProvider />
+<MudThemeProvider IsDarkMode="@_themeProvider.IsDarkTheme" DefaultScrollbar="false" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -24,5 +27,15 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    CancellationTokenSource _cts = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        var isDarkTheme = await _storage.GetValue<bool>(StorageKeys.DarkTheme);
+        await _themeProvider.SetDarkTheme(isDarkTheme);
     }
 }

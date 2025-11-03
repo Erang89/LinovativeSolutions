@@ -1,0 +1,63 @@
+﻿@using Linovative.Frontend.Shared.ShareServices
+@using Linovative.Frontend.Services.Constans
+
+@inject IApplicationStateService _state
+@inject IMainMenuService _mainMenuService
+@inject IThemeService _themeProvider
+@inject IAppNavigationService _nav;
+
+<MudOverlay OnClick="@(() => _mainMenuService.Toggle())" Style="z-index: 10001; justify-content: start; align-items: start; padding-top: 10px; padding-left: 10px;" Visible="_mainMenuService.IsShow" DarkBackground="false" Absolute="true">
+    <div @onclick:stopPropagation>
+        <MudCard Elevation="3" Style="width: 450px; min-height: 600px;" Class="pa-5">
+
+            <MudGrid Spacing="5" Justify="Justify.Center" Class="gap-1">
+                @foreach (var item in mainMenus)
+                {
+                    <MudItem>
+                        <MudPaper @onclick="@(() => OnClickMenu(item))" Class="@($"cursor-pointer d-flex flex-column pa-2 align-content-center justify-space-around justify-center")" Style="width: 120px; height: 120px;">
+                            <div class="d-flex justify-center">
+                                <MudAvatar Color="Color.Inherit" Variant="Variant.Text">
+                                    <MudIcon Icon="@item.Icon" Color="Color.Inherit" Size="Size.Large" />
+                                </MudAvatar>
+                            </div>
+                            <div style="text-align: center">@item.Name</div>
+                        </MudPaper>
+                    </MudItem>
+                }
+            </MudGrid>
+
+        </MudCard>
+    </div>
+</MudOverlay>
+
+@code {
+
+    private class MainMenuModel
+    {
+        public string Name { get; set; } = default!;
+        public string Icon { get; set; } = default!;
+        public string Link { get; set; } = default!;
+    }
+
+    private List<MainMenuModel> mainMenus { get; set; } = new()
+    {
+        new(){Name = "POS Management", Link="/", Icon = Icons.Material.Filled.Handyman},
+        new(){Name = "POS", Link="/", Icon = Icons.Material.Outlined.PointOfSale},
+        new(){Name = "Hotel Reservation", Link="/", Icon = Icons.Material.Outlined.Hotel},
+        new(){Name = "Inventory", Link= PageRoutes.Inventory.Index, Icon = Icons.Material.Outlined.Inventory},
+        new(){Name = "Accounting", Link= PageRoutes.Accounting.Index, Icon = Icons.Material.Outlined.Money},
+        new(){Name = "Settings", Link= PageRoutes.Settings.IndexSettings, Icon = Icons.Material.Outlined.Settings},
+    };
+
+    protected override Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        return base.OnInitializedAsync();
+    }
+
+    void OnClickMenu(MainMenuModel menu)
+    {
+        _nav.NavigateTo(menu.Link);
+        _mainMenuService.Toggle();
+    }
+}
