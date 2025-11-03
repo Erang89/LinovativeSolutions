@@ -21,7 +21,7 @@ namespace Linovative.Frontend.Shared.ShareServices
         {
             // Dynamically resolve the IJwtTokenProvider
             using var scope = _serviceProvider.CreateScope();
-            var jwtTokenProvider = scope.ServiceProvider.GetRequiredService<IJwtTokenProvider>();
+            var jwtTokenProvider = scope.ServiceProvider.GetRequiredService<IJwtTokenService>();
             var httpFactory = scope.ServiceProvider.GetRequiredService<IHttpClientFactory>();
             var httpClient = httpFactory.CreateClient(EndpointNames.PublicApi);
             var jwtToken = await jwtTokenProvider.GetJwtToken(httpClient);

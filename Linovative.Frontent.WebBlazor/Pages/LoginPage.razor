@@ -72,7 +72,7 @@
     private AppSuccessAllert? successAllert { get; set; }
     bool success;
     string[] errors = { };
-    private Response? formResponse { get; set; } = null;
+    private Response<JwtToken>? formResponse { get; set; } = null;
     private bool isFormSubmitting = false;
     private CancellationTokenSource cts = new();
     protected override async Task OnInitializedAsync()

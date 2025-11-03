@@ -1,7 +1,6 @@
 ﻿using Linovative.Frontend.Services.Constans;
 using Linovative.Frontend.Services.Interfaces;
 using Linovative.Frontend.Services.Models;
-using LinoVative.Shared.Dto.Auth;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Http.Json;
@@ -13,7 +12,6 @@ namespace Linovative.Frontend.Services.FrontendServices
     {
         public Task<Response<JwtToken>> AssignCompanyId(Guid companyId, CancellationToken cancellationToken = default);
         public Task<Response<JwtToken>> IsAuthenticated(CancellationToken token);
-        public Task<Response> Login(LoginDto dto, CancellationToken token);
         public Task Logout();
     }
 
@@ -26,14 +24,14 @@ namespace Linovative.Frontend.Services.FrontendServices
         private const string LoginUrl = "auth/login";
         private const string AssignCompanyIdUrl = "auth/AssignCompanyId";
         private readonly ISessionStorageService _session;
-        private readonly IJwtTokenProvider _jwtTokenProvider;
+        private readonly IJwtTokenService _jwtTokenProvider;
 
         public AuthenticationService(
             IStorageService storage,
             IHttpClientFactory httpFactory,
             ILogger<AuthenticationService> logger,
             ISessionStorageService session,
-            IJwtTokenProvider jwtTokenProvider
+            IJwtTokenService jwtTokenProvider
             )
         {
             _storage = storage;
@@ -59,29 +57,6 @@ namespace Linovative.Frontend.Services.FrontendServices
             }
         }
 
-
-
-        public async Task<Response> Login(LoginDto dto, CancellationToken token)
-        {
-            try
-            {
-                var response = await _httpClient.PostAsJsonAsync(LoginUrl, dto, token);
-                if (!response.IsSuccessStatusCode)
-                    return Response.Failed("Invalid user name or password");
-
-                var jsonString = await response.Content.ReadAsStringAsync(token);
-                JwtToken? jwtInfo = (JsonConvert.DeserializeObject<Response<JwtToken>?>(jsonString))!.Data;
-
-                await _storage.SetValue(StorageKeys.Token, jwtInfo!);
-
-                return Response.Ok();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return Response.Failed("An error accurred. Please contact the administrator");
-            }
-        }
 
         public async Task Logout()
         {

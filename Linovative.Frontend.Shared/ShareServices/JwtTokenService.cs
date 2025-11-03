@@ -8,7 +8,7 @@ using Linovative.Frontend.Services.Extensions;
 
 namespace Linovative.Frontend.Shared.ShareServices
 {
-    public class JwtTokenProviderService : IJwtTokenProvider
+    public class JwtTokenService : IJwtTokenService
     {
         private readonly IStorageService _storage;
         private readonly ILogger _logger;
@@ -16,7 +16,7 @@ namespace Linovative.Frontend.Shared.ShareServices
         private readonly ISessionStorageService _session;
         private readonly IUnauthorizeHandlerService _unauthorizeHandler;
 
-        public JwtTokenProviderService(IStorageService storage, ILogger<JwtTokenProviderService> logger, ISessionStorageService session, IUnauthorizeHandlerService unauthorizeHandler)
+        public JwtTokenService(IStorageService storage, ILogger<JwtTokenService> logger, ISessionStorageService session, IUnauthorizeHandlerService unauthorizeHandler)
         {
             _storage = storage;
             _logger = logger;
