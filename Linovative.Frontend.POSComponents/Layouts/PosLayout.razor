@@ -1,19 +1,35 @@
-﻿@inherits LayoutComponentBase
+﻿@using Linovative.Frontend.Shared.ShareServices
 
-<MudThemeProvider/>
+@inherits LayoutComponentBase
+@inject IThemeService _themeProvider
+@inject IApplicationStateService _state
+@inject IStorageService _storage
+@inject IAppNavigationService _navigationManager
+@inject IAuthenticationService _authProvider
+
+<MudThemeProvider IsDarkMode="@_themeProvider.IsDarkTheme" DefaultScrollbar="false" />
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
+<MainAppMenus />
 
 <MudLayout>
-    <MudAppBar>
+    <MudAppBar Fixed="true" Elevation="1" Color="Color.Inherit">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudText Style="margin-right: 10px" Typo="Typo.button">@companyName</MudText>
+
+        <MudIconButton @onclick="@((e) => _themeProvider.SetDarkTheme(!_themeProvider.IsDarkTheme))" Color="Color.Inherit" Icon="@(!_themeProvider.IsDarkTheme? Icons.Material.Outlined.DarkMode : Icons.Material.Outlined.LightMode)" />
+
+        <AppBarRightMenu>
+            <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Settings">Settings</MudMenuItem>
+        </AppBarRightMenu>
+
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
-        
+        <NavMenu/>
     </MudDrawer>
     <MudMainContent>
-        <div>This is test</div>
         @Body
     </MudMainContent>
 </MudLayout>
@@ -24,5 +40,34 @@
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    CancellationTokenSource _cts = new();
+    string? companyName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        var isDarkTheme = await _storage.GetValue<bool>(StorageKeys.DarkTheme);
+        await _themeProvider.SetDarkTheme(isDarkTheme);
+
+        var result = await _authProvider.IsAuthenticated(_cts.Token);
+        if (!result)
+        {
+            _navigationManager.NavigateTo("/login");
+            return;
+        }
+
+
+
+        if (result?.Data?.CompanyId is null)
+        {
+
+            _navigationManager.NavigateTo("/select-company");
+            return;
+        }
+
+        companyName = result.Data?.CompanyName;
     }
 }
