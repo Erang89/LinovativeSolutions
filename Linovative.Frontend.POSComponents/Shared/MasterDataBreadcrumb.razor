@@ -1,0 +1,20 @@
+﻿<MudBreadcrumbs Class="ps-0 pe-0 pt-2" Items="@Items()" MaxItems="10"></MudBreadcrumbs>
+
+@code {
+    [Parameter]
+    public List<BreadcrumbItem> Childs { get; set; } = new();
+
+    List<BreadcrumbItem> Items()
+    {
+        var items = _parents.ToList();
+        items.AddRange(Childs);
+        return items;
+    }
+
+    private static List<BreadcrumbItem> _parents = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Home", href: "/"),
+        new BreadcrumbItem("Master Data", href: PageRoutes.PostManagement.ItemMaster.IndexItems)
+    };
+}
+

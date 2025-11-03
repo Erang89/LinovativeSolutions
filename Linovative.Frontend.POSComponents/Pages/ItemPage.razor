@@ -1,7 +1,12 @@
 ﻿@page "/pos/items"
 @layout PosLayout
+@inject ITopBarService _topBarService
 <h3>ItemPage</h3>
 
 @code {
-
+    protected override async Task OnInitializedAsync()
+    {
+        _topBarService.SetTitle("Items");
+        await base.OnInitializedAsync();
+    }
 }

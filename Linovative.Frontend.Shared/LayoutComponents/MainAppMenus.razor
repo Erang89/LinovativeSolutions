@@ -5,6 +5,7 @@
 @inject IMainMenuService _mainMenuService
 @inject IThemeService _themeProvider
 @inject IAppNavigationService _nav;
+@inject IJsonLocalizer _loc
 
 <MudOverlay OnClick="@(() => _mainMenuService.Toggle())" Style="z-index: 10001; justify-content: start; align-items: start; padding-top: 10px; padding-left: 10px;" Visible="_mainMenuService.IsShow" DarkBackground="false" Absolute="true">
     <div @onclick:stopPropagation>
@@ -39,18 +40,20 @@
         public string Link { get; set; } = default!;
     }
 
-    private List<MainMenuModel> mainMenus { get; set; } = new()
-    {
-        new(){Name = "POS Management", Link="/", Icon = Icons.Material.Filled.Handyman},
-        new(){Name = "POS", Link="/", Icon = Icons.Material.Outlined.PointOfSale},
-        new(){Name = "Hotel Reservation", Link="/", Icon = Icons.Material.Outlined.Hotel},
-        new(){Name = "Inventory", Link= PageRoutes.Inventory.Index, Icon = Icons.Material.Outlined.Inventory},
-        new(){Name = "Accounting", Link= PageRoutes.Accounting.Index, Icon = Icons.Material.Outlined.Money},
-        new(){Name = "Settings", Link= PageRoutes.Settings.IndexSettings, Icon = Icons.Material.Outlined.Settings},
-    };
+    private List<MainMenuModel> mainMenus { get; set; } = new();
 
     protected override Task OnInitializedAsync()
     {
+        mainMenus = new()
+        {
+            new(){Name = _loc.Global("Menu.PostManagement"), Link="/pos/items", Icon = Icons.Material.Filled.Handyman},
+            new(){Name = _loc.Global("Menu.POS"), Link="/", Icon = Icons.Material.Outlined.PointOfSale},
+            new(){Name = _loc.Global("Menu.HoteReservation"), Link="/", Icon = Icons.Material.Outlined.Hotel},
+            new(){Name = _loc.Global("Menu.Inventory"), Link= PageRoutes.Inventory.Index, Icon = Icons.Material.Outlined.Inventory},
+            new(){Name = _loc.Global("Menu.Accounting"), Link= PageRoutes.Accounting.Index, Icon = Icons.Material.Outlined.Money},
+            new(){Name = _loc.Global("Menu.Settings"), Link= PageRoutes.Settings.IndexSettings, Icon = Icons.Material.Outlined.Settings},
+        };
+
         _state.OnChange += StateHasChanged;
         return base.OnInitializedAsync();
     }

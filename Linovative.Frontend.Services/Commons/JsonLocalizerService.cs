@@ -1,6 +1,7 @@
 ﻿using Linovative.Frontend.Services.Interfaces;
 using System.Globalization;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Linovative.Frontend.Services.Commons
@@ -11,15 +12,18 @@ namespace Linovative.Frontend.Services.Commons
         private readonly ILanguageProvider _lang;
         private static Dictionary<string, string> _dict = new();
         private static List<string> _keys = new();
+        private readonly IApplicationStateService _state;
 
-        public JsonLocalizerService(HttpClient http, ILanguageProvider lang)
+        public JsonLocalizerService(HttpClient http, ILanguageProvider lang, IApplicationStateService appState)
         {
             _http = http;
             _lang = lang;
+            _state = appState;
         }
 
-        public async Task EnsureLoadedAsync(string key)
+        public async Task EnsureLoadedAsync(string key, string? libraryName = default)
         {
+            var libraryLink = libraryName is null ? null : $"_Content/{libraryName}/";
             var culture = CultureInfo.DefaultThreadCurrentCulture?.TwoLetterISOLanguageName?? "en";
 
             if (_keys.Contains(key.ToLower()))
@@ -27,7 +31,7 @@ namespace Linovative.Frontend.Services.Commons
 
             _keys.Add(key.ToLower());
 
-            var path = $"i18n/{culture}/{key}.json";
+            var path = $"{libraryLink}i18n/{culture}/{key}.json";
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             Action<Dictionary<string, string>> registerLocalizer = (sources) =>
             {
@@ -46,13 +50,17 @@ namespace Linovative.Frontend.Services.Commons
             {
                 var json = (await _http.GetFromJsonAsync<Dictionary<string, string>>(path, options)) ?? new Dictionary<string, string>();
                 registerLocalizer(json);
+                _state.NotifyStateChanged();
             }
             catch
             {
-                var json = (await _http.GetFromJsonAsync<Dictionary<string, string>>($"i18n/en/{key}.json", options)) ?? new Dictionary<string, string>();
+                var json = (await _http.GetFromJsonAsync<Dictionary<string, string>>($"{libraryLink}i18n/en/{key}.json", options)) ?? new Dictionary<string, string>();
                 registerLocalizer(json);
+                _state.NotifyStateChanged();
                 return;
             }
+
+           
         }
 
         public string this[string key]

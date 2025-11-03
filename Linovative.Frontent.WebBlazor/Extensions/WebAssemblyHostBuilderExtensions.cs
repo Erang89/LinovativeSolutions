@@ -12,7 +12,8 @@ namespace Linovative.Frontent.WebBlazor.Extensions
             var lang = host.Services.GetRequiredService<ILanguageProvider>();
             var loc = host.Services.GetRequiredService<IJsonLocalizer>();
             var culture = await lang.GetLanguage() ?? lang.DefaultCulture;
-            //await loc.EnsureLoadedAsync(culture);
+            await loc.EnsureLoadedAsync("POSManagementGlobal", "Linovative.Frontend.POSComponents");
+            await loc.EnsureLoadedAsync("Global");
             var ci = new CultureInfo(culture switch
             {
                 "id" => "id-ID",

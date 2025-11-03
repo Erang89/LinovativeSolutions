@@ -1,10 +1,11 @@
 ﻿@inject IAppNavigationService _nav
+@inject IJsonLocalizer _loc
 
 <MudButtonGroup OverrideStyles="false" Color="Color.Inherit" Variant="Variant.Text">
     <MudMenu TransformOrigin="Origin.TopLeft" Color="Color.Inherit" Icon="@Icons.Material.Filled.MoreVert" Style="align-self: auto;">
-        <MudMenuItem OnClick="@(() => _nav.NavigateTo("/logout"))" IconSize="Size.Small" Icon="@Icons.Material.Filled.Logout">Logout</MudMenuItem>
-        <MudMenuItem IconSize="Size.Small" Style="white-space: nowrap" Icon="@Icons.Material.Filled.VerifiedUser">My Profile</MudMenuItem>
-        <MudMenuItem IconSize="Size.Small" Style="white-space: nowrap" Icon="@Icons.Material.Filled.AdminPanelSettings">Admin Dashboard</MudMenuItem>
+        <MudMenuItem OnClick="@(() => _nav.NavigateTo("/logout"))" IconSize="Size.Small" Icon="@Icons.Material.Filled.Logout">@_loc.Global("Menu.Logout")</MudMenuItem>
+        <MudMenuItem IconSize="Size.Small" Style="white-space: nowrap" Icon="@Icons.Material.Filled.VerifiedUser">@_loc.Global("Menu.MyProfile")</MudMenuItem>
+        <MudMenuItem IconSize="Size.Small" Style="white-space: nowrap" Icon="@Icons.Material.Filled.AdminPanelSettings">@_loc.Global("Menu.AdminDashboard")</MudMenuItem>
         @ChildContent
     </MudMenu>
 </MudButtonGroup>

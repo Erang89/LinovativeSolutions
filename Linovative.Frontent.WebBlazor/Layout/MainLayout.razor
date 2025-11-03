@@ -6,6 +6,7 @@
 @inject IStorageService _storage
 @inject IAppNavigationService _navigationManager
 @inject IAuthenticationService _authProvider
+@inject IJsonLocalizer _loc;
 
 <MudThemeProvider IsDarkMode="@_themeProvider.IsDarkTheme" DefaultScrollbar="false" />
 <MudPopoverProvider/>
@@ -22,7 +23,7 @@
         <MudIconButton @onclick="@((e) => _themeProvider.SetDarkTheme(!_themeProvider.IsDarkTheme))" Color="Color.Inherit" Icon="@(!_themeProvider.IsDarkTheme? Icons.Material.Outlined.DarkMode : Icons.Material.Outlined.LightMode)" />
 
         <AppBarRightMenu>
-            <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Settings">Settings</MudMenuItem>
+            <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Settings">@_loc.Global("Menu.Settings")</MudMenuItem>
         </AppBarRightMenu>
 
     </MudAppBar>

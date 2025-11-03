@@ -1,0 +1,14 @@
+{
+  "Home": "Home",
+  "Menu.Logout": "Logout",
+  "Menu.Settings": "Settings",
+  "Menu.MyProfile": "My Profile",
+  "Menu.AdminDashboard": "Admin Dashboard",
+  "Menu.PostManagement": "POS Management",
+  "Menu.POS": "POS",
+  "Menu.HoteReservation": "Hotel Reservation",
+  "Menu.Inventory": "Inventory",
+  "Menu.Accounting": "Accounting",
+  "Menu.Dashboard": "Dashboard",
+  "Menu.Apps": "Apps"
+}

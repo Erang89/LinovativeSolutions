@@ -6,16 +6,23 @@
 @inject IStorageService _storage
 @inject IAppNavigationService _navigationManager
 @inject IAuthenticationService _authProvider
+@inject ITopBarService _topBarService;
+@inject IJsonLocalizer _loc;
 
 <MudThemeProvider IsDarkMode="@_themeProvider.IsDarkTheme" DefaultScrollbar="false" />
-<MudPopoverProvider/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 <MainAppMenus />
 
 <MudLayout>
+
     <MudAppBar Fixed="true" Elevation="1" Color="Color.Inherit">
+
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+
+        <MudText Style="margin-right: 10px" Typo="Typo.button">@_topBarService.Title - @_loc.PosManagement("POS.Management.Title")</MudText>
+
         <MudSpacer />
         <MudText Style="margin-right: 10px" Typo="Typo.button">@companyName</MudText>
 
@@ -26,9 +33,12 @@
         </AppBarRightMenu>
 
     </MudAppBar>
+
+
     <MudDrawer @bind-Open="@_drawerOpen" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
-        <NavMenu/>
+        <NavMenu />
     </MudDrawer>
+
     <MudMainContent>
         @Body
     </MudMainContent>
@@ -44,11 +54,12 @@
 
     CancellationTokenSource _cts = new();
     string? companyName = "";
+    string? title { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
+
         var isDarkTheme = await _storage.GetValue<bool>(StorageKeys.DarkTheme);
         await _themeProvider.SetDarkTheme(isDarkTheme);
 
@@ -69,5 +80,8 @@
         }
 
         companyName = result.Data?.CompanyName;
+        _state.NotifyStateChanged();
+
+        await base.OnInitializedAsync();
     }
 }

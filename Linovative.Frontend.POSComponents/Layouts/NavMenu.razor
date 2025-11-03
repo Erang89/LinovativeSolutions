@@ -1,11 +1,20 @@
-﻿@inject IMainMenuService _mainMenuService
+﻿@using Microsoft.AspNetCore.Components.Routing
+@inject IMainMenuService _mainMenuService
+@inject IMainMenuService _mainMenuService
+@inject IJsonLocalizer _loc;
 
 <MudNavMenu Class="mud-width-full">
-    <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">Apps</MudNavLink>
+    <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">@_loc.PosManagement("POS.Management.Title")</MudNavLink>
   <MudDivider Class="my-2"/>
-    <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">Items</MudNavLink>
-    <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.Settings" Expanded="true">
-        <MudNavLink Href="/users" Icon="@Icons.Material.Filled.People" IconColor="Color.Success">Users</MudNavLink>
-        <MudNavLink Href="/pos/items" Icon="@Icons.Material.Filled.Security" IconColor="Color.Info">Security</MudNavLink>
+    <MudNavLink Icon="@Icons.Material.Outlined.Home" Href="@PageRoutes.PostManagement.IndexMaster" Match="NavLinkMatch.All">@(_loc.Global("Home"))</MudNavLink>
+    <MudNavLink Icon="@Icons.Material.Filled.Dataset" Href="@PageRoutes.PostManagement.ItemMaster.IndexItems" Match="NavLinkMatch.Prefix">@_loc.PosManagement("Menu.ItemMaster")</MudNavLink>
+
+    <MudNavGroup Icon="@Icons.Material.Outlined.DocumentScanner" Title="@_loc.PosManagement("Menu.Reports")">
+
+    </MudNavGroup>
+
+    <MudNavGroup Icon="@Icons.Material.Outlined.Settings" Title="@_loc.PosManagement("Menu.PosSettings")">
+        <MudNavLink Icon="@Icons.Material.Filled.ShoppingBag" Href="@PageRoutes.PostManagement.Outlets.IndexOutlets" Match="NavLinkMatch.Prefix">@_loc.PosManagement("Menu.Outlets")</MudNavLink>
+        <MudNavLink Icon="@Icons.Material.Filled.Money" Href="@PageRoutes.PostManagement.Trasactions.Index" Match="NavLinkMatch.Prefix">@_loc.PosManagement("Menu.Transactions")</MudNavLink>
     </MudNavGroup>
 </MudNavMenu>

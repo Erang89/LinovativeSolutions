@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  
+    <Folder Include="Pages\POSManagements\Items\Groups\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,18 +1,7 @@
 ﻿@inject IMainMenuService _mainMenuService
-
+@inject IJsonLocalizer _log
 <MudNavMenu Class="mud-width-full">
-    @* <MudText Typo="Typo.h6" Class="px-4">Material</MudText>
-    <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Icons</MudText> 
-    <MudDivider Class="my-2" />
-    <MudIconButton OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn" Class="ms-2" Color="Color.Inherit" Edge="Edge.Start" />
-   *@
-   <MudDevider/>
-    <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">Apps</MudNavLink>
-    <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-    <MudNavLink Href="/servers" Icon="@Icons.Material.Filled.Storage">Servers</MudNavLink>
-    <MudNavLink Href="/billing" Icon="@Icons.Material.Filled.Receipt" Disabled="true">Billing</MudNavLink>
-    <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.Settings" Expanded="true">
-        <MudNavLink Href="/users" Icon="@Icons.Material.Filled.People" IconColor="Color.Success">Users</MudNavLink>
-        <MudNavLink Href="/pos/items" Icon="@Icons.Material.Filled.Security" IconColor="Color.Info">Security</MudNavLink>
-    </MudNavGroup>
+    <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">@_log.Global("Menu.Apps")</MudNavLink>
+    <MudDivider />
+    <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">@_log.Global("Menu.Dashboard")</MudNavLink>
 </MudNavMenu>
