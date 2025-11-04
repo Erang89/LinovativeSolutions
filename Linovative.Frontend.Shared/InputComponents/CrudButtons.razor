@@ -1,0 +1,50 @@
+﻿@inject IJsonLocalizer _loc
+
+<div>
+
+    @if (PageMode == PageModes.List)
+    {
+        <MudButton @onclick="OnAddNew"
+                   Variant="ComponentSettings.AddNewButtonVariant"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Color="Color.Primary">@_loc.Global("Button.AddNew")</MudButton>
+    }
+
+
+    @if (PageMode == PageModes.List && SelectedItemCount > 0)
+    {
+        <MudButton @onclick="@(OnDelete)"
+                   Variant="ComponentSettings.DeleteButtonVariant"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   Class="ms-1"
+                   Color="Color.Error">@_loc.Global("Button.Delete")</MudButton>
+    }
+
+
+    @if (PageMode == PageModes.Create || PageMode == PageModes.Update)
+    {
+        <MudButton @onclick="OnSave"
+                   Variant="ComponentSettings.SaveButtonVariant"
+                   Disabled="@IsFormSubmitting"
+                   StartIcon="@Icons.Material.Filled.Save"
+                   Color="Color.Primary">@_loc.Global("Button.Save")</MudButton>
+
+        <MudButton @onclick="@(OnCancel)"
+                   Disabled="@IsFormSubmitting"
+                   Class="ms-1"
+                   Variant="ComponentSettings.CancelButtonVariant"
+                   StartIcon="@Icons.Material.Filled.Cancel"
+                   Color="Color.Default">@_loc.Global("Button.Cancel")</MudButton>
+    }
+
+</div>
+
+@code {
+    [Parameter] public PageModes? PageMode { get; set; } = PageModes.List;
+    [Parameter] public EventCallback OnAddNew { get; set; }
+    [Parameter] public EventCallback OnDelete { get; set; }
+    [Parameter] public EventCallback OnSave { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public int SelectedItemCount { get; set; }
+    [Parameter] public bool IsFormSubmitting { get; set; }
+}

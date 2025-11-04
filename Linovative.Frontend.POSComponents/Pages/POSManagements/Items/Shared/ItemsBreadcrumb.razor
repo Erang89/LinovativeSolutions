@@ -1,11 +1,12 @@
 ﻿@inject IJsonLocalizer _loc
-<MudBreadcrumbs Class="ps-0 pe-0 pt-2" Items="@Items()" MaxItems="10"></MudBreadcrumbs>
+
+<MasterDataBreadcrumb Childs="@Items()" />
 
 @code {
     [Parameter]
     public List<BreadcrumbItem> Childs { get; set; } = new();
 
-    List<BreadcrumbItem> Items()
+    List<BreadcrumbItem> Items() 
     {
         var items = _parents.ToList();
         items.AddRange(Childs);
@@ -14,21 +15,17 @@
 
     private static List<BreadcrumbItem> _parents = new();
 
+    string? items { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-
-        var masterData = _loc.PosManagement("Menu.Tab.MasterData");
-        var home = _loc.Global("Home");
+        items = _loc.PosManagement("Menu.Tab.Items");
 
         _parents = new List<BreadcrumbItem>
         {
-            new BreadcrumbItem(home, href: "/"),
-            new BreadcrumbItem(masterData, href: PageRoutes.PostManagement.ItemMaster.IndexItems)
+            new BreadcrumbItem(items, href: PageRoutes.PostManagement.ItemMaster.IndexItems)
         };
-
+        
         await base.OnInitializedAsync();
     }
-
 }
-

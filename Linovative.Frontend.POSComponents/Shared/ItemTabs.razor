@@ -1,0 +1,56 @@
+﻿@inject IAppNavigationService _nav;
+@inject IApplicationStateService _state;
+@inject IJsonLocalizer _loc
+
+<MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Item))" Text="@items" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Groups))" Text="@groups" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Categories))" Text="@categories" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Units))" Text="@units" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.BulkOperations))" Text="@bulkOperation" />
+</MudTabs>
+
+<LinovativeGap />
+
+@code {
+    [Parameter]
+    public Tabs? SelectedTab { get; set; }
+    int activeIndex { get; set; }
+    public enum Tabs
+    {
+        Item,
+        Group,
+        Category,
+        Unit,
+        BulkOperation
+    }
+
+    string? items { get; set; }
+    string? groups { get; set; }
+    string? categories { get; set; }
+    string? units { get; set; }
+    string? bulkOperation { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        activeIndex = SelectedTab switch
+        {
+            Tabs.Item => 0,
+            Tabs.Group => 1,
+            Tabs.Category => 2,
+            Tabs.Unit => 3,
+            Tabs.BulkOperation => 4,
+            _ => 4
+        };
+        _state.OnChange += StateHasChanged;
+
+        await base.OnInitializedAsync();
+        items = _loc.PosManagement("Menu.Tab.Items");
+        groups = _loc.PosManagement("Menu.Tab.Groups");
+        categories = _loc.PosManagement("Menu.Tab.Categories");
+        units = _loc.PosManagement("Menu.Tab.Units");
+        bulkOperation = _loc.PosManagement("Menu.Tab.BulkOperation");
+
+    }
+
+}

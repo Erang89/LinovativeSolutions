@@ -10,5 +10,28 @@
   "Menu.Inventory": "Inventory",
   "Menu.Accounting": "Accounting",
   "Menu.Dashboard": "Dashboard",
-  "Menu.Apps": "Apps"
+  "Menu.Apps": "Apps",
+
+
+  "Button.AddNew": "Add New",
+  "Button.Update": "Update",
+  "Button.Delete": "Delete",
+  "Button.Cancel": "Cancel",
+  "Button.Save": "Save",
+  "Label.Search": "Search",
+  "Label.Add": "Add",
+  "Label.Update": "Update",
+  "Label.Loading": "Loading",
+  "Label.SelectedRecord": "Selected",
+  "Label.RowsPerPage": "Rows per page",
+  "Dialog.Yes": "Yes",
+  "Dialog.No": "No",
+  "Dialog.Cancel": "Cancel",
+  "Dialog.Delete": "Delete",
+  "Dialog.CreatedSuccessMessage": "New {0} has been Created",
+  "Dialog.UpdateSuccessMessage": "{0} has been Updated",
+  "Dialog.DeleteConfirmation": "Are you sure want to delete selected record(s)",
+  "Dialog.DeleteSuccessMessage": "Record(s) has been deleted",
+
+  "Message.NoMatchingRecordsFound": "No matching records found"
 }

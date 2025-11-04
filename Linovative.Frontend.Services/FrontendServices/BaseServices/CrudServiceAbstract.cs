@@ -7,8 +7,7 @@ using System.Net.Http.Json;
 
 namespace Linovative.Frontend.Services.FrontendServices.BaseServices
 {
-
-    internal abstract class CrudServiceAbstract<T> : ReadOnlyServiceAbstract<T>, ICrudInterfaces
+    public abstract class CrudServiceAbstract<T> : ReadOnlyServiceAbstract<T>, ICrudInterfaces
     {
         protected CrudServiceAbstract(IHttpClientFactory httpFactory, ILogger logger, string uriPrefix) : base(httpFactory, logger, uriPrefix)
         {
