@@ -12,7 +12,7 @@ namespace Linovative.Frontend.Services.FrontendServices
 
     public class ItemGroupService : CrudServiceAbstract<ItemGroupViewDto>, IItemGroupService
     {
-        public ItemGroupService(IHttpClientFactory httpFactory, ILogger<ItemGroupService> logger) : base(httpFactory, logger, "ItemCategories")
+        public ItemGroupService(IHttpClientFactory httpFactory, ILogger<ItemGroupService> logger) : base(httpFactory, logger, "ItemGroups")
         {
         }
 

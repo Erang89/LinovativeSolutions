@@ -28,10 +28,11 @@
             <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
             <LinovativeGap />
 
-            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@(() => formErrorAlert?.HideAlert())">
+            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
 
                 <LinovativeInputText @bind-Value="@itemGroup.Name"
                                      IsRequired="true"
+                                     Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="Name" />
             </MudForm>
@@ -116,6 +117,12 @@
     private List<ItemGroupViewDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
 
+    void OnFormKeyPress()
+    {
+        formResponse = null;
+        formErrorAlert?.HideAlert();
+        _state.NotifyStateChanged();
+    }
 
     async Task Reset()
     {
