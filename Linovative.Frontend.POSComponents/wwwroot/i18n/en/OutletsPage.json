@@ -1,0 +1,10 @@
+{
+  "Entity.Name.Single": "Outlet",
+  "Entity.Name.Plural": "Outlets",
+
+  "Name.Label": "Name",
+  "OutletType.Label": "Type",
+
+  "Name.Required.ErrorMessage": "Name is required",
+  "OutletType.Required.ErrorMessage": "Type required"
+}

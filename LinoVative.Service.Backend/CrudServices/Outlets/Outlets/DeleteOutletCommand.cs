@@ -20,6 +20,5 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Outlets
         {
         }
 
-        public Task<Result> Handle(DeleteOutletCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

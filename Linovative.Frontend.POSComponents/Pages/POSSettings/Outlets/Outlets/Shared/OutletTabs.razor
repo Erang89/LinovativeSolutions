@@ -1,0 +1,40 @@
+﻿@inject IAppNavigationService _nav;
+@inject IApplicationStateService _state;
+@inject IJsonLocalizer _loc
+
+<MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Outlets.OutletList))" Text="@_loc.PosManagement("Menu.Outlets")" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Outlets.WorkingShifts))" Text="@_loc.PosManagement("Menu.WorkingShifts")" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Outlets.Table))" Text="@_loc.PosManagement("Menu.Tables")" />
+</MudTabs>
+
+<LinovativeGap />
+
+@code {
+    [Parameter]
+    public Tabs? SelectedTab { get; set; }
+    int activeIndex { get; set; }
+    public enum Tabs
+    {
+        Outlets,
+        WorkingShift,
+        Tables
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        activeIndex = SelectedTab switch
+        {
+            Tabs.Outlets => 0,
+            Tabs.WorkingShift => 1,
+            Tabs.Tables => 2,
+            _ => 10
+        };
+        _state.OnChange += StateHasChanged;
+       
+    }
+
+}

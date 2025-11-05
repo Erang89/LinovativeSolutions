@@ -5,7 +5,9 @@
   "Menu.PosSettings": "POS Settings",
   "Menu.Outlets": "Outlets",
   "Menu.Transactions": "Trasactions",
-  
+  "Menu.WorkingShifts": "Working Shifts",
+  "Menu.Tables": "Tables",
+
   "Menu.ItemGroup.Single": "Item Group",
   "Menu.ItemGroup.Plural": "Item Groups",
 

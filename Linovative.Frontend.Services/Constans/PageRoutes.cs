@@ -19,7 +19,7 @@
             public static class Outlets
             {
                 public const string IndexOutlets = $"{PostManagement.IndexMaster}/outlets";
-                public const string OutletList = $"{IndexOutlets}/list";
+                public const string OutletList = $"{IndexOutlets}/lists";
                 public const string WorkingShifts = $"{IndexOutlets}/shifts";
                 public const string OutletUsers = $"{IndexOutlets}/users";
                 public const string Table = $"{IndexOutlets}/tables";
