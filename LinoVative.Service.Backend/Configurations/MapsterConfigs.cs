@@ -1,4 +1,5 @@
 ﻿using Linovative.Dto.MasterData.People;
+using LinoVative.Service.Backend.CrudServices.Items.Items;
 using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
@@ -40,10 +41,18 @@ namespace LinoVative.Service.Backend.Configurations
 
 
             // Items
+            config.NewConfig<CreateItemCommand, Item>();
+            config.NewConfig<UpdateItemCommand, Item>();
+            config.NewConfig<Item, ItemViewDto>();
+
             config.NewConfig<ItemUnit, ItemUnitDto>();
+            config.NewConfig<ItemUnit, IdWithNameDto>();
+
             config.NewConfig<ItemGroup, ItemGroupDto>();
             config.NewConfig<ItemGroup, IdWithNameDto>();
+            
             config.NewConfig<ItemCategory, ItemCategoryDto>();
+            config.NewConfig<ItemCategory, IdWithNameDto>();
             config.NewConfig<ItemCategory, ItemCategoryViewDto>()
                 .Map(x => x.ItemGroup, src => src.Group);
 

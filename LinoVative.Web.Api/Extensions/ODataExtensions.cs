@@ -1,5 +1,4 @@
 ﻿using Linovative.Dto.MasterData.People;
-using LinoVative.Service.Core.Payments;
 using LinoVative.Shared.Dto.ItemDtos;
 using LinoVative.Shared.Dto.MasterData.Accountings;
 using LinoVative.Shared.Dto.MasterData.Payments;
@@ -46,6 +45,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<ItemUnitDto>("ItemUnits");
             modelBuilder.EntitySet<ItemGroupDto>("ItemGroups");
             modelBuilder.EntitySet<ItemCategoryViewDto>("ItemCategories");
+            modelBuilder.EntitySet<ItemDto>("Items");
             modelBuilder.EntitySet<OutletViewDto>("Outlets");
 
             var setShift = modelBuilder.EntitySet<ShiftViewDto>("Shifts");

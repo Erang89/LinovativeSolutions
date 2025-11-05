@@ -1,0 +1,15 @@
+{
+  "Entity.Name.Single": "Item",
+  "Entity.Name.Plural": "Items",
+
+  "Name.Label": "Name",
+  "Code.Label": "Code",
+  "Description.Label": "Description",
+  "UnitId.Label": "Unit",
+  "CategoryId.Label": "Category",
+
+  "Name.Required.ErrorMessage": "Name is required",
+  "Code.Required.ErrorMessage": "Code is required",
+  "UnitId.Required.ErrorMessage": "Unit is required",
+  "CategoryId.Required.ErrorMessage": "Category is required"
+}

@@ -63,6 +63,14 @@
   "ItemCategoryDto.Required.Name.ErrorMessage": "Category name is required",
   "ItemCategoryDto.Required.GroupId.ErrorMessage": "Group is required",
 
+  "ItemDto.Unique.Name.ErrorMessage": "Name must be unique. '{0}' already exist",
+  "ItemDto.Unique.Code.ErrorMessage": "Code must be unique. '{0}' already exist",
+  "ItemDto.Required.Name.ErrorMessage": "Name is required",
+  "ItemDto.Required.Code.ErrorMessage": "Code is required",
+  "ItemDto.Required.CategoryId.ErrorMessage": "Category is required",
+  "ItemDto.Required.UnitId.ErrorMessage": "Unit is required",
+
+
   "BankNoteDto.Required.Note.ErrorMessage": "Banknote is required",
   "BankNoteDto.Unique.Note.ErrorMessage": "'{0}' already exist. Banknote must be unique.",
 
