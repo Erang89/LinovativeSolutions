@@ -19,7 +19,7 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
 
         protected readonly string _uriPrefix;
 
-        protected abstract bool IsPublicEndpoint { get; }
+        protected virtual bool IsPublicEndpoint { get; }
 
         protected RequeserServiceBase(IHttpClientFactory httpFactory, ILogger logger, string uriPrefix)
         {

@@ -31,7 +31,7 @@ namespace Linovative.Frontend.Services.Commons
 
             _keys.Add(key.ToLower());
 
-            var path = $"{libraryLink}i18n/{culture}/{key}.json";
+            var path = $"{libraryLink}i18n/{culture}/{key}.json?id={Guid.NewGuid()}";
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             Action<Dictionary<string, string>> registerLocalizer = (sources) =>
             {
@@ -54,7 +54,7 @@ namespace Linovative.Frontend.Services.Commons
             }
             catch
             {
-                var json = (await _http.GetFromJsonAsync<Dictionary<string, string>>($"{libraryLink}i18n/en/{key}.json", options)) ?? new Dictionary<string, string>();
+                var json = (await _http.GetFromJsonAsync<Dictionary<string, string>>($"{libraryLink}i18n/en/{key}.json?id={Guid.NewGuid()}", options)) ?? new Dictionary<string, string>();
                 registerLocalizer(json);
                 _state.NotifyStateChanged();
                 return;

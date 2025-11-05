@@ -17,7 +17,7 @@ namespace Linovative.Frontend.Shared.Pages
             : JsonLocalizer.Format(key, args);
 
         public string Required(string inputName) => Lang($"{inputName}.Required.ErrorMessage"); 
-        public string Label(string inputName) => Lang($"{inputName}.Label"); 
+        public virtual string Label(string inputName) => Lang($"{inputName}.Label"); 
         public string Text(string inputName) => Lang($"{inputName}.Text"); 
 
         protected override async Task OnInitializedAsync()

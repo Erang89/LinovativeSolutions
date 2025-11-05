@@ -1,0 +1,7 @@
+{
+  "Entity.Name.Single": "Category",
+  "Entity.Name.Plural": "Categories",
+  "Name.Label": "Name",
+  "GroupId.Label": "Group",
+  "Name.Required.ErrorMessage": "Name is required"
+}

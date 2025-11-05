@@ -16,6 +16,5 @@ namespace Linovative.Frontend.Services.FrontendServices
         {
         }
 
-        protected override bool IsPublicEndpoint => false;
     }
 }

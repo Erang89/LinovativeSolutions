@@ -5,13 +5,17 @@
   "Menu.PosSettings": "POS Settings",
   "Menu.Outlets": "Outlets",
   "Menu.Transactions": "Trasactions",
+  
   "Menu.ItemGroup.Single": "Item Group",
   "Menu.ItemGroup.Plural": "Item Groups",
 
-  "Menu.Tab.MasterData" :  "Master Data",
-  "Menu.Tab.Items" :  "Items",
-  "Menu.Tab.Groups" :  "Groups",
-  "Menu.Tab.Categories" :  "Categories",
-  "Menu.Tab.Units" :  "Units",
-  "Menu.Tab.BulkOperation" :  "Bulk Operation"
+  "Menu.ItemCategory.Single": "Item Category",
+  "Menu.ItemCategory.Plural": "Item Categories",
+
+  "Menu.Tab.MasterData": "Master Data",
+  "Menu.Tab.Items": "Items",
+  "Menu.Tab.Groups": "Groups",
+  "Menu.Tab.Categories": "Categories",
+  "Menu.Tab.Units": "Units",
+  "Menu.Tab.BulkOperation": "Bulk Operation"
 }
