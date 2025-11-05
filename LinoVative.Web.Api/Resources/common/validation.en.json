@@ -86,7 +86,7 @@
   "PersonDto.Unique.PhoneNumber.ErrorMessage": "This phone number has been used. Phone number must be unique for each person",
   "PersonDto.Required.Title.ErrorMessage": "Title is required",
   "ShiftDto.Required.Name.ErrorMessage": "Name is required",
-  "ShiftDto.Required.StartTime.ErrorMessage": "Name is required",
+  "ShiftDto.Required.StartTime.ErrorMessage": "Start time is required",
   "ShiftDto.Required.EndTime.ErrorMessage": "End Time is required",
   "WarehouseDto.Required.Code.ErrorMessage": "Code is required",
   "WarehouseDto.Required.Name.ErrorMessage": "Name is required",

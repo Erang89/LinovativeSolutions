@@ -1,4 +1,5 @@
 ﻿using LinoVative.Shared.Dto.Attributes;
+using Linovative.Shared.Interface.Enums;
 
 namespace LinoVative.Shared.Dto.MasterData.Shifts
 {
@@ -6,7 +7,7 @@ namespace LinoVative.Shared.Dto.MasterData.Shifts
     [LocalizerKey(nameof(ShiftDto))]
     public class ShiftDto : EntityDtoBase
     {
-        [LocalizedRequired]
+        [LocalizedRequired, UniqueField(EntityTypes.Shift)]
         public string? Name { get; set; }
 
         [LocalizedRequired]

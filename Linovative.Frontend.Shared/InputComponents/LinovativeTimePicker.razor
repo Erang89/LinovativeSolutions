@@ -1,0 +1,32 @@
+﻿@inherits LinovativeInputComponentBase<TimeSpan?>
+
+<MudTimePicker AmPm="true" 
+                Time="@Value"
+                TimeChanged="@ValueChanged"
+               Required="IsRequired"
+               ReadOnly="ReadOnly"
+               Label="@_label"
+               Clearable="@Clearable"
+               Error="@_isError"
+               ErrorText="@_errorMessage"
+               RequiredError="@_requiredMessage"
+               Variant="@variant" />
+
+
+@code {
+    MudBlazor.Variant variant => Variant.ToMudBlazorVariant();
+    bool _isError => Error || _containErrors;
+    bool _containErrors => (ErrorKey is not null && Errors is not null && Errors.Count() > 0 && Errors.ContainsKey(ErrorKey));
+    string? _errorMessage => Error ? ErrorMessage : _containErrors ? string.Join(" ", getError()) : (IsRequired && Value is null) ? _requiredMessage : "";
+    string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
+    string? _requiredMessage => !string.IsNullOrWhiteSpace(RequiredMessage) ? RequiredMessage : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Required.ErrorMessage"];
+
+    List<string> getError() => Errors is not null && !string.IsNullOrEmpty(ErrorKey) && Errors.ContainsKey(ErrorKey) ? Errors[ErrorKey] : new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ErrorKey = ErrorKey ?? LocalizerKey;
+        await base.OnInitializedAsync();
+    }
+
+}

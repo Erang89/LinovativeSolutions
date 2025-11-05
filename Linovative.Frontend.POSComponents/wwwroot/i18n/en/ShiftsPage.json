@@ -1,0 +1,12 @@
+{
+  "Entity.Name.Single": "Shift",
+  "Entity.Name.Plural": "Shifts",
+
+  "Name.Label": "Name",
+  "StartTime.Label": "Start time",
+  "EndTime.Label": "End time",
+
+  "Name.Required.ErrorMessage": "Name is required",
+  "StartTime.Required.ErrorMessage": "Start time is required",
+  "EndTime.Required.ErrorMessage": "End time is required"
+}

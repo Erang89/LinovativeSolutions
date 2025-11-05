@@ -43,6 +43,7 @@ namespace LinoVative.Service.Backend.ValidatorServices
                     {EntityTypes.COAGroup, _appDbContext.CoaGroups.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                     {EntityTypes.Person, _appDbContext.People.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                     {EntityTypes.Warehouse, _appDbContext.WareHouses.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.Shift, _appDbContext.Shifts.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                 };
 
             if (!_queryDic.ContainsKey(entityType.Value))

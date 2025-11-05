@@ -2,21 +2,21 @@
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
-@using LinoVative.Shared.Dto.Outlets
+@using LinoVative.Shared.Dto.MasterData.Shifts
 
-@attribute [Route(PageRoutes.PostManagement.Outlets.OutletList)]
+@attribute [Route(PageRoutes.PostManagement.Outlets.WorkingShifts)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
 @inject IJsonLocalizer _loc
 @inject ITopBarService _topBarService
 @inject IApplicationStateService _state
-@inject IOutletService _service
+@inject IShiftService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
-<OutletBreadcrumb />
-<OutletTabs SelectedTab="OutletTabs.Tabs.Outlets" />
+<OutletBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.Outlets.WorkingShifts)})" />
+<OutletTabs SelectedTab="OutletTabs.Tabs.WorkingShift" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />
 
@@ -38,14 +38,22 @@
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="Name" />
+                <LinovativeGap />
+                <LinovativeTimePicker Value="@item.StartTime"
+                                      ValueChanged="@(x => item.StartTime = x)"
+                                      IsRequired="true"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="StartTime" />
 
                 <LinovativeGap />
-                <OutletTypeDropdown
-                    Required="true"
-                    Errors="@formResponse?.Errors"
-                    LocalizerResource="@LocalizerResource"
-                    LocalizerKey="OutletType"
-                    @bind-Value="@item.OutletType" />
+                <LinovativeTimePicker Value="@item.EndTime"
+                                      ValueChanged="@(x => item.EndTime = x)"
+                                      IsRequired="true"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="EndTime" />
+
             </MudForm>
         </MudItem>
     </MudGrid>
@@ -75,8 +83,9 @@
             <MudTh Style="width: 30px">
                 <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
             </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(OutletDto.Name))" T="ItemGroupViewDto">@Label("Name")</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(OutletDto.OutletType))" T="ItemGroupViewDto">@Label("OutletType")</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ShiftViewDto.Name))" T="ItemGroupViewDto">@Label("Name")</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ShiftViewDto.StartTime))" T="ItemGroupViewDto">@Label("StartTime")</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ShiftViewDto.EndTime))" T="ItemGroupViewDto">@Label("EndTime")</MudTableSortLabel></MudTh>
             <MudTh Style="width: 60px"></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -84,7 +93,8 @@
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Type">@context.OutletType</MudTd>
+            <MudTd DataLabel="StartTime">@context.StartTime</MudTd>
+            <MudTd DataLabel="EndTime">@context.EndTime</MudTd>
             <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
@@ -104,18 +114,16 @@
 
 }
 
-
-
 @code {
 
-    protected override string LocalizerResource => nameof(OutletsPage);
+    protected override string LocalizerResource => nameof(ShiftsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
-    private List<OutletViewDto> selectedItems { get; set; } = new();
+    private List<ShiftViewDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts = new();
     private PageModes? pageMode { get; set; } = PageModes.List;
-    private OutletDto item { get; set; } = new();
+    private ShiftDto item { get; set; } = new();
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -124,9 +132,9 @@
     private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
-    private MudTable<OutletViewDto>? table;
+    private MudTable<ShiftViewDto>? table;
     private bool selectedAll { get; set; }
-    private List<OutletViewDto> dataSource { get; set; } = new();
+    private List<ShiftViewDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
     protected override async Task OnInitializedAsync()
     {
@@ -247,7 +255,7 @@
         table?.ReloadServerData();
     }
 
-    private async Task<TableData<OutletViewDto>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<ShiftViewDto>> ServerReload(TableState state, CancellationToken token)
     {
         selectedItems = new();
         selectedAll = false;
@@ -266,7 +274,7 @@
         var result = await _service.Get(odataFilter, cts.Token);
         dataSource = result?.Data ?? new();
 
-        return new TableData<OutletViewDto>() { TotalItems = result!.Count, Items = result.Data };
+        return new TableData<ShiftViewDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
     async Task AddNew()
@@ -275,7 +283,7 @@
         await HideAllAllert();
     }
 
-    async Task Update(OutletViewDto record)
+    async Task Update(ShiftViewDto record)
     {
         item = record;
         pageMode = PageModes.Update;
@@ -283,7 +291,7 @@
         _state.NotifyStateChanged();
     }
 
-    void SelectRecord(bool selected, OutletViewDto data)
+    void SelectRecord(bool selected, ShiftViewDto data)
     {
         if (!selected)
         {
@@ -314,6 +322,6 @@
         var selectedIds = selectedItems.Select(x => x.Id);
         selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
     }
-    bool IsSelected(OutletViewDto data) => selectedItems.Any(x => x.Id == data.Id);
+    bool IsSelected(ShiftViewDto data) => selectedItems.Any(x => x.Id == data.Id);
 
 }
