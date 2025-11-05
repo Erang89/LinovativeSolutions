@@ -1,0 +1,6 @@
+{
+  "Entity.Name.Single": "Unit",
+  "Entity.Name.Plural": "Units",
+  "Name.Label": "Name",
+  "Name.Required.ErrorMessage": "Name is required"
+}

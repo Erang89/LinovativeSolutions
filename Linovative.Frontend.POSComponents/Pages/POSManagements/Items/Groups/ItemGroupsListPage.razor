@@ -12,7 +12,7 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
-<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(_loc.PosManagement("Menu.ItemGroup.Single"), href: PageRoutes.PostManagement.ItemMaster.Groups)})" />
+<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Groups)})" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.Group" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />
@@ -39,6 +39,10 @@
         </MudItem>
     </MudGrid>
 }
+
+
+<AppSuccessAllert @ref="@successAllert" AutoClose="true" />
+<AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
 
 
 @if (pageMode == PageModes.List)
@@ -94,9 +98,9 @@
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
     protected override async Task OnInitializedAsync()
     {
-        _state.OnChange += StateHasChanged;
-        _topBarService.SetTitle(_loc.PosManagement("Menu.ItemGroup.Plural"));
         await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _topBarService.SetTitle(EntityPluralName);
     }
 
 

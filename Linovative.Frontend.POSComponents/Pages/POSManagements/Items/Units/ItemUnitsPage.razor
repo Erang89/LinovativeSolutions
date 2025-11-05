@@ -2,28 +2,27 @@
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 
-@attribute [Route(PageRoutes.PostManagement.ItemMaster.Categories)]
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.Units)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
 @inject IJsonLocalizer _loc
 @inject ITopBarService _topBarService
 @inject IApplicationStateService _state
-@inject IItemCategoryService _service
+@inject IItemUnitService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
-
-<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Categories)})" />
-<ItemTabs SelectedTab="ItemTabs.Tabs.Category" />
+<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Units)})" />
+<ItemTabs SelectedTab="ItemTabs.Tabs.Unit" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />
-
 
 
 @if (pageMode == PageModes.Create || pageMode == PageModes.Update)
 {
     <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
+
     <MudGrid>
         <MudItem xs="12" sm="6" lg="4">
 
@@ -32,19 +31,11 @@
 
             <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
 
-                <LinovativeInputText @bind-Value="@itemCategory.Name"
-                                     LocalizerKey="Name"
+                <LinovativeInputText @bind-Value="@item.Name"
+                                     IsRequired="true"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
-                                     IsRequired="true" />
-
-                <LinovativeGap />
-                <ItemGroupDropdown @bind-Value="@itemGroup"
-                                   LocalizerKey="GroupId"
-                                   Errors="@formResponse?.Errors"
-                                   LocalizerResource="@LocalizerResource"
-                                   Required="true" />
-
+                                     LocalizerKey="Name" />
             </MudForm>
         </MudItem>
     </MudGrid>
@@ -74,8 +65,7 @@
             <MudTh Style="width: 30px">
                 <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
             </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemCategoryViewDto.Name))" T="ItemCategoryViewDto">@Label("Name")</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@($"{nameof(ItemCategoryViewDto.ItemGroup)}/{nameof(ItemCategoryViewDto.Name)}")" T="ItemCategoryViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemUnitDto.Name))" T="ItemGroupViewDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
             <MudTh Style="width: 60px"></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -83,8 +73,7 @@
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Group">@context.ItemGroup?.Name</MudTd>
-            <MudTd Style="width: 60px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+            <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
         <NoRecordsContent>
@@ -107,14 +96,14 @@
 
 @code {
 
-    protected override string LocalizerResource => nameof(ItemCategoriesPage);
+    protected override string LocalizerResource => nameof(ItemUnitsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
-    private List<ItemCategoryViewDto> selectedItems { get; set; } = new();
+    private List<ItemUnitDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts = new();
     private PageModes? pageMode { get; set; } = PageModes.List;
-    private ItemCategoryViewDto itemCategory { get; set; } = new();
+    private ItemUnitDto item { get; set; } = new();
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -123,11 +112,10 @@
     private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
-    private MudTable<ItemCategoryViewDto>? table;
+    private MudTable<ItemUnitDto>? table;
     private bool selectedAll { get; set; }
-    private List<ItemCategoryViewDto> dataSource { get; set; } = new();
+    private List<ItemUnitDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
-    private ItemGroupViewDto? itemGroup = null;
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -154,7 +142,7 @@
 
     async Task Reset()
     {
-        itemCategory = new();
+        item = new();
 
         pageMode = PageModes.List;
         formResponse = null;
@@ -189,8 +177,7 @@
     async Task SaveNew()
     {
         isFormSubmitting = true;
-        itemCategory.GroupId = itemGroup?.Id;
-        formResponse = await _service.Create(itemCategory, cts.Token);
+        formResponse = await _service.Create(item, cts.Token);
         if (formResponse)
         {
             await Reset();
@@ -205,8 +192,7 @@
     async Task SaveUpdate()
     {
         isFormSubmitting = true;
-        itemCategory.GroupId = itemGroup?.Id;
-        formResponse = await _service.Update(itemCategory, cts.Token);
+        formResponse = await _service.Update(item, cts.Token);
         if (formResponse)
         {
             await Reset();
@@ -249,7 +235,7 @@
         table?.ReloadServerData();
     }
 
-    private async Task<TableData<ItemCategoryViewDto>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<ItemUnitDto>> ServerReload(TableState state, CancellationToken token)
     {
         selectedItems = new();
         selectedAll = false;
@@ -261,7 +247,7 @@
                 PageSize = state.PageSize,
                 OrderFiled = state.SortLabel,
                 SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
-                Options = $"$expand=ItemGroup"
+                Options = $""
             };
 
         if (searchString is not null)
@@ -270,7 +256,7 @@
         var result = await _service.Get(odataFilter, cts.Token);
         dataSource = result?.Data ?? new();
 
-        return new TableData<ItemCategoryViewDto>() { TotalItems = result!.Count, Items = result.Data };
+        return new TableData<ItemUnitDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
     async Task AddNew()
@@ -279,16 +265,15 @@
         await HideAllAllert();
     }
 
-    async Task Update(ItemCategoryViewDto record)
+    async Task Update(ItemUnitDto record)
     {
-        itemCategory = record;
-        itemGroup = new ItemGroupViewDto() { Id = record.ItemGroup!.Id, Name = record.ItemGroup!.Name };
+        item = record;
         pageMode = PageModes.Update;
         await HideAllAllert();
         _state.NotifyStateChanged();
     }
 
-    void SelectRecord(bool selected, ItemCategoryViewDto data)
+    void SelectRecord(bool selected, ItemUnitDto data)
     {
         if (!selected)
         {
@@ -319,6 +304,6 @@
         var selectedIds = selectedItems.Select(x => x.Id);
         selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
     }
-    bool IsSelected(ItemCategoryViewDto data) => selectedItems.Any(x => x.Id == data.Id);
+    bool IsSelected(ItemUnitDto data) => selectedItems.Any(x => x.Id == data.Id);
 
 }
