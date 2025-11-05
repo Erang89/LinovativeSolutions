@@ -57,6 +57,12 @@ namespace Linovative.Frontend.Shared.InputComponents
         [Parameter]
         public bool Error { get; set; }
 
+        [Parameter]
+        public bool Immediate { get; set; }
+
+        [Parameter]
+        public bool Clearable { get; set; }
+
         [Parameter] public string? LocalizerKey { get; set; }
         [Parameter] public string? LocalizerResource { get; set; }
 

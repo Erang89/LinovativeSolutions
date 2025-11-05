@@ -60,10 +60,22 @@
 
                 <LinovativeGap />
                 <ItemCategoryDropdown @bind-Value="@itemCategory"
-                                  Required="true"
-                                  Errors="@formResponse?.Errors"
-                                  LocalizerResource="@LocalizerResource"
-                                  LocalizerKey="@nameof(ItemDto.CategoryId)" />
+                                      Required="true"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="@nameof(ItemDto.CategoryId)" />
+
+
+                <LinovativeGap />
+                <LinovativeTextBox T="decimal?"
+                                   ValueChanged="@(x => item.SellPrice = x)"
+                                   Format="N2"
+                                   Value="@item.SellPrice"
+                                   IsRequired="true"
+                                   Errors="@formResponse?.Errors"
+                                   LocalizerResource="@LocalizerResource"
+                                   LocalizerKey="@nameof(ItemDto.SellPrice)"
+                                   Clearable="true"/>
 
             </MudForm>
         </MudItem>
@@ -99,8 +111,9 @@
             <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Code))" T="ItemViewDto">@_loc[$"{LocalizerResource}.Code.Label"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Name))" T="ItemViewDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Unit.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.UnitId))</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.ItemGroup.Name))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.ItemGroup.Name))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>            
             <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.CategoryId))</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.SellPrice))" T="ItemViewDto">@Label(nameof(ItemViewDto.SellPrice))</MudTableSortLabel></MudTh>
             <MudTh Style="width: 60px"></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -112,6 +125,7 @@
             <MudTd DataLabel="Unit">@context.Unit?.Name</MudTd>
             <MudTd DataLabel="Group">@context.Category?.ItemGroup?.Name</MudTd>
             <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
+            <MudTd DataLabel="Category">@context.SellPrice?.ToString("N2")</MudTd>
             <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
@@ -136,7 +150,7 @@
     protected override string LocalizerResource => nameof(ItemsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
-
+    private double? test { get; set; } = 20;
     private List<ItemViewDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts = new();
     private PageModes? pageMode { get; set; } = PageModes.List;

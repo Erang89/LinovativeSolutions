@@ -8,9 +8,11 @@
   "UnitId.Label": "Unit",
   "CategoryId.Label": "Category",
   "GroupId.Label": "Group",
+  "SellPrice.Label": "Sell Price",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",
   "UnitId.Required.ErrorMessage": "Unit is required",
-  "CategoryId.Required.ErrorMessage": "Category is required"
+  "CategoryId.Required.ErrorMessage": "Category is required",
+  "SellPrice.Required.ErrorMessage": "Sell Price is required"
 }

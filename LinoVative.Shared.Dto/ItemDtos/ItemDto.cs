@@ -24,7 +24,8 @@ namespace LinoVative.Shared.Dto.ItemDtos
        
 
         public bool IsActive { get; set; }
-        public decimal SellPrice { get; set; }
+        [LocalizedRequired]
+        public decimal? SellPrice { get; set; }
 
     }
 
