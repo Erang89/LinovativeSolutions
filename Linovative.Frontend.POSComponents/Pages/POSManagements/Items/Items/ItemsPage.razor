@@ -96,14 +96,22 @@
             <MudTh Style="width: 30px">
                 <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
             </MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Code))" T="ItemViewDto">@_loc[$"{LocalizerResource}.Code.Label"]</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Name))" T="ItemViewDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Unit.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.UnitId))</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.ItemGroup.Name))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.CategoryId))</MudTableSortLabel></MudTh>
             <MudTh Style="width: 60px"></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd>
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
             </MudTd>
+            <MudTd DataLabel="Code">@context.Code</MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Unit">@context.Unit?.Name</MudTd>
+            <MudTd DataLabel="Group">@context.Category?.ItemGroup?.Name</MudTd>
+            <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
             <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
@@ -147,6 +155,7 @@
     private AppErrorAlert? deleteAllert { get; set; }
     private ItemUnitDto? itemUnit = null;
     private ItemCategoryDto? itemCategory = null;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -285,7 +294,7 @@
                 PageSize = state.PageSize,
                 OrderFiled = state.SortLabel,
                 SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
-                Options = $"$expand={nameof(ItemViewDto.Unit)},{nameof(ItemViewDto.Category)}",
+                Options = $"$expand={nameof(ItemViewDto.Unit)},{nameof(ItemViewDto.Category)}($expand={nameof(ItemCategoryViewDto.ItemGroup)})",
                 FilterPayload = new { SearchKeyword = searchString }
             };
 
@@ -301,10 +310,14 @@
         await HideAllAllert();
     }
 
-    async Task Update(ItemDto record)
+    async Task Update(ItemViewDto record)
     {
         item = record;
         pageMode = PageModes.Update;
+
+        itemUnit = new ItemUnitDto() { Id = record.Unit!.Id, Name = record.Unit.Name };
+        itemCategory = new ItemCategoryDto() { Id = record.CategoryId!.Value, Name = record.Category!.Name };
+
         await HideAllAllert();
         _state.NotifyStateChanged();
     }

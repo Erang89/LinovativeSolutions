@@ -52,7 +52,7 @@ namespace Linovative.Frontend.Services.Commons
                 registerLocalizer(json);
                 _state.NotifyStateChanged();
             }
-            catch
+            catch(Exception e)
             {
                 var json = (await _http.GetFromJsonAsync<Dictionary<string, string>>($"{libraryLink}i18n/en/{key}.json?id={Guid.NewGuid()}", options)) ?? new Dictionary<string, string>();
                 registerLocalizer(json);

@@ -1,0 +1,10 @@
+﻿@attribute [Route(PageRoutes.PostManagement.IndexMaster)]
+@inject IAppNavigationService _navigationManager;
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        _navigationManager.NavigateTo(PageRoutes.PostManagement.ItemMaster.Item);
+        await base.OnInitializedAsync();
+    }
+}
+

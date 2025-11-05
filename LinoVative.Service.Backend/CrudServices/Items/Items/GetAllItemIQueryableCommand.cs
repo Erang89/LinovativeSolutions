@@ -8,12 +8,12 @@ using MapsterMapper;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.Items
 {
-    public class GetAllItemIQueryableCommand : IRequest<IQueryable<ItemDto>>
+    public class GetAllItemIQueryableCommand : IRequest<IQueryable<ItemViewDto>>
     {
         public string? SearchKeyword { get; set; }
     }
 
-    public class GetAllItemQueryableHandlerService : QueryServiceBase<Item, GetAllItemIQueryableCommand>, IRequestHandler<GetAllItemIQueryableCommand, IQueryable<ItemDto>>
+    public class GetAllItemQueryableHandlerService : QueryServiceBase<Item, GetAllItemIQueryableCommand>, IRequestHandler<GetAllItemIQueryableCommand, IQueryable<ItemViewDto>>
     {
         public GetAllItemQueryableHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
         {
@@ -24,7 +24,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
             return base.OnGetAllFilter(query, req).Where(x => string.Concat(x.Name, x.Code, x.Description).Contains(req.SearchKeyword??""));
         }
 
-        public Task<IQueryable<ItemDto>> Handle(GetAllItemIQueryableCommand request, CancellationToken ct) 
-            => Task.FromResult(base.GetAll(request).ProjectToType<ItemDto>(_mapper.Config));
+        public Task<IQueryable<ItemViewDto>> Handle(GetAllItemIQueryableCommand request, CancellationToken ct) 
+            => Task.FromResult(base.GetAll(request).ProjectToType<ItemViewDto>(_mapper.Config));
     }
 }

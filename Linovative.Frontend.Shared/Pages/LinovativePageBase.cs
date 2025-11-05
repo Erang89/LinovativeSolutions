@@ -22,7 +22,9 @@ namespace Linovative.Frontend.Shared.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            if(LocalizerResource is not null) await JsonLocalizer.EnsureLoadedAsync(LocalizerResource, LibraryName); 
+            if(LocalizerResource is not null) 
+                await JsonLocalizer.EnsureLoadedAsync(LocalizerResource, LibraryName); 
+
             await base.OnInitializedAsync();
         }
 

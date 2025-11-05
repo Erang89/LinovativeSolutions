@@ -45,7 +45,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<ItemUnitDto>("ItemUnits");
             modelBuilder.EntitySet<ItemGroupDto>("ItemGroups");
             modelBuilder.EntitySet<ItemCategoryViewDto>("ItemCategories");
-            modelBuilder.EntitySet<ItemDto>("Items");
+            modelBuilder.EntitySet<ItemViewDto>("Items");
             modelBuilder.EntitySet<OutletViewDto>("Outlets");
 
             var setShift = modelBuilder.EntitySet<ShiftViewDto>("Shifts");

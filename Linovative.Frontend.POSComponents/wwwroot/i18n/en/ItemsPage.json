@@ -7,6 +7,7 @@
   "Description.Label": "Description",
   "UnitId.Label": "Unit",
   "CategoryId.Label": "Category",
+  "GroupId.Label": "Group",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",

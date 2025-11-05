@@ -14,7 +14,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
 
     }
 
-    public class CreateItemHandlerService : SaveNewServiceBase<ItemGroup, CreateItemCommand>, IRequestHandler<CreateItemCommand, Result>
+    public class CreateItemHandlerService : SaveNewServiceBase<Item, CreateItemCommand>, IRequestHandler<CreateItemCommand, Result>
     {
         public CreateItemHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, localizer)
         {

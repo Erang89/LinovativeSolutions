@@ -6,7 +6,12 @@ namespace Linovative.Frontend.POSComponents.Bases
     {
         protected override string? LibraryName => "Linovative.Frontend.POSComponents";
         public override string Label(string key) => JsonLocalizer[$"{LocalizerResource}.{key}.Label"];
+
+        protected override async Task OnInitializedAsync()
+        {
+            await base.OnInitializedAsync();
+        }
     }
 
-    
+   
 }
