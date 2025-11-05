@@ -9,9 +9,10 @@ using System.Linq.Expressions;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
-    public abstract class SaveDeleteServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class, IEntityId
+    public abstract class SaveDeleteServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class
     {
         protected IStringLocalizer _loc;
+        private List<T>? _entities = null;
 
         protected SaveDeleteServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache,  IStringLocalizer log) : base(dbContext, actor, mapper, appCache)
         {
@@ -21,28 +22,32 @@ namespace LinoVative.Service.Backend.CrudServices
         protected string EntityName => _loc[$"Entity.Name.{typeof(T).Name}"];
 
         // ==============================  Delete ==============================
-        protected virtual async Task<Result> SaveDelete(TRequest request, CancellationToken token = default)
+        
+        protected virtual List<T> OnMapping(TRequest request)
         {
-            var result = Result.OK();
-            var entity = await GetById(request.Id);
-            
-            if (entity is null)
-                AddError(result, x => x.Id!, _loc["Entity.IdNotFound", EntityName, request.Id]);
+            if (_entities != null)
+                return _entities!;
 
-            if (!result) return result;
+            if (request is IEntityId entity)
+            {
+                _entities = GetAll().Where(x => x.Id == entity.Id).ToList();
+                return _entities;
+            }
 
-            return await SaveDelete(request, new List<T>() { entity! }, token);
+            if(request is IBulkDeleteDto dto)
+            {
+                _entities =  GetAll().Where(x => dto.Ids.Contains(x.Id)).ToList();
+                return _entities;
+            }
+
+            throw new NotImplementedException();
         }
 
-        protected virtual Task<Result> SaveDelete(TRequest request,  List<Guid> ids, CancellationToken token = default)
+        public virtual async Task<Result> Handle(TRequest request, CancellationToken token = default)
         {
-            var entities = GetAll().Where(x => ids.Contains(x.Id)).ToList();
-            return SaveDelete(request, entities, token);
-        }
+            var entities = OnMapping(request);
 
-        protected virtual async Task<Result> SaveDelete(TRequest request,  List<T> entities, CancellationToken token = default)
-        {
-            var validate = await ValidateSaveDelete(request, entities, token);
+            var validate = await ValidateSaveDelete(request, token);
             if (!validate) return validate;
 
             foreach(var entity in entities)
@@ -58,22 +63,18 @@ namespace LinoVative.Service.Backend.CrudServices
             return await _dbContext.SaveAsync(_actor);
         }
 
-        protected virtual Task<Result> SaveDelete(TRequest request,  T entity, CancellationToken token = default)
-        {
-            return SaveDelete(request, new List<T>() { entity}, token);
-        }
-
-
         protected virtual Task BeforeSaveDelete(TRequest request, List<T> entities, CancellationToken token = default) => Task.CompletedTask;
-        protected virtual async Task<Result> ValidateSaveDelete(TRequest request, List<T> entities, CancellationToken token = default)
+        protected virtual async Task<Result> ValidateSaveDelete(TRequest request, CancellationToken token = default)
         {
+            var entities = OnMapping(request);
+
             var entityIds = entities.Select(x => x.Id).ToList();
             var anyFalseId = GetAll().Where(x => entityIds.Contains(x.Id)).Select(x => x.Id).ToList().Any(x => !entityIds.Contains(x));
 
             var result = Result.OK();
 
             if (anyFalseId)
-                AddError(result, x => x.Id!, _loc["Entity.IdNotFound", EntityName, request.Id]);
+                return Result.Failed(_loc["Entity.IdNotFound", EntityName, string.Join(", ", entityIds)]);
 
             await Task.CompletedTask;
             return Result.OK();

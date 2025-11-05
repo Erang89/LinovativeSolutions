@@ -28,6 +28,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers
         protected const string CREATE = "Create";
         protected const string UPDATE = "Update";
         protected const string DELETE = "Delete/{id}";
+        protected const string BULKDELETE = "Delete";
         protected const string GETALL = "Getall";
     }
 

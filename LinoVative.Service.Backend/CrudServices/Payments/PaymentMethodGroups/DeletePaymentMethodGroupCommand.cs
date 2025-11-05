@@ -20,6 +20,6 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.PaymentMethodGroups
         {
         }
 
-        public Task<Result> Handle(DeletePaymentMethodGroupCommand request, CancellationToken ct) => base.SaveDelete(request, ct);
+        public Task<Result> Handle(DeletePaymentMethodGroupCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

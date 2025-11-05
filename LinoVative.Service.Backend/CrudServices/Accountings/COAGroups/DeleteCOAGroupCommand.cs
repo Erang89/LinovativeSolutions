@@ -20,6 +20,6 @@ namespace LinoVative.Service.Backend.CrudServices.COAGroups
         {
         }
 
-        public Task<Result> Handle(DeleteCOAGroupCommand request, CancellationToken ct) => base.SaveDelete(request, ct);
+        public Task<Result> Handle(DeleteCOAGroupCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

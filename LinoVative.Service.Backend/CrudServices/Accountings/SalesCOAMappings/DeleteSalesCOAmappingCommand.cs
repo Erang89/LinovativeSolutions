@@ -20,6 +20,6 @@ namespace LinoVative.Service.Backend.CrudServices.SalesCOAMappings
         {
         }
 
-        public Task<Result> Handle(DeleteSalesCOAmappingCommand request, CancellationToken ct) => base.SaveDelete(request, ct);
+        public Task<Result> Handle(DeleteSalesCOAmappingCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

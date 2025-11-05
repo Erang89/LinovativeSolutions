@@ -22,6 +22,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategries
         }
 
 
-        public Task<Result> Handle(DeleteItemCategoryCommand request, CancellationToken ct) => base.SaveDelete(request, ct);
+        public Task<Result> Handle(DeleteItemCategoryCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }
