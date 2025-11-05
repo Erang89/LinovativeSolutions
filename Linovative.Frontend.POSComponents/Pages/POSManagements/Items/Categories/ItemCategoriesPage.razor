@@ -1,5 +1,6 @@
 ﻿@using Linovative.Frontend.POSComponents.Bases
 @using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 
 @attribute [Route(PageRoutes.PostManagement.ItemMaster.Categories)]
 @inherits POSManagementPageBase
@@ -37,12 +38,12 @@
                                      LocalizerResource="@LocalizerResource"
                                      IsRequired="true" />
 
-                @*  <ItemGroupDropdowns Value=@itemCategory?.ItemGroup
-            ValueChanged="@((e) => {itemCategory!.ItemGroup = e; itemCategory.ItemGroupId = e?.Id;})"
-            Immediate="true"
-            Required="true"
-            RequiredError="Item Group is required"
-            Label="Item Group" /> *@
+                <LinovativeGap />
+                <ItemGroupDropdown @bind-Value="@itemGroup"
+                                   LocalizerKey="GroupId"
+                                   Errors="@formResponse?.Errors"
+                                   LocalizerResource="@LocalizerResource"
+                                   Required="true" />
 
             </MudForm>
         </MudItem>
@@ -75,7 +76,7 @@
             </MudTh>
             <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemCategoryViewDto.Name))" T="ItemCategoryViewDto">@Label("Name")</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortLabel="@($"{nameof(ItemCategoryViewDto.ItemGroup)}/{nameof(ItemCategoryViewDto.Name)}")" T="ItemCategoryViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
-            <MudTh></MudTh>
+            <MudTh Style="width: 60px"></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd>
@@ -83,7 +84,7 @@
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
             <MudTd DataLabel="Group">@context.ItemGroup?.Name</MudTd>
-            <MudTd Style="width: 30px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+            <MudTd Style="width: 60px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
         <NoRecordsContent>
@@ -126,7 +127,7 @@
     private bool selectedAll { get; set; }
     private List<ItemCategoryViewDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
-
+    private ItemGroupViewDto? itemGroup = null;
     protected override async Task OnInitializedAsync()
     {
         _state.OnChange += StateHasChanged;
@@ -188,6 +189,7 @@
     async Task SaveNew()
     {
         isFormSubmitting = true;
+        itemCategory.GroupId = itemGroup?.Id;
         formResponse = await _service.Create(itemCategory, cts.Token);
         if (formResponse)
         {
@@ -203,6 +205,7 @@
     async Task SaveUpdate()
     {
         isFormSubmitting = true;
+        itemCategory.GroupId = itemGroup?.Id;
         formResponse = await _service.Update(itemCategory, cts.Token);
         if (formResponse)
         {
@@ -279,6 +282,7 @@
     async Task Update(ItemCategoryViewDto record)
     {
         itemCategory = record;
+        itemGroup = new ItemGroupViewDto() { Id = record.ItemGroup!.Id, Name = record.ItemGroup!.Name };
         pageMode = PageModes.Update;
         await HideAllAllert();
         _state.NotifyStateChanged();

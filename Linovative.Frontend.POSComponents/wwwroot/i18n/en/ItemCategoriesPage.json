@@ -3,5 +3,6 @@
   "Entity.Name.Plural": "Categories",
   "Name.Label": "Name",
   "GroupId.Label": "Group",
-  "Name.Required.ErrorMessage": "Name is required"
+  "Name.Required.ErrorMessage": "Name is required",
+  "GroupId.Required.ErrorMessage": "Group is required"
 }

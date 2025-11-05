@@ -42,8 +42,10 @@ namespace LinoVative.Service.Backend.Configurations
             // Items
             config.NewConfig<ItemUnit, ItemUnitDto>();
             config.NewConfig<ItemGroup, ItemGroupDto>();
+            config.NewConfig<ItemGroup, IdWithNameDto>();
             config.NewConfig<ItemCategory, ItemCategoryDto>();
-            config.NewConfig<ItemCategory, ItemCategoryViewDto>();
+            config.NewConfig<ItemCategory, ItemCategoryViewDto>()
+                .Map(x => x.ItemGroup, src => src.Group);
 
             // Mapping Outlets
             config.NewConfig<Outlet, OutletViewDto>();

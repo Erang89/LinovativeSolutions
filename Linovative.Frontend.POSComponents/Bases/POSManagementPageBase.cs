@@ -1,5 +1,4 @@
-﻿using Linovative.Frontend.Services.Interfaces;
-using Linovative.Frontend.Shared.Pages;
+﻿using Linovative.Frontend.Shared.Pages;
 
 namespace Linovative.Frontend.POSComponents.Bases
 {
