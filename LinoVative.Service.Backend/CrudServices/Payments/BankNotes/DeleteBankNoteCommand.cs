@@ -20,6 +20,5 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.BankNotes
         {
         }
 
-        public Task<Result> Handle(DeleteBankNoteCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

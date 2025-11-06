@@ -20,9 +20,6 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.BankNotes
         {
         }
 
-
-        public Task<Result> Handle(UpdateBankNoteCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
-
         protected override async Task<Result> ValidateSaveUpdate(UpdateBankNoteCommand request, CancellationToken token)
         {
             var result = await base.ValidateSaveUpdate(request, token);

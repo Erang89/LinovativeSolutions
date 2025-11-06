@@ -20,6 +20,5 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
         {
         }
 
-        public Task<Result> Handle(DeleteShiftCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

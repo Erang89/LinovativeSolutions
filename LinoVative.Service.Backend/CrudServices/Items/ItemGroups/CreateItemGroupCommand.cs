@@ -22,8 +22,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemGroups
         }
 
 
-        public Task<Result> Handle(CreateItemGroupCommand request, CancellationToken ct) => base.SaveNew(request, ct);
-
         protected override async Task<Result> Validate(CreateItemGroupCommand request, CancellationToken token)
         {
             var result = await base.Validate(request, token);

@@ -20,6 +20,5 @@ namespace LinoVative.Service.Backend.CrudServices.OrderTypes
         {
         }
 
-        public Task<Result> Handle(DeleteOrderTypeCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

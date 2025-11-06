@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategories
       
         }
 
-        public Task<Result> Handle(CreateItemCategoryCommand request, CancellationToken ct) => base.SaveNew(request, ct);
-
         protected override async Task<Result> Validate(CreateItemCategoryCommand request, CancellationToken token)
         {
             var validate  = await base.Validate(request, token);

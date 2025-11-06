@@ -22,7 +22,5 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Units
         {
         }
 
-
-        public Task<Result> Handle(DeleteItemUnitCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

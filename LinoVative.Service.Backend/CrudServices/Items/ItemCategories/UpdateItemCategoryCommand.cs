@@ -21,6 +21,5 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemCategories
         }
 
 
-        public Task<Result> Handle(UpdateItemCategoryCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
     }
 }

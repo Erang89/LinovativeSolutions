@@ -21,9 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.BankNotes
           
         }
 
-        public Task<Result> Handle(CreateBankNoteCommand request, CancellationToken ct) => base.SaveNew(request, ct);
-
-
         protected override async Task<Result> Validate(CreateBankNoteCommand request, CancellationToken token)
         {
             var result = await base.Validate(request, token);

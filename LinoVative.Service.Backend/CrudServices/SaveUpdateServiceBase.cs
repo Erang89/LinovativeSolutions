@@ -34,7 +34,7 @@ namespace LinoVative.Service.Backend.CrudServices
 
 
         // ============================== Update ==============================
-        protected virtual async Task<Result> SaveUpdate(TRequest request, CancellationToken token)
+        public virtual async Task<Result> Handle(TRequest request, CancellationToken token)
         {
             var validate = await ValidateSaveUpdate(request, token);
             if (!validate)

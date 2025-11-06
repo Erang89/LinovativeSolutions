@@ -20,6 +20,5 @@ namespace LinoVative.Service.Backend.CrudServices.People
         {
         }
 
-        public Task<Result> Handle(DeletePersonCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

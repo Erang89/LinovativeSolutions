@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Accounts
         }
 
 
-        public Task<Result> Handle(UpdateAccountCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
-
         protected override async Task<Result> ValidateSaveUpdate(UpdateAccountCommand request, CancellationToken token)
         {
             var result = await base.ValidateSaveUpdate(request, token);

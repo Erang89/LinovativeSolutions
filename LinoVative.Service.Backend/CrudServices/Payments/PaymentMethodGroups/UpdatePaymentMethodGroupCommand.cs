@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.PaymentMethodGroups
         }
 
 
-        public Task<Result> Handle(UpdatePaymentMethodGroupCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
-
         protected override async Task<Result> ValidateSaveUpdate(UpdatePaymentMethodGroupCommand request, CancellationToken token)
         {
             var result = await base.ValidateSaveUpdate(request, token);

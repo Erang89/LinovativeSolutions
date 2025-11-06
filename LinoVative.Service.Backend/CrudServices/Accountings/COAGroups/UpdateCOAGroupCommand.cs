@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.COAGroups
         }
 
 
-        public Task<Result> Handle(UpdateCOAGroupCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
-
         protected override async Task<Result> ValidateSaveUpdate(UpdateCOAGroupCommand request, CancellationToken token)
         {
             var result = await base.ValidateSaveUpdate(request, token);

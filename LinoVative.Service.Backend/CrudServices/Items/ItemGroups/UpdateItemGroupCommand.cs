@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.ItemGroups
         }
 
 
-        public Task<Result> Handle(UpdateItemGroupCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
-
         protected override async Task<Result> ValidateSaveUpdate(UpdateItemGroupCommand request, CancellationToken token)
         {
             var result = await base.ValidateSaveUpdate(request, token);

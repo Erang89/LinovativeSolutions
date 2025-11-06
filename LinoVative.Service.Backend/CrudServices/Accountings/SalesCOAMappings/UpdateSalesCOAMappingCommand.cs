@@ -20,7 +20,7 @@ namespace LinoVative.Service.Backend.CrudServices.SalesCOAMappings
         {
         }
 
-        public Task<Result> Handle(UpdateSalesCOAMappingCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
+        public Task<Result> Handle(UpdateSalesCOAMappingCommand request, CancellationToken ct) => base.Handle(request, ct);
 
         protected override async Task<SalesCOAMapping> OnMapping(UpdateSalesCOAMappingCommand request)
         {

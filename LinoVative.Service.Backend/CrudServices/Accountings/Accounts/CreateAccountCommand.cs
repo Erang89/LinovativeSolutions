@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Accounts
           
         }
 
-        public Task<Result> Handle(CreateAccountCommand request, CancellationToken ct) => base.SaveNew(request, ct);
-
 
         protected override async Task<Result> Validate(CreateAccountCommand request, CancellationToken token)
         {

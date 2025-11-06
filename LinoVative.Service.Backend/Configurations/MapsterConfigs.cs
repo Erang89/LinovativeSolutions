@@ -70,6 +70,8 @@ namespace LinoVative.Service.Backend.Configurations
                 .Ignore(x => x.PaymentMethods)
                 .Ignore(x => x.OrderTypes);
 
+            config.NewConfig<OutletAreaCreateDto, OutletArea>()
+                .Ignore(x => x.Tables);
             config.NewConfig<OutletArea, OutletAreaDto>();
             config.NewConfig<OutletBankNote, OutletBankNoteDto>();
             config.NewConfig<OutletItemCategory, OutletItemCategoryViewDto>();
@@ -79,6 +81,7 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<OutletShift, OutletShiftViewDto>();
             config.NewConfig<OutletTable, OutletTableViewDto>();
             config.NewConfig<OutletUser, OutletUserViewDto>();
+            config.NewConfig<OutletTableDto, OutletTable>();
 
             // Mapping Order Types
             config.NewConfig<OrderType, OrderTypeViewDto>();

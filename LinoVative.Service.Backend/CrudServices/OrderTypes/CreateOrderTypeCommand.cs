@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.OrderTypes
           
         }
 
-        public Task<Result> Handle(CreateOrderTypeCommand request, CancellationToken ct) => base.SaveNew(request, ct);
-
 
         protected override async Task<Result> Validate(CreateOrderTypeCommand request, CancellationToken token)
         {

@@ -20,6 +20,5 @@ namespace LinoVative.Service.Backend.CrudServices.Accounts
         {
         }
 
-        public Task<Result> Handle(DeleteAccountCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

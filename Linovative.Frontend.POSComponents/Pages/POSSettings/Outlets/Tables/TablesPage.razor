@@ -1,0 +1,27 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
+@using LinoVative.Shared.Dto.Outlets
+
+@attribute [Route(PageRoutes.PostManagement.Outlets.Table)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IOutletService _service
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+
+<OutletBreadcrumb />
+<OutletTabs SelectedTab="OutletTabs.Tabs.Tables" />
+@* <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" /> *@
+<LinovativeGap />
+
+Tables
+
+@code {
+
+}

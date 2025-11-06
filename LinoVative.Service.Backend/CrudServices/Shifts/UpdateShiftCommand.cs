@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
         }
 
 
-        public Task<Result> Handle(UpdateShiftCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
-
         protected override async Task<Result> ValidateSaveUpdate(UpdateShiftCommand request, CancellationToken token)
         {
             var result = await base.ValidateSaveUpdate(request, token);

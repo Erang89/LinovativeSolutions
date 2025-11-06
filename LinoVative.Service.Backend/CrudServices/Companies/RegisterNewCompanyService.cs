@@ -28,7 +28,7 @@ namespace LinoVative.Service.Backend.CrudServices.Companies
         }
 
 
-        public Task<Result> Handle(RegisterNewCompanyServiceCommand req, CancellationToken token) => base.SaveNew(req, token);
+        public Task<Result> Handle(RegisterNewCompanyServiceCommand req, CancellationToken token) => base.Handle(req, token);
 
         
 

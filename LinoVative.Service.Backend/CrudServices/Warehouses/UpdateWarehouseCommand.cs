@@ -21,8 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Warehouses
         }
 
 
-        public Task<Result> Handle(UpdateWarehouseCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
-
         protected override async Task<Result> ValidateSaveUpdate(UpdateWarehouseCommand request, CancellationToken token)
         {
             var result = await base.ValidateSaveUpdate(request, token);

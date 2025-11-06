@@ -18,7 +18,10 @@ namespace LinoVative.Shared.Dto.Outlets
         public bool IsActive { get; set; } = true;
     }
 
-   
+    public class OutletAreaCreateDto : OutletAreaDto
+    {
+        public List<OutletTableDto> Tables { get; set; } = new();
+    }
 
     public class OutletAreaViewDto : OutletAreaDto
     {

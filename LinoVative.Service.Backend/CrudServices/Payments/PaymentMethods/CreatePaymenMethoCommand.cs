@@ -21,9 +21,6 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.PaymentMethods
           
         }
 
-        public Task<Result> Handle(CreatePaymenMethoCommand request, CancellationToken ct) => base.SaveNew(request, ct);
-
-
         protected override async Task<Result> Validate(CreatePaymenMethoCommand request, CancellationToken token)
         {
             var result = await base.Validate(request, token);

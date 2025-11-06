@@ -20,6 +20,5 @@ namespace LinoVative.Service.Backend.CrudServices.Warehouses
         {
         }
 
-        public Task<Result> Handle(DeleteWarehouseCommand request, CancellationToken ct) => base.Handle(request, ct);
     }
 }

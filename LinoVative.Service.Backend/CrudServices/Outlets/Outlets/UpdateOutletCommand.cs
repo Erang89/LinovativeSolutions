@@ -21,7 +21,7 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Outlets
         }
 
 
-        public Task<Result> Handle(UpdateOutletCommand request, CancellationToken ct) => base.SaveUpdate(request, ct);
+        public Task<Result> Handle(UpdateOutletCommand request, CancellationToken ct) => base.Handle(request, ct);
 
         protected override async Task<Result> ValidateSaveUpdate(UpdateOutletCommand request, CancellationToken token)
         {

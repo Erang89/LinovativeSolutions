@@ -22,8 +22,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Units
         }
 
 
-        public Task<Result> Handle(CreateItemUnitCommand request, CancellationToken ct) => base.SaveNew(request, ct);
-
         protected override async Task<Result> Validate(CreateItemUnitCommand request, CancellationToken token)
         {
             var result = await base.Validate(request, token);

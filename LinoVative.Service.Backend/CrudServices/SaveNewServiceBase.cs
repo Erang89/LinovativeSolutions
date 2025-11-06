@@ -26,7 +26,7 @@ namespace LinoVative.Service.Backend.CrudServices
             return _mapper.Map<T>(request!);
         }
 
-        protected virtual async Task<Result> SaveNew(TRequest request, CancellationToken token)
+        public virtual async Task<Result> Handle(TRequest request, CancellationToken token)
         {
             var validate = await Validate(request, token);
             if (!validate)
