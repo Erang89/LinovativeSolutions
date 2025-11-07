@@ -49,7 +49,8 @@ namespace LinoVative.Service.Backend.LocalizerServices
             if (!_dics.ContainsKey(key))
                 return key;
 
-            return string.Format(_dics["key"], value);
+            var message = _dics[key];
+            return string.Format(message, value);
         }
 
         readonly AvailableLanguageKeys avaKeys = new AvailableLanguageKeys();

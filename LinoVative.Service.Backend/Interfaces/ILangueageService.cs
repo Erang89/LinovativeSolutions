@@ -12,6 +12,6 @@
     {
         public string ChangeDefaultCompanyCommand => nameof(ChangeDefaultCompanyCommand);
         public string RefreshTokenCommand => nameof(RefreshTokenCommand);
-        public string CreateOutletAreaCommand => nameof(CreateOutletAreaCommand);
+        public string CreateOrUpdateOutletAreaCommand => nameof(CreateOrUpdateOutletAreaCommand);
     }
 }

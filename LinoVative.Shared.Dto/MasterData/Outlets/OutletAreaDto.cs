@@ -7,9 +7,6 @@ namespace LinoVative.Shared.Dto.Outlets
     [LocalizerKey(nameof(OutletAreaDto))]
     public class OutletAreaDto : EntityDtoBase
     {
-        [LocalizedRequired, EntityID(EntityTypes.OutletArea)]
-        public Guid? AreaId { get; set; }
-
         [LocalizedRequired, EntityID(EntityTypes.Outlet)]
         public Guid? OutletId { get; set; }
 

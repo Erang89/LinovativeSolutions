@@ -2,6 +2,7 @@
 using Linovative.Shared.Interface.Enums;
 using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace LinoVative.Shared.Dto.Attributes
 {
@@ -15,6 +16,18 @@ namespace LinoVative.Shared.Dto.Attributes
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
+            var classType = validationContext.ObjectType;
+            var ignoreAttribute = classType.GetCustomAttribute<IgnoreEntityIDValidationAttribute>(inherit: true);
+            var classProperties = ignoreAttribute?.IgnoreList;
+            var anyProperties = classProperties is not null && classProperties.Any();
+            if (classProperties is null || classProperties.Count() == 0)
+                return ValidationResult.Success;
+
+            var className = classType.Name;
+            var propertyName = validationContext.MemberName;
+            if(anyProperties && classProperties.Any(x => x.ClassName == className && x.PropertyName == propertyName))
+                return ValidationResult.Success;
+
             var idValidator = (IEntityIDValidatorService)validationContext.GetService(typeof(IEntityIDValidatorService))!;
             var localizer = (IStringLocalizer)validationContext.GetService(typeof(IStringLocalizer))!;
             var actor = (IActor)validationContext.GetService(typeof(IActor))!;
