@@ -11,12 +11,12 @@ using Microsoft.Extensions.Localization;
 namespace LinoVative.Service.Backend.CrudServices.Outlets.Areas
 {
 
-    public class CreateOutletAreaCommand : IRequest<Result>
+    public class CreateOrUpdateOutletAreaCommand : IRequest<Result>
     {
         public List<OutletAreaCreateDto> Areas { get; set; } = new();
     }
 
-    public class CreateOutletAreaHandlerService : SaveNewServiceBase<OutletArea, CreateOutletAreaCommand>, IRequestHandler<CreateOutletAreaCommand, Result>
+    public class CreateOutletAreaHandlerService : SaveNewServiceBase<OutletArea, CreateOrUpdateOutletAreaCommand>, IRequestHandler<CreateOrUpdateOutletAreaCommand, Result>
     {
         ILangueageService _lang;
         public CreateOutletAreaHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, ILangueageService lang) : base(dbContext, actor, mapper, appCache, localizer)
@@ -26,12 +26,12 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Areas
         }
 
 
-        protected override Task<List<OutletArea>> OnCreatingEntity(CreateOutletAreaCommand request, CancellationToken token = default)
+        protected override Task<List<OutletArea>> OnCreatingEntity(CreateOrUpdateOutletAreaCommand request, CancellationToken token = default)
         {
             return base.OnCreatingEntity(request, token);
         }
 
-        protected override async Task<Result> Validate(CreateOutletAreaCommand request, CancellationToken token)
+        protected override async Task<Result> Validate(CreateOrUpdateOutletAreaCommand request, CancellationToken token)
         {
             var areas = MappingAreas(request);
             var result = Result.OK();
@@ -40,13 +40,13 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Areas
             {
                 var index = request.Areas.IndexOf(area);
                 if (areas.Any(x => x.Name!.ToLower().Equals(area.Name!.ToLower()) && x.Id != area.Id))
-                    result.AddInvalidProperty($"Name_{index}", _lang.Format($"{nameof(CreateOutletAreaCommand)}.AreaName.Duplicate", area.Name!));
+                    result.AddInvalidProperty($"Name_{index}", _lang.Format($"{nameof(CreateOrUpdateOutletAreaCommand)}.AreaName.Duplicate", area.Name!));
 
                 foreach(var table in area.Tables)
                 {
                     var tableIndex = area.Tables.IndexOf(table);
                     if(area.Tables.Any(x => x.Name!.ToLower().Equals(table.Name!.ToLower()) && x.Id != table.Id))
-                        result.AddInvalidProperty($"Name_{index}.table_{tableIndex}", _lang.Format($"{nameof(CreateOutletAreaCommand)}.Table.Duplicate", table.Name!));
+                        result.AddInvalidProperty($"Name_{index}.table_{tableIndex}", _lang.Format($"{nameof(CreateOrUpdateOutletAreaCommand)}.Table.Duplicate", table.Name!));
                 }
             }
             
@@ -55,7 +55,7 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Areas
             return Result.OK();
         }
 
-        List<OutletArea> MappingAreas(CreateOutletAreaCommand request)
+        List<OutletArea> MappingAreas(CreateOrUpdateOutletAreaCommand request)
         {
             var areas = GetAreas(request);
             foreach(var areaDto in request.Areas)
@@ -97,7 +97,7 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Areas
         }
 
         private List<OutletArea>? _areas;
-        List<OutletArea> GetAreas(CreateOutletAreaCommand request)
+        List<OutletArea> GetAreas(CreateOrUpdateOutletAreaCommand request)
         {
             if (_areas is not null)
                 return _areas;

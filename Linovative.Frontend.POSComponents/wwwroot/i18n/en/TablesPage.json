@@ -1,0 +1,8 @@
+{
+  "Entity.Name.Single": "Table",
+  "Entity.Name.Plural": "Tables",
+
+  "Name.Label": "Name",
+
+  "Name.Required.ErrorMessage": "Name is required"
+}

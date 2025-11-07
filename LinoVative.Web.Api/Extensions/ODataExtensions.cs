@@ -41,21 +41,13 @@ namespace LinoVative.Web.Api.Extensions
             ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
             modelBuilder.EnableLowerCamelCase();
 
-
             modelBuilder.EntitySet<ItemUnitDto>("ItemUnits");
             modelBuilder.EntitySet<ItemGroupDto>("ItemGroups");
             modelBuilder.EntitySet<ItemCategoryViewDto>("ItemCategories");
             modelBuilder.EntitySet<ItemViewDto>("Items");
             modelBuilder.EntitySet<OutletViewDto>("Outlets");
-
-            var setShift = modelBuilder.EntitySet<ShiftViewDto>("Shifts");
-            //var shiftEntity = setShift.EntityType;
-            //shiftEntity.Ignore(s => s.StartTime);
-            //shiftEntity.Ignore(s => s.EndTime);
-            //shiftEntity.Property(s => s.StartTimeFormatted).Name = nameof(ShiftDto.StartTime);
-            //shiftEntity.Property(s => s.EndTimeFormatted).Name = nameof(ShiftDto.EndTime);
-
-
+            modelBuilder.EntitySet<OutletAreaViewDto>("OutletAreas");
+            modelBuilder.EntitySet<ShiftViewDto>("Shifts");
             modelBuilder.EntitySet<PersonViewDto>("People");
             modelBuilder.EntitySet<PaymentMethodGroupViewDto>("PaymentMethodGroups");
             modelBuilder.EntitySet<PaymentMethodViewDto>("PaymentMethods");

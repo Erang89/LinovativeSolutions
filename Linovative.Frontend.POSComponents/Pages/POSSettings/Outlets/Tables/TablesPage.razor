@@ -11,17 +11,119 @@
 @inject IJsonLocalizer _loc
 @inject ITopBarService _topBarService
 @inject IApplicationStateService _state
-@inject IOutletService _service
+@inject IOutletAreaService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
 <OutletBreadcrumb />
 <OutletTabs SelectedTab="OutletTabs.Tabs.Tables" />
-@* <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" /> *@
 <LinovativeGap />
 
-Tables
+<LinovativeGap />
+<MudGrid>
+    <MudItem md="4">
+        <MudText Typo="Typo.caption">In wich outlet do you want to manage table?</MudText>
+        <LinovativeGap />
+        <OutletDropdown Label="Select Outlet" Immediate="true" Value="@selectedOutlet" ValueChanged="@( async (e) => await LoadArea(e))" />
+    </MudItem>
+</MudGrid>
+
+
 
 @code {
+    
+    protected override string LocalizerResource => nameof(TablesPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
+
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private AppSuccessAllert? successAllert { get; set; }
+    private AppErrorAlert? errorAlert { get; set; }
+
+
+    private Response<List<OutletAreaViewDto>> area = new() { Data = new() };
+    private OutletAreaViewDto? selectedArea { get; set; }
+    private OutletViewDto? selectedOutlet { get; set; }
+    private List<OutletAreaViewDto> newAreas { get; set; } = new();
+    private OutletTableViewDto? selectedTable { get; set; }
+    public CancellationTokenSource cts { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+        _topBarService.SetTitle(EntityPluralName);
+    }
+
+    async Task LoadArea(OutletViewDto? outlet)
+    {
+
+        selectedOutlet = outlet;
+        selectedArea = null;
+
+        if (outlet is not null)
+        {
+            area = await _service.Get(new ODataFilter() { Options = $"$filter=outletid eq ({outlet.Id})&$expand=tables" }, cts.Token);
+            _state.NotifyStateChanged();
+            selectedArea = area.Data?.FirstOrDefault();
+            return;
+        }
+
+        _state.NotifyStateChanged();
+    }
+
+    async Task SelectAreaChange(OutletAreaViewDto? area)
+    {
+        selectedArea = area;
+        await Task.CompletedTask;
+        _state.NotifyStateChanged();
+    }
+
+    async Task DeleteTable(OutletTableViewDto table)
+    {
+        selectedArea!.Tables = selectedArea.Tables.Where(x => x != table).ToList();
+        if (table == selectedTable)
+        {
+            selectedTable = null;
+        }
+        await Task.CompletedTask;
+        _state.NotifyStateChanged();
+    }
+
+    async Task Save()
+    {
+        formResponse = await _service.Update(new { Areas = area.Data }, cts.Token);
+        if (!formResponse)
+        {
+            errorAlert?.ShowAlert(formResponse);
+            return;
+        }
+
+        successAllert?.ShowAlert("Area and tables has been saved");
+    }
+
+
+
+    void SetValue(Action setAction)
+    {
+        setAction();
+        _state.NotifyStateChanged();
+    }
+
+    void DeleteArea(OutletAreaViewDto areaDto)
+    {
+        if (areaDto == selectedArea)
+        {
+            selectedArea = null;
+        }
+
+        area.Data = area.Data!.Where(x => x != areaDto).ToList();
+        _state.NotifyStateChanged();
+    }
 }
