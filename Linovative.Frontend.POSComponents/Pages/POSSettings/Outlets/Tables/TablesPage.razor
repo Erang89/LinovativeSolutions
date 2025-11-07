@@ -22,16 +22,171 @@
 <LinovativeGap />
 <MudGrid>
     <MudItem md="4">
-        <MudText Typo="Typo.caption">In wich outlet do you want to manage table?</MudText>
+        <MudText Typo="Typo.caption">@_loc[$"{LocalizerResource}.SelectTableDescription"]</MudText>
         <LinovativeGap />
         <OutletDropdown Label="Select Outlet" Immediate="true" Value="@selectedOutlet" ValueChanged="@( async (e) => await LoadArea(e))" />
     </MudItem>
 </MudGrid>
 
 
+@if (selectedOutlet is not null)
+{
+    <LinovativeGap />
+    <MudButton EndIcon="@Icons.Material.Filled.Save"
+               Color="Color.Primary"
+               OnClick="@Save"
+               Variant="@ComponentSettings.SaveButtonVariant">@_loc.Global("Button.Save")</MudButton>
+
+    <LinovativeGap />
+    <MudText Typo="Typo.h6">@selectedOutlet.Name?.ToUpper() -  @EntityPluralName</MudText>
+
+
+    <AppErrorAlert @ref="@errorAlert" AutoClose="true" />
+    <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
+
+    <LinovativeGap />
+    <MudGrid>
+        <LinovativeGap />
+        <MudItem md="4" lg="2">
+            <MudPaper>
+                <MudList T="OutletAreaViewDto" @bind-SelectedValue="selectedArea" SelectionMode="@SelectionMode.SingleSelection" ReadOnly="true">
+                    @foreach (var area in area.Data ?? new())
+                    {
+                        <MudListItem Class="show-on-hover" Value="area" OnClick="@(() => SelectAreaChange(area))">
+                            <ChildContent>
+                                <div class="d-flex align-content-space-between">
+                                    <div>@area.Name</div> <MudSpacer />  <MudIcon Class="item-show-on-hover cursor-pointer" @onclick="@(() => DeleteArea(area))" Icon="@Icons.Material.Filled.Delete" />
+                                </div>
+                            </ChildContent>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+
+            <LinovativeGap />
+            <MudButton OnClick="@(() => SetValue(() =>
+                    {
+                        selectedArea = new OutletAreaViewDto(){ OutletId = selectedOutlet!.Id, Name = _loc[$"{LocalizerResource}.NewArea.Label"]};
+                        area.Data!.Add(selectedArea);
+                    }))"
+                       IconSize="Size.Small"
+                       EndIcon="@Icons.Material.Filled.Add"
+                       Variant="Variant.Outlined">Add Area</MudButton>
+        </MudItem>
+        @if (selectedArea is not null)
+        {
+            var areaIndex = area.Data!.IndexOf(area.Data.FirstOrDefault(x => x.Id == selectedArea.Id)!);
+
+            <MudItem md="8" lg="10">
+
+                <MudForm @ref="form" @bind-IsValid="@isFormValid"
+                         @bind-Errors="@formErrors"
+                         @onkeypress="@(() => formErrorAlert?.HideAlert())">
+
+                    <div class="d-flex flex-grow-1 gap-4">
+
+                        <LinovativeInputText @bind-Value="@selectedArea.Name"
+                                             IsRequired="true"
+                                             Immediate="true"
+                                             Class="flex-none"
+                                             Style="min-width: 300px"
+                                             ErrorKey="@($"{areaIndex}.Name")"
+                                             Label="@_loc[$"{LocalizerResource}.Name.Label"]"
+                                             Errors="@formResponse?.Errors" />
+
+
+                        <LinovativeTextBox Value="@selectedArea.Sequence.ToString()"
+                                           ValueChanged="@(x => selectedArea.Sequence = int.Parse(x))"
+                                           InputType="InputType.Number"
+                                           IsRequired="true"
+                                           Immediate="true"
+                                           Class="flex-none"
+                                           Style="min-width: 100px"
+                                           T="string"
+                                           Label="@_loc[$"{LocalizerResource}.Sequence.Label"]"
+                                           ErrorKey="@($"{areaIndex}.Sequence")" />
+
+                        <MudSwitch Class="flex-none align-self-center"
+                                   Label="@_loc.Global("Label.Active")"
+                                   Value="@selectedArea.IsActive"
+                                   T="bool"
+                                   ValueChanged="@((e) => SetValue(() => selectedArea.IsActive = !selectedArea.IsActive))"
+                                   Color="Color.Primary" />
+
+                        <div class="flex-1"></div>
+                    </div>
+
+
+                    <LinovativeGap />
+                    <MudSimpleTable Style="overflow-x: auto;">
+                        <thead>
+                            <tr>
+                                <th>@_loc[$"{LocalizerResource}.TableName.Label"]</th>
+                                <td width="200">@_loc[$"{LocalizerResource}.Status.Label"]</td>
+                                <th width="120"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var table in selectedArea.Tables)
+                            {
+                                if (table == selectedTable)
+                                {
+                                    var tableIndex = selectedArea.Tables.IndexOf(table);
+                                    <tr>
+                                        <td>
+                                            <LinovativeInputText @bind-Value="@table.Name"
+                                                                 IsRequired="true"
+                                                                 Immediate="true"
+                                                                 Label="@_loc[$"{LocalizerResource}.TableName.Label"]"
+                                                                 ErrorKey="@($"Table_{tableIndex}.Name")" />
+                                        </td>
+                                        <td>
+                                            <MudSwitch Label="@_loc.Global("Label.Active")" Value="@table.IsActive" T="bool" ValueChanged="@((e) => SetValue(() => table.IsActive = !table.IsActive))" Color="Color.Primary" />
+                                        </td>
+                                        <td>
+                                            <MudIcon Class="cursor-pointer" @onclick="@(() => SetValue(() => selectedTable = null))" Icon="@Icons.Material.Filled.Check" />
+                                            <MudIcon Class="cursor-pointer ms-2" @onclick="@(() => DeleteTable(table))" Icon="@Icons.Material.Filled.Delete" />
+                                        </td>
+                                    </tr>
+                                    continue;
+                                }
+                                <tr>
+                                    <td>@table.Name</td>
+                                    <td style="text-align: center">
+                                        <MudBadge Origin="Origin.TopRight" Dot="true" Color="@(table.IsActive? Color.Primary : Color.Secondary)" Class="mx-6 my-4">
+                                            <MudText>
+                                                @(table.IsActive ? _loc.Global("Label.Active") : _loc.Global("Label.NotActive"))
+                                            </MudText>
+                                        </MudBadge>
+                                    </td>
+                                    <td>
+                                        <MudIcon Class="cursor-pointer" @onclick="@(() => SetValue(() => selectedTable = table))" Icon="@Icons.Material.Filled.Edit" />
+                                        <MudIcon Class="cursor-pointer ms-2" @onclick="@(() => DeleteTable(table))" Icon="@Icons.Material.Filled.Delete" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </MudSimpleTable>
+
+                    <LinovativeGap />
+                    <div>
+                        <MudButton OnClick="@(() => SetValue(() =>
+                    {
+                        selectedTable = new OutletTableViewDto(){ AreaId = selectedArea!.Id, Name = _loc[$"{LocalizerResource}.NewTable.Label"]};
+                        selectedArea.Tables.Add(selectedTable);
+                    }))"
+                                   IconSize="Size.Small"
+                                   EndIcon="@Icons.Material.Filled.Add"
+                                   Variant="Variant.Outlined">@_loc[$"{LocalizerResource}.AddNewTable.Button"]</MudButton>
+                    </div>
+                </MudForm>
+            </MudItem>
+        }
+    </MudGrid>
+}
 
 @code {
-    
+
     protected override string LocalizerResource => nameof(TablesPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
@@ -105,7 +260,7 @@
             return;
         }
 
-        successAllert?.ShowAlert("Area and tables has been saved");
+        successAllert?.ShowAlert(_loc[$"{LocalizerResource}.SaveSuccess.Alert.Text"]);
     }
 
 

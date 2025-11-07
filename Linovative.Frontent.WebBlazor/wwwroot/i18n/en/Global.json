@@ -24,6 +24,10 @@
   "Label.Loading": "Loading",
   "Label.SelectedRecord": "Selected",
   "Label.RowsPerPage": "Rows per page",
+  "Label.Active": "Active",
+  "Label.NotActive": "Not Active",
+
+
   "Dialog.Yes": "Yes",
   "Dialog.No": "No",
   "Dialog.Cancel": "Cancel",

@@ -1,5 +1,6 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
+using LinoVative.Shared.Dto.Commons;
 
 namespace LinoVative.Shared.Dto.Outlets
 {
@@ -20,6 +21,6 @@ namespace LinoVative.Shared.Dto.Outlets
     public class OutletTableViewDto : OutletTableDto
     {
 
-        public OutletAreaViewDto? Area { get; set; }
+        public IdWithNameDto? Area { get; set; }
     }
 }

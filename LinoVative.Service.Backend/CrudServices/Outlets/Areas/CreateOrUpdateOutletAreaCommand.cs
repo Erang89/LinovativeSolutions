@@ -40,13 +40,13 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Areas
             {
                 var index = request.Areas.IndexOf(area);
                 if (areas.Any(x => x.Name!.ToLower().Equals(area.Name!.ToLower()) && x.Id != area.Id))
-                    result.AddInvalidProperty($"Name_{index}", _lang.Format($"{nameof(CreateOrUpdateOutletAreaCommand)}.AreaName.Duplicate", area.Name!));
+                    result.AddInvalidProperty($"{index}.Name", _lang.Format($"{nameof(CreateOrUpdateOutletAreaCommand)}.AreaName.Duplicate", area.Name!));
 
                 foreach(var table in area.Tables)
                 {
                     var tableIndex = area.Tables.IndexOf(table);
                     if(area.Tables.Any(x => x.Name!.ToLower().Equals(table.Name!.ToLower()) && x.Id != table.Id))
-                        result.AddInvalidProperty($"Name_{index}.table_{tableIndex}", _lang.Format($"{nameof(CreateOrUpdateOutletAreaCommand)}.Table.Duplicate", table.Name!));
+                        result.AddInvalidProperty($"Table_{tableIndex}.Name", _lang.Format($"{nameof(CreateOrUpdateOutletAreaCommand)}.Table.Duplicate", table.Name!));
                 }
             }
             

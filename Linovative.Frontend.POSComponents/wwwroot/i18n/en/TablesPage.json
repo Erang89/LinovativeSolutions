@@ -3,6 +3,14 @@
   "Entity.Name.Plural": "Tables",
 
   "Name.Label": "Name",
+  "Sequence.Label": "Sequence",
 
-  "Name.Required.ErrorMessage": "Name is required"
+  "Name.Required.ErrorMessage": "Name is required",
+  "SelectTableDescription": "In wich outlet do you want to manage table?",
+  "NewArea.Label": "New Area",
+  "NewTable.Label": "New Area",
+  "TableName.Label": "Table Name",
+  "Status.Label": "Status",
+  "AddNewTable.Button": "Add New Table",
+  "SaveSuccess.Alert.Text": "Area and tables has been saved"
 }

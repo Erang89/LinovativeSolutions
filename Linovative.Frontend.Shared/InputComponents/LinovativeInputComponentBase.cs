@@ -55,6 +55,9 @@ namespace Linovative.Frontend.Shared.InputComponents
         public string? Format { get; set; }
 
         [Parameter]
+        public string? Style { get; set; }
+
+        [Parameter]
         public bool Error { get; set; }
 
         [Parameter]
