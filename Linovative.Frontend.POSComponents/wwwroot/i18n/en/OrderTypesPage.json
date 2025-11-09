@@ -1,0 +1,10 @@
+{
+  "Entity.Name.Single": "Order Type",
+  "Entity.Name.Plural": "Order Types",
+
+  "Name.Label": "Name",
+  "Behavior.Label": "Behavior",
+
+  "Name.Required.ErrorMessage": "Name is required",
+  "Behavior.Required.ErrorMessage": "Behavior is required"
+}

@@ -1,28 +1,28 @@
 ﻿@using LinoVative.Shared.Dto.MasterData.Payments
+@using LinoVative.Shared.Dto.OrderTypes
 @using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Pages.POSSettings.Transactions.Shared
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
 @using LinoVative.Shared.Dto.MasterData.Shifts
-@using Linovative.Frontend.POSComponents.Pages.POSSettings.Transactions.Shared
 
-@attribute [Route(PageRoutes.PostManagement.Trasactions.Payments.PaymentMethod)]
+@attribute [Route(PageRoutes.PostManagement.Trasactions.Payments.OrderTypes)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
 @inject IJsonLocalizer _loc
 @inject ITopBarService _topBarService
 @inject IApplicationStateService _state
-@inject IPaymentMethodService _service
+@inject IOrderTypeService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
-<PaymentBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.Trasactions.Payments.PaymentMethod)})" />
-<PaymentTabs SelectedTab="PaymentTabs.Tabs.PaymentMethod" />
+
+<PaymentBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.Trasactions.Payments.OrderTypes)})" />
+<PaymentTabs SelectedTab="PaymentTabs.Tabs.OrderType" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />
-
-
 
 @if (pageMode == PageModes.Create || pageMode == PageModes.Update)
 {
@@ -43,19 +43,12 @@
                                      LocalizerKey="Name" />
 
                 <LinovativeGap />
-                <PaymentTypeDropdown Required="true"
-                                    Errors="@formResponse?.Errors"
-                                    LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="Type"
-                                    @bind-Value="@item.Type" />
-
-                <LinovativeGap />
-                <PaymentMethodGroupDropdown @bind-Value="@group"
-                                      Required="true"
-                                      Errors="@formResponse?.Errors"
-                                      LocalizerResource="@LocalizerResource"
-                                      LocalizerKey="@nameof(PaymentMethodViewDto.PaymentMethodGroupId)" />
-
+                <OrderTypeBehaviorDropdown Required="true"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                           LocalizerKey="Behavior"
+                                     Value="@item.Behavior"
+                                     ValueChanged="@(x => item.Behavior = x)"/>
             </MudForm>
         </MudItem>
     </MudGrid>
@@ -64,6 +57,7 @@
 
 <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
 <AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
+
 
 
 @if (pageMode == PageModes.List)
@@ -84,9 +78,8 @@
             <MudTh Style="width: 30px">
                 <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
             </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(PaymentMethodViewDto.Name))" T="ItemGroupViewDto">@Label("Name")</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(PaymentMethodViewDto.Type))" T="ItemGroupViewDto">@Label("Type")</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(PaymentMethodViewDto.PaymentMethodGroup))" T="ItemGroupViewDto">@Label("PaymentMethodGroupId")</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(OrderTypeViewDto.Name))" T="ItemGroupViewDto">@Label("Name")</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(OrderTypeViewDto.Behavior))" T="ItemGroupViewDto">@Label("Behavior")</MudTableSortLabel></MudTh>
             <MudTh Style="width: 60px"></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -94,8 +87,7 @@
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Type">@context.Type</MudTd>
-            <MudTd DataLabel="Group">@context.PaymentMethodGroup?.Name</MudTd>
+            <MudTd DataLabel="Behavior">@context.Behavior</MudTd>
             <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
@@ -117,14 +109,14 @@
 
 @code {
 
-    protected override string LocalizerResource => nameof(PaymentMethodsPage);
+    protected override string LocalizerResource => nameof(OrderTypesPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
-    private List<PaymentMethodViewDto> selectedItems { get; set; } = new();
+    private List<OrderTypeViewDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts = new();
     private PageModes? pageMode { get; set; } = PageModes.List;
-    private PaymentMethodViewDto item { get; set; } = new();
+    private OrderTypeViewDto item { get; set; } = new();
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -133,12 +125,10 @@
     private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
-    private MudTable<PaymentMethodViewDto>? table;
+    private MudTable<OrderTypeViewDto>? table;
     private bool selectedAll { get; set; }
-    private List<PaymentMethodViewDto> dataSource { get; set; } = new();
+    private List<OrderTypeViewDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
-    private PaymentMethodGroupViewDto? group = null;
-
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -200,8 +190,6 @@
     async Task SaveNew()
     {
         isFormSubmitting = true;
-
-        item.PaymentMethodGroupId = group!.Id;
         formResponse = await _service.Create(item, cts.Token);
         if (formResponse)
         {
@@ -217,7 +205,6 @@
     async Task SaveUpdate()
     {
         isFormSubmitting = true;
-        item.PaymentMethodGroupId = group!.Id;
         formResponse = await _service.Update(item, cts.Token);
         if (formResponse)
         {
@@ -261,7 +248,7 @@
         table?.ReloadServerData();
     }
 
-    private async Task<TableData<PaymentMethodViewDto>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<OrderTypeViewDto>> ServerReload(TableState state, CancellationToken token)
     {
         selectedItems = new();
         selectedAll = false;
@@ -273,14 +260,14 @@
                 PageSize = state.PageSize,
                 OrderFiled = state.SortLabel,
                 SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
-                Options = $"$expand=PaymentMethodGroup",
+                Options = $"",
                 FilterPayload = new { searchKeyword = searchString }
             };
 
         var result = await _service.Get(odataFilter, cts.Token);
         dataSource = result?.Data ?? new();
 
-        return new TableData<PaymentMethodViewDto>() { TotalItems = result!.Count, Items = result.Data };
+        return new TableData<OrderTypeViewDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
     async Task AddNew()
@@ -289,16 +276,15 @@
         await HideAllAllert();
     }
 
-    async Task Update(PaymentMethodViewDto record)
+    async Task Update(OrderTypeViewDto record)
     {
         item = record;
-        group = new PaymentMethodGroupViewDto() { Id = record.PaymentMethodGroup!.Id, Name = record.PaymentMethodGroup!.Name };
         pageMode = PageModes.Update;
         await HideAllAllert();
         _state.NotifyStateChanged();
     }
 
-    void SelectRecord(bool selected, PaymentMethodViewDto data)
+    void SelectRecord(bool selected, OrderTypeViewDto data)
     {
         if (!selected)
         {
@@ -329,6 +315,6 @@
         var selectedIds = selectedItems.Select(x => x.Id);
         selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
     }
-    bool IsSelected(PaymentMethodViewDto data) => selectedItems.Any(x => x.Id == data.Id);
+    bool IsSelected(OrderTypeViewDto data) => selectedItems.Any(x => x.Id == data.Id);
 
 }

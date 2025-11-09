@@ -1,0 +1,29 @@
+﻿@using LinoVative.Shared.Dto.ItemDtos
+@using Linovative.Frontend.Services.FrontendServices
+@inherits SearchableDropdownBase<OrderBehaviors?>
+@inject IApplicationStateService _state
+
+<MudSelect Value="Value"
+           ValueChanged="@ValueChanged"
+           Label="@_label"
+           Error="@_isError"
+           ErrorText="@_errorMessage"
+           Required="@Required"
+           RequiredError="@_requiredMessage"
+           Variant="ComponentSettings.InputVariant"
+           Clearable="@Clearable">
+    @foreach (OrderBehaviors? type in Enum.GetValues(typeof(OrderBehaviors)))
+    {
+        <MudSelectItem Value="@type">@type</MudSelectItem>
+    }
+</MudSelect>
+
+@code {
+
+    bool _isError => Error || _containErrors;
+    bool _containErrors => (ErrorKey is not null && Errors is not null && Errors.Count() > 0 && Errors.ContainsKey(ErrorKey));
+    string? _errorMessage => _isError ? ErrorMessage : _containErrors ? string.Join(" ", Errors[ErrorKey!]) : (Required && Value is null) ? _requiredMessage : null;
+    string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
+    string? _requiredMessage => !string.IsNullOrWhiteSpace(RequiredMessage) ? RequiredMessage : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Required.ErrorMessage"];
+
+}

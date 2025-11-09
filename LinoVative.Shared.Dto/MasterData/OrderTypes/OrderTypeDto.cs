@@ -9,7 +9,9 @@ namespace LinoVative.Shared.Dto.OrderTypes
     {
         [LocalizedRequired, UniqueField( EntityTypes.OrderType)]
         public string? Name { get; set; }
-        public OrderBehaviors Behavior { get; set; }
+
+        [LocalizedRequired]
+        public OrderBehaviors? Behavior { get; set; }
     }
 
     public class OrderTypeViewDto : OrderTypeDto
