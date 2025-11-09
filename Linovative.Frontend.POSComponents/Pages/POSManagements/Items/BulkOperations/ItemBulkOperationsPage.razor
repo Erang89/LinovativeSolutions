@@ -1,0 +1,21 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.BulkOperations)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IItemCategoryService _service
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+
+
+<LinovativePageTitle Title="@EntityPluralName" />
+<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.BulkOperations)})" />
+<ItemTabs SelectedTab="ItemTabs.Tabs.BulkOperation" />
+<LinovativeGap />
+

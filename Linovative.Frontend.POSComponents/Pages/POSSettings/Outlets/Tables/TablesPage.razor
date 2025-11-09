@@ -4,7 +4,7 @@
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
 @using LinoVative.Shared.Dto.Outlets
 
-@attribute [Route(PageRoutes.PostManagement.Outlets.Table)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.Table)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
@@ -15,6 +15,7 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
+<LinovativePageTitle Title="@EntityPluralName" />
 <OutletBreadcrumb />
 <OutletTabs SelectedTab="OutletTabs.Tabs.Tables" />
 <LinovativeGap />

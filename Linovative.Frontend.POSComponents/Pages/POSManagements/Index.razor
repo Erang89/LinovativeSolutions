@@ -1,5 +1,7 @@
 ﻿@attribute [Route(PageRoutes.PostManagement.IndexMaster)]
 @inject IAppNavigationService _navigationManager;
+@layout PosLayout
+
 @code {
     protected override async Task OnInitializedAsync()
     {

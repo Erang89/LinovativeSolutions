@@ -4,7 +4,7 @@
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
 @using LinoVative.Shared.Dto.MasterData.Shifts
 
-@attribute [Route(PageRoutes.PostManagement.Outlets.WorkingShifts)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
@@ -15,7 +15,8 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
-<OutletBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.Outlets.WorkingShifts)})" />
+<LinovativePageTitle Title="@EntityPluralName" />
+<OutletBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts)})" />
 <OutletTabs SelectedTab="OutletTabs.Tabs.WorkingShift" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />

@@ -13,6 +13,7 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
+<LinovativePageTitle Title="@EntityPluralName" />
 <ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Item)})" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.Item" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />

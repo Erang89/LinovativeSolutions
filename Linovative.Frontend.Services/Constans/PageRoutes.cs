@@ -16,27 +16,34 @@
                 public const string BulkOperations = $"{IndexItems}/bulk-operations";
             }
 
-            public static class Outlets
+
+            public static class PosSettings
             {
-                public const string IndexOutlets = $"{PostManagement.IndexMaster}/outlets";
-                public const string OutletList = $"{IndexOutlets}/lists";
-                public const string WorkingShifts = $"{IndexOutlets}/shifts";
-                public const string OutletUsers = $"{IndexOutlets}/users";
-                public const string Table = $"{IndexOutlets}/tables";
+                public const string IndexPosSettings = $"{IndexMaster}/Settings";
+                public static class Outlets
+                {
+                    public const string IndexOutlets = $"{PosSettings.IndexPosSettings}/outlets";
+                    public const string OutletList = $"{IndexOutlets}/lists";
+                    public const string WorkingShifts = $"{IndexOutlets}/shifts";
+                    public const string OutletUsers = $"{IndexOutlets}/users";
+                    public const string Table = $"{IndexOutlets}/tables";
+                }
+
+                public static class Trasactions
+                {
+                    public const string Index = $"{PosSettings.IndexPosSettings}/transactions";
+                    public static class Payments
+                    {
+                        public const string PaymentMethod = $"{Trasactions.Index}/payment-methods";
+                        public const string PaymentMethodGroup = $"{Trasactions.Index}/payment-method-groups";
+                        public const string OrderTypes = $"{Trasactions.Index}/order-types";
+                        public const string BankNotes = $"{Trasactions.Index}/bank-notes";
+                        public const string DiscountLimits = $"{Trasactions.Index}/discount-limits";
+                    }
+                }
+
             }
 
-            public static class Trasactions
-            {
-                public const string Index = $"{PostManagement.IndexMaster}/transactions";
-                public static class Payments
-                {
-                    public const string PaymentMethod = $"{Trasactions.Index}/payment-methods";
-                    public const string PaymentMethodGroup = $"{Trasactions.Index}/payment-method-groups";
-                    public const string OrderTypes = $"{Trasactions.Index}/order-types";
-                    public const string BankNotes = $"{Trasactions.Index}/bank-notes";
-                    public const string DiscountLimits = $"{Trasactions.Index}/discount-limits";
-                }
-            }
 
             public static class Customers
             {

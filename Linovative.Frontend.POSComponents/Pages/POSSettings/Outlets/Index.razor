@@ -1,11 +1,11 @@
 ﻿@inject IAppNavigationService _nav
 
-@attribute [Route(PageRoutes.PostManagement.Outlets.IndexOutlets)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.IndexOutlets)]
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        _nav.NavigateTo(PageRoutes.PostManagement.Outlets.OutletList);
+        _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.OutletList);
         await base.OnInitializedAsync();
     }
 }

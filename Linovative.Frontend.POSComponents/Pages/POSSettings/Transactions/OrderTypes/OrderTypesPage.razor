@@ -7,7 +7,7 @@
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
 @using LinoVative.Shared.Dto.MasterData.Shifts
 
-@attribute [Route(PageRoutes.PostManagement.Trasactions.Payments.OrderTypes)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
@@ -19,7 +19,8 @@
 @inject IMapper _mapper
 
 
-<PaymentBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.Trasactions.Payments.OrderTypes)})" />
+<LinovativePageTitle Title="@EntityPluralName" />
+<PaymentBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes)})" />
 <PaymentTabs SelectedTab="PaymentTabs.Tabs.OrderType" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />

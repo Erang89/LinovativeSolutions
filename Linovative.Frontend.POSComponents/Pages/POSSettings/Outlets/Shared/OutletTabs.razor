@@ -3,9 +3,9 @@
 @inject IJsonLocalizer _loc
 
 <MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Outlets.OutletList))" Text="@_loc.PosManagement("Menu.Outlets")" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Outlets.WorkingShifts))" Text="@_loc.PosManagement("Menu.WorkingShifts")" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Outlets.Table))" Text="@_loc.PosManagement("Menu.Tables")" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.OutletList))" Text="@_loc.PosManagement("Menu.Outlets")" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts))" Text="@_loc.PosManagement("Menu.WorkingShifts")" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.Table))" Text="@_loc.PosManagement("Menu.Tables")" />
 </MudTabs>
 
 <LinovativeGap />

@@ -4,7 +4,7 @@
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
 @using LinoVative.Shared.Dto.Outlets
 
-@attribute [Route(PageRoutes.PostManagement.Outlets.OutletList)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.OutletList)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
@@ -14,7 +14,9 @@
 @inject IOutletService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
+@inject IAppNavigationService _nav
 
+<LinovativePageTitle Title="@EntityPluralName" />
 <OutletBreadcrumb />
 <OutletTabs SelectedTab="OutletTabs.Tabs.Outlets" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
