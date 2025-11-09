@@ -1,0 +1,27 @@
+﻿@inject IJsonLocalizer _loc
+
+<MasterDataBreadcrumb Childs="@Items()" />
+
+@code {
+    [Parameter]
+    public List<BreadcrumbItem> Childs { get; set; } = new();
+
+    List<BreadcrumbItem> Items()
+    {
+        var items = _parents.ToList();
+        items.AddRange(Childs);
+        return items;
+    }
+
+    private static List<BreadcrumbItem> _parents = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _parents = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem(_loc.PosManagement("Menu.Tab.Transactions"), href: null)
+        };
+    }
+}
+

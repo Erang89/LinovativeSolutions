@@ -1,0 +1,8 @@
+{
+  "Entity.Name.Single": "Payment Method Group",
+  "Entity.Name.Plural": "Payment Method Groups",
+
+  "Name.Label": "Name",
+  
+  "Name.Required.ErrorMessage": "Name is required"
+}

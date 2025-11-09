@@ -136,7 +136,7 @@ namespace LinoVative.Service.Backend.Configurations
             {
                 x.ToTable("PaymentMethods");
                 x.Property(x => x.Name).IsRequired();
-                x.Property(x => x.Type).HasColumnType("Varchar(10)");
+                x.Property(x => x.Type).HasColumnType("Varchar(20)");
                 x.Property(x => x.PaymentMethodGroupId).IsRequired();
                 x.HasOne(x => x.PaymentMethodGroup).WithMany(x => x.PaymentMethods).HasForeignKey(x => x.PaymentMethodGroupId);
             });

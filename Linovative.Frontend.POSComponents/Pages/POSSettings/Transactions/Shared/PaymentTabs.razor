@@ -1,0 +1,41 @@
+﻿@inject IAppNavigationService _nav;
+@inject IApplicationStateService _state;
+@inject IJsonLocalizer _loc
+
+<MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Trasactions.Payments.PaymentMethod))" Text="@_loc.PosManagement("Menu.Tab.PaymentMethod")" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Trasactions.Payments.PaymentMethodGroup))" Text="@_loc.PosManagement("Menu.Tab.PaymentMethodGroup")" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Trasactions.Payments.OrderTypes))" Text="@_loc.PosManagement("Menu.Tab.OrderTypes")" />
+    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Trasactions.Payments.BankNotes))" Text="@_loc.PosManagement("Menu.Tab.BankNotes")" />
+</MudTabs>
+
+<LinovativeGap />
+
+@code {
+    [Parameter]
+    public Tabs? SelectedTab { get; set; }
+    int activeIndex { get; set; }
+    public enum Tabs
+    {
+        PaymentMethod,
+        PaymentMethodGroup,
+        OrderType,
+        BankNote
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        activeIndex = SelectedTab switch
+        {
+            Tabs.PaymentMethod => 0,
+            Tabs.PaymentMethodGroup => 1,
+            Tabs.OrderType => 2,
+            Tabs.BankNote => 3,
+            _ => 10
+        };
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+}

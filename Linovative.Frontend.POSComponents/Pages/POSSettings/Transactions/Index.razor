@@ -1,0 +1,10 @@
+﻿@attribute [Route(PageRoutes.PostManagement.Trasactions.Index)]
+@inject IAppNavigationService _navigationManager;
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        _navigationManager.NavigateTo(PageRoutes.PostManagement.Trasactions.Payments.PaymentMethod);
+        await base.OnInitializedAsync();
+    }
+}

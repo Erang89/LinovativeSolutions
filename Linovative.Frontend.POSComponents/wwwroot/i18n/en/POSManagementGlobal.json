@@ -19,5 +19,10 @@
   "Menu.Tab.Groups": "Groups",
   "Menu.Tab.Categories": "Categories",
   "Menu.Tab.Units": "Units",
-  "Menu.Tab.BulkOperation": "Bulk Operation"
+  "Menu.Tab.BulkOperation": "Bulk Operation",
+  "Menu.Tab.PaymentMethod": "Payment Methods",
+  "Menu.Tab.PaymentMethodGroup": "Payment Method Groups",
+  "Menu.Tab.OrderTypes": "Order Types",
+  "Menu.Tab.BankNotes": "Order Types",
+  "Menu.Tab.Transactions": "Transactions"
 }
