@@ -1,0 +1,8 @@
+{
+  "Entity.Name.Single": "Bank Note",
+  "Entity.Name.Plural": "Bank Notes",
+
+  "Note.Label": "Note",
+
+  "Note.Required.ErrorMessage": "Name is required"
+}

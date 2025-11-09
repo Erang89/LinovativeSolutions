@@ -8,6 +8,6 @@ namespace LinoVative.Shared.Dto.MasterData.Payments
     public class BankNoteDto : EntityDtoBase
     {
         [LocalizedRequired, LocalizeMinDecimalValue(0.01f), UniqueField(EntityTypes.BankNote)]
-        public decimal Note { get; set; }
+        public decimal? Note { get; set; }
     }
 }

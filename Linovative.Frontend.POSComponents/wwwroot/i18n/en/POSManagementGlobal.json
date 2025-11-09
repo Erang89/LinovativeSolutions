@@ -23,6 +23,6 @@
   "Menu.Tab.PaymentMethod": "Payment Methods",
   "Menu.Tab.PaymentMethodGroup": "Payment Method Groups",
   "Menu.Tab.OrderTypes": "Order Types",
-  "Menu.Tab.BankNotes": "Order Types",
+  "Menu.Tab.BankNotes": "Bank Notes",
   "Menu.Tab.Transactions": "Transactions"
 }

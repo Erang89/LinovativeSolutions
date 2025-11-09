@@ -13,9 +13,9 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
         public string? SearchKeyword { get; set; }
     }
 
-    public class GetAllOutletQueryableHandlerService : QueryServiceBase<Shift, GetAllShiftIQueryableCommand>, IRequestHandler<GetAllShiftIQueryableCommand, IQueryable<ShiftViewDto>>
+    public class GetAllShiftQueryableHandlerService : QueryServiceBase<Shift, GetAllShiftIQueryableCommand>, IRequestHandler<GetAllShiftIQueryableCommand, IQueryable<ShiftViewDto>>
     {
-        public GetAllOutletQueryableHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
+        public GetAllShiftQueryableHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
         {
         }
 
