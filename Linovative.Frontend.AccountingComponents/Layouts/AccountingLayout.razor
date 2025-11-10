@@ -22,7 +22,7 @@
 
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
 
-        <MudText Style="margin-right: 10px" Typo="Typo.button">@_topBarService.Title - @_loc.PosManagement("POS.Management.Title")</MudText>
+        <MudText Style="margin-right: 10px" Typo="Typo.button">@_topBarService.Title - @_loc.Accounting("Accounting.Management.Title")</MudText>
 
         <MudSpacer />
         <MudText Style="margin-right: 10px" Typo="Typo.button">@companyName</MudText>
@@ -37,7 +37,7 @@
 
 
     <MudDrawer @bind-Open="@_drawerOpen" Variant="@DrawerVariant.Mini" OpenMiniOnHover="true">
-        <NavMenu />
+        <AccountingNavMenu />
     </MudDrawer>
 
     <MudMainContent>
