@@ -1,8 +1,27 @@
-﻿@attribute [Route(PageRoutes.Accounting.Index)]
+﻿@using MapsterMapper
+@attribute [Route(PageRoutes.Accounting.Index)]
 @layout AccountingLayout
+@inherits AccountingPageBase
 
-Test Accounting Page
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IOutletService _service
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+@inject IAppNavigationService _nav
 
 @code {
+
+    protected override string LocalizerResource => "AccountingIndexPage";
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _topBarService.SetTitle(EntityPluralName);
+    }
 
 }
