@@ -15,7 +15,7 @@
     int activeIndex { get; set; }
     public enum Tabs
     {
-        Setting,
+        Account,
         Group,
     }
 
@@ -24,7 +24,7 @@
     {
         activeIndex = SelectedTab switch
         {
-            Tabs.Setting => 0,
+            Tabs.Account => 0,
             Tabs.Group => 1,
             _ => 3
         };

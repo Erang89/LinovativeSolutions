@@ -3,6 +3,7 @@ using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LinoVative.Service.Backend.CrudServices.COAGroups;
+using LinoVative.Service.Backend.CrudServices.Accounts;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accountings
 {
@@ -73,5 +74,29 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Accountings
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }
         }
+
+
+
+
+        [Route(BULKDELETE)]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteAll([FromBody] BulkDeleteAccountGroupCommand cmd, CancellationToken token)
+        {
+            try
+            {
+                var result = await _mediator.Send(cmd, token);
+                return StatusCode((int)result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
+        }
+
     }
 }

@@ -1,42 +1,44 @@
-﻿@using Linovative.Frontend.POSComponents.Bases
-@using Linovative.Frontend.Services.Models
-@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
-
-@attribute [Route(PageRoutes.PostManagement.ItemMaster.Units)]
-@inherits POSManagementPageBase
-@layout PosLayout
+﻿@attribute [Route(PageRoutes.Accounting.Settings.AccountGroup)]
+@inherits AccountingPageBase
+@layout AccountingLayout
 
 @inject IJsonLocalizer _loc
 @inject ITopBarService _topBarService
 @inject IApplicationStateService _state
-@inject IItemUnitService _service
 @inject IDialogService _dialogService
-@inject IMapper _mapper
+@inject ICOAGroupService _service
 
 <LinovativePageTitle Title="@EntityPluralName" />
-<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Units)})" />
-<ItemTabs SelectedTab="ItemTabs.Tabs.Unit" />
+<AccountingSettingBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.Accounting.Settings.AccountGroup)})" />
+<AccountingSettingTabs SelectedTab="AccountingSettingTabs.Tabs.Group" />
+<LinovativeGap />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />
-
 
 @if (pageMode == PageModes.Create || pageMode == PageModes.Update)
 {
     <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
-
+    <LinovativeGap />
     <MudGrid>
         <MudItem xs="12" sm="6" lg="4">
 
             <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
-            <LinovativeGap />
 
-            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@(() => formErrorAlert?.HideAlert())">
 
                 <LinovativeInputText @bind-Value="@item.Name"
                                      IsRequired="true"
-                                     Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="Name" />
+
+
+                <LinovativeGap />
+                <COATypeDropdown Value="@item.Type"
+                                 Required="true"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="Type"
+                                 ValueChanged="@(x => item.Type = x)" />
+
             </MudForm>
         </MudItem>
     </MudGrid>
@@ -45,6 +47,7 @@
 
 <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
 <AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
+
 
 
 
@@ -66,15 +69,17 @@
             <MudTh Style="width: 30px">
                 <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
             </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemUnitDto.Name))" T="ItemGroupViewDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
-            <MudTh Style="width: 60px"></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(COAGroupDto.Name))" T="AccountViewDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(COAGroupDto.Type))" T="AccountViewDto">@_loc[$"{LocalizerResource}.Type.Label"]</MudTableSortLabel></MudTh>
+            <MudTh></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd>
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
             </MudTd>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+            <MudTd DataLabel="Code">@context.Name</MudTd>
+            <MudTd DataLabel="Name">@context.Type</MudTd>
+            <MudTd Style="width: 60px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
         <NoRecordsContent>
@@ -96,15 +101,14 @@
 
 
 @code {
-
-    protected override string LocalizerResource => nameof(ItemUnitsPage);
+    protected override string LocalizerResource => nameof(AccountGroupsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
-    private List<ItemUnitDto> selectedItems { get; set; } = new();
+    private List<COAGroupDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts = new();
     private PageModes? pageMode { get; set; } = PageModes.List;
-    private ItemUnitDto item { get; set; } = new();
+    private COAGroupDto item { get; set; } = new();
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -113,10 +117,13 @@
     private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
-    private MudTable<ItemUnitDto>? table;
+    private MudTable<COAGroupDto>? table;
     private bool selectedAll { get; set; }
-    private List<ItemUnitDto> dataSource { get; set; } = new();
+    private List<COAGroupDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
+    private MudDataGrid<COAGroupDto> table2 { get; set; } = default!;
+
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -124,32 +131,14 @@
         _topBarService.SetTitle(EntityPluralName);
     }
 
-
-    void OnFormKeyPress()
-    {
-        formResponse = null;
-        formErrorAlert?.HideAlert();
-        _state.NotifyStateChanged();
-    }
-
-    private Guid? TestGuid { get; set; }
-
-    async Task TestOnBlur()
-    {
-        TestGuid = Guid.NewGuid();
-        _state.NotifyStateChanged();
-        await Task.CompletedTask;
-    }
-
     async Task Reset()
     {
         item = new();
-
-        pageMode = PageModes.List;
         formResponse = null;
         isFormSubmitting = false;
         selectedItems = new();
         selectedAll = false;
+        pageMode = PageModes.List;
         await HideAllAllert();
         _state.NotifyStateChanged();
     }
@@ -198,12 +187,12 @@
         {
             await Reset();
             successAllert!.ShowAlert(UpdateSuccessMessage);
+            return;
         }
 
         isFormSubmitting = false;
         formErrorAlert!.ShowAlert(formResponse);
     }
-
     async Task Delete()
     {
         bool? result = await _dialogService.ShowMessageBox(DELETE, DeleteConfirmation, yesText: YES, cancelText: CANCEL, options: new DialogOptions()
@@ -235,7 +224,42 @@
         table?.ReloadServerData();
     }
 
-    private async Task<TableData<ItemUnitDto>> ServerReload(TableState state, CancellationToken token)
+    private async Task<GridData<COAGroupDto>> ServerDataFunc(GridState<COAGroupDto> state)
+    {
+
+        selectedItems = new();
+        selectedAll = false;
+        _state.NotifyStateChanged();
+
+        var isAscending = state.SortDefinitions.FirstOrDefault()?.Descending;
+        var odataFilter = new ODataFilter()
+            {
+                PageNumber = state.Page + 1,
+                PageSize = state.PageSize,
+                OrderFiled = isAscending is null ? null : state.SortDefinitions.FirstOrDefault()?.SortBy.Replace(".", "/"),
+                SortDirection = isAscending is null ? null : isAscending == true ? SortDirection.Ascending.ToString() : SortDirection.Descending.ToString(),
+                Options = $"$expand=group",
+                FilterPayload = new { searchKeyword = searchString }
+            };
+
+        var result = await _service.Get(odataFilter, cts.Token);
+        dataSource = result?.Data ?? new();
+
+
+        return new GridData<COAGroupDto>
+            {
+                Items = dataSource,
+                TotalItems = result?.Count ?? 0
+            };
+    }
+
+    void SelectedItemsChanged(HashSet<COAGroupDto> items)
+    {
+        selectedItems = items.ToList();
+    }
+
+
+    private async Task<TableData<COAGroupDto>> ServerReload(TableState state, CancellationToken token)
     {
         selectedItems = new();
         selectedAll = false;
@@ -247,25 +271,24 @@
                 PageSize = state.PageSize,
                 OrderFiled = state.SortLabel,
                 SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
-                Options = $""
+                Options = $"",
+                FilterPayload = new { searchKeyword = searchString }
             };
-
-        if (searchString is not null)
-            odataFilter.Options += $"&$filter=contains(tolower(name), tolower('{searchString}'))";
 
         var result = await _service.Get(odataFilter, cts.Token);
         dataSource = result?.Data ?? new();
 
-        return new TableData<ItemUnitDto>() { TotalItems = result!.Count, Items = result.Data };
+        return new TableData<COAGroupDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
     async Task AddNew()
     {
+        item = new();
         pageMode = PageModes.Create;
         await HideAllAllert();
     }
 
-    async Task Update(ItemUnitDto record)
+    async Task Update(COAGroupDto record)
     {
         item = record;
         pageMode = PageModes.Update;
@@ -273,7 +296,7 @@
         _state.NotifyStateChanged();
     }
 
-    void SelectRecord(bool selected, ItemUnitDto data)
+    void SelectRecord(bool selected, COAGroupDto data)
     {
         if (!selected)
         {
@@ -304,6 +327,12 @@
         var selectedIds = selectedItems.Select(x => x.Id);
         selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
     }
-    bool IsSelected(ItemUnitDto data) => selectedItems.Any(x => x.Id == data.Id);
+    bool IsSelected(COAGroupDto data) => selectedItems.Any(x => x.Id == data.Id);
 
+
+    void SetValue(Action setValueAction)
+    {
+        setValueAction();
+        _state.NotifyStateChanged();
+    }
 }

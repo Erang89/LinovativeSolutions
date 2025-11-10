@@ -1,0 +1,14 @@
+{
+  "Entity.Name.Single": "Account Group",
+  "Entity.Name.Plural": "Account Groups",
+
+  "Name.Label": "Name",
+  "AccountCode.Label": "Code",
+  "GroupId.Label": "Group",
+  "Type.Label": "Type",
+
+  "Name.Required.ErrorMessage": "Name is required",
+  "AccountCode.Required.ErrorMessage": "Code is required",
+  "GroupId.Required.ErrorMessage": "Group is required",
+  "Type.Required.ErrorMessage": "Type is required"
+}

@@ -1,6 +1,7 @@
 ﻿using Linovative.Dto.MasterData.People;
 using LinoVative.Service.Backend.CrudServices.Items.Items;
 using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
+using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Items;
@@ -14,6 +15,7 @@ using LinoVative.Service.Core.Warehoses;
 using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.CompanyDtos;
 using LinoVative.Shared.Dto.ItemDtos;
+using LinoVative.Shared.Dto.MasterData.Accountings;
 using LinoVative.Shared.Dto.MasterData.Payments;
 using LinoVative.Shared.Dto.MasterData.Shifts;
 using LinoVative.Shared.Dto.MasterData.Users;
@@ -105,6 +107,12 @@ namespace LinoVative.Service.Backend.Configurations
             // Mapping Warehouse
             config.NewConfig<Warehouse, WarehouseDto>();
 
+
+            // Mapping COA
+            config.NewConfig<Account, AccountViewDto>()
+                .Map(x => x.Group, src => src.Group);
+
+            config.NewConfig<COAGroup, COAGroupDto>();
 
 
         }
