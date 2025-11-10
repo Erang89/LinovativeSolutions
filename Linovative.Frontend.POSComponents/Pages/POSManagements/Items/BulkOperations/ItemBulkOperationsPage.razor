@@ -19,3 +19,16 @@
 <ItemTabs SelectedTab="ItemTabs.Tabs.BulkOperation" />
 <LinovativeGap />
 
+@code{
+
+    protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _topBarService.SetTitle(EntityPluralName);
+    }
+}
