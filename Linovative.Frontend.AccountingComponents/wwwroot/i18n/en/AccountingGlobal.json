@@ -1,5 +1,7 @@
 {
   "Accounting.Management.Title": "Accounting",
   "Menu.Accounts": "Accounts",
-  "Menu.SalesCoaMapping": "Sales COA Mapping"
+  "Menu.AccountGroup": "Account Groups",
+  "Menu.SalesCoaMapping": "Sales COA Mapping",
+  "Menu.Settings": "Settings"
 }

@@ -1,0 +1,10 @@
+﻿@attribute [Route(PageRoutes.Accounting.Settings.Index)]
+@inject IAppNavigationService _nav;
+
+@code {
+    protected override Task OnInitializedAsync()
+    {
+        _nav.NavigateTo(PageRoutes.Accounting.Settings.Accounts);
+        return base.OnInitializedAsync();
+    }
+}

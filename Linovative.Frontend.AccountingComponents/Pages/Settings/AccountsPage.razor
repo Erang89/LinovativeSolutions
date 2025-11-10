@@ -1,0 +1,18 @@
+﻿@attribute [Route(PageRoutes.Accounting.Settings.Accounts)]
+
+@inject IApplicationStateService _state
+@inject IDialogService _dialogService
+@inherits AccountingPageBase
+@layout AccountingLayout
+
+<AccountingSettingBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.Accounting.Settings.Accounts)})" />
+<AccountingSettingTabs SelectedTab="AccountingSettingTabs.Tabs.Setting" />
+<LinovativeGap />
+@* <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
+ *@
+<LinovativeGap />
+
+
+@code {
+
+}
