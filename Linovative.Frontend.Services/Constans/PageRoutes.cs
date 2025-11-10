@@ -91,7 +91,7 @@
             {
                 public const string Index = $"{Accounting.Index}/settings";
                 public const string Accounts = $"{Index}/accounts";
-                public const string AccountGroup = $"{Index}/account-group";
+                public const string AccountGroup = $"{Accounts}/groups";
                 public const string OutletSalesCoaMappings = $"{Index}/outlet-sales-coa-mapping";
             }
         }
