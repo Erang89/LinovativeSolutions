@@ -32,6 +32,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.POSComp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.Services", "Linovative.Frontend.Services\Linovative.Frontend.Services.csproj", "{B93BCDFF-C9C6-45A2-A521-CDECF4A3D549}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Fronend.AccountingComponents", "Linovative.Fronend.AccountingComponents\Linovative.Fronend.AccountingComponents.csproj", "{8925901C-502A-42E4-A34A-EB60DC3D8A37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{B93BCDFF-C9C6-45A2-A521-CDECF4A3D549}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B93BCDFF-C9C6-45A2-A521-CDECF4A3D549}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B93BCDFF-C9C6-45A2-A521-CDECF4A3D549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8925901C-502A-42E4-A34A-EB60DC3D8A37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8925901C-502A-42E4-A34A-EB60DC3D8A37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8925901C-502A-42E4-A34A-EB60DC3D8A37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8925901C-502A-42E4-A34A-EB60DC3D8A37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{2AB0DD1D-7B58-4196-A851-18C86FC3FE23} = {2D737806-289A-46C3-9531-09D35BAF092A}
 		{A267FF92-4F92-46A8-88D7-716AD50C561D} = {2D737806-289A-46C3-9531-09D35BAF092A}
 		{B93BCDFF-C9C6-45A2-A521-CDECF4A3D549} = {2D737806-289A-46C3-9531-09D35BAF092A}
+		{8925901C-502A-42E4-A34A-EB60DC3D8A37} = {2D737806-289A-46C3-9531-09D35BAF092A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {88F8BFDC-EF8A-4319-93F5-575FCBC246F8}

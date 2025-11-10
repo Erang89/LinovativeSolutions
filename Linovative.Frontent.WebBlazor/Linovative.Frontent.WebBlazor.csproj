@@ -18,8 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Linovative.Fronend.AccountingComponents\Linovative.Fronend.AccountingComponents.csproj" />
     <ProjectReference Include="..\Linovative.Frontend.POSComponents\Linovative.Frontend.POSComponents.csproj" />
 	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.POSComponents.dll" />
+	<BlazorWebAssemblyLazyLoad Include="Linovative.Fronend.AccountingComponents.dll" />
 	<ProjectReference Include="..\Linovative.Frontend.Services\Linovative.Frontend.Services.csproj" />
     <ProjectReference Include="..\Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj" />
   </ItemGroup>

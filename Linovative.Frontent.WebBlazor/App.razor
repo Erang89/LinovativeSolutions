@@ -34,5 +34,14 @@
 
             lazyLoadedAssemblies.AddRange(assemblies);
         }
+        else if (args.Path.StartsWith("accounting", StringComparison.OrdinalIgnoreCase))
+        {
+            var assemblies = await AssemblyLoader.LoadAssembliesAsync(new[]
+            {
+                "Linovative.Fronend.AccountingComponents.dll"
+            });
+
+            lazyLoadedAssemblies.AddRange(assemblies);
+        }
     }
 }
