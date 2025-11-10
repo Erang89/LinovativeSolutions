@@ -1,14 +1,352 @@
-﻿@using Linovative.Frontend.Services.Models
-@using Linovative.Frontend.Shared.Enums
-
-@attribute [Route(PageRoutes.Accounting.Settings.Accounts)]
+﻿@attribute [Route(PageRoutes.Accounting.Settings.Accounts)]
 @inherits AccountingPageBase
 @layout AccountingLayout
 
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
 @inject IApplicationStateService _state
 @inject IDialogService _dialogService
 @inject IAccountService _service
 
-<AccountingSettingBreadcrumb Childs="@(new(){ new BreadcrumbItem(Enti, href: PageRoutes.Accounting.Settings.Accounts)})" />
+<LinovativePageTitle Title="@EntityPluralName" />
+<AccountingSettingBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.Accounting.Settings.Accounts)})" />
 <AccountingSettingTabs SelectedTab="AccountingSettingTabs.Tabs.Setting" />
 <LinovativeGap />
+<CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
+<LinovativeGap />
+
+@if (pageMode == PageModes.Create || pageMode == PageModes.Update)
+{
+    <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
+    <LinovativeGap />
+    <MudGrid>
+        <MudItem xs="12" sm="6" lg="4">
+
+            <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+
+            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@(() => formErrorAlert?.HideAlert())">
+
+                <LinovativeInputText @bind-Value="@item.Name"
+                                     IsRequired="true"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="Name" />
+
+                @* <COAGroupDropdown Label="@item.DisplayName(x => x.Group)"
+            Required="true"
+            Value="@item.Group"
+            RequiredError="@item.RequiredMessage(x => x.Group)"
+            ValueChanged="@((e) => SetValue(() => {item.Group = e; item.GroupId = e?.Id; }) )" />
+
+
+            <MudTextField @bind-Value="@item.AccountCode"
+            Variant="ComponentSettings.InputVariant"
+            Required="true"
+            Placeholder="@($"{(int?)(item.Group?.Type)}-001")"
+            RequiredError="@item.RequiredMessage(x => x.AccountCode)"
+            T="string"
+            Label="@item.DisplayName(x => x.AccountCode)" /> *@
+
+            </MudForm>
+        </MudItem>
+    </MudGrid>
+}
+
+
+<AppSuccessAllert @ref="@successAllert" AutoClose="true" />
+<AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
+
+
+
+
+@if (pageMode == PageModes.List)
+{
+    <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">@EntityPluralName</MudText>
+            <MudSpacer />
+            <MudTextField T="string"
+                          Immediate="true"
+                          ValueChanged="@(s=>OnSearch(s))"
+                          Placeholder="@_loc.Global("Label.Search")" Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                          Class="mt-0"></MudTextField>
+        </ToolBarContent>
+
+        <HeaderContent>
+            <MudTh Style="width: 30px">
+                <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
+            </MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(AccountViewDto.AccountCode))" T="AccountViewDto">@_loc[$"{LocalizerResource}.AccountCode.Label"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(AccountViewDto.Name))" T="AccountViewDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(AccountViewDto.Group.Name))" T="AccountViewDto">@_loc[$"{LocalizerResource}.GroupId.Label"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(AccountViewDto.Group.Type))" T="AccountViewDto">@_loc[$"{LocalizerResource}.Type.Label"]</MudTableSortLabel></MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
+            </MudTd>
+            <MudTd DataLabel="Code">@context.AccountCode</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Group">@context.Group?.Name</MudTd>
+            <MudTd DataLabel="Type">@context.Group?.Type</MudTd>
+            <MudTd Style="width: 60px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+        </RowTemplate>
+
+        <NoRecordsContent>
+            <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
+        </NoRecordsContent>
+        <LoadingContent>
+            <MudText>@_loc.Global("Label.Loading")</MudText>
+        </LoadingContent>
+        <PagerContent>
+            <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
+        </PagerContent>
+        <FooterContent>
+            <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
+        </FooterContent>
+    </MudTable>
+
+}
+
+
+
+@code {
+    protected override string LocalizerResource => nameof(AccountsPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    private List<AccountViewDto> selectedItems { get; set; } = new();
+    private CancellationTokenSource cts = new();
+    private PageModes? pageMode { get; set; } = PageModes.List;
+    private AccountViewDto item { get; set; } = new();
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private AppSuccessAllert? successAllert { get; set; }
+    private string? searchString = null;
+    private MudTable<AccountViewDto>? table;
+    private bool selectedAll { get; set; }
+    private List<AccountViewDto> dataSource { get; set; } = new();
+    private AppErrorAlert? deleteAllert { get; set; }
+    private MudDataGrid<AccountViewDto> table2 { get; set; } = default!;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _topBarService.SetTitle(EntityPluralName);
+    }
+
+    async Task Reset()
+    {
+        item = new();
+        formResponse = null;
+        isFormSubmitting = false;
+        selectedItems = new();
+        selectedAll = false;
+        pageMode = PageModes.List;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        successAllert?.HideAlert();
+        deleteAllert?.HideAlert();
+        formErrorAlert?.HideAlert();
+    }
+
+    Task Save()
+    {
+        form!.Validate();
+
+        if (!isFormValid)
+            return Task.CompletedTask;
+
+        if (pageMode == PageModes.Create)
+            return SaveNew();
+
+        return SaveUpdate();
+    }
+
+    async Task SaveNew()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Create(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            successAllert!.ShowAlert(CreatedSuccessMessage);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task SaveUpdate()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Update(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            successAllert!.ShowAlert(UpdateSuccessMessage);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task Delete()
+    {
+        bool? result = await _dialogService.ShowMessageBox(DELETE, DeleteConfirmation, yesText: YES, cancelText: CANCEL, options: new DialogOptions()
+            {
+                FullWidth = true,
+                CloseOnEscapeKey = true,
+                BackdropClick = false,
+            });
+
+        if (!(result ?? false)) return;
+
+        var ids = selectedItems.Select(x => x.Id).ToList();
+        var deleteResult = await _service.Delete(ids, cts.Token);
+        if (!deleteResult)
+        {
+            deleteAllert?.ShowAlert(deleteResult);
+            return;
+        }
+
+        await table2.ClearFiltersAsync();
+        await Reset();
+        table?.ReloadServerData();
+        successAllert?.ShowAlert(DeleteSuccessMessage);
+
+
+    }
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table?.ReloadServerData();
+    }
+
+    private async Task<GridData<AccountViewDto>> ServerDataFunc(GridState<AccountViewDto> state)
+    {
+
+        selectedItems = new();
+        selectedAll = false;
+        _state.NotifyStateChanged();
+
+        var isAscending = state.SortDefinitions.FirstOrDefault()?.Descending;
+        var odataFilter = new ODataFilter()
+            {
+                PageNumber = state.Page + 1,
+                PageSize = state.PageSize,
+                OrderFiled = isAscending is null ? null : state.SortDefinitions.FirstOrDefault()?.SortBy.Replace(".", "/"),
+                SortDirection = isAscending is null ? null : isAscending == true ? SortDirection.Ascending.ToString() : SortDirection.Descending.ToString(),
+                Options = $"$expand=group",
+                FilterPayload = new { searchKeyword = searchString }
+            };
+
+        var result = await _service.Get(odataFilter, cts.Token);
+        dataSource = result?.Data ?? new();
+
+
+        return new GridData<AccountViewDto>
+            {
+                Items = dataSource,
+                TotalItems = result?.Count ?? 0
+            };
+    }
+
+    void SelectedItemsChanged(HashSet<AccountViewDto> items)
+    {
+        selectedItems = items.ToList();
+    }
+
+
+    private async Task<TableData<AccountViewDto>> ServerReload(TableState state, CancellationToken token)
+    {
+        selectedItems = new();
+        selectedAll = false;
+        _state.NotifyStateChanged();
+
+        var odataFilter = new ODataFilter()
+            {
+                PageNumber = state.Page + 1,
+                PageSize = state.PageSize,
+                OrderFiled = state.SortLabel,
+                SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
+                Options = $"",
+                FilterPayload = new { searchKeyword = searchString }
+            };
+
+        var result = await _service.Get(odataFilter, cts.Token);
+        dataSource = result?.Data ?? new();
+
+        return new TableData<AccountViewDto>() { TotalItems = result!.Count, Items = result.Data };
+    }
+
+    async Task AddNew()
+    {
+        item = new();
+        pageMode = PageModes.Create;
+        await HideAllAllert();
+    }
+
+    async Task Update(AccountViewDto record)
+    {
+        item = record;
+        pageMode = PageModes.Update;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+    void SelectRecord(bool selected, AccountViewDto data)
+    {
+        if (!selected)
+        {
+            selectedAll = false;
+            selectedItems = selectedItems.Where(x => x.Id != data.Id).ToList();
+            return;
+        }
+
+        selectedItems.Add(data);
+        UpdateSelectedAll();
+
+    }
+
+    void SelectAll(bool select)
+    {
+        selectedAll = select;
+        if (!select)
+        {
+            selectedItems = new();
+            return;
+        }
+
+        selectedItems = dataSource.ToList();
+    }
+
+    void UpdateSelectedAll()
+    {
+        var selectedIds = selectedItems.Select(x => x.Id);
+        selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
+    }
+    bool IsSelected(AccountViewDto data) => selectedItems.Any(x => x.Id == data.Id);
+
+
+    void SetValue(Action setValueAction)
+    {
+        setValueAction();
+        _state.NotifyStateChanged();
+    }
+}
