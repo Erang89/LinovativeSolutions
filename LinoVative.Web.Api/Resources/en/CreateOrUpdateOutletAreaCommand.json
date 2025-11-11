@@ -1,4 +1,4 @@
 {
   "AreaName.Duplicate": "'{0}' is already exist. Area name must be unique",
-  "Table.Duplicate": "'{0}' is already exist. Area name must be unique"
+  "Table.Duplicate": "'{0}' is already exist. Table name must be unique"
 }
