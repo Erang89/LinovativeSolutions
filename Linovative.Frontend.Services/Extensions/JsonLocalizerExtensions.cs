@@ -11,5 +11,6 @@ namespace Linovative.Frontend.Services.Extensions
         public static string Accounting(this IJsonLocalizer localizer, string key) => localizer[$"AccountingGlobal.{key}"];
         public static string PosManagement(this IJsonLocalizer localizer, string key) => localizer[$"POSManagementGlobal.{key}"];
         public static string Global(this IJsonLocalizer localizer, string key) => localizer[$"Global.{key}"];
+        public static string Enum(this IJsonLocalizer localizer, string key) => localizer[$"Enum.{key}"];
     }
 }

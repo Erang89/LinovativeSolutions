@@ -2,6 +2,8 @@
 @using Linovative.Frontend.Services.FrontendServices
 @inherits SearchableDropdownBase<OrderBehaviors?>
 @inject IApplicationStateService _state
+@inject IJsonLocalizer _loc
+
 
 <MudSelect Value="Value"
            ValueChanged="@ValueChanged"
@@ -14,7 +16,7 @@
            Clearable="@Clearable">
     @foreach (OrderBehaviors? type in Enum.GetValues(typeof(OrderBehaviors)))
     {
-        <MudSelectItem Value="@type">@type</MudSelectItem>
+        <MudSelectItem Value="@type">@_loc.Enum($"{nameof(OrderBehaviors)}.{type}")</MudSelectItem>
     }
 </MudSelect>
 

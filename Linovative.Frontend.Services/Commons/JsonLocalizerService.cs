@@ -64,7 +64,7 @@ namespace Linovative.Frontend.Services.Commons
         }
 
         public string this[string key]
-            => _dict.TryGetValue(key, out var v) ? v : key;
+            => _dict.TryGetValue(key, out var v) ? v : "";
 
         public string Format(string key, params object[] args)
         {

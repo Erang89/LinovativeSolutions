@@ -1,0 +1,32 @@
+{
+  "COATypes.Asset": "Asset",
+  "COATypes.Liability": "Liability",
+  "COATypes.Equity": "Equity",
+  "COATypes.Revenue": "Revenue",
+  "COATypes.Expense": "Expense",
+  "COATypes.Contra": "Contra",
+  "COATypes.OtherIncome": "Other Income",
+  "COATypes.OtherExpenses": "Other Expenses",
+  "COATypes.DepartmentExpenses": "Department Expenses",
+  "COATypes.ProjectCost": "Project Cost",
+  "COATypes.BudgetAllocations": "Budget Allocations",
+  "COATypes.InterCompanyAccounts": "Inter Company Accounts",
+  "COATypes.StaticalAccounts": "Statical Accounts",
+
+  "OrderBehaviors.Instant": "Instant",
+  "OrderBehaviors.DineIn": "DineIn",
+  "OrderBehaviors.Delivery": "Delivery",
+  "OrderBehaviors.TakeAway": "Take Away",
+  "OrderBehaviors.COD": "COD",
+
+  "OutletTypes.Retail": "Retail",
+  "OutletTypes.Restaurant": "Restaurant",
+  "OutletTypes.Hotel": "Hotel",
+  "OutletTypes.Rent": "Rent",
+
+  "PaymentMethodTypes.Cash": "Cash",
+  "PaymentMethodTypes.DebitCard": "Debit Card",
+  "PaymentMethodTypes.BankTransfer": "Bank Transfer",
+  "PaymentMethodTypes.CreditCard": "Credit Card",
+  "PaymentMethodTypes.Credit": "Credit"
+}

@@ -6,6 +6,7 @@
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
 @using LinoVative.Shared.Dto.MasterData.Shifts
+@using Linovative.Shared.Interface.Enums
 
 @attribute [Route(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes)]
 @inherits POSManagementPageBase
@@ -88,7 +89,7 @@
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Behavior">@context.Behavior</MudTd>
+            <MudTd DataLabel="Behavior">@_loc.Enum($"{nameof(OrderBehaviors)}.{context.Behavior}")</MudTd>
             <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 

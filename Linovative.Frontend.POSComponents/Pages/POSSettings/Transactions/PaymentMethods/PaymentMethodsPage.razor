@@ -5,6 +5,7 @@
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
 @using LinoVative.Shared.Dto.MasterData.Shifts
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Transactions.Shared
+@using Linovative.Shared.Interface.Enums
 
 @attribute [Route(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethod)]
 @inherits POSManagementPageBase
@@ -95,7 +96,7 @@
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Type">@context.Type</MudTd>
+            <MudTd DataLabel="Type">@_loc.Enum($"{nameof(PaymentMethodTypes)}.{context.Type}")</MudTd>
             <MudTd DataLabel="Group">@context.PaymentMethodGroup?.Name</MudTd>
             <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>

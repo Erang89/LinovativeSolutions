@@ -261,7 +261,7 @@ namespace LinoVative.Service.Backend.Configurations
             {
                 x.ToTable("COAGroup");
                 x.Property(x => x.Name).IsRequired();
-                x.Property(x => x.Type).HasColumnType("Varchar(15)");
+                x.Property(x => x.Type).HasColumnType("Varchar(25)");
             });
 
             modelBuilder.Entity<SalesCOAMapping>(x =>

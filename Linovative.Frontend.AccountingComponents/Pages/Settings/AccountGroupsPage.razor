@@ -1,4 +1,5 @@
-﻿@attribute [Route(PageRoutes.Accounting.Settings.AccountGroup)]
+﻿@using Linovative.Shared.Interface.Enums
+@attribute [Route(PageRoutes.Accounting.Settings.AccountGroup)]
 @inherits AccountingPageBase
 @layout AccountingLayout
 
@@ -78,7 +79,7 @@
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Code">@context.Name</MudTd>
-            <MudTd DataLabel="Name">@context.Type</MudTd>
+            <MudTd DataLabel="Name">@_loc.Enum($"{nameof(COATypes)}.{context.Type}")</MudTd>
             <MudTd Style="width: 60px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
