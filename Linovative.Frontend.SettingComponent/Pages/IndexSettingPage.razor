@@ -1,0 +1,29 @@
+﻿@attribute [Route(PageRoutes.Settings.IndexSettings)]
+@layout SettingLayouth
+@inherits SettingPageBase
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IOutletService _service
+@inject IDialogService _dialogService
+@inject IAppNavigationService _nav
+
+<LinovativePageTitle Title="@EntityPluralName" />
+
+This is settings page
+
+@code {
+
+    protected override string LocalizerResource => nameof(IndexSettingPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _topBarService.SetTitle(EntityPluralName);
+    }
+
+}

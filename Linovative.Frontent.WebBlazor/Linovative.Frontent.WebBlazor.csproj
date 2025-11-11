@@ -26,7 +26,9 @@
 	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.AccountingComponents.dll" />
 	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.InventoryComponents.dll" />
 	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.AccomodationComponents.dll" />
+	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.SettingComponent.dll" />
 	<ProjectReference Include="..\Linovative.Frontend.Services\Linovative.Frontend.Services.csproj" />
+	<ProjectReference Include="..\Linovative.Frontend.SettingComponent\Linovative.Frontend.SettingComponent.csproj" />
     <ProjectReference Include="..\Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj" />
   </ItemGroup>
 

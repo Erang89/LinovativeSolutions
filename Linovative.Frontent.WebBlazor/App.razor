@@ -61,5 +61,14 @@
 
             lazyLoadedAssemblies.AddRange(assemblies);
         }
+        else if (args.Path.StartsWith("settings", StringComparison.OrdinalIgnoreCase))
+        {
+            var assemblies = await AssemblyLoader.LoadAssembliesAsync(new[]
+            {
+                "Linovative.Frontend.SettingComponent.dll"
+            });
+
+            lazyLoadedAssemblies.AddRange(assemblies);
+        }
     }
 }

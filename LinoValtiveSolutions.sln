@@ -38,6 +38,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.Invento
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.AccomodationComponents", "Linovative.Frontend.AccomodationComponents\Linovative.Frontend.AccomodationComponents.csproj", "{D69ECA81-1C4B-488B-9F01-D3B87D8F9D07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.SettingComponent", "Linovative.Frontend.SettingComponent\Linovative.Frontend.SettingComponent.csproj", "{1007880A-BCE5-4566-AD87-03B0EBB4DE81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -92,6 +94,10 @@ Global
 		{D69ECA81-1C4B-488B-9F01-D3B87D8F9D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D69ECA81-1C4B-488B-9F01-D3B87D8F9D07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D69ECA81-1C4B-488B-9F01-D3B87D8F9D07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1007880A-BCE5-4566-AD87-03B0EBB4DE81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1007880A-BCE5-4566-AD87-03B0EBB4DE81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1007880A-BCE5-4566-AD87-03B0EBB4DE81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1007880A-BCE5-4566-AD87-03B0EBB4DE81}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,6 +115,7 @@ Global
 		{1E1052A7-26F1-41D4-A465-513CA622E339} = {2D737806-289A-46C3-9531-09D35BAF092A}
 		{7E15B737-0FD1-4256-B05A-0B8F12FC1272} = {2D737806-289A-46C3-9531-09D35BAF092A}
 		{D69ECA81-1C4B-488B-9F01-D3B87D8F9D07} = {2D737806-289A-46C3-9531-09D35BAF092A}
+		{1007880A-BCE5-4566-AD87-03B0EBB4DE81} = {2D737806-289A-46C3-9531-09D35BAF092A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {88F8BFDC-EF8A-4319-93F5-575FCBC246F8}
