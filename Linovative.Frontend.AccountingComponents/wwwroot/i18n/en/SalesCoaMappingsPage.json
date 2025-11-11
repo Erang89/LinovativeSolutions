@@ -1,0 +1,10 @@
+{
+  "Entity.Name.Single": "COA Mapping",
+  "Entity.Name.Plural": "COA Mappings",
+
+  "OutletId.Label": "Outlet",
+  "AccountId.Label": "Account",
+
+  "OutletId.Required.ErrorMessage": "Outlet is required",
+  "AccountId.Required.ErrorMessage": "Account is required"
+}

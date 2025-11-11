@@ -1,0 +1,60 @@
+﻿@using LinoVative.Shared.Dto.ItemDtos
+@using LinoVative.Shared.Dto.MasterData.Accountings
+@using Linovative.Frontend.Services.FrontendServices
+@using Linovative.Frontend.Services.FrontendServices.AccountingServices
+
+@inherits SearchableDropdownBase<AccountViewDto?>
+
+@inject IAccountService _service
+@inject IApplicationStateService _state
+
+<SearchableDropdown Required=@Required
+                    RequiredMessage=@RequiredMessage
+                    Immediate=true
+                    Label=@_label
+                    Value=@Value
+                    Text=@Text
+                    TextChanged="@(x => Text = x)"
+                    ValueChanged=@ValueChanged
+                    StringConvert="@((x) => $"{x.Name}")"
+                    PageSize=@PageSize
+                    Clearable="@Clearable"
+                    TItem="AccountViewDto"
+                    ErrorKey="@ErrorKey"
+                    LocalizerResource="@LocalizerResource"
+                    LocalizerKey="@LocalizerKey"
+                    Error="@Error"
+                    Errors="@Errors"
+                    ErrorMessage="@ErrorMessage"
+                    SearchFunction="LoadData" />
+
+@code {
+    private CancellationTokenSource cts { get; set; } = new();
+    protected override Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        PageSize = PageSize == 0 ? 10 : PageSize;
+        return base.OnInitializedAsync();
+    }
+
+    string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
+
+
+    async Task<Response<List<AccountViewDto>>> LoadData(string? keyword, int page)
+    {
+        var odataFilter = new ODataFilter()
+            {
+                PageNumber = page,
+                PageSize = PageSize,
+                SortDirection = ShortDirections.Asc,
+                OrderFiled = nameof(AccountViewDto.Name),
+                FilterPayload = new { searchkeyword = keyword }
+            };
+
+        var result = await _service.Get(odataFilter, cts.Token);
+        if (!result) return new();
+
+        return result;
+    }
+
+}
