@@ -1,39 +1,43 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-	<WasmEnableWebcil>false</WasmEnableWebcil>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		<WasmEnableWebcil>false</WasmEnableWebcil>
+	</PropertyGroup>
 
-  <ItemGroup>
-	  <PackageReference Include="Mapster" Version="7.4.0" />
-	  <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.12" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.12" PrivateAssets="all" />
-	  <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.10" /> 
-	  <PackageReference Include="Scrutor" Version="6.1.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Mapster" Version="7.4.0" />
+		<PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.12" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.12" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.10" />
+		<PackageReference Include="Scrutor" Version="6.1.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Linovative.Frontend.AccomodationComponents\Linovative.Frontend.AccomodationComponents.csproj" />
-    <ProjectReference Include="..\Linovative.Frontend.AccountingComponents\Linovative.Frontend.AccountingComponents.csproj" />
-    <ProjectReference Include="..\Linovative.Frontend.InventoryComponents\Linovative.Frontend.InventoryComponents.csproj" />
-    <ProjectReference Include="..\Linovative.Frontend.POSComponents\Linovative.Frontend.POSComponents.csproj" />
-	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.POSComponents.dll" />
-	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.AccountingComponents.dll" />
-	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.InventoryComponents.dll" />
-	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.AccomodationComponents.dll" />
-	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.SettingComponent.dll" />
-	<ProjectReference Include="..\Linovative.Frontend.Services\Linovative.Frontend.Services.csproj" />
-	<ProjectReference Include="..\Linovative.Frontend.SettingComponent\Linovative.Frontend.SettingComponent.csproj" />
-    <ProjectReference Include="..\Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Linovative.Frontend.AccomodationComponents\Linovative.Frontend.AccomodationComponents.csproj" />
+		<ProjectReference Include="..\Linovative.Frontend.AccountingComponents\Linovative.Frontend.AccountingComponents.csproj" />
+		<ProjectReference Include="..\Linovative.Frontend.InventoryComponents\Linovative.Frontend.InventoryComponents.csproj" />
+		<ProjectReference Include="..\Linovative.Frontend.POSCashierComponent\Linovative.Frontend.POSCashierComponent.csproj" />
+		<ProjectReference Include="..\Linovative.Frontend.POSComponents\Linovative.Frontend.POSComponents.csproj" />
+		<ProjectReference Include="..\Linovative.Frontend.Services\Linovative.Frontend.Services.csproj" />
+		<ProjectReference Include="..\Linovative.Frontend.SettingComponent\Linovative.Frontend.SettingComponent.csproj" />
+		<ProjectReference Include="..\Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj" />
 
-  <ItemGroup>
-    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-  </ItemGroup>
+		<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.POSComponents.dll" />
+		<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.AccountingComponents.dll" />
+		<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.InventoryComponents.dll" />
+		<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.AccomodationComponents.dll" />
+		<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.SettingComponent.dll" />
+		<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.POSCashierComponent.dll" />
+
+	</ItemGroup>
+
+	<ItemGroup>
+		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+	</ItemGroup>
 
 </Project>

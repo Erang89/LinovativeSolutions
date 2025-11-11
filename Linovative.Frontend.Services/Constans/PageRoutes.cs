@@ -101,6 +101,11 @@
             public const string IndexAccomodation = "accomodation";
         }
 
+        public static class POSCashier
+        {
+            public const string IndexPosCashier = "pos";
+        }
+
         public const string Logout = "/logout";
         public const string Login = "/login";
     }
