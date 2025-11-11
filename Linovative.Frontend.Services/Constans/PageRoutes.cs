@@ -96,6 +96,11 @@
             }
         }
 
+        public static class Accomodation
+        {
+            public const string IndexAccomodation = "accomodation";
+        }
+
         public const string Logout = "/logout";
         public const string Login = "/login";
     }

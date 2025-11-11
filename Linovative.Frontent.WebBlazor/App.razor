@@ -52,5 +52,14 @@
 
             lazyLoadedAssemblies.AddRange(assemblies);
         }
+        else if (args.Path.StartsWith("accomodation", StringComparison.OrdinalIgnoreCase))
+        {
+            var assemblies = await AssemblyLoader.LoadAssembliesAsync(new[]
+            {
+                "Linovative.Frontend.AccomodationComponents.dll"
+            });
+
+            lazyLoadedAssemblies.AddRange(assemblies);
+        }
     }
 }

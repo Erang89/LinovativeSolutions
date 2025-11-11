@@ -1,0 +1,18 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@inject IMainMenuService _mainMenuService
+@inject IMainMenuService _mainMenuService
+@inject IJsonLocalizer _loc;
+@inject IAppNavigationService _nav
+
+<MudNavMenu Class="mud-width-full">
+
+    <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">@_loc.Accomodation("Accomodation.Management.Title")</MudNavLink>
+    <MudDivider Class="my-2" />
+
+    <MudNavLink Icon="@Icons.Material.Outlined.Home" Href="@PageRoutes.Accomodation.IndexAccomodation" Match="NavLinkMatch.All">@(_loc.Global("Home"))</MudNavLink>
+
+    <MudNavGroup Expanded="@(_nav.Uri.Contains(PageRoutes.Accomodation.IndexAccomodation, StringComparison.OrdinalIgnoreCase))" Icon="@Icons.Material.Outlined.Settings" Title="@_loc.Accomodation("Menu.Settings")">
+        <MudNavLink Icon="@Icons.Material.Outlined.GifBox" Href="@PageRoutes.Accomodation.IndexAccomodation" Match="NavLinkMatch.Prefix">@_loc.Accomodation("Menu.Rooms")</MudNavLink>
+    </MudNavGroup>
+
+</MudNavMenu>

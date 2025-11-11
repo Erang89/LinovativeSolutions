@@ -4,6 +4,7 @@ namespace Linovative.Frontend.Services.Extensions
 {
     public static class JsonLocalizerExtensions
     {
+        public static string Accomodation(this IJsonLocalizer localizer, string key) => localizer[$"AccomodationGlobal.{key}"];
         public static string Inventory(this IJsonLocalizer localizer, string key) => localizer[$"InventoryGlobal.{key}"];
         public static string Accounting(this IJsonLocalizer localizer, string key) => localizer[$"AccountingGlobal.{key}"];
         public static string PosManagement(this IJsonLocalizer localizer, string key) => localizer[$"POSManagementGlobal.{key}"];
