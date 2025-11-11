@@ -9,10 +9,10 @@
     <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">@_loc.Inventory("Inventory.Management.Title")</MudNavLink>
     <MudDivider Class="my-2" />
 
-    <MudNavLink Icon="@Icons.Material.Outlined.Home" Href="@PageRoutes.Accounting.Index" Match="NavLinkMatch.All">@(_loc.Global("Home"))</MudNavLink>
+    <MudNavLink Icon="@Icons.Material.Outlined.Home" Href="@PageRoutes.Inventory.Index" Match="NavLinkMatch.All">@(_loc.Global("Home"))</MudNavLink>
 
-    <MudNavGroup Expanded="@(_nav.Uri.Contains(PageRoutes.Accounting.Settings.Index, StringComparison.OrdinalIgnoreCase))" Icon="@Icons.Material.Outlined.Settings" Title="@_loc.Inventory("Menu.Settings")">
-        <MudNavLink Icon="@Icons.Material.Outlined.GifBox" Href="@PageRoutes.Accounting.Settings.Accounts" Match="NavLinkMatch.Prefix">@_loc.Inventory("Menu.Warehouses")</MudNavLink>
+    <MudNavGroup Expanded="@(_nav.Uri.Contains(PageRoutes.Inventory.Index, StringComparison.OrdinalIgnoreCase))" Icon="@Icons.Material.Outlined.Settings" Title="@_loc.Inventory("Menu.Settings")">
+        <MudNavLink Icon="@Icons.Material.Outlined.GifBox" Href="@PageRoutes.Inventory.Index" Match="NavLinkMatch.Prefix">@_loc.Inventory("Menu.Warehouses")</MudNavLink>
     </MudNavGroup>
 
 </MudNavMenu>
