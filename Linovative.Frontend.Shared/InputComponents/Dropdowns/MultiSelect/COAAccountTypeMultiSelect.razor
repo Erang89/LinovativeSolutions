@@ -1,0 +1,183 @@
+﻿@inject IApplicationStateService _state
+@inject IDialogService _dialogService
+@inject IJsonLocalizer _loc
+
+<MultiSelectContainer Open="@open" OnLayerClick="@(() => Toggle())">
+    <MudTextField T="string"
+                  Immediate="true"
+                  Value="@DisplayValue"
+                  @onclick="@(() => Toggle())"
+                  Placeholder="COA Types" Adornment="Adornment.Start"
+                  Clearable=true
+                  Variant="ComponentSettings.InputVariant"
+                  ReadOnly="true"
+                  ClearIcon="@Icons.Material.Filled.Close"
+                  IconSize="Size.Medium"
+                  OnClearButtonClick="@(async () => await ClearSelect())"
+                  Class="mt-0"></MudTextField>
+
+    @if (open)
+    {
+        <MudPaper Elevation="0" Class="@(open? "" : "d-none")" Style="position: absolute; width: 100%; left: 0px; top: 0px; border: none; margin-top: 68px">
+
+            <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
+                <ToolBarContent>
+                    <MudTextField T="string"
+                                  @ref=@searchBox
+                                  Immediate="true"
+                                  ValueChanged="@(s=>OnSearch(s))"
+                                  Placeholder="Search" Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                                  Class="mt-0"></MudTextField>
+                </ToolBarContent>
+
+                <HeaderContent>
+                    <MudTh Style="width: 30px">
+                        <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
+                    </MudTh>
+                    <MudTh><MudTableSortLabel T="COATypes">@_loc.Enum($"{nameof(COATypes)}.DisplayName")</MudTableSortLabel></MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>
+                        <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
+                    </MudTd>
+                    <MudTd DataLabel="Enum">@_loc.Enum($"{nameof(COATypes)}.{context}")</MudTd>
+
+                </RowTemplate>
+
+
+                <NoRecordsContent>
+                    <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
+                </NoRecordsContent>
+                <LoadingContent>
+                    <MudText>@_loc.Global("Label.Loading")</MudText>
+                </LoadingContent>
+                <PagerContent>
+                    <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
+                </PagerContent>
+                <FooterContent>
+                    <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
+                </FooterContent>
+
+            </MudTable>
+        </MudPaper>
+    }
+</MultiSelectContainer>
+
+    @code {
+    private List<COATypes> selectedItems { get; set; } = new();
+    private CancellationTokenSource cts = new();
+    private string? searchString = null;
+    private MudTable<COATypes>? table;
+    private bool selectedAll { get; set; }
+    private List<COATypes> dataSource { get; set; } = new();
+    private bool open = false;
+    private MudTextField<string> searchBox { get; set; } = default!;
+    private bool HasFirstLoad = false;
+
+
+    [Parameter]
+    public EventCallback<List<COATypes>> OnChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+    void Toggle()
+    {
+        if (!open && !HasFirstLoad)
+        {
+            HasFirstLoad = true;
+            OnSearch(searchString ?? "");
+        }
+
+        open = !open;
+        _state.NotifyStateChanged();
+
+    }
+
+    async Task ClearSelect()
+    {
+        selectedItems = new();
+        await OnChanged.InvokeAsync(selectedItems);
+        _state.NotifyStateChanged();
+    }
+
+    void Reset()
+    {
+        selectedAll = false;
+        _state.NotifyStateChanged();
+    }
+
+
+    private void OnSearch(string text)
+    {
+        var test = Enum.GetValues<COATypes>().ToList();
+        searchString = text;
+        table?.ReloadServerData();
+    }
+
+
+        private static List<COATypes> COATypes = Enum.GetValues<COATypes>().ToList();
+
+
+    private async Task<TableData<COATypes>> ServerReload(TableState state, CancellationToken token)
+    {
+        selectedAll = false;
+        dataSource = COATypes.Where(x => COATypesToString(x).StartsWith(searchString ?? "", StringComparison.OrdinalIgnoreCase)).ToList();
+        var datasourceIds = dataSource.Select(x => x).ToList();
+        selectedAll = selectedItems.Any() && !selectedItems.Any(x => !datasourceIds.Contains(x));
+        _state.NotifyStateChanged();
+        return new TableData<COATypes>() { TotalItems = dataSource!.Count, Items = dataSource };
+    }
+
+        string COATypesToString(COATypes type) => _loc.Enum($"{nameof(COATypes)}.{type}");
+
+
+    async Task SelectRecord(bool selected, COATypes data)
+    {
+        if (!selected)
+        {
+            selectedAll = false;
+            selectedItems = selectedItems.Where(x => x != data).ToList();
+            await OnChanged.InvokeAsync(selectedItems);
+            return;
+        }
+
+        selectedItems.Add(data);
+        await OnChanged.InvokeAsync(selectedItems);
+        UpdateSelectedAll();
+
+    }
+
+    async Task SelectAll(bool select)
+    {
+        selectedAll = select;
+        if (!select)
+        {
+            var datasourceIds = dataSource.Select(x => x);
+            selectedItems = selectedItems.Where(x => !datasourceIds.Contains(x)).ToList();
+            await OnChanged.InvokeAsync(selectedItems);
+            _state.NotifyStateChanged();
+            return;
+        }
+
+        var selectedIds = selectedItems.Select(x => x);
+        var selectedData = !selectedIds.Any() ? dataSource : dataSource.Where(x => !selectedIds.Contains(x)).ToList();
+        selectedItems.AddRange(selectedData);
+        await OnChanged.InvokeAsync(selectedItems);
+        _state.NotifyStateChanged();
+    }
+
+    void UpdateSelectedAll()
+    {
+        var selectedIds = selectedItems.Select(x => x);
+        selectedAll = !dataSource.Where(x => !selectedIds.Contains(x)).Any();
+    }
+
+    bool IsSelected(COATypes data) => selectedItems.Any(x => x == data);
+    string DisplayValuePrefix => selectedItems.Count > 2 ? $"({selectedItems.Count}): " : "";
+    string? DisplayValue => !selectedItems.Any() ? null : $"{DisplayValuePrefix} {string.Join(", ", selectedItems.Select(x => COATypesToString(x)).Take(10))}";
+}

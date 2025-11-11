@@ -1,4 +1,5 @@
 {
+  "COATypes.DisplayName": "COA Type",
   "COATypes.Asset": "Asset",
   "COATypes.Liability": "Liability",
   "COATypes.Equity": "Equity",
@@ -13,17 +14,20 @@
   "COATypes.InterCompanyAccounts": "Inter Company Accounts",
   "COATypes.StaticalAccounts": "Statical Accounts",
 
+  "OrderBehaviors.DisplayName": "Order Behavior",
   "OrderBehaviors.Instant": "Instant",
   "OrderBehaviors.DineIn": "DineIn",
   "OrderBehaviors.Delivery": "Delivery",
   "OrderBehaviors.TakeAway": "Take Away",
   "OrderBehaviors.COD": "COD",
 
+  "OutletTypes.DisplayName": "Outlet Type",
   "OutletTypes.Retail": "Retail",
   "OutletTypes.Restaurant": "Restaurant",
   "OutletTypes.Hotel": "Hotel",
   "OutletTypes.Rent": "Rent",
 
+  "PaymentMethodTypes.DisplayName": "Payment Type",
   "PaymentMethodTypes.Cash": "Cash",
   "PaymentMethodTypes.DebitCard": "Debit Card",
   "PaymentMethodTypes.BankTransfer": "Bank Transfer",

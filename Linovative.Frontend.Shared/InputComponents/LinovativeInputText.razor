@@ -6,13 +6,18 @@
               ReadOnly="ReadOnly"
               Label="@_label"
               Immediate="true"
+              @onclick="@(async () => await OnClick.InvokeAsync())"
               T="string"
               InputType="InputType"
               Error="@_isError"
               ErrorText="@_errorMessage"
               RequiredError="@_requiredMessage"
               Style="@Style"
-              Variant="@variant"></MudTextField>
+              Variant="@variant"
+              ClearIcon="@ClearIcon"
+              IconSize="@IconSize"
+              Adornment="@Adornment.Start"
+              OnClearButtonClick="@OnClearButtonClick"></MudTextField>
 
 @code {
     MudBlazor.Variant variant => Variant.ToMudBlazorVariant();

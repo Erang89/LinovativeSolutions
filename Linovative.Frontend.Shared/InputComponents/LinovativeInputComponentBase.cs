@@ -12,6 +12,8 @@ namespace Linovative.Frontend.Shared.InputComponents
         public T? Value { get; set; }
 
         [Parameter] public EventCallback<T?> ValueChanged { get; set; }
+        [Parameter] public EventCallback OnClearButtonClick { get; set; }
+        [Parameter] public EventCallback OnClick { get; set; }
 
         [Parameter]
         public bool IsRequired { get; set; }
@@ -71,5 +73,9 @@ namespace Linovative.Frontend.Shared.InputComponents
 
         [Inject] public IJsonLocalizer JsonLocalizer { get; set; }
         [Parameter] public InputType InputType { get; set; } = InputType.Text;
+
+        [Parameter] public string? ClearIcon { get; set; }
+        [Parameter] public MudBlazor.Size IconSize { get; set; }
+        [Parameter] public MudBlazor.Adornment Adornment { get; set; }
     }
 }
