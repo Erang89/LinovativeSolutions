@@ -43,5 +43,14 @@
 
             lazyLoadedAssemblies.AddRange(assemblies);
         }
+        else if (args.Path.StartsWith("inventory", StringComparison.OrdinalIgnoreCase))
+        {
+            var assemblies = await AssemblyLoader.LoadAssembliesAsync(new[]
+            {
+                "Linovative.Frontend.InventoryComponents.dll"
+            });
+
+            lazyLoadedAssemblies.AddRange(assemblies);
+        }
     }
 }

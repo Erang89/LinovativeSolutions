@@ -19,9 +19,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Linovative.Frontend.AccountingComponents\Linovative.Frontend.AccountingComponents.csproj" />
+    <ProjectReference Include="..\Linovative.Frontend.InventoryComponents\Linovative.Frontend.InventoryComponents.csproj" />
     <ProjectReference Include="..\Linovative.Frontend.POSComponents\Linovative.Frontend.POSComponents.csproj" />
 	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.POSComponents.dll" />
 	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.AccountingComponents.dll" />
+	<BlazorWebAssemblyLazyLoad Include="Linovative.Frontend.InventoryComponents.dll" />
 	<ProjectReference Include="..\Linovative.Frontend.Services\Linovative.Frontend.Services.csproj" />
     <ProjectReference Include="..\Linovative.Frontend.Shared\Linovative.Frontend.Shared.csproj" />
   </ItemGroup>

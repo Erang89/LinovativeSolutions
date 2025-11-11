@@ -12,6 +12,7 @@ namespace Linovative.Frontent.WebBlazor.Extensions
             var lang = host.Services.GetRequiredService<ILanguageProvider>();
             var loc = host.Services.GetRequiredService<IJsonLocalizer>();
             var culture = await lang.GetLanguage() ?? lang.DefaultCulture;
+            await loc.EnsureLoadedAsync("InventoryGlobal", "Linovative.Frontend.InventoryComponents");
             await loc.EnsureLoadedAsync("POSManagementGlobal", "Linovative.Frontend.POSComponents");
             await loc.EnsureLoadedAsync("AccountingGlobal", "Linovative.Frontend.AccountingComponents");
             await loc.EnsureLoadedAsync("Global");

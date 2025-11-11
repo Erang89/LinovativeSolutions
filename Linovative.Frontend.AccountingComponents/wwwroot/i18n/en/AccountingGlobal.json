@@ -3,5 +3,6 @@
   "Menu.Accounts": "Accounts",
   "Menu.AccountGroup": "Account Groups",
   "Menu.SalesCoaMapping": "Sales COA Mapping",
-  "Menu.Settings": "Settings"
+  "Menu.Settings": "Settings",
+  "Menu.AccountSettings": "Account Settings"
 }

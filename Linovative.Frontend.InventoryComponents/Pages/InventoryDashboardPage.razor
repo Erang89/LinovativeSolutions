@@ -1,6 +1,6 @@
-﻿@attribute [Route(PageRoutes.Accounting.Index)]
-@layout AccountingLayout
-@inherits AccountingPageBase
+﻿@attribute [Route(PageRoutes.Inventory.Index)]
+@layout InventoryLayout
+@inherits InventoryPageBase
 
 @inject IJsonLocalizer _loc
 @inject ITopBarService _topBarService
@@ -11,9 +11,11 @@
 
 <LinovativePageTitle Title="@EntityPluralName" />
 
+This is Inventory Dashboard
+
 @code {
 
-    protected override string LocalizerResource => "AccountingIndexPage";
+    protected override string LocalizerResource => nameof(InventoryDashboardPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 

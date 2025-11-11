@@ -11,7 +11,7 @@
     
     <MudNavLink Icon="@Icons.Material.Outlined.Home" Href="@PageRoutes.Accounting.Index" Match="NavLinkMatch.All">@(_loc.Global("Home"))</MudNavLink>
 
-    <MudNavGroup Expanded="@(_nav.Uri.Contains(PageRoutes.Accounting.Settings.Index, StringComparison.OrdinalIgnoreCase))" Icon="@Icons.Material.Outlined.Settings" Title="Account Settings">
+    <MudNavGroup Expanded="@(_nav.Uri.Contains(PageRoutes.Accounting.Settings.Index, StringComparison.OrdinalIgnoreCase))" Icon="@Icons.Material.Outlined.Settings" Title="@_loc.Accounting("Menu.AccountSettings")">
         <MudNavLink Icon="@Icons.Material.Outlined.GifBox" Href="@PageRoutes.Accounting.Settings.Accounts" Match="NavLinkMatch.Prefix">@_loc.Accounting("Menu.Accounts")</MudNavLink>
         <MudNavLink Icon="@Icons.Material.Outlined.GifBox" Href="@PageRoutes.Accounting.Settings.OutletSalesCoaMappings" Match="NavLinkMatch.Prefix">@_loc.Accounting("Menu.SalesCoaMapping")</MudNavLink>
     </MudNavGroup>
