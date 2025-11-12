@@ -34,13 +34,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.AccountingComponents", "Linovative.Frontend.AccountingComponents\Linovative.Frontend.AccountingComponents.csproj", "{1E1052A7-26F1-41D4-A465-513CA622E339}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.InventoryComponents", "Linovative.Frontend.InventoryComponents\Linovative.Frontend.InventoryComponents.csproj", "{7E15B737-0FD1-4256-B05A-0B8F12FC1272}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.InventoryComponents", "Linovative.Frontend.InventoryComponents\Linovative.Frontend.InventoryComponents.csproj", "{7E15B737-0FD1-4256-B05A-0B8F12FC1272}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.AccomodationComponents", "Linovative.Frontend.AccomodationComponents\Linovative.Frontend.AccomodationComponents.csproj", "{D69ECA81-1C4B-488B-9F01-D3B87D8F9D07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.AccomodationComponents", "Linovative.Frontend.AccomodationComponents\Linovative.Frontend.AccomodationComponents.csproj", "{D69ECA81-1C4B-488B-9F01-D3B87D8F9D07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.SettingComponent", "Linovative.Frontend.SettingComponent\Linovative.Frontend.SettingComponent.csproj", "{1007880A-BCE5-4566-AD87-03B0EBB4DE81}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.SettingComponent", "Linovative.Frontend.SettingComponent\Linovative.Frontend.SettingComponent.csproj", "{1007880A-BCE5-4566-AD87-03B0EBB4DE81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.Frontend.POSCashierComponent", "Linovative.Frontend.POSCashierComponent\Linovative.Frontend.POSCashierComponent.csproj", "{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.POSCashierComponent", "Linovative.Frontend.POSCashierComponent\Linovative.Frontend.POSCashierComponent.csproj", "{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,7 +1,7 @@
 ﻿@inject IApplicationStateService _state
 @inject IDialogService _dialogService
 @inject IJsonLocalizer _loc
-@inherits SearchableDropdownBase<COATypes?>
+@inherits SearchableDropdownBase<OrderBehaviors?>
 
 <MultiSelectContainer Open="@open" OnLayerClick="@(() => Toggle())">
     <LinovativeInputText
@@ -39,13 +39,13 @@
                     <MudTh Style="width: 30px">
                         <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
                     </MudTh>
-                    <MudTh><MudTableSortLabel T="COATypes">@_loc.Enum($"{nameof(COATypes)}.DisplayName")</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel T="OrderBehaviors">@_loc.Enum($"{nameof(OrderBehaviors)}.DisplayName")</MudTableSortLabel></MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd>
                         <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
                     </MudTd>
-                    <MudTd DataLabel="Enum">@_loc.Enum($"{nameof(COATypes)}.{context}")</MudTd>
+                    <MudTd DataLabel="Enum">@_loc.Enum($"{nameof(OrderBehaviors)}.{context}")</MudTd>
 
                 </RowTemplate>
 
@@ -69,19 +69,19 @@
 </MultiSelectContainer>
 
     @code {
-    private List<COATypes> selectedItems { get; set; } = new();
+    private List<OrderBehaviors> selectedItems { get; set; } = new();
     private CancellationTokenSource cts = new();
     private string? searchString = null;
-    private MudTable<COATypes>? table;
+    private MudTable<OrderBehaviors>? table;
     private bool selectedAll { get; set; }
-    private List<COATypes> dataSource { get; set; } = new();
+    private List<OrderBehaviors> dataSource { get; set; } = new();
     private bool open = false;
     private MudTextField<string> searchBox { get; set; } = default!;
     private bool HasFirstLoad = false;
 
 
     [Parameter]
-    public EventCallback<List<COATypes>> OnChanged { get; set; }
+    public EventCallback<List<OrderBehaviors>> OnChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -118,29 +118,29 @@
 
     private void OnSearch(string text)
     {
-        var test = Enum.GetValues<COATypes>().ToList();
+        var test = Enum.GetValues<OrderBehaviors>().ToList();
         searchString = text;
         table?.ReloadServerData();
     }
 
 
-        private static List<COATypes> COATypes = Enum.GetValues<COATypes>().ToList();
+        private static List<OrderBehaviors> OrderBehaviors = Enum.GetValues<OrderBehaviors>().ToList();
 
 
-    private async Task<TableData<COATypes>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<OrderBehaviors>> ServerReload(TableState state, CancellationToken token)
     {
         selectedAll = false;
-        dataSource = COATypes.Where(x => COATypesToString(x).StartsWith(searchString ?? "", StringComparison.OrdinalIgnoreCase)).ToList();
+        dataSource = OrderBehaviors.Where(x => OrderBehaviorsToString(x).StartsWith(searchString ?? "", StringComparison.OrdinalIgnoreCase)).ToList();
         var datasourceIds = dataSource.Select(x => x).ToList();
         selectedAll = selectedItems.Any() && !selectedItems.Any(x => !datasourceIds.Contains(x));
         _state.NotifyStateChanged();
-        return new TableData<COATypes>() { TotalItems = dataSource!.Count, Items = dataSource };
+        return new TableData<OrderBehaviors>() { TotalItems = dataSource!.Count, Items = dataSource };
     }
 
-        string COATypesToString(COATypes type) => _loc.Enum($"{nameof(COATypes)}.{type}");
+        string OrderBehaviorsToString(OrderBehaviors type) => _loc.Enum($"{nameof(OrderBehaviors)}.{type}");
 
 
-    async Task SelectRecord(bool selected, COATypes data)
+    async Task SelectRecord(bool selected, OrderBehaviors data)
     {
         if (!selected)
         {
@@ -181,7 +181,7 @@
         selectedAll = !dataSource.Where(x => !selectedIds.Contains(x)).Any();
     }
 
-    bool IsSelected(COATypes data) => selectedItems.Any(x => x == data);
+    bool IsSelected(OrderBehaviors data) => selectedItems.Any(x => x == data);
     string DisplayValuePrefix => selectedItems.Count > 2 ? $"({selectedItems.Count}): " : "";
-    string? DisplayValue => !selectedItems.Any() ? null : $"{DisplayValuePrefix} {string.Join(", ", selectedItems.Select(x => COATypesToString(x)).Take(10))}";
+    string? DisplayValue => !selectedItems.Any() ? null : $"{DisplayValuePrefix} {string.Join(", ", selectedItems.Select(x => OrderBehaviorsToString(x)).Take(10))}";
 }

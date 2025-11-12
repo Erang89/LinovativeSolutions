@@ -1,7 +1,16 @@
-﻿@inject IApplicationStateService _state
+﻿@using LinoVative.Shared.Dto.MasterData.Accountings
+@using LinoVative.Shared.Dto.Sources
+@using Linovative.Frontend.Services.FrontendServices
+@using Linovative.Frontend.Services.FrontendServices.AccountingServices
+@using MapsterMapper
+
+@inherits SearchableDropdownBase<CurrencyDto?>
+
+@inject ICurrencyService _service
+@inject IApplicationStateService _state
+@inject IMapper _mapper
 @inject IDialogService _dialogService
 @inject IJsonLocalizer _loc
-@inherits SearchableDropdownBase<COATypes?>
 
 <MultiSelectContainer Open="@open" OnLayerClick="@(() => Toggle())">
     <LinovativeInputText
@@ -39,13 +48,13 @@
                     <MudTh Style="width: 30px">
                         <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
                     </MudTh>
-                    <MudTh><MudTableSortLabel T="COATypes">@_loc.Enum($"{nameof(COATypes)}.DisplayName")</MudTableSortLabel></MudTh>
+                    <MudTh><MudTableSortLabel SortLabel="@(nameof(COAGroupDto.Name))" T="COAGroupDto">Name</MudTableSortLabel></MudTh>
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd>
                         <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
                     </MudTd>
-                    <MudTd DataLabel="Enum">@_loc.Enum($"{nameof(COATypes)}.{context}")</MudTd>
+                    <MudTd DataLabel="Nr">@context.Name</MudTd>
 
                 </RowTemplate>
 
@@ -62,26 +71,31 @@
                 <FooterContent>
                     <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
                 </FooterContent>
-
             </MudTable>
         </MudPaper>
     }
 </MultiSelectContainer>
+<div class="@(open? "" : "d-none")" @onclick="@(() => Toggle())" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1000"></div>
 
-    @code {
-    private List<COATypes> selectedItems { get; set; } = new();
+<div style="position: relative; z-index: 1001">
+    
+</div>
+
+
+@code {
+    private List<CurrencyDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts = new();
     private string? searchString = null;
-    private MudTable<COATypes>? table;
+    private MudTable<CurrencyDto>? table;
     private bool selectedAll { get; set; }
-    private List<COATypes> dataSource { get; set; } = new();
+    private List<CurrencyDto> dataSource { get; set; } = new();
     private bool open = false;
     private MudTextField<string> searchBox { get; set; } = default!;
     private bool HasFirstLoad = false;
 
 
     [Parameter]
-    public EventCallback<List<COATypes>> OnChanged { get; set; }
+    public EventCallback<List<CurrencyDto>> OnChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -118,34 +132,38 @@
 
     private void OnSearch(string text)
     {
-        var test = Enum.GetValues<COATypes>().ToList();
         searchString = text;
         table?.ReloadServerData();
     }
 
-
-        private static List<COATypes> COATypes = Enum.GetValues<COATypes>().ToList();
-
-
-    private async Task<TableData<COATypes>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<CurrencyDto>> ServerReload(TableState state, CancellationToken token)
     {
         selectedAll = false;
-        dataSource = COATypes.Where(x => COATypesToString(x).StartsWith(searchString ?? "", StringComparison.OrdinalIgnoreCase)).ToList();
-        var datasourceIds = dataSource.Select(x => x).ToList();
-        selectedAll = selectedItems.Any() && !selectedItems.Any(x => !datasourceIds.Contains(x));
+
+        var odataFilter = new ODataFilter()
+            {
+                PageNumber = state.Page + 1,
+                PageSize = state.PageSize,
+                OrderFiled = state.SortLabel,
+                SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
+                Options = searchString is null ? null : $"$filter=contains(tolower(name), tolower('{searchString}'))"
+            };
+
+        var result = await _service.Get(odataFilter, cts.Token);
+        dataSource = result?.Data ?? new();
+        var datasourceIds = dataSource.Select(x => x.Id).ToList();
+        selectedAll = selectedItems.Any() && !selectedItems.Any(x => !datasourceIds.Contains(x.Id));
         _state.NotifyStateChanged();
-        return new TableData<COATypes>() { TotalItems = dataSource!.Count, Items = dataSource };
+        return new TableData<CurrencyDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
-        string COATypesToString(COATypes type) => _loc.Enum($"{nameof(COATypes)}.{type}");
 
-
-    async Task SelectRecord(bool selected, COATypes data)
+    async Task SelectRecord(bool selected, CurrencyDto data)
     {
         if (!selected)
         {
             selectedAll = false;
-            selectedItems = selectedItems.Where(x => x != data).ToList();
+            selectedItems = selectedItems.Where(x => x.Id != data.Id).ToList();
             await OnChanged.InvokeAsync(selectedItems);
             return;
         }
@@ -161,15 +179,15 @@
         selectedAll = select;
         if (!select)
         {
-            var datasourceIds = dataSource.Select(x => x);
-            selectedItems = selectedItems.Where(x => !datasourceIds.Contains(x)).ToList();
+            var datasourceIds = dataSource.Select(x => x.Id);
+            selectedItems = selectedItems.Where(x => !datasourceIds.Contains(x.Id)).ToList();
             await OnChanged.InvokeAsync(selectedItems);
             _state.NotifyStateChanged();
             return;
         }
 
-        var selectedIds = selectedItems.Select(x => x);
-        var selectedData = !selectedIds.Any() ? dataSource : dataSource.Where(x => !selectedIds.Contains(x)).ToList();
+        var selectedIds = selectedItems.Select(x => x.Id);
+        var selectedData = !selectedIds.Any() ? dataSource : dataSource.Where(x => !selectedIds.Contains(x.Id)).ToList();
         selectedItems.AddRange(selectedData);
         await OnChanged.InvokeAsync(selectedItems);
         _state.NotifyStateChanged();
@@ -177,11 +195,11 @@
 
     void UpdateSelectedAll()
     {
-        var selectedIds = selectedItems.Select(x => x);
-        selectedAll = !dataSource.Where(x => !selectedIds.Contains(x)).Any();
+        var selectedIds = selectedItems.Select(x => x.Id);
+        selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
     }
 
-    bool IsSelected(COATypes data) => selectedItems.Any(x => x == data);
+    bool IsSelected(CurrencyDto data) => selectedItems.Any(x => x.Id == data.Id);
     string DisplayValuePrefix => selectedItems.Count > 2 ? $"({selectedItems.Count}): " : "";
-    string? DisplayValue => !selectedItems.Any() ? null : $"{DisplayValuePrefix} {string.Join(", ", selectedItems.Select(x => COATypesToString(x)).Take(10))}";
+    string? DisplayValue => !selectedItems.Any() ? null : $"{DisplayValuePrefix} {string.Join(", ", selectedItems.Select(x => x.Name).Take(10))}";
 }

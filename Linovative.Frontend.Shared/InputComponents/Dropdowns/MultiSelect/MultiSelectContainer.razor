@@ -9,7 +9,7 @@
     [Parameter] public bool Open { get; set; }
     [Parameter] public EventCallback OnLayerClick { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
-    string _style => $"position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: {(Open ? "10001" : "100")}";
+    string _style => $"position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: {(Open ? "10001" : "100")}";
     string _innerStyle => $"position: relative; z-index: {(Open ? "10002" : "100")}";
 
     protected override Task OnInitializedAsync()
