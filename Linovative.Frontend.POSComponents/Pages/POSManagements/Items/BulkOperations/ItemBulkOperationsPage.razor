@@ -1,4 +1,6 @@
 ﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Enums
+@using Linovative.Frontend.Services.FrontendServices.Resources
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 
@@ -12,18 +14,168 @@
 @inject IItemCategoryService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
+@inject IResourceDownload _resourceService
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
 <ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.BulkOperations)})" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.BulkOperation" />
 <LinovativeGap />
+<MudText Typo="Typo.h6">@EntityName @(Title is null ? null : $" - {Title}")</MudText>
+<LinovativeGap />
+
+
+<div style="width: 400px">
+    <MudSelect Value="@SelectedOperation"
+               ValueChanged="@((e) => SetValue(() => { 
+                        SelectedOperation = e; 
+                        SelectedEntityType = null;
+                        SelectedActionTypes = null;}))"
+               T="Operations?" Variant="ComponentSettings.InputVariant" Label="Operations" 
+               Clearable="true" FullWidth="false">
+        <MudSelectItem T="Operations?" Value="Operations.Create">Create</MudSelectItem>
+        <MudSelectItem T="Operations?" Value="Operations.Update">Update</MudSelectItem>
+        <MudSelectItem T="Operations?" Value="Operations.Delete">Delete</MudSelectItem>
+    </MudSelect>
+</div>
+
+
+<LinovativeGap />
+<div style="width: 400px">
+    <MudSelect Value="@SelectedEntityType" T="DataEntityTypes?"
+               ValueChanged="((e) => SetValue(() => SelectedEntityType = e))"
+               Disabled="@(SelectedOperation is null)"
+               Variant="ComponentSettings.InputVariant" Label="Data Type" Clearable="true" FullWidth="false">
+        <MudSelectItem T="DataEntityTypes?" Value="DataEntityTypes.ItemMaster">Item</MudSelectItem>
+        <MudSelectItem T="DataEntityTypes?" Value="DataEntityTypes.Group">Group</MudSelectItem>
+        <MudSelectItem T="DataEntityTypes?" Value="DataEntityTypes.Category">Category</MudSelectItem>
+        <MudSelectItem T="DataEntityTypes?" Value="DataEntityTypes.Unit">Unit</MudSelectItem>
+    </MudSelect>
+</div>
+
+<LinovativeGap />
+<div style="width: 400px">
+    <MudSelect Disabled="@(SelectedOperation is null)"
+               @bind-Value="@SelectedActionTypes" T="ActionTypes?"
+               Variant="ComponentSettings.InputVariant" Label="Actions" Clearable="true" FullWidth="false">
+        @foreach (var actionType in ActionTypeSources)
+        {
+            <MudSelectItem T="ActionTypes?" Value="actionType">@_loc.Enum($"{nameof(ActionTypes)}.{actionType}")</MudSelectItem>
+        }
+    </MudSelect>
+</div>
+
+
+<ItemAdvanceActoionPageItemFilterAndView 
+    SelectedOperation=@SelectedOperation
+    SelectedEntityType=@SelectedEntityType
+    SelectedActionTypes=@SelectedActionTypes
+    ShowRecord=@ShowRecord
+    @ref=itemView />
+
+
+    
+<ItemAdvanceActoionPageCategoryFilterAndView  SelectedOperation=@SelectedOperation
+    SelectedEntityType=@SelectedEntityType
+    SelectedActionTypes=@SelectedActionTypes
+    ShowRecord=@ShowRecord
+    @ref=categoryView />
+
+<ItemAdvanceActoionPageGroupFilterAndView SelectedEntityType=@SelectedEntityType
+    SelectedActionTypes=@SelectedActionTypes
+    ShowRecord=@ShowRecord
+    @ref=groupView  />
+
+<ItemAdvanceActoionPageUnitFilterAndView SelectedEntityType=@SelectedEntityType
+    SelectedActionTypes=@SelectedActionTypes
+    ShowRecord=@ShowRecord
+    @ref=unitView />
+
+
+<LinovativeGap />
+
+
+
+<div class="d-flex justify-start flex-grow-1 gap-4">
+    @if ((SelectedEntityType is DataEntityTypes.ItemMaster or DataEntityTypes.Category or DataEntityTypes.Group or DataEntityTypes.Unit) && (
+       SelectedActionTypes == ActionTypes.Update_DownloadFromData || 
+       SelectedActionTypes == ActionTypes.Delete_DownloadFromDataFiltering))
+    {
+        <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
+                   Variant="ComponentSettings.AddNewButtonVariant"
+                   StartIcon="@Icons.Material.Filled.ViewColumn"
+                   OnClick="@OnButtonViewItemClicked"
+                   Color="Color.Primary">Show Records</MudButton>
+    }
+
+
+    @if(DownloadActions.Any(x => x == SelectedActionTypes))
+    {
+        <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
+                   Variant="ComponentSettings.AddNewButtonVariant"
+                   StartIcon="@Icons.Material.Filled.Download"
+                   OnClick="Download"
+                   Color="Color.Primary">Download</MudButton>
+    }
+</div>
+
 
 @code{
 
     protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+    private string? Title => SelectedOperation switch
+    {
+        Operations.Create => "Create",
+        Operations.Update => "Update",
+        Operations.Delete => "Delete",
+        _ => null
+
+    };
+
+    Dictionary<Operations, List<ActionTypes>> ActionOperationMapping = new()
+    {
+        {Operations.Create, new List<ActionTypes>(){
+            ActionTypes.Create_DownloadTemplate,
+            ActionTypes.Create_Upload} },
+        {Operations.Update, new List<ActionTypes>(){
+            ActionTypes.Update_DownloadBlankTemplate,
+            ActionTypes.Update_DownloadFromData,
+            ActionTypes.Update_DownloadFromDataMapping,
+            ActionTypes.Update_Upload}},
+        {Operations.Delete, new List<ActionTypes>(){
+            ActionTypes.Delete_DownloadBlankTemplate,
+            ActionTypes.Delete_DownloadFromDataFiltering,
+            ActionTypes.Delete_DownloadFromDataMapping,
+            ActionTypes.Delete_Upload}},
+    };
+
+    List<ActionTypes> ActionTypeSources => SelectedOperation is null ? new() :  ActionOperationMapping[SelectedOperation.Value];
+    List<ActionTypes> UploadActions = new List<ActionTypes>() { ActionTypes.Create_Upload, ActionTypes.Update_Upload, ActionTypes.Delete_Upload };
+    List<ActionTypes?> DownloadActions = new List<ActionTypes?>() {
+        ActionTypes.Update_DownloadBlankTemplate, 
+        ActionTypes.Update_DownloadFromData, 
+        ActionTypes.Update_DownloadFromDataMapping,
+        ActionTypes.Create_DownloadTemplate,
+        ActionTypes.Delete_DownloadBlankTemplate,
+    };
+
+
+
+
+    // ======================== PROPERTIES ================================    
+
+    private Operations? SelectedOperation { get; set; }
+    private DataEntityTypes? SelectedEntityType { get; set; }
+    private ActionTypes? SelectedActionTypes { get; set; }
+    private ItemAdvanceActoionPageItemFilterAndView itemView { get; set; } = default!;
+    private ItemAdvanceActoionPageCategoryFilterAndView categoryView { get; set; } = default!;
+    private ItemAdvanceActoionPageGroupFilterAndView groupView { get; set; } = default!;
+    private ItemAdvanceActoionPageUnitFilterAndView unitView { get; set; } = default!;
+    
+    private bool ShowRecord { get; set; }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -31,4 +183,56 @@
         _state.OnChange += StateHasChanged;
         _topBarService.SetTitle(EntityPluralName);
     }
+
+
+    void SetValue(Action setValueAction)
+    {
+        setValueAction();
+        ShowRecord = false;
+        _state.NotifyStateChanged();
+    }
+
+    private record FileMapping(Operations Operation, DataEntityTypes Type, ActionTypes Action, string FileName);
+    async Task Download()
+    {
+        var fileNames = new List<FileMapping>()
+        {
+            new FileMapping(Operations.Create, DataEntityTypes.Unit, ActionTypes.Create_DownloadTemplate, "CreateItemUnitTemplate.xlsx"),
+            new FileMapping(Operations.Create, DataEntityTypes.Group, ActionTypes.Create_DownloadTemplate, "CreateItemGroupTemplate.xlsx"),
+            new FileMapping(Operations.Create, DataEntityTypes.Category, ActionTypes.Create_DownloadTemplate, "CreateItemCategoryTemplate.xlsx"),
+            new FileMapping(Operations.Create, DataEntityTypes.ItemMaster, ActionTypes.Create_DownloadTemplate, "CreateItemTemplate.xlsx"),
+
+            new FileMapping(Operations.Update, DataEntityTypes.ItemMaster, ActionTypes.Update_DownloadBlankTemplate, "UpdateItemTemplate.xlsx"),
+            new FileMapping(Operations.Update, DataEntityTypes.Group, ActionTypes.Update_DownloadBlankTemplate, "UpdateGroupTemplate.xlsx"),
+            new FileMapping(Operations.Update, DataEntityTypes.Category, ActionTypes.Update_DownloadBlankTemplate, "UpdateCategoryTemplate.xlsx"),
+            new FileMapping(Operations.Update, DataEntityTypes.Unit, ActionTypes.Update_DownloadBlankTemplate, "UpdateUnitTemplate.xlsx"),
+
+            new FileMapping(Operations.Delete, DataEntityTypes.ItemMaster, ActionTypes.Delete_DownloadBlankTemplate, "DeleteItemTemplate.xlsx"),
+            new FileMapping(Operations.Delete, DataEntityTypes.Group, ActionTypes.Delete_DownloadBlankTemplate, "DeleteGroupTemplate.xlsx"),
+            new FileMapping(Operations.Delete, DataEntityTypes.Category, ActionTypes.Delete_DownloadBlankTemplate, "DeleteCategoryTemplate.xlsx"),
+            new FileMapping(Operations.Delete, DataEntityTypes.Unit, ActionTypes.Delete_DownloadBlankTemplate, "DeleteUnitTemplate.xlsx"),
+        };
+
+        await _resourceService.DownloadExcelFile(fileNames.FirstOrDefault(x => x.Operation == SelectedOperation && x.Type == SelectedEntityType && x.Action == SelectedActionTypes)!.FileName);
+    }
+
+
+    async Task OnButtonViewItemClicked()
+    {
+
+        if (SelectedEntityType == DataEntityTypes.ItemMaster)
+            await itemView.LoadItems();
+
+        if (SelectedEntityType == DataEntityTypes.Category)
+            await categoryView.LoadItems();
+
+        if (SelectedEntityType == DataEntityTypes.Group)
+            await groupView.LoadItems();
+
+        if (SelectedEntityType == DataEntityTypes.Unit)
+            await unitView.LoadItems();
+
+        ShowRecord = true;
+    }
+
 }
