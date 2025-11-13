@@ -9,14 +9,16 @@
               @onclick="@(async () => await OnClick.InvokeAsync())"
               T="string"
               InputType="InputType"
+              Placeholder="@Placeholder"
               Error="@_isError"
               ErrorText="@_errorMessage"
               RequiredError="@_requiredMessage"
               Style="@Style"
+              Clearable="@Clearable"
               Variant="@variant"
               ClearIcon="@ClearIcon"
               IconSize="@IconSize"
-              Adornment="@Adornment.Start"
+              Adornment="@Adornment"
               OnClearButtonClick="@OnClearButtonClick"></MudTextField>
 
 @code {
@@ -24,7 +26,7 @@
     bool _isError => Error || _containErrors;
     bool _containErrors => (ErrorKey is not null && Errors is not null && Errors.Count() > 0 && Errors.ContainsKey(ErrorKey));
     string? _errorMessage => Error ? ErrorMessage : _containErrors ? string.Join(" ", getError()) : (IsRequired && string.IsNullOrEmpty(Value)) ? _requiredMessage : "";
-    string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
+    string? _label => !string.IsNullOrEmpty(Label) ? Label : string.IsNullOrWhiteSpace(LocalizerKey)? "" : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
     string? _requiredMessage => !string.IsNullOrWhiteSpace(RequiredMessage) ? RequiredMessage : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Required.ErrorMessage"];
 
     List<string> getError() => Errors is not null && !string.IsNullOrEmpty(ErrorKey) && Errors.ContainsKey(ErrorKey) ? Errors[ErrorKey] : new List<string>();

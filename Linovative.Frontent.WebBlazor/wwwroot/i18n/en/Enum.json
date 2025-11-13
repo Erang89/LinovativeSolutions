@@ -32,5 +32,20 @@
   "PaymentMethodTypes.DebitCard": "Debit Card",
   "PaymentMethodTypes.BankTransfer": "Bank Transfer",
   "PaymentMethodTypes.CreditCard": "Credit Card",
-  "PaymentMethodTypes.Credit": "Credit"
+  "PaymentMethodTypes.Credit": "Credit",
+
+  "FilterOperator.Equals": "Equals",
+  "FilterOperator.NotEquals": "Not Equals",
+  "FilterOperator.Contains": "Contains",
+  "FilterOperator.NotContains": "Not Contains",
+  "FilterOperator.StartsWith": "Starts With",
+  "FilterOperator.EndsWith": "Ends With",
+  "FilterOperator.GreaterThan": "Greater Than",
+  "FilterOperator.GreaterThanOrEqual": "Greater Than Or Equal",
+  "FilterOperator.LessThan": "Less Than",
+  "FilterOperator.LessThanOrEqual": "Less Than Or Equal",
+  "FilterOperator.IsNull": "Is Null",
+  "FilterOperator.IsNotNull": "Is Not Null",
+  "FilterOperator.In": "In",
+  "FilterOperator.NotIn": "Not In"
 }

@@ -1,6 +1,7 @@
 ﻿using Linovative.Frontend.Services.Interfaces;
 using Linovative.Frontend.Shared.Enums;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using System.Linq.Expressions;
 
@@ -14,6 +15,7 @@ namespace Linovative.Frontend.Shared.InputComponents
         [Parameter] public EventCallback<T?> ValueChanged { get; set; }
         [Parameter] public EventCallback OnClearButtonClick { get; set; }
         [Parameter] public EventCallback OnClick { get; set; }
+        [Parameter] public EventCallback<KeyboardEventArgs> OnKeyDown { get; set; }
 
         [Parameter]
         public bool IsRequired { get; set; }

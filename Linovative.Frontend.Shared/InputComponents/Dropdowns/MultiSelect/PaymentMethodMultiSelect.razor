@@ -9,21 +9,20 @@
 @inject IJsonLocalizer _loc
 
 <MultiSelectContainer Open="@open" OnLayerClick="@(() => Toggle())">
-    <LinovativeInputText
-                  Immediate="true"
-                  Value="@DisplayValue"
-                  OnClick="@(() => Toggle())"
-                  Placeholder="Accounts" 
-                  Adornment="@Adornment.Start"
-                  Clearable=true
-                  ReadOnly="true"
-                  LocalizerResource="@LocalizerResource"
-                  ErrorKey="@ErrorKey"
-                  LocalizerKey="@LocalizerKey"
-                  ClearIcon="@Icons.Material.Filled.Close"
-                  IconSize="@Size.Medium"
-                  OnClearButtonClick="@(async () => await ClearSelect())"
-                  Class="mt-0"></LinovativeInputText>
+    <LinovativeInputText Immediate="true"
+                         Value="@DisplayValue"
+                         OnClick="@(() => Toggle())"
+                         Placeholder="@Placeholder"
+                         Clearable=true
+                         ReadOnly="false"
+                         Label="@Label"
+                         LocalizerResource="@LocalizerResource"
+                         ErrorKey="@ErrorKey"
+                         LocalizerKey="@LocalizerKey"
+                         ClearIcon="@Icons.Material.Filled.Close"
+                         IconSize="@Size.Medium"
+                         OnClearButtonClick="@(async () => await ClearSelect())"
+                         Class="mt-0"></LinovativeInputText>
 
     @if (open)
     {
@@ -74,7 +73,6 @@
 <div class="@(open? "" : "d-none")" @onclick="@(() => Toggle())" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1000"></div>
 
 <div style="position: relative; z-index: 1001">
-    
 </div>
 
 

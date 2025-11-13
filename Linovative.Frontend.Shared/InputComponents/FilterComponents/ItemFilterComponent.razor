@@ -1,0 +1,117 @@
+﻿@using System.Linq.Expressions
+@using LinoVative.Shared.Dto.ItemDtos
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.MultiSelect
+
+@inject IApplicationStateService _state
+@inject IJsonLocalizer _loc
+
+<FilterComponent Title="@Label"
+                 ValueInputNameBased="@GenerateInputUi"
+                 FieldValues="@FieldValues"
+                 FieldSources="@selectedTypes"
+                 OnClearFilter="@OnClearFilter"
+                 OnFilterButtonClick="@OnFilterButtonClick"
+                 FieldValuesChanged="@OnFieldValuesChanged"
+                 HideFilterButton="@HideFilterButton" />
+
+
+@code {
+
+    [Parameter] public List<DataGridFilterModel> FieldValues { get; set; } = new();
+    [Parameter] public EventCallback<List<DataGridFilterModel>> FieldValuesChanged { get; set; }
+    [Parameter] public bool HideFilterButton { get; set; }
+    [Parameter] public List<string> HideColumns { get; set; } = new();
+    [Parameter] public List<string> OnlyShowColumns { get; set; } = new();
+    [Parameter] public EventCallback OnFilterButtonClick { get; set; }
+    [Parameter] public string? Label { get; set; } = "";
+    [Parameter] public EventCallback OnClearFilter { get; set; }
+
+    static Func<string, string> GetLable = (x) => "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _loc.EnsureLoadedAsync($"{nameof(ItemFilterComponent)}", "Linovative.Frontend.Shared");
+        GetLable = (string key) => _loc[$"{nameof(ItemFilterComponent)}.{key}.Label"];
+        Label ??= GetLable("Title");
+        _state.OnChange += StateHasChanged;
+
+        types = new List<FilterComponent.FieldType>()
+                    {
+                        new(Columns.ItemCode, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Code)), GetLable(nameof(ItemViewDto.Code))),
+                        new(Columns.ItemName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Name)), GetLable(nameof(ItemViewDto.Name))),
+                        new(Columns.ItemCategoryName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category)), GetLable(nameof(ItemViewDto.Category))),
+                        new(Columns.ItemGroupName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category.ItemGroup)), GetLable(nameof(ItemViewDto.Category.ItemGroup))),
+                        new(Columns.ItemUnitName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Unit)), GetLable(nameof(ItemViewDto.Unit))),
+
+                        // new(Columns.CanSell, DataGridFilterModel.PropertyType.Boolean, "Sell Item", "Sell Item"),
+                        // new(Columns.CanPurchase, DataGridFilterModel.PropertyType.Boolean, "Purchase Item", "Purchase Item"),
+                        // new(Columns.CanProduce, DataGridFilterModel.PropertyType.Boolean, "Produce Item", "Produce Item"),
+                        // new(Columns.IsRowMaterial, DataGridFilterModel.PropertyType.Boolean, "Raw Item", "Raw Item"),
+                        // new(Columns.HasCondiment, DataGridFilterModel.PropertyType.Boolean, "Has Condiment", "Has Condiment"),
+                        // new(Columns.HasPackage, DataGridFilterModel.PropertyType.Boolean, "Has Package", "Has Package"),
+                        // new(Columns.SellPrice, DataGridFilterModel.PropertyType.Decimal, "Sell Price", "Sell Price"),
+                        // new(Columns.SellPriceIncludeTax, DataGridFilterModel.PropertyType.Boolean, "Sell Price Include Tax", "Sell Price Include Tax"),
+                        // new(Columns.OrderLeadDays, DataGridFilterModel.PropertyType.Integer, "Order Lead Days", "Order Lead Days"),
+                        // new(Columns.LastPurchasePrice, DataGridFilterModel.PropertyType.Decimal, "Last Purchase Price", "Last Purchase Price"),
+
+                        new(Columns.ItemCategoryNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Categories"), GetLable("Categories")),
+                        new(Columns.ItemGroupNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Groups"), GetLable("Groups")),
+                        new(Columns.ItemUnitNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Units"), GetLable("Units")),
+                    };
+
+        selectedTypes = types
+        .Where(x => !HideColumns.Contains(x.FieldName))
+        .Where(x => OnlyShowColumns.Count == 0 ? true : OnlyShowColumns.Contains(x.FieldName))
+        .ToList();
+
+        await base.OnInitializedAsync();
+
+        _state.NotifyStateChanged();
+    }
+
+    private async Task OnFieldValuesChanged(List<DataGridFilterModel> values)
+    {
+        FieldValues = values;
+        await FieldValuesChanged.InvokeAsync(FieldValues);
+    }
+
+
+    public static class Columns
+    {
+        public const string ItemCode = nameof(ItemViewDto.Code);
+        public const string ItemName = nameof(ItemViewDto.Name);
+        public const string ItemCategoryName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.Name)}";
+        public const string ItemGroupName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.ItemGroup)}.{nameof(ItemGroupViewDto.Name)}";
+        public const string ItemUnitName = $"{nameof(ItemViewDto.Unit)}.{nameof(ItemViewDto.Name)}";
+
+        // public const string CanSell = $"{nameof(ItemViewDto.CanSell)}";
+        // public const string CanPurchase = $"{nameof(ItemViewDto.CanPurchase)}";
+        // public const string CanProduce = $"{nameof(ItemViewDto.CanProduce)}";
+        // public const string IsRowMaterial = $"{nameof(ItemViewDto.IsRawMaterial)}";
+        // public const string HasCondiment = $"{nameof(ItemViewDto.HasCondiment)}";
+        // public const string HasPackage = $"{nameof(ItemViewDto.HasPackageItem)}";
+        // public const string SellPrice = $"{nameof(ItemViewDto.SellPrice)}";
+        // public const string SellPriceIncludeTax = $"{nameof(ItemViewDto.SellPriceIncludeTax)}";
+        // public const string OrderLeadDays = $"{nameof(ItemViewDto.OrderLeadDays)}";
+        // public const string LastPurchasePrice = $"{nameof(ItemViewDto.LastPurchasePrice)}";
+
+        public const string ItemCategoryNames = $"{nameof(ItemViewDto.CategoryId)}";
+        public const string ItemGroupNames = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.GroupId)}";
+        public const string ItemUnitNames = $"{nameof(ItemViewDto.UnitId)}";
+    }
+
+
+    List<FilterComponent.FieldType> types { get; set; } = new();
+    List<FilterComponent.FieldType> selectedTypes { get; set; } = new();
+
+    RenderFragment? GenerateInputUi(DataGridFilterModel model)
+    {
+        return model.Column switch
+        {
+            Columns.ItemGroupNames => @<ItemGroupMultiSelect Label="@GetLable("Groups")" Placeholder="@GetLable("Groups")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            Columns.ItemCategoryNames => @<ItemCategoryMultiSelect Label="@GetLable("Categories")" Placeholder="@GetLable("Categories")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            Columns.ItemUnitNames => @<ItemUnitMultiSelect Label="@GetLable("Units")" Placeholder="@GetLable("Units")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            _ => null
+        };
+    }
+}

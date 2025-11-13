@@ -1,7 +1,6 @@
 ﻿using Linovative.Frontend.Services.Interfaces;
 using System.Globalization;
 using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace Linovative.Frontend.Services.Commons
@@ -64,7 +63,7 @@ namespace Linovative.Frontend.Services.Commons
         }
 
         public string this[string key]
-            => _dict.TryGetValue(key, out var v) ? v : "";
+            => _dict.TryGetValue(key, out var v) ? v : key;
 
         public string Format(string key, params object[] args)
         {

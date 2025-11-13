@@ -27,6 +27,11 @@
   "Label.RowsPerPage": "Rows per page",
   "Label.Active": "Active",
   "Label.NotActive": "Not Active",
+  "Label.Filter": "Filter",
+  "Label.AddFilter": "Add Filter",
+  "Label.Clear": "Clear",
+  "Label.FieldName": "Field Name",
+  "Label.FilterOperator": "Operator",
 
 
   "Dialog.Yes": "Yes",

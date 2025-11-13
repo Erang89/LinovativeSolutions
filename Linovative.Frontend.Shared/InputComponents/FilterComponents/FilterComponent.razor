@@ -1,0 +1,295 @@
+﻿@using UIFilterOperator = LinoVative.Shared.Dto.Enums;
+@inject IApplicationStateService _state
+@inject IJsonLocalizer _loc
+
+<table style="position: relative; width: 100%" border="0" cellspacing="10">
+    <tbody>
+        @if (!string.IsNullOrEmpty(Title))
+        {
+            <tr>
+                <td colspan="4">
+                    <MudText Typo="Typo.h6">@Title</MudText>
+                </td>
+            </tr>
+        }
+        @foreach (var fv in FieldValues)
+        {
+            <tr class="no-border">
+                <td width="250">
+                    <MudSelect Value="fv.Column"
+                               T="string"
+                               ValueChanged="@((e) => ChangeColumn(fv, e))"
+                               Variant="@ComponentSettings.InputVariant"
+                               Label="@_loc.Global("Label.FieldName")"
+                               Placeholder="@_loc.Global("Label.FieldName")"
+                               Clearable="false">
+                        @foreach (var s in FieldSources)
+                        {
+                            <MudSelectItem T="string" Value="s.FieldName">@(string.IsNullOrEmpty(s.Label) ? s.FieldName : s.Label)</MudSelectItem>
+                        }
+                    </MudSelect>
+                </td>
+                <td width="200">
+                    <MudSelect Value="fv.Operator"
+                               ValueChanged="@((x) => OnOperatorValueChanged(x, fv))"
+                               Variant="@ComponentSettings.InputVariant"
+                               Label="@_loc.Global("Label.FilterOperator")"
+                               Placeholder="@_loc.Global("Label.FilterOperator")"
+                               T="UIFilterOperator.FilterOperator?"
+                               Clearable="false">
+                        @foreach (var optr in Operators(GetFieldTypeByName(fv.Column)!.Type))
+                        {
+                            <MudSelectItem Value="@((UIFilterOperator.FilterOperator?)optr)">@_loc.Enum($"{nameof(UIFilterOperator.FilterOperator)}.{optr}")</MudSelectItem>
+                        }
+                    </MudSelect>
+                </td>
+                <td>@RenderInputUI(fv)</td>
+                <td width="80"><MudIcon Icon="@Icons.Material.Outlined.Delete" Color="Color.Primary" Class="cursor-pointer" onclick="@(() => RemoveFieldValue(fv))" /></td>
+            </tr>
+        }
+        <tr>
+            <td colspan="4">
+                @if (!HideFilterButton)
+                {
+                    <MudButton Class="me-5" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.FilterAlt" OnClick="@(()=> OnFilterButtonClick.InvokeAsync(FieldValues))">@_loc.Global("Label.Filter")</MudButton>
+                }
+
+                <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.Add" OnClick="@AddFieldValue">@_loc.Global("Label.AddFilter")</MudButton>
+                <MudButton Class="ms-2" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.FilterAltOff" OnClick="@ClearFields">@_loc.Global("Label.Clear")</MudButton>
+
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+
+@code {
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool HideFilterButton { get; set; }
+
+    [Parameter]
+    public EventCallback<List<DataGridFilterModel>> OnFilterButtonClick { get; set; }
+
+    [Parameter]
+    public List<DataGridFilterModel> FieldValues { get; set; } = new();
+
+
+    [Parameter]
+    public EventCallback<List<DataGridFilterModel>> FieldValuesChanged { get; set; }
+
+
+    [Parameter]
+    public EventCallback OnClearFilter { get; set; }
+
+    [Parameter]
+    public List<FieldType> FieldSources { get; set; } = new();
+
+
+    [Parameter]
+    public Func<DataGridFilterModel, RenderFragment?> ValueInputNameBased { get; set; } = (_) => null;
+
+    [Parameter]
+    public Func<DataGridFilterModel, RenderFragment?> ValueInputTypeBased { get; set; } = (_) => null;
+
+
+    public List<DataGridFilterModel> DataGridFilterModels => FieldValues.Select(x => new DataGridFilterModel()
+            {
+                Column = x.Column,
+                Operator = x.Operator,
+                Value = x.Value,
+                Type = GetFieldTypeByName(x.Column)!.Type
+            }).ToList();
+
+    public RenderFragment? ValueInputDefault(DataGridFilterModel fv)
+    {
+        RenderFragment? integerUI =
+            @<MudTextField Value="@((fv.Value != null ? Convert.ToDecimal(fv.Value) : (decimal?)null))"
+              ValueChanged="@((e) => SetValue(() => fv.Value = e))"
+              Clearable="true"
+              Immediate="true"
+              Variant="@ComponentSettings.InputVariant"
+              T="decimal?"
+              Label="@GetLabel(fv)"
+              Placeholder="@GetPlaceholder(fv)" />;
+
+        RenderFragment? decimalUI =
+            @<MudTextField Value="@((fv.Value != null ? Convert.ToInt32(fv.Value) : (int?)null))"
+              ValueChanged="@((e) => SetValue(() => fv.Value = e))"
+              Variant="@ComponentSettings.InputVariant"
+              Clearable="true"
+              T="int?"
+              Immediate="true"
+              Label="@GetLabel(fv)"
+              Placeholder="@GetPlaceholder(fv)" />;
+
+
+        var type = GetFieldTypeByName(fv.Column)!.Type;
+
+        DateTime? dateValue = null;
+        if (type == DataGridFilterModel.PropertyType.DateTime || type == DataGridFilterModel.PropertyType.DateOnly)
+            dateValue = fv.Value is DateTime dt ? dt : fv.Value != null ? Convert.ChangeType(fv.Value, typeof(DateTime)) as DateTime? : null;
+
+        var noInputUis = new List<string>()
+        {
+            UIFilterOperator.FilterOperator.IsNull.ToString(), UIFilterOperator.FilterOperator.IsNotNull.ToString()
+        };
+
+        if (noInputUis.Contains(fv.Operator?.ToString() ?? ""))
+        {
+            fv.Value = null;
+            return null;
+        }
+
+        if (fv.Type == DataGridFilterModel.PropertyType.Boolean)
+            fv.Value = true;
+
+        return type switch
+        {
+            DataGridFilterModel.PropertyType.String =>@<MudTextField Clearable="true" Immediate="true" Value="@(fv.Value?.ToString())" ValueChanged="@((e) => SetValue(() => fv.Value = (string?)e))" Variant="ComponentSettings.InputVariant" T="string" Label="@GetLabel(fv)" Placeholder="@GetPlaceholder(fv)" />,
+            DataGridFilterModel.PropertyType.Integer => integerUI,
+            DataGridFilterModel.PropertyType.Decimal => decimalUI,
+            DataGridFilterModel.PropertyType.DateTime => @<MudDatePicker Clearable="true" Label="@GetLabel(fv)" Placeholder="@GetPlaceholder(fv)" Date="@dateValue" Variant="ComponentSettings.InputVariant" DateChanged="@((e) => SetValue(() => fv.Value = (DateTime?)e))" />,
+            DataGridFilterModel.PropertyType.DateOnly => @<MudDatePicker Clearable="true" Label="@GetLabel(fv)" Placeholder="@GetPlaceholder(fv)" Date="@dateValue" Variant="ComponentSettings.InputVariant" DateChanged="@((e) => SetValue(() => fv.Value = (DateTime?)e))" />,
+            DataGridFilterModel.PropertyType.Boolean =>
+    @<MudSelect T="bool?" Value="@((bool?)fv.Value)" ValueChanged="@((e) => SetValue(() => fv.Value = (bool?)e))" Variant="@ComponentSettings.InputVariant" Label="@GetLabel(fv)" Placeholder="@GetPlaceholder(fv)" Clearable="true">
+        <MudSelectItem T="bool?" Value="true">True</MudSelectItem>
+        <MudSelectItem T="bool?" Value="false">False</MudSelectItem>
+    </MudSelect>
+            ,
+            _ => null
+        };
+    }
+
+
+    RenderFragment? RenderInputUI(DataGridFilterModel fv) => ValueInputNameBased(fv) ?? ValueInputTypeBased(fv) ?? ValueInputDefault(fv);
+
+    public record FieldType(string FieldName, DataGridFilterModel.PropertyType Type, string? Label = default, string? PlaceHolder = default);
+
+    public FieldType? GetFieldTypeByName(string fieldName) => FieldSources.FirstOrDefault(x => x.FieldName.Contains(fieldName, StringComparison.OrdinalIgnoreCase));
+    public string? GetLabel(DataGridFilterModel fv) => GetFieldTypeByName(fv.Column)?.Label;
+    public string? GetPlaceholder(DataGridFilterModel fv) => GetFieldTypeByName(fv.Column)?.PlaceHolder;
+
+    private void ChangeColumn(DataGridFilterModel field, string column)
+    {
+        field.Value = null;
+        field.Column = column;
+        field.Type = GetFieldTypeByName(column)!.Type;
+        var optr = Operators(field.Type);
+        field.Operator = optr.FirstOrDefault();
+        _state.NotifyStateChanged();
+    }
+
+    private void SetValue(Action setValueAction)
+    {
+        setValueAction();
+        FieldValuesChanged.InvokeAsync(FieldValues);
+        _state.NotifyStateChanged();
+    }
+
+    async Task ClearFields()
+    {
+        FieldValues = new();
+        await FieldValuesChanged.InvokeAsync(FieldValues);
+        await OnClearFilter.InvokeAsync();
+        _state.NotifyStateChanged();
+    }
+
+    private void AddFieldValue()
+    {
+        var fieldType = FieldSources.FirstOrDefault();
+        if (fieldType is null) return;
+
+        var optr = Operators(fieldType.Type);
+
+        SetValue(() => FieldValues.Add(new(fieldType.FieldName) { Operator = optr.First() }));
+    }
+    private void RemoveFieldValue(DataGridFilterModel fv) => SetValue(() => FieldValues.Remove(fv));
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+
+        foreach (var fieldValue in FieldValues)
+        {
+            var type = GetFieldTypeByName(fieldValue.Column);
+            if (type is not null)
+            {
+                fieldValue.Operator = Operators(type.Type)?.FirstOrDefault() ?? null;
+                if (fieldValue.Type == DataGridFilterModel.PropertyType.Boolean && fieldValue.Value is null)
+                    fieldValue.Value = true;
+            }
+        }
+
+    }
+
+    private void OnOperatorValueChanged(UIFilterOperator.FilterOperator? value, DataGridFilterModel model)
+    {
+        model.Operator = value is null ? UIFilterOperator.FilterOperator.Contains : value.Value;
+    }
+
+    public static List<UIFilterOperator.FilterOperator> Operators(DataGridFilterModel.PropertyType? type)
+    {
+        var dateOperators = new List<UIFilterOperator.FilterOperator>()
+        {
+            UIFilterOperator.FilterOperator.Equals,
+            UIFilterOperator.FilterOperator.NotEquals,
+            UIFilterOperator.FilterOperator.GreaterThan,
+            UIFilterOperator.FilterOperator.GreaterThanOrEqual,
+            UIFilterOperator.FilterOperator.LessThan,
+            UIFilterOperator.FilterOperator.LessThanOrEqual,
+            UIFilterOperator.FilterOperator.IsNull,
+            UIFilterOperator.FilterOperator.IsNotNull,
+        };
+
+        var numberOperator = new List<UIFilterOperator.FilterOperator>()
+        {
+            UIFilterOperator.FilterOperator.Equals,
+            UIFilterOperator.FilterOperator.NotEquals,
+            UIFilterOperator.FilterOperator.GreaterThan,
+            UIFilterOperator.FilterOperator.GreaterThanOrEqual,
+            UIFilterOperator.FilterOperator.LessThan,
+            UIFilterOperator.FilterOperator.LessThanOrEqual,
+            UIFilterOperator.FilterOperator.IsNull,
+            UIFilterOperator.FilterOperator.IsNotNull,
+        };
+
+        return type switch
+        {
+            DataGridFilterModel.PropertyType.DateTime => dateOperators,
+            DataGridFilterModel.PropertyType.DateOnly => dateOperators,
+            DataGridFilterModel.PropertyType.String => new List<UIFilterOperator.FilterOperator>()
+            {
+                UIFilterOperator.FilterOperator.Contains,
+                UIFilterOperator.FilterOperator.NotContains,
+                UIFilterOperator.FilterOperator.Equals,
+                UIFilterOperator.FilterOperator.NotEquals,
+                UIFilterOperator.FilterOperator.StartsWith,
+                UIFilterOperator.FilterOperator.EndsWith,
+                UIFilterOperator.FilterOperator.IsNull,
+                UIFilterOperator.FilterOperator.IsNotNull
+            },
+
+            DataGridFilterModel.PropertyType.Boolean => new List<UIFilterOperator.FilterOperator>()
+            {
+              UIFilterOperator.FilterOperator.Equals,
+              UIFilterOperator.FilterOperator.IsNull,
+              UIFilterOperator.FilterOperator.IsNotNull
+            },
+
+            DataGridFilterModel.PropertyType.ListOfGuid => new List<UIFilterOperator.FilterOperator>()
+            {
+                UIFilterOperator.FilterOperator.In,
+                UIFilterOperator.FilterOperator.NotIn
+            },
+            DataGridFilterModel.PropertyType.Decimal => numberOperator,
+            DataGridFilterModel.PropertyType.Integer => numberOperator,
+            _ => new List<UIFilterOperator.FilterOperator> { },
+        };
+    }
+}

@@ -18,10 +18,10 @@
                   Immediate="true"
                   Value="@DisplayValue"
                   OnClick="@(() => Toggle())"
-                  Placeholder="Accounts" 
-                  Adornment="@Adornment.Start"
+                  Placeholder="@Placeholder" 
                   Clearable=true
-                  ReadOnly="true"
+                  ReadOnly="false"
+                  Label="@Label"
                   LocalizerResource="@LocalizerResource"
                   ErrorKey="@ErrorKey"
                   LocalizerKey="@LocalizerKey"
@@ -116,6 +116,13 @@
         _state.NotifyStateChanged();
 
     }
+    private bool allowDefault = true;
+
+    private void HandleKeyDown(KeyboardEventArgs args)
+    {
+        allowDefault = false;
+    }
+
 
     async Task ClearSelect()
     {

@@ -1,0 +1,11 @@
+{
+  "Title.Label": "Item Filter",
+  "Code.Label": "Code",
+  "Name.Label": "Name",
+  "Category.Label": "Category",
+  "ItemGroup.Label": "Group",
+  "Unit.Label": "Unit",
+  "Categories.Label": "Categories",
+  "Units.Label": "Units",
+  "Groups.Label": "Groups"
+}
