@@ -9,6 +9,9 @@
   "CategoryId.Label": "Category",
   "GroupId.Label": "Group",
   "SellPrice.Label": "Sell Price",
+  "FilterItem.Label": "Filter Items",
+  "ShowFilter.Label": "Show Filter",
+  "HideFilter.Label": "Hide Filter",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",

@@ -6,12 +6,14 @@
 @inject IJsonLocalizer _loc
 
 <FilterComponent Title="@Label"
+                 @ref=@filterComponent
                  ValueInputNameBased="@GenerateInputUi"
                  FieldValues="@FieldValues"
                  FieldSources="@selectedTypes"
                  OnClearFilter="@OnClearFilter"
                  OnFilterButtonClick="@OnFilterButtonClick"
                  FieldValuesChanged="@OnFieldValuesChanged"
+                 AdditionalButton="@AdditionalButton"
                  HideFilterButton="@HideFilterButton" />
 
 
@@ -25,6 +27,11 @@
     [Parameter] public EventCallback OnFilterButtonClick { get; set; }
     [Parameter] public string? Label { get; set; } = "";
     [Parameter] public EventCallback OnClearFilter { get; set; }
+    [Parameter] public RenderFragment? AdditionalButton { get; set; }
+
+    FilterComponent? filterComponent { get; set; }
+    public void AddNew() => filterComponent?.AddFieldValue();
+
 
     static Func<string, string> GetLable = (x) => "";
 

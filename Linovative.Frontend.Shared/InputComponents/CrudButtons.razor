@@ -37,6 +37,8 @@
                    Color="Color.Default">@_loc.Global("Button.Cancel")</MudButton>
     }
 
+    @ChildContent
+
 </div>
 
 @code {
@@ -47,4 +49,5 @@
     [Parameter] public EventCallback OnCancel { get; set; }
     [Parameter] public int SelectedItemCount { get; set; }
     [Parameter] public bool IsFormSubmitting { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 }

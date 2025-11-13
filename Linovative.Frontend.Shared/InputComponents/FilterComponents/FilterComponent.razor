@@ -56,7 +56,7 @@
 
                 <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.Add" OnClick="@AddFieldValue">@_loc.Global("Label.AddFilter")</MudButton>
                 <MudButton Class="ms-2" Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.FilterAltOff" OnClick="@ClearFields">@_loc.Global("Label.Clear")</MudButton>
-
+                @AdditionalButton
             </td>
         </tr>
     </tbody>
@@ -96,6 +96,8 @@
     [Parameter]
     public Func<DataGridFilterModel, RenderFragment?> ValueInputTypeBased { get; set; } = (_) => null;
 
+    [Parameter]
+    public RenderFragment? AdditionalButton { get; set; }
 
     public List<DataGridFilterModel> DataGridFilterModels => FieldValues.Select(x => new DataGridFilterModel()
             {
@@ -199,7 +201,7 @@
         _state.NotifyStateChanged();
     }
 
-    private void AddFieldValue()
+    public void AddFieldValue()
     {
         var fieldType = FieldSources.FirstOrDefault();
         if (fieldType is null) return;
