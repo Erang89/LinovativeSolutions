@@ -1,0 +1,145 @@
+﻿@using Linovative.Frontend.POSComponents.Enums
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.Extensions
+@using Linovative.Frontend.Shared.InputComponents.FilterComponents
+@inject IItemService _itemService
+@inject IApplicationStateService _state
+
+@if (SelectedEntityType == DataEntityTypes.ItemMaster && (
+       SelectedActionTypes == ActionTypes.Update_DownloadFromData || 
+       SelectedActionTypes == ActionTypes.Delete_DownloadFromDataFiltering))
+{
+    
+    <LinovativeGap />
+    <MudCard Style="max-width: 1960px">
+        <ItemFilterComponent 
+            FieldValuesChanged="@OnItemFilterValueChanged"
+            HideFilterButton="true"
+            OnClearFilter="@OnClearFilter"
+            HideColumns="new(){}" />
+    </MudCard>
+    
+}
+
+
+
+@if (SelectedEntityType == DataEntityTypes.ItemMaster && ShowRecord && (
+       SelectedActionTypes == ActionTypes.Update_DownloadFromData || 
+       SelectedActionTypes == ActionTypes.Delete_DownloadFromDataFiltering))
+{
+    <LinovativeGap />
+
+    <MudSimpleTable Style="overflow-x: auto;">
+    <thead>
+        <tr>
+           <th>Item Code</th>
+           <th>Item Name</th>
+           <th>Unit</th>
+           <th>Group</th>
+           <th>Category</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var row in itemMasters)
+        {
+            <tr>
+               <td>@row.Code</td>
+               <td>@row.Name</td>
+               <td>@row.Unit?.Name</td>
+               <td>@row.Category?.ItemGroup?.Name</td>
+               <td>@row.Category?.Name</td>
+            </tr>
+        }
+        <tr>
+            <td colspan="5">
+                @if (itemMasters.Count > 0)
+                {
+                  <MudText>@(recordCount < pageSize ? recordCount : pageSize) of @recordCount records</MudText>
+                }
+            </td>
+        </tr>
+    </tbody>     
+    <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount"  />
+</MudSimpleTable>
+
+}
+@code {
+    // Public Properties
+    [Parameter] public Operations? SelectedOperation { get; set; }
+    [Parameter] public DataEntityTypes? SelectedEntityType { get; set; }
+    [Parameter] public ActionTypes? SelectedActionTypes { get; set; }
+    [Parameter] public bool ShowRecord {get; set;}
+
+
+    // Private properties
+    List<ItemViewDto> itemMasters = new();
+    List<DataGridFilterModel> itemFilterModels { get; set; } = new();
+    CancellationTokenSource cts = new();
+    int currentPage = 0;
+    int pageSize = 10;
+    int pageCount = 0;
+    int recordCount = 0;
+    int itemFilterCount = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+
+
+
+    void OnItemFilterValueChanged(List<DataGridFilterModel> fieldValues)
+    {
+        itemFilterModels = fieldValues;
+    }
+
+
+
+
+    // Load Items
+    public async Task LoadItems()
+    {
+        var odataFilter = new ODataFilter()
+        {
+            PageNumber = currentPage,
+            PageSize = pageSize,
+            OrderFiled = null,
+            SortDirection = SortDirection.Ascending.ToString(),
+            Options = $"$expand=unit,category($expand=itemGroup)"
+        };
+        itemFilterCount = itemFilterModels.Count;
+        var filterConditions = itemFilterModels.ToFilterCondition();
+        var result = await _itemService.Get(filterConditions, odataFilter, cts.Token);
+        var records = result?.Count ?? 0;
+        var hasMod = records % pageSize > 0;
+        recordCount = records;
+        pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod? 1 : 0);
+        itemMasters = result?.Data ?? new();
+        _state.NotifyStateChanged();
+    }
+
+    async Task OnSelectedPageChanged(int page)
+    {
+        currentPage = page;
+        await LoadItems();
+    }
+
+    void OnClearFilter()
+    {
+        if (itemFilterCount == 0)
+            return;
+
+        Reset();
+    }
+
+    public void Reset()
+    {
+        itemMasters = new();
+        currentPage = 1;
+        pageCount = 0;
+        recordCount = 0;
+    }
+}

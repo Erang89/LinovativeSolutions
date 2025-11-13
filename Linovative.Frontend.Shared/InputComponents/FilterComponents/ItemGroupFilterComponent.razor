@@ -1,0 +1,70 @@
+﻿@using LinoVative.Shared.Dto.ItemDtos
+@inject IApplicationStateService _state
+@inject IJsonLocalizer _loc
+
+<FilterComponent Title="@Label"
+                 ValueInputNameBased="@GenerateInputUi"
+                 FieldValues="@FieldValues"
+                 FieldSources="@selectedTypes"
+                 OnClearFilter="@OnClearFilter"
+                 OnFilterButtonClick="@OnFilterButtonClick"
+                 FieldValuesChanged="@OnFieldValuesChanged"
+                 HideFilterButton="@HideFilterButton" />
+
+
+@code {
+
+    [Parameter] public List<DataGridFilterModel> FieldValues { get; set; } = new();
+    [Parameter] public EventCallback<List<DataGridFilterModel>> FieldValuesChanged { get; set; }
+    [Parameter] public bool HideFilterButton { get; set; }
+    [Parameter] public List<string> HideColumns { get; set; } = new();
+    [Parameter] public List<string> OnlyShowColumns { get; set; } = new();
+    [Parameter] public EventCallback OnFilterButtonClick { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public EventCallback OnClearFilter { get; set; }
+    static Func<string, string> GetLable = (x) => "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _loc.EnsureLoadedAsync($"{nameof(ItemGroupFilterComponent)}", "Linovative.Frontend.Shared");
+        GetLable = (string key) => _loc[$"{nameof(ItemGroupFilterComponent)}.{key}.Label"];
+        Label ??= GetLable("Title");
+        _state.OnChange += StateHasChanged;
+
+        types = new List<FilterComponent.FieldType>()
+        {
+            new(Columns.Name, DataGridFilterModel.PropertyType.String, GetLable("Name"), GetLable("Name")),
+        };
+
+        selectedTypes = types
+            .Where(x => !HideColumns.Contains(x.FieldName))
+            .Where(x => OnlyShowColumns.Count == 0 ? true : OnlyShowColumns.Contains(x.FieldName))
+            .ToList();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OnFieldValuesChanged(List<DataGridFilterModel> values)
+    {
+        FieldValues = values;
+        await FieldValuesChanged.InvokeAsync(FieldValues);
+    }
+
+    public static class Columns
+    {
+        public const string Name = nameof(ItemGroupViewDto.Name);
+    }
+
+    List<FilterComponent.FieldType> types { get; set; } = new();
+    List<FilterComponent.FieldType> selectedTypes { get; set; } = new();
+
+
+    RenderFragment? GenerateInputUi(DataGridFilterModel model)
+    {
+        return model.Column switch
+        {
+            //Columns.Name => @<ItemGroupMultiSelect OnValueChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            _ => null
+        };
+    }
+}
