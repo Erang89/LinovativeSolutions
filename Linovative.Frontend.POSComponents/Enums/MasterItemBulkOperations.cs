@@ -1,6 +1,6 @@
 ﻿namespace Linovative.Frontend.POSComponents.Enums
 {
-    public enum DataEntityTypes
+    public enum BulkDataEntityTypes
     {
         ItemMaster,
         Group,
@@ -8,14 +8,14 @@
         Unit
     }
 
-    public enum Operations
+    public enum BulkOperations
     {
         Create,
         Update,
         Delete
     }
 
-    public enum ActionTypes
+    public enum BulkActionTypes
     {
         Create_DownloadTemplate,
         Create_Upload,

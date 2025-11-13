@@ -49,14 +49,23 @@
   "FilterOperator.In": "In",
   "FilterOperator.NotIn": "Not In",
 
-  "ActionTypes.Create_DownloadTemplate": "Download Template",
-  "ActionTypes.Create_Upload": "Upload",
-  "ActionTypes.Update_DownloadBlankTemplate": "Download Blank Template",
-  "ActionTypes.Update_DownloadFromData": "Download From Data",
-  "ActionTypes.Update_DownloadFromDataMapping": "Download From Data Mapping",
-  "ActionTypes.Update_Upload": "Upload",
-  "ActionTypes.Delete_DownloadBlankTemplate": "Download Blank Template",
-  "ActionTypes.Delete_DownloadFromDataFiltering": "Download From Data Filtering",
-  "ActionTypes.Delete_DownloadFromDataMapping": "Download From Data Mapping",
-  "ActionTypes.Delete_Upload": "Upload"
+  "BulkActionTypes.Create_DownloadTemplate": "Download Template",
+  "BulkActionTypes.Create_Upload": "Upload",
+  "BulkActionTypes.Update_DownloadBlankTemplate": "Download Blank Template",
+  "BulkActionTypes.Update_DownloadFromData": "Download From Data",
+  "BulkActionTypes.Update_DownloadFromDataMapping": "Download From Data Mapping",
+  "BulkActionTypes.Update_Upload": "Upload",
+  "BulkActionTypes.Delete_DownloadBlankTemplate": "Download Blank Template",
+  "BulkActionTypes.Delete_DownloadFromDataFiltering": "Download From Data Filtering",
+  "BulkActionTypes.Delete_DownloadFromDataMapping": "Download From Data Mapping",
+  "BulkActionTypes.Delete_Upload": "Upload",
+
+  "BulkOperations.Create": "Create",
+  "BulkOperations.Update": "Update",
+  "BulkOperations.Delete": "Delete",
+
+  "BulkDataEntityTypes.ItemMaster": "Item Master",
+  "BulkDataEntityTypes.Group": "Group",
+  "BulkDataEntityTypes.Category": "Category",
+  "BulkDataEntityTypes.Unit": "Unit"
 }

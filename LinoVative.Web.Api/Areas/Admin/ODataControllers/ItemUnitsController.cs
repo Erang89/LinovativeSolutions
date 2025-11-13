@@ -1,5 +1,4 @@
 ﻿using LinoVative.Service.Backend.CrudServices.Items.Units;
-using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.ItemDtos;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,7 @@ using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
-   
+
     public class ItemUnitsController : PrivateODataBaseController
     {
         private readonly ILogger _logger;

@@ -31,36 +31,36 @@
                         SelectedOperation = e; 
                         SelectedEntityType = null;
                         SelectedActionTypes = null;}))"
-               T="Operations?" Variant="ComponentSettings.InputVariant" Label="Operations" 
+               T="BulkOperations?" Variant="ComponentSettings.InputVariant" Label="@Label("Operation")" 
                Clearable="true" FullWidth="false">
-        <MudSelectItem T="Operations?" Value="Operations.Create">Create</MudSelectItem>
-        <MudSelectItem T="Operations?" Value="Operations.Update">Update</MudSelectItem>
-        <MudSelectItem T="Operations?" Value="Operations.Delete">Delete</MudSelectItem>
+        <MudSelectItem T="BulkOperations?" Value="BulkOperations.Create">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}")</MudSelectItem>
+        <MudSelectItem T="BulkOperations?" Value="BulkOperations.Update">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}")</MudSelectItem>
+        <MudSelectItem T="BulkOperations?" Value="BulkOperations.Delete">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Delete}")</MudSelectItem>
     </MudSelect>
 </div>
 
 
 <LinovativeGap />
 <div style="width: 400px">
-    <MudSelect Value="@SelectedEntityType" T="DataEntityTypes?"
+    <MudSelect Value="@SelectedEntityType" T="BulkDataEntityTypes?"
                ValueChanged="((e) => SetValue(() => SelectedEntityType = e))"
                Disabled="@(SelectedOperation is null)"
-               Variant="ComponentSettings.InputVariant" Label="Data Type" Clearable="true" FullWidth="false">
-        <MudSelectItem T="DataEntityTypes?" Value="DataEntityTypes.ItemMaster">Item</MudSelectItem>
-        <MudSelectItem T="DataEntityTypes?" Value="DataEntityTypes.Group">Group</MudSelectItem>
-        <MudSelectItem T="DataEntityTypes?" Value="DataEntityTypes.Category">Category</MudSelectItem>
-        <MudSelectItem T="DataEntityTypes?" Value="DataEntityTypes.Unit">Unit</MudSelectItem>
+               Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
+        <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.ItemMaster">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.ItemMaster}")</MudSelectItem>
+        <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Group">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Group}")</MudSelectItem>
+        <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Category">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Category}")</MudSelectItem>
+        <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Unit">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Unit}")</MudSelectItem>
     </MudSelect>
 </div>
 
 <LinovativeGap />
 <div style="width: 400px">
     <MudSelect Disabled="@(SelectedOperation is null)"
-               @bind-Value="@SelectedActionTypes" T="ActionTypes?"
-               Variant="ComponentSettings.InputVariant" Label="Actions" Clearable="true" FullWidth="false">
+               @bind-Value="@SelectedActionTypes" T="BulkActionTypes?"
+               Variant="ComponentSettings.InputVariant" Label="@Label("Actions")" Clearable="true" FullWidth="false">
         @foreach (var actionType in ActionTypeSources)
         {
-            <MudSelectItem T="ActionTypes?" Value="actionType">@_loc.Enum($"{nameof(ActionTypes)}.{actionType}")</MudSelectItem>
+            <MudSelectItem T="BulkActionTypes?" Value="actionType">@_loc.Enum($"{nameof(BulkActionTypes)}.{actionType}")</MudSelectItem>
         }
     </MudSelect>
 </div>
@@ -97,15 +97,15 @@
 
 
 <div class="d-flex justify-start flex-grow-1 gap-4">
-    @if ((SelectedEntityType is DataEntityTypes.ItemMaster or DataEntityTypes.Category or DataEntityTypes.Group or DataEntityTypes.Unit) && (
-       SelectedActionTypes == ActionTypes.Update_DownloadFromData || 
-       SelectedActionTypes == ActionTypes.Delete_DownloadFromDataFiltering))
+    @if ((SelectedEntityType is BulkDataEntityTypes.ItemMaster or BulkDataEntityTypes.Category or BulkDataEntityTypes.Group or BulkDataEntityTypes.Unit) && (
+       SelectedActionTypes == BulkActionTypes.Update_DownloadFromData || 
+       SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
     {
         <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
                    StartIcon="@Icons.Material.Filled.ViewColumn"
                    OnClick="@OnButtonViewItemClicked"
-                   Color="Color.Primary">Show Records</MudButton>
+                   Color="Color.Primary">@ButtonText("ShowRecord")</MudButton>
     }
 
 
@@ -115,7 +115,7 @@
                    Variant="ComponentSettings.AddNewButtonVariant"
                    StartIcon="@Icons.Material.Filled.Download"
                    OnClick="Download"
-                   Color="Color.Primary">Download</MudButton>
+                   Color="Color.Primary">@ButtonText("Download")</MudButton>
     }
 </div>
 
@@ -127,38 +127,38 @@
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
     private string? Title => SelectedOperation switch
     {
-        Operations.Create => "Create",
-        Operations.Update => "Update",
-        Operations.Delete => "Delete",
+        BulkOperations.Create => _loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}"),
+        BulkOperations.Update =>_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}"),
+        BulkOperations.Delete => _loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Delete}"),
         _ => null
 
     };
 
-    Dictionary<Operations, List<ActionTypes>> ActionOperationMapping = new()
+    Dictionary<BulkOperations, List<BulkActionTypes>> ActionOperationMapping = new()
     {
-        {Operations.Create, new List<ActionTypes>(){
-            ActionTypes.Create_DownloadTemplate,
-            ActionTypes.Create_Upload} },
-        {Operations.Update, new List<ActionTypes>(){
-            ActionTypes.Update_DownloadBlankTemplate,
-            ActionTypes.Update_DownloadFromData,
-            ActionTypes.Update_DownloadFromDataMapping,
-            ActionTypes.Update_Upload}},
-        {Operations.Delete, new List<ActionTypes>(){
-            ActionTypes.Delete_DownloadBlankTemplate,
-            ActionTypes.Delete_DownloadFromDataFiltering,
-            ActionTypes.Delete_DownloadFromDataMapping,
-            ActionTypes.Delete_Upload}},
+        {BulkOperations.Create, new List<BulkActionTypes>(){
+            BulkActionTypes.Create_DownloadTemplate,
+            BulkActionTypes.Create_Upload} },
+        {BulkOperations.Update, new List<BulkActionTypes>(){
+            BulkActionTypes.Update_DownloadBlankTemplate,
+            BulkActionTypes.Update_DownloadFromData,
+            BulkActionTypes.Update_DownloadFromDataMapping,
+            BulkActionTypes.Update_Upload}},
+        {BulkOperations.Delete, new List<BulkActionTypes>(){
+            BulkActionTypes.Delete_DownloadBlankTemplate,
+            BulkActionTypes.Delete_DownloadFromDataFiltering,
+            BulkActionTypes.Delete_DownloadFromDataMapping,
+            BulkActionTypes.Delete_Upload}},
     };
 
-    List<ActionTypes> ActionTypeSources => SelectedOperation is null ? new() :  ActionOperationMapping[SelectedOperation.Value];
-    List<ActionTypes> UploadActions = new List<ActionTypes>() { ActionTypes.Create_Upload, ActionTypes.Update_Upload, ActionTypes.Delete_Upload };
-    List<ActionTypes?> DownloadActions = new List<ActionTypes?>() {
-        ActionTypes.Update_DownloadBlankTemplate, 
-        ActionTypes.Update_DownloadFromData, 
-        ActionTypes.Update_DownloadFromDataMapping,
-        ActionTypes.Create_DownloadTemplate,
-        ActionTypes.Delete_DownloadBlankTemplate,
+    List<BulkActionTypes> ActionTypeSources => SelectedOperation is null ? new() :  ActionOperationMapping[SelectedOperation.Value];
+    List<BulkActionTypes> UploadActions = new List<BulkActionTypes>() { BulkActionTypes.Create_Upload, BulkActionTypes.Update_Upload, BulkActionTypes.Delete_Upload };
+    List<BulkActionTypes?> DownloadActions = new List<BulkActionTypes?>() {
+        BulkActionTypes.Update_DownloadBlankTemplate, 
+        BulkActionTypes.Update_DownloadFromData, 
+        BulkActionTypes.Update_DownloadFromDataMapping,
+        BulkActionTypes.Create_DownloadTemplate,
+        BulkActionTypes.Delete_DownloadBlankTemplate,
     };
 
 
@@ -166,9 +166,9 @@
 
     // ======================== PROPERTIES ================================    
 
-    private Operations? SelectedOperation { get; set; }
-    private DataEntityTypes? SelectedEntityType { get; set; }
-    private ActionTypes? SelectedActionTypes { get; set; }
+    private BulkOperations? SelectedOperation { get; set; }
+    private BulkDataEntityTypes? SelectedEntityType { get; set; }
+    private BulkActionTypes? SelectedActionTypes { get; set; }
     private ItemAdvanceActoionPageItemFilterAndView itemView { get; set; } = default!;
     private ItemAdvanceActoionPageCategoryFilterAndView categoryView { get; set; } = default!;
     private ItemAdvanceActoionPageGroupFilterAndView groupView { get; set; } = default!;
@@ -192,25 +192,25 @@
         _state.NotifyStateChanged();
     }
 
-    private record FileMapping(Operations Operation, DataEntityTypes Type, ActionTypes Action, string FileName);
+    private record FileMapping(BulkOperations Operation, BulkDataEntityTypes Type, BulkActionTypes Action, string FileName);
     async Task Download()
     {
         var fileNames = new List<FileMapping>()
         {
-            new FileMapping(Operations.Create, DataEntityTypes.Unit, ActionTypes.Create_DownloadTemplate, "CreateItemUnitTemplate.xlsx"),
-            new FileMapping(Operations.Create, DataEntityTypes.Group, ActionTypes.Create_DownloadTemplate, "CreateItemGroupTemplate.xlsx"),
-            new FileMapping(Operations.Create, DataEntityTypes.Category, ActionTypes.Create_DownloadTemplate, "CreateItemCategoryTemplate.xlsx"),
-            new FileMapping(Operations.Create, DataEntityTypes.ItemMaster, ActionTypes.Create_DownloadTemplate, "CreateItemTemplate.xlsx"),
+            new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Unit, BulkActionTypes.Create_DownloadTemplate, "CreateItemUnitTemplate.xlsx"),
+            new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Group, BulkActionTypes.Create_DownloadTemplate, "CreateItemGroupTemplate.xlsx"),
+            new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Category, BulkActionTypes.Create_DownloadTemplate, "CreateItemCategoryTemplate.xlsx"),
+            new FileMapping(BulkOperations.Create, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Create_DownloadTemplate, "CreateItemTemplate.xlsx"),
 
-            new FileMapping(Operations.Update, DataEntityTypes.ItemMaster, ActionTypes.Update_DownloadBlankTemplate, "UpdateItemTemplate.xlsx"),
-            new FileMapping(Operations.Update, DataEntityTypes.Group, ActionTypes.Update_DownloadBlankTemplate, "UpdateGroupTemplate.xlsx"),
-            new FileMapping(Operations.Update, DataEntityTypes.Category, ActionTypes.Update_DownloadBlankTemplate, "UpdateCategoryTemplate.xlsx"),
-            new FileMapping(Operations.Update, DataEntityTypes.Unit, ActionTypes.Update_DownloadBlankTemplate, "UpdateUnitTemplate.xlsx"),
+            new FileMapping(BulkOperations.Update, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateItemTemplate.xlsx"),
+            new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Group, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateGroupTemplate.xlsx"),
+            new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Category, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateCategoryTemplate.xlsx"),
+            new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Unit, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateUnitTemplate.xlsx"),
 
-            new FileMapping(Operations.Delete, DataEntityTypes.ItemMaster, ActionTypes.Delete_DownloadBlankTemplate, "DeleteItemTemplate.xlsx"),
-            new FileMapping(Operations.Delete, DataEntityTypes.Group, ActionTypes.Delete_DownloadBlankTemplate, "DeleteGroupTemplate.xlsx"),
-            new FileMapping(Operations.Delete, DataEntityTypes.Category, ActionTypes.Delete_DownloadBlankTemplate, "DeleteCategoryTemplate.xlsx"),
-            new FileMapping(Operations.Delete, DataEntityTypes.Unit, ActionTypes.Delete_DownloadBlankTemplate, "DeleteUnitTemplate.xlsx"),
+            new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteItemTemplate.xlsx"),
+            new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Group, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteGroupTemplate.xlsx"),
+            new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Category, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteCategoryTemplate.xlsx"),
+            new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Unit, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteUnitTemplate.xlsx"),
         };
 
         await _resourceService.DownloadExcelFile(fileNames.FirstOrDefault(x => x.Operation == SelectedOperation && x.Type == SelectedEntityType && x.Action == SelectedActionTypes)!.FileName);
@@ -220,16 +220,16 @@
     async Task OnButtonViewItemClicked()
     {
 
-        if (SelectedEntityType == DataEntityTypes.ItemMaster)
+        if (SelectedEntityType == BulkDataEntityTypes.ItemMaster)
             await itemView.LoadItems();
 
-        if (SelectedEntityType == DataEntityTypes.Category)
+        if (SelectedEntityType == BulkDataEntityTypes.Category)
             await categoryView.LoadItems();
 
-        if (SelectedEntityType == DataEntityTypes.Group)
+        if (SelectedEntityType == BulkDataEntityTypes.Group)
             await groupView.LoadItems();
 
-        if (SelectedEntityType == DataEntityTypes.Unit)
+        if (SelectedEntityType == BulkDataEntityTypes.Unit)
             await unitView.LoadItems();
 
         ShowRecord = true;

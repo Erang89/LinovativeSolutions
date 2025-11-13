@@ -1,13 +1,16 @@
-﻿@using Linovative.Frontend.POSComponents.Enums
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Enums
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.Extensions
 @using Linovative.Frontend.Shared.InputComponents.FilterComponents
+
+@inherits POSManagementPageBase
 @inject IItemService _itemService
 @inject IApplicationStateService _state
 
-@if (SelectedEntityType == DataEntityTypes.ItemMaster && (
-       SelectedActionTypes == ActionTypes.Update_DownloadFromData || 
-       SelectedActionTypes == ActionTypes.Delete_DownloadFromDataFiltering))
+@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && (
+       SelectedActionTypes == BulkActionTypes.Update_DownloadFromData || 
+       SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
 {
     
     <LinovativeGap />
@@ -23,20 +26,20 @@
 
 
 
-@if (SelectedEntityType == DataEntityTypes.ItemMaster && ShowRecord && (
-       SelectedActionTypes == ActionTypes.Update_DownloadFromData || 
-       SelectedActionTypes == ActionTypes.Delete_DownloadFromDataFiltering))
+@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && ShowRecord && (
+       SelectedActionTypes == BulkActionTypes.Update_DownloadFromData || 
+       SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
 {
     <LinovativeGap />
 
     <MudSimpleTable Style="overflow-x: auto;">
     <thead>
         <tr>
-           <th>Item Code</th>
-           <th>Item Name</th>
-           <th>Unit</th>
-           <th>Group</th>
-           <th>Category</th>
+                <th>@ColumHeaderText("ItemCode")</th>
+                <th>@ColumHeaderText("ItemName")</th>
+                <th>@ColumHeaderText("Unit")</th>
+                <th>@ColumHeaderText("Group")</th>
+                <th>@ColumHeaderText("Category")</th>
         </tr>
     </thead>
     <tbody>
@@ -65,11 +68,12 @@
 }
 @code {
     // Public Properties
-    [Parameter] public Operations? SelectedOperation { get; set; }
-    [Parameter] public DataEntityTypes? SelectedEntityType { get; set; }
-    [Parameter] public ActionTypes? SelectedActionTypes { get; set; }
+    [Parameter] public BulkOperations? SelectedOperation { get; set; }
+    [Parameter] public BulkDataEntityTypes? SelectedEntityType { get; set; }
+    [Parameter] public BulkActionTypes? SelectedActionTypes { get; set; }
     [Parameter] public bool ShowRecord {get; set;}
 
+    protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
 
     // Private properties
     List<ItemViewDto> itemMasters = new();
@@ -97,8 +101,6 @@
     }
 
 
-
-
     // Load Items
     public async Task LoadItems()
     {
@@ -108,11 +110,11 @@
             PageSize = pageSize,
             OrderFiled = null,
             SortDirection = SortDirection.Ascending.ToString(),
-            Options = $"$expand=unit,category($expand=itemGroup)"
+            Options = $"$expand=unit,category($expand=itemGroup)",
+            FilterPayload = new { filter = itemFilterModels.ToFilterCondition() }
         };
         itemFilterCount = itemFilterModels.Count;
-        var filterConditions = itemFilterModels.ToFilterCondition();
-        var result = await _itemService.Get(filterConditions, odataFilter, cts.Token);
+        var result = await _itemService.Get(odataFilter, cts.Token);
         var records = result?.Count ?? 0;
         var hasMod = records % pageSize > 0;
         recordCount = records;

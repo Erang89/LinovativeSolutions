@@ -1,4 +1,19 @@
 {
   "Entity.Name.Single": "Item Bulk Operation",
-  "Entity.Name.Plural": "Item Bulk Operations"
- }
+  "Entity.Name.Plural": "Item Bulk Operations",
+
+  "Operation.Label": "Operation",
+  "DataType.Label": "Data Type",
+  "Actions.Label": "Actions",
+  "Button.ShowRecord.Text": "Show Record",
+  "Button.Download.Text": "Download",
+
+  "Column.ItemCode.Text": "Item Code",
+  "Column.ItemName.Text": "Item Name",
+  "Column.Group.Text": "Group",
+  "Column.GroupName.Text": "Group Name",
+  "Column.Category.Text": "Category",
+  "Column.CategoryName.Text": "Category Name",
+  "Column.Unit.Text": "Unit",
+  "Column.UnitName.Text": "Unit Name"
+}
