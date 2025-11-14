@@ -6,7 +6,7 @@
 
 <MudNavMenu Class="mud-width-full">
 
-    <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">@_loc.Inventory("Inventory.Management.Title")</MudNavLink>
+    <MudNavLink Class="mt-4" OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">@_loc.Inventory("Inventory.Management.Title")</MudNavLink>
     <MudDivider Class="my-2" />
 
     <MudNavLink Icon="@Icons.Material.Outlined.Home" Href="@PageRoutes.Inventory.Index" Match="NavLinkMatch.All">@(_loc.Global("Home"))</MudNavLink>

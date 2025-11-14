@@ -1,7 +1,7 @@
 ﻿@inject IMainMenuService _mainMenuService
 @inject IJsonLocalizer _log
 <MudNavMenu Class="mud-width-full">
-    <MudNavLink OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">@_log.Global("Menu.Apps")</MudNavLink>
+    <MudNavLink Class="mt-4" OnClick="(() => _mainMenuService.Toggle())" Icon="@Icons.Material.Filled.GridOn">@_log.Global("Menu.Apps")</MudNavLink>
     <MudDivider />
     <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">@_log.Global("Menu.Dashboard")</MudNavLink>
 </MudNavMenu>
