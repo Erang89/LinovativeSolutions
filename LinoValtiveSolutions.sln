@@ -42,6 +42,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.Setting
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.POSCashierComponent", "Linovative.Frontend.POSCashierComponent\Linovative.Frontend.POSCashierComponent.csproj", "{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POSManagementTest", "POSManagementTest\POSManagementTest.csproj", "{630C5B6B-08D6-45BF-A7BA-09E304EEE043}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{630C5B6B-08D6-45BF-A7BA-09E304EEE043}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{630C5B6B-08D6-45BF-A7BA-09E304EEE043}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{630C5B6B-08D6-45BF-A7BA-09E304EEE043}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{630C5B6B-08D6-45BF-A7BA-09E304EEE043}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
