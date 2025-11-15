@@ -5,8 +5,11 @@
   "Operation.Label": "Operation",
   "DataType.Label": "Data Type",
   "Actions.Label": "Actions",
+  "BrowseFile.Label": "Browse file",
+  "File.Label": "File",
   "Button.ShowRecord.Text": "Show Record",
   "Button.Download.Text": "Download",
+  "Button.Upload.Text": "Upload",
 
   "Column.ItemCode.Text": "Item Code",
   "Column.ItemName.Text": "Item Name",

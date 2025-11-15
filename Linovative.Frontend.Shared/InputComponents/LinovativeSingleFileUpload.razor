@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inject IJsonLocalizer _loc
+
+<InputFile @ref="@inputFile" style="display: none;" OnChange="OnInputFileChange" />
+
+
+<LinovativeInputText Value="@fileName"
+                     ReadOnly="true"
+                     Label="@_loc.Global("Label.BrowseFile")"
+                     Immediate="true"
+                     Placeholder="@_loc.Global("Label.BrowseFile")"
+                     OnClick="@OnClick" />
+
+@code {
+
+
+
+    string? fileName = null;
+    InputFile? inputFile { get; set; }
+
+    public IBrowserFile? File { get; set; }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        File = e.File;
+    }
+
+    void OnClick()
+    {
+        // trigger click for inputFile
+    }
+}

@@ -3,6 +3,7 @@
 @using Linovative.Frontend.Services.FrontendServices.Resources
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@using Microsoft.AspNetCore.Components.Forms
 
 @attribute [Route(PageRoutes.PostManagement.ItemMaster.BulkOperations)]
 @inherits POSManagementPageBase
@@ -43,7 +44,10 @@
 <LinovativeGap />
 <div style="width: 400px">
     <MudSelect Value="@SelectedEntityType" T="BulkDataEntityTypes?"
-               ValueChanged="((e) => SetValue(() => SelectedEntityType = e))"
+               ValueChanged="((e) => {
+                    SetValue(() => SelectedEntityType = e);
+                    fileToUplaod = null;
+                })"
                Disabled="@(SelectedOperation is null)"
                Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
         <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.ItemMaster">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.ItemMaster}")</MudSelectItem>
@@ -56,7 +60,12 @@
 <LinovativeGap />
 <div style="width: 400px">
     <MudSelect Disabled="@(SelectedOperation is null)"
-               @bind-Value="@SelectedActionTypes" T="BulkActionTypes?"
+               Value="@SelectedActionTypes" 
+               ValueChanged="@(x => {
+                    SelectedActionTypes = x;
+                    fileToUplaod = null;
+               })"
+               T="BulkActionTypes?"
                Variant="ComponentSettings.InputVariant" Label="@Label("Actions")" Clearable="true" FullWidth="false">
         @foreach (var actionType in ActionTypeSources)
         {
@@ -92,10 +101,32 @@
     @ref=unitView />
 
 
+@if (SelectedEntityType is not null &&( SelectedActionTypes == BulkActionTypes.Delete_Upload ||
+     SelectedActionTypes == BulkActionTypes.Create_Upload ||
+     SelectedActionTypes == BulkActionTypes.Update_Upload))
+{
+
+    <LinovativeGap />
+    <div class="d-flex align-center gap-2" style="width: 400px">
+        <div style="width: 100%">
+            <MudFileUpload Style="width: 100%" Accept=".xlsx" T="IBrowserFile" FilesChanged="UploadFile">
+                <ActivatorContent>
+                    <LinovativeInputText Value="@fileToUplaod?.Name" Placeholder="@Label("BrowseFile")" Label="@Label("BrowseFile")" ReadOnly="true" Clearable="true" />
+                </ActivatorContent>
+            </MudFileUpload>
+        </div>
+    </div>
+
+    <LinovativeGap />
+    <MudButton Disabled="@(fileToUplaod is null)"
+               Variant="ComponentSettings.AddNewButtonVariant"
+               StartIcon="@Icons.Material.Filled.Upload"
+               OnClick="Download"
+               Color="Color.Primary">@ButtonText("Upload")</MudButton>
+}
+
+
 <LinovativeGap />
-
-
-
 <div class="d-flex justify-start flex-grow-1 gap-4">
     @if ((SelectedEntityType is BulkDataEntityTypes.ItemMaster or BulkDataEntityTypes.Category or BulkDataEntityTypes.Group or BulkDataEntityTypes.Unit) && (
        SelectedActionTypes == BulkActionTypes.Update_DownloadFromData || 
@@ -233,6 +264,12 @@
             await unitView.LoadItems();
 
         ShowRecord = true;
+    }
+
+    IBrowserFile? fileToUplaod { get; set; }
+    private void UploadFile(IBrowserFile file)
+    {
+        fileToUplaod = file;
     }
 
 }
