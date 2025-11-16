@@ -1,0 +1,8 @@
+{
+  "OnlyExcelFileSupported": "Only .xlsx files are supported.",
+  "NoFileUpload": "No File uploaded.",
+  "UploadFileEmplty": "Uploaded file is empty",
+  "NoWorksheetFound": "No worksheet found in the uploaded file",
+  "SomeColumnsAreMissings": "Some column are missing. Please folow the template",
+  "InvalidHeader": "Columns headers don't match with the exisitng column headers"
+}

@@ -7,6 +7,7 @@
   "Actions.Label": "Actions",
   "BrowseFile.Label": "Browse file",
   "File.Label": "File",
+  "UploadSuccessMessage.Label": "File uploaded successfully",
   "Button.ShowRecord.Text": "Show Record",
   "Button.Download.Text": "Download",
   "Button.Upload.Text": "Upload",

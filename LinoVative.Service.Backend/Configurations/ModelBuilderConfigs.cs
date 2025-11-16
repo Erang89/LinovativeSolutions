@@ -1,5 +1,6 @@
 ﻿using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
+using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Customers;
 using LinoVative.Service.Core.Items;
@@ -16,9 +17,12 @@ namespace LinoVative.Service.Backend.Configurations
 {
     internal static class ModelBuilderConfigs
     {
-       
+
         public static void ConfigureDatabaseRelationship(this ModelBuilder modelBuilder)
         {
+
+            modelBuilder.ConfigureTempDataRelationship();
+
             // Mapping Auth
             modelBuilder.Entity<AppUser>(x =>
             {
@@ -70,8 +74,8 @@ namespace LinoVative.Service.Backend.Configurations
 
 
             // Mapping Sources
-            modelBuilder.Entity<Country>(x => 
-            { 
+            modelBuilder.Entity<Country>(x =>
+            {
                 x.ToTable("Countries");
                 x.HasOne(x => x.Region).WithMany(x => x.Countries).HasPrincipalKey(x => x.Id);
             });
@@ -118,7 +122,7 @@ namespace LinoVative.Service.Backend.Configurations
         }
 
 
-        
+
         static void ConfigurePaymentEntities(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<BankNote>(x =>
@@ -127,7 +131,8 @@ namespace LinoVative.Service.Backend.Configurations
                 x.Property(x => x.Note).HasPrecision(14, 2).IsRequired();
             });
 
-            modelBuilder.Entity<PaymentMethodGroup>(x => {
+            modelBuilder.Entity<PaymentMethodGroup>(x =>
+            {
                 x.ToTable("PaymentMethodGroups");
                 x.Property(x => x.Name).IsRequired();
             });
@@ -149,8 +154,8 @@ namespace LinoVative.Service.Backend.Configurations
             {
                 x.ToTable("Outlets");
                 x.Property(x => x.Name).IsRequired();
-                x.Property(x => x.DefaultServicePercent).HasPrecision(14,2);
-                x.Property(x => x.DefaultTaxPercent).HasPrecision(14,2);
+                x.Property(x => x.DefaultServicePercent).HasPrecision(14, 2);
+                x.Property(x => x.DefaultTaxPercent).HasPrecision(14, 2);
             });
 
             modelBuilder.Entity<OutletArea>(x =>
@@ -194,8 +199,8 @@ namespace LinoVative.Service.Backend.Configurations
                 x.ToTable("OutletOrderTypes");
                 x.HasOne(x => x.Outlet).WithMany(x => x.OrderTypes).HasForeignKey(x => x.OutletId).IsRequired();
                 x.HasOne(x => x.OrderType).WithMany().HasForeignKey(x => x.OrderTypeId).IsRequired();
-                x.Property(x => x.TaxPercent).HasPrecision(14,2);
-                x.Property(x => x.ServicePercent).HasPrecision(14,2);
+                x.Property(x => x.TaxPercent).HasPrecision(14, 2);
+                x.Property(x => x.ServicePercent).HasPrecision(14, 2);
             });
 
 
@@ -271,6 +276,23 @@ namespace LinoVative.Service.Backend.Configurations
                 x.HasOne(x => x.Account).WithMany().HasForeignKey(x => x.AccountId).IsRequired();
 
             });
+        }
+
+        public static void ConfigureTempDataRelationship(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ItemGroupBulkUpload>(x =>
+            {
+                x.ToTable("ItemGroupBulkUpload", "temp");
+                x.Property(x => x.headerColum1).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum2).HasColumnType("varchar(100)");
+            });
+
+            modelBuilder.Entity<ItemGroupBulkUploadDetail>(x =>
+            {
+                x.ToTable("ItemGroupBulkUploadDetail", "temp");
+                x.HasOne<ItemGroupBulkUpload>().WithMany().HasForeignKey(x => x.ItemGroupBulkUploadId).IsRequired();
+            });
+
         }
     }
 }

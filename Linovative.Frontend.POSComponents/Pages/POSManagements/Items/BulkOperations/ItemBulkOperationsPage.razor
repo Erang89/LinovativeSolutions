@@ -1,5 +1,6 @@
 ﻿@using Linovative.Frontend.POSComponents.Bases
 @using Linovative.Frontend.POSComponents.Enums
+@using Linovative.Frontend.Services.BulkUploads
 @using Linovative.Frontend.Services.FrontendServices.Resources
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
@@ -16,6 +17,7 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 @inject IResourceDownload _resourceService
+@inject IBulkUploadService _bulkUploadService;
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
@@ -25,14 +27,16 @@
 <MudText Typo="Typo.h6">@EntityName @(Title is null ? null : $" - {Title}")</MudText>
 <LinovativeGap />
 
+<AppSuccessAllert @ref="@successAllert" AutoClose="true" />
+<AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
 
 <div style="width: 400px">
     <MudSelect Value="@SelectedOperation"
-               ValueChanged="@((e) => SetValue(() => { 
-                        SelectedOperation = e; 
+               ValueChanged="@((e) => SetValue(() => {
+                        SelectedOperation = e;
                         SelectedEntityType = null;
                         SelectedActionTypes = null;}))"
-               T="BulkOperations?" Variant="ComponentSettings.InputVariant" Label="@Label("Operation")" 
+               T="BulkOperations?" Variant="ComponentSettings.InputVariant" Label="@Label("Operation")"
                Clearable="true" FullWidth="false">
         <MudSelectItem T="BulkOperations?" Value="BulkOperations.Create">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}")</MudSelectItem>
         <MudSelectItem T="BulkOperations?" Value="BulkOperations.Update">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}")</MudSelectItem>
@@ -44,12 +48,13 @@
 <LinovativeGap />
 <div style="width: 400px">
     <MudSelect Value="@SelectedEntityType" T="BulkDataEntityTypes?"
-               ValueChanged="((e) => {
-                    SetValue(() => SelectedEntityType = e);
-                    fileToUplaod = null;
-                })"
-               Disabled="@(SelectedOperation is null)"
-               Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
+               ValueChanged="((e) =>
+        {
+        SetValue(() => SelectedEntityType = e);
+        fileToUplaod = null;
+        })"
+        Disabled="@(SelectedOperation is null)"
+        Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
         <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.ItemMaster">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.ItemMaster}")</MudSelectItem>
         <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Group">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Group}")</MudSelectItem>
         <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Category">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Category}")</MudSelectItem>
@@ -60,7 +65,7 @@
 <LinovativeGap />
 <div style="width: 400px">
     <MudSelect Disabled="@(SelectedOperation is null)"
-               Value="@SelectedActionTypes" 
+               Value="@SelectedActionTypes"
                ValueChanged="@(x => {
                     SelectedActionTypes = x;
                     fileToUplaod = null;
@@ -75,35 +80,34 @@
 </div>
 
 
-<ItemAdvanceActoionPageItemFilterAndView 
-    SelectedOperation=@SelectedOperation
-    SelectedEntityType=@SelectedEntityType
-    SelectedActionTypes=@SelectedActionTypes
-    ShowRecord=@ShowRecord
-    @ref=itemView />
+<ItemAdvanceActoionPageItemFilterAndView SelectedOperation=@SelectedOperation
+                                         SelectedEntityType=@SelectedEntityType
+                                         SelectedActionTypes=@SelectedActionTypes
+                                         ShowRecord=@ShowRecord
+                                         @ref=itemView />
 
 
-    
-<ItemAdvanceActoionPageCategoryFilterAndView  SelectedOperation=@SelectedOperation
-    SelectedEntityType=@SelectedEntityType
-    SelectedActionTypes=@SelectedActionTypes
-    ShowRecord=@ShowRecord
-    @ref=categoryView />
+
+<ItemAdvanceActoionPageCategoryFilterAndView SelectedOperation=@SelectedOperation
+                                             SelectedEntityType=@SelectedEntityType
+                                             SelectedActionTypes=@SelectedActionTypes
+                                             ShowRecord=@ShowRecord
+                                             @ref=categoryView />
 
 <ItemAdvanceActoionPageGroupFilterAndView SelectedEntityType=@SelectedEntityType
-    SelectedActionTypes=@SelectedActionTypes
-    ShowRecord=@ShowRecord
-    @ref=groupView  />
+                                          SelectedActionTypes=@SelectedActionTypes
+                                          ShowRecord=@ShowRecord
+                                          @ref=groupView />
 
 <ItemAdvanceActoionPageUnitFilterAndView SelectedEntityType=@SelectedEntityType
-    SelectedActionTypes=@SelectedActionTypes
-    ShowRecord=@ShowRecord
-    @ref=unitView />
+                                         SelectedActionTypes=@SelectedActionTypes
+                                         ShowRecord=@ShowRecord
+                                         @ref=unitView />
 
 
-@if (SelectedEntityType is not null &&( SelectedActionTypes == BulkActionTypes.Delete_Upload ||
-     SelectedActionTypes == BulkActionTypes.Create_Upload ||
-     SelectedActionTypes == BulkActionTypes.Update_Upload))
+@if (SelectedEntityType is not null && (SelectedActionTypes == BulkActionTypes.Delete_Upload ||
+    SelectedActionTypes == BulkActionTypes.Create_Upload ||
+    SelectedActionTypes == BulkActionTypes.Update_Upload))
 {
 
     <LinovativeGap />
@@ -121,7 +125,7 @@
     <MudButton Disabled="@(fileToUplaod is null)"
                Variant="ComponentSettings.AddNewButtonVariant"
                StartIcon="@Icons.Material.Filled.Upload"
-               OnClick="Download"
+               OnClick="Upload"
                Color="Color.Primary">@ButtonText("Upload")</MudButton>
 }
 
@@ -129,8 +133,8 @@
 <LinovativeGap />
 <div class="d-flex justify-start flex-grow-1 gap-4">
     @if ((SelectedEntityType is BulkDataEntityTypes.ItemMaster or BulkDataEntityTypes.Category or BulkDataEntityTypes.Group or BulkDataEntityTypes.Unit) && (
-       SelectedActionTypes == BulkActionTypes.Update_DownloadFromData || 
-       SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
+    SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
+    SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
     {
         <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
@@ -140,7 +144,7 @@
     }
 
 
-    @if(DownloadActions.Any(x => x == SelectedActionTypes))
+    @if (DownloadActions.Any(x => x == SelectedActionTypes))
     {
         <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
@@ -151,7 +155,7 @@
 </div>
 
 
-@code{
+@code {
 
     protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
@@ -159,7 +163,7 @@
     private string? Title => SelectedOperation switch
     {
         BulkOperations.Create => _loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}"),
-        BulkOperations.Update =>_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}"),
+        BulkOperations.Update => _loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}"),
         BulkOperations.Delete => _loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Delete}"),
         _ => null
 
@@ -182,11 +186,11 @@
             BulkActionTypes.Delete_Upload}},
     };
 
-    List<BulkActionTypes> ActionTypeSources => SelectedOperation is null ? new() :  ActionOperationMapping[SelectedOperation.Value];
+    List<BulkActionTypes> ActionTypeSources => SelectedOperation is null ? new() : ActionOperationMapping[SelectedOperation.Value];
     List<BulkActionTypes> UploadActions = new List<BulkActionTypes>() { BulkActionTypes.Create_Upload, BulkActionTypes.Update_Upload, BulkActionTypes.Delete_Upload };
     List<BulkActionTypes?> DownloadActions = new List<BulkActionTypes?>() {
-        BulkActionTypes.Update_DownloadBlankTemplate, 
-        BulkActionTypes.Update_DownloadFromData, 
+        BulkActionTypes.Update_DownloadBlankTemplate,
+        BulkActionTypes.Update_DownloadFromData,
         BulkActionTypes.Update_DownloadFromDataMapping,
         BulkActionTypes.Create_DownloadTemplate,
         BulkActionTypes.Delete_DownloadBlankTemplate,
@@ -195,7 +199,7 @@
 
 
 
-    // ======================== PROPERTIES ================================    
+    // ======================== PROPERTIES ================================
 
     private BulkOperations? SelectedOperation { get; set; }
     private BulkDataEntityTypes? SelectedEntityType { get; set; }
@@ -204,9 +208,11 @@
     private ItemAdvanceActoionPageCategoryFilterAndView categoryView { get; set; } = default!;
     private ItemAdvanceActoionPageGroupFilterAndView groupView { get; set; } = default!;
     private ItemAdvanceActoionPageUnitFilterAndView unitView { get; set; } = default!;
-    
-    private bool ShowRecord { get; set; }
 
+    private bool ShowRecord { get; set; }
+    private CancellationTokenSource cts = new();
+    AppSuccessAllert? successAllert = null;
+    AppErrorAlert? formErrorAlert = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -245,6 +251,22 @@
         };
 
         await _resourceService.DownloadExcelFile(fileNames.FirstOrDefault(x => x.Operation == SelectedOperation && x.Type == SelectedEntityType && x.Action == SelectedActionTypes)!.FileName);
+    }
+
+
+    private readonly long maxFileSize = 20 * 1024 * 1024;
+    async Task Upload()
+    {
+        var response = await _bulkUploadService.UploadItemGroups(fileToUplaod!, cts.Token);
+        if(response)
+        {
+            successAllert!.ShowAlert(Label("UploadSuccessMessage"));
+            fileToUplaod = null;
+            return;
+        }
+
+        formErrorAlert?.ShowAlert(response);
+        await Task.CompletedTask;
     }
 
 

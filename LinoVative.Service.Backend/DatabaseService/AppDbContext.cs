@@ -3,6 +3,7 @@ using LinoVative.Service.Backend.Configurations;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
+using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Companies;
 using LinoVative.Service.Core.Customers;
 using LinoVative.Service.Core.Interfaces;
@@ -98,6 +99,11 @@ namespace LinoVative.Service.Backend.DatabaseService
         public DbSet<Account> Accounts { get; set; }
         public DbSet<COAGroup> CoaGroups { get; set; }
         public DbSet<SalesCOAMapping> SalesCOAMappings { get; set; }
+
+
+        public DbSet<ItemGroupBulkUpload> ItemGroupBulkUploads { get; set; }
+        public DbSet<ItemGroupBulkUploadDetail> ItemGroupBulkUploadDetails { get; set; }
+
 
         // Companies DbSet
         public DbSet<Company> Companies { get; set; }
