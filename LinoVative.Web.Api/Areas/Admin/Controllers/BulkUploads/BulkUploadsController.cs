@@ -16,7 +16,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         [HttpPost]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UploadGroup(BulkUploadItemGroupCommand c, CancellationToken token)
+        public async Task<IActionResult> UploadGroup(BulkUploadCreateItemGroupCommand c, CancellationToken token)
         {
             try
             {

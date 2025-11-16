@@ -290,7 +290,7 @@ namespace LinoVative.Service.Backend.Configurations
             modelBuilder.Entity<ItemGroupBulkUploadDetail>(x =>
             {
                 x.ToTable("ItemGroupBulkUploadDetail", "temp");
-                x.HasOne<ItemGroupBulkUpload>().WithMany().HasForeignKey(x => x.ItemGroupBulkUploadId).IsRequired();
+                x.HasOne<ItemGroupBulkUpload>().WithMany(x => x.Details).HasForeignKey(x => x.ItemGroupBulkUploadId).IsRequired();
             });
 
         }

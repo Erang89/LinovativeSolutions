@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using Linovative.Shared.Interface;
+using Linovative.Shared.Interface.Enums;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Interfaces;
@@ -8,19 +9,19 @@ using Microsoft.AspNetCore.Http;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
 {
-    public class BulkUploadItemGroupCommand : IRequest<Result>
+    public class BulkUploadCreateItemGroupCommand : IRequest<Result>
     {
         public IFormFile? File { get; set; }
     }
 
-    public class BulkUploadItemGroupService : IRequestHandler<BulkUploadItemGroupCommand, Result>
+    public class BulkUploadCreateItemGroupService : IRequestHandler<BulkUploadCreateItemGroupCommand, Result>
     {
         private readonly IAppDbContext _dbContext;
         private readonly ILangueageService _lang;
         private readonly IActor _actor;
         private IXLWorkbook? _workBook;
 
-        public BulkUploadItemGroupService(IAppDbContext db, ILangueageService lang, IActor actor)
+        public BulkUploadCreateItemGroupService(IAppDbContext db, ILangueageService lang, IActor actor)
         {
             _dbContext = db;
             _lang = lang;
@@ -29,7 +30,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
         }
 
 
-        public async Task<Result> Handle(BulkUploadItemGroupCommand request, CancellationToken ct)
+        public async Task<Result> Handle(BulkUploadCreateItemGroupCommand request, CancellationToken ct)
         {
             var validate = await Validate(request, ct);
             if (!validate)
@@ -45,7 +46,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 var header = worksheet.Row(1);
                 var header1 = GetValueString(header.Cell(1));
                 var header2 = GetValueString(header.Cell(2));
-                exisitingUpload = new ItemGroupBulkUpload() { headerColum1 = header1, headerColum2 = header2, CompanyId = _actor.CompanyId, UserId = _actor.UserId };
+                exisitingUpload = new ItemGroupBulkUpload() { headerColum1 = header1, headerColum2 = header2, CompanyId = _actor.CompanyId, UserId = _actor.UserId, Operation = CrudOperations.Create};
                 _dbContext.ItemGroupBulkUploads.Add(exisitingUpload);
             }
 
@@ -57,7 +58,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 {
                     ItemGroupBulkUploadId = exisitingUpload.Id,
                     Column1 = GetValueString(row.Cell(1)),
-                    Column2 = GetValueString(row.Cell(2)),
+                    Column2 = GetValueString(row.Cell(2))
                 };
 
                 _dbContext.ItemGroupBulkUploadDetails.Add(detail);
@@ -90,7 +91,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
         }
 
         IXLWorksheet? workSheet = null;
-        async Task<IXLWorksheet?> GetWorksheet(BulkUploadItemGroupCommand request, CancellationToken ct)
+        async Task<IXLWorksheet?> GetWorksheet(BulkUploadCreateItemGroupCommand request, CancellationToken ct)
         {
             if(workSheet is not null) return workSheet;
             using var ms = new MemoryStream();
@@ -105,16 +106,16 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
 
 
         ItemGroupBulkUpload? bulkRecord = null;
-        ItemGroupBulkUpload? GetBulkRecord(BulkUploadItemGroupCommand request)
+        ItemGroupBulkUpload? GetBulkRecord(BulkUploadCreateItemGroupCommand request)
         {
             if(bulkRecord is not null)
                 return bulkRecord;
 
-            bulkRecord = _dbContext.ItemGroupBulkUploads.FirstOrDefault(x => x.UserId == _actor.UserId && x.CompanyId == _actor.CompanyId && !x.IsDeleted);
+            bulkRecord = _dbContext.ItemGroupBulkUploads.FirstOrDefault(x => x.UserId == _actor.UserId && x.CompanyId == _actor.CompanyId && !x.IsDeleted && x.Operation == CrudOperations.Create);
             return bulkRecord;
         }
 
-        async Task<Result> Validate(BulkUploadItemGroupCommand request, CancellationToken ct)
+        async Task<Result> Validate(BulkUploadCreateItemGroupCommand request, CancellationToken ct)
         {
             var file = request.File;
 

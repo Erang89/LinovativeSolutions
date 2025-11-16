@@ -62,14 +62,12 @@
     </MudSelect>
 </div>
 
+<!-- Action Dropdown -->
 <LinovativeGap />
 <div style="width: 400px">
     <MudSelect Disabled="@(SelectedOperation is null)"
                Value="@SelectedActionTypes"
-               ValueChanged="@(x => {
-                    SelectedActionTypes = x;
-                    fileToUplaod = null;
-               })"
+               ValueChanged="@OnActionChange"
                T="BulkActionTypes?"
                Variant="ComponentSettings.InputVariant" Label="@Label("Actions")" Clearable="true" FullWidth="false">
         @foreach (var actionType in ActionTypeSources)
@@ -78,6 +76,33 @@
         }
     </MudSelect>
 </div>
+
+
+
+@if (SelectedEntityType is not null && (SelectedActionTypes == BulkActionTypes.Delete_Upload ||
+   SelectedActionTypes == BulkActionTypes.Create_Upload ||
+   SelectedActionTypes == BulkActionTypes.Update_Upload))
+{
+
+    <LinovativeGap />
+    <div class="d-flex align-center gap-2" style="width: 400px">
+        <div style="width: 100%">
+            <MudFileUpload Style="width: 100%" Accept=".xlsx" T="IBrowserFile" FilesChanged="UploadFile">
+                <ActivatorContent>
+                    <LinovativeInputText Value="@fileToUplaod?.Name" Placeholder="@Label("BrowseFile")" Label="@Label("BrowseFile")" ReadOnly="true" Clearable="true" />
+                </ActivatorContent>
+            </MudFileUpload>
+        </div>
+    </div>
+
+    <LinovativeGap />
+    <MudButton Disabled="@(fileToUplaod is null)"
+               Variant="ComponentSettings.AddNewButtonVariant"
+               StartIcon="@Icons.Material.Filled.Upload"
+               OnClick="Upload"
+               Color="Color.Primary">@ButtonText("Upload")</MudButton>
+}
+
 
 
 <ItemAdvanceActoionPageItemFilterAndView SelectedOperation=@SelectedOperation
@@ -104,31 +129,9 @@
                                          ShowRecord=@ShowRecord
                                          @ref=unitView />
 
-
-@if (SelectedEntityType is not null && (SelectedActionTypes == BulkActionTypes.Delete_Upload ||
-    SelectedActionTypes == BulkActionTypes.Create_Upload ||
-    SelectedActionTypes == BulkActionTypes.Update_Upload))
-{
-
-    <LinovativeGap />
-    <div class="d-flex align-center gap-2" style="width: 400px">
-        <div style="width: 100%">
-            <MudFileUpload Style="width: 100%" Accept=".xlsx" T="IBrowserFile" FilesChanged="UploadFile">
-                <ActivatorContent>
-                    <LinovativeInputText Value="@fileToUplaod?.Name" Placeholder="@Label("BrowseFile")" Label="@Label("BrowseFile")" ReadOnly="true" Clearable="true" />
-                </ActivatorContent>
-            </MudFileUpload>
-        </div>
-    </div>
-
-    <LinovativeGap />
-    <MudButton Disabled="@(fileToUplaod is null)"
-               Variant="ComponentSettings.AddNewButtonVariant"
-               StartIcon="@Icons.Material.Filled.Upload"
-               OnClick="Upload"
-               Color="Color.Primary">@ButtonText("Upload")</MudButton>
-}
-
+<ItemGroupBulkUploadRecords SelectedEntityType=@SelectedEntityType
+                            SelectedActionTypes=@SelectedActionTypes
+                            @ref=@bulkGroupRecords />
 
 <LinovativeGap />
 <div class="d-flex justify-start flex-grow-1 gap-4">
@@ -208,6 +211,7 @@
     private ItemAdvanceActoionPageCategoryFilterAndView categoryView { get; set; } = default!;
     private ItemAdvanceActoionPageGroupFilterAndView groupView { get; set; } = default!;
     private ItemAdvanceActoionPageUnitFilterAndView unitView { get; set; } = default!;
+    private ItemGroupBulkUploadRecords bulkGroupRecords { get; set; } = default!;
 
     private bool ShowRecord { get; set; }
     private CancellationTokenSource cts = new();
@@ -258,10 +262,11 @@
     async Task Upload()
     {
         var response = await _bulkUploadService.UploadItemGroups(fileToUplaod!, cts.Token);
-        if(response)
+        if (response)
         {
             successAllert!.ShowAlert(Label("UploadSuccessMessage"));
             fileToUplaod = null;
+            await LoadDataUpload();
             return;
         }
 
@@ -269,21 +274,40 @@
         await Task.CompletedTask;
     }
 
+    async Task OnActionChange(BulkActionTypes? value)
+    {
+        SelectedActionTypes = value;
+        fileToUplaod = null;
+
+        await LoadDataUpload();
+
+    }
+
+    async Task LoadDataUpload()
+    {
+        if (SelectedEntityType == BulkDataEntityTypes.Group && (SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
+            await bulkGroupRecords.LoadData();
+    }
 
     async Task OnButtonViewItemClicked()
     {
+        await LoadData();
+    }
+
+    async Task LoadData()
+    {
 
         if (SelectedEntityType == BulkDataEntityTypes.ItemMaster)
-            await itemView.LoadItems();
+            await itemView.LoadData();
 
         if (SelectedEntityType == BulkDataEntityTypes.Category)
-            await categoryView.LoadItems();
+            await categoryView.LoadData();
 
         if (SelectedEntityType == BulkDataEntityTypes.Group)
-            await groupView.LoadItems();
+            await groupView.LoadData();
 
         if (SelectedEntityType == BulkDataEntityTypes.Unit)
-            await unitView.LoadItems();
+            await unitView.LoadData();
 
         ShowRecord = true;
     }

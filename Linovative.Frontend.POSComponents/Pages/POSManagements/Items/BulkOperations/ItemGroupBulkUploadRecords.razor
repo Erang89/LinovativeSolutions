@@ -5,60 +5,53 @@
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.Extensions
 @using Linovative.Frontend.Shared.InputComponents.FilterComponents
+@using Linovative.Shared.Interface.Enums
 
 @inherits POSManagementPageBase
 @inject IItemGroupService _service
 @inject IApplicationStateService _state
+@inject IBulkUploadItemGroupService _bulkItemGroup
+
 
 @if (SelectedEntityType == BulkDataEntityTypes.Group && (
-      SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
-      SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
-{
-
-    <LinovativeGap />
-    <MudCard Style="max-width: 1960px">
-        <ItemGroupFilterComponent FieldValuesChanged="@OnItemFilterValueChanged"
-                                  HideFilterButton="true"
-                                  OnClearFilter="@OnClearFilter"
-                                  HideColumns="new(){}" />
-    </MudCard>
-
-}
-
-
-
-@if (SelectedEntityType == BulkDataEntityTypes.Group && ShowRecord && (
-      SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
-      SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
+     SelectedActionTypes == BulkActionTypes.Create_Upload ||
+     SelectedActionTypes == BulkActionTypes.Update_Upload))
 {
     <LinovativeGap />
 
     <MudSimpleTable Style="overflow-x: auto;">
         <thead>
             <tr>
-                <th>@ColumHeaderText("GroupName")</th>
+                <th>@group?.headerColum1</th>
+                <th>@group?.headerColum2</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var row in groups)
+            @if (group is not null)
             {
+                @foreach (var row in group?.Details ?? new())
+                {
+                    <tr>
+                        <td>@row.Column1</td>
+                        <td>@row.Column2</td>
+                    </tr>
+                }
                 <tr>
-                    <td>@row.Name</td>
+                    <td colspan="5">
+                        @if (group?.Details.Count  > 0)
+                        {
+                            <MudText>@(recordCount < pageSize ? recordCount : pageSize) of @recordCount records</MudText>
+                        }
+                    </td>
                 </tr>
             }
-            <tr>
-                <td colspan="5">
-                    @if (groups.Count > 0)
-                    {
-                        <MudText>@(recordCount < pageSize ? recordCount : pageSize) of @recordCount records</MudText>
-                    }
-                </td>
-            </tr>
         </tbody>
         <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
     </MudSimpleTable>
 
 }
+
+
 
 @code {
     // Public Properties
@@ -70,8 +63,7 @@
     protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
 
     // Private properties
-    List<ItemGroupViewDto> groups = new();
-    BulkUploadItemGroupDto groupBulks = new();
+    BulkUploadItemGroupDto? group = new();
     List<DataGridFilterModel> itemFilterModels { get; set; } = new();
     CancellationTokenSource cts = new();
     int currentPage = 0;
@@ -88,8 +80,6 @@
     }
 
 
-
-
     void OnItemFilterValueChanged(List<DataGridFilterModel> fieldValues)
     {
         itemFilterModels = fieldValues;
@@ -98,22 +88,30 @@
 
     public async Task LoadData()
     {
+        CrudOperations operation = SelectedOperation switch
+        {
+            BulkOperations.Create => CrudOperations.Create,
+            BulkOperations.Update => CrudOperations.Update,
+            BulkOperations.Delete => CrudOperations.Delete,
+            _ => CrudOperations.Create,
+        };
+
         var odataFilter = new ODataFilter()
             {
                 PageNumber = currentPage,
                 PageSize = pageSize,
                 OrderFiled = null,
                 SortDirection = SortDirection.Ascending.ToString(),
-                Options = null,
-                FilterPayload = new { filter = itemFilterModels.ToFilterCondition() }
+                Options = $"$expand=details",
+                FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
             };
         itemFilterCount = itemFilterModels.Count;
-        var result = await _service.Get(odataFilter, cts.Token);
+        var result = await _bulkItemGroup.Get(odataFilter, cts.Token);
         var records = result?.Count ?? 0;
         var hasMod = records % pageSize > 0;
         recordCount = records;
         pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
-        groups = result?.Data ?? new();
+        group = result?.Data?.FirstOrDefault() ?? new();
         _state.NotifyStateChanged();
     }
 
@@ -133,7 +131,7 @@
 
     public void Reset()
     {
-        groups = new();
+        group = null;
         currentPage = 1;
         pageCount = 0;
         recordCount = 0;

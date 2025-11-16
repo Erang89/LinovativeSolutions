@@ -3,7 +3,7 @@ using Linovative.Frontend.Services.Interfaces;
 using LinoVative.Shared.Dto.BulkUploads;
 using Microsoft.Extensions.Logging;
 
-namespace Linovative.Frontend.Services.BulkUploads
+namespace Linovative.Frontend.Services.FrontendServices.BulkUploads
 {
     public interface IBulkUploadItemGroupService : IReadOnlyService<BulkUploadItemGroupDto>, ICrudInterfaces
     {
