@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <Playwright>
+    <BrowserName>chromium</BrowserName>
+    <LaunchOptions>
+      <!-- set to false to show the browser -->
+      <Headless>false</Headless>
+      <!-- optional -->
+      <SlowMo>100</SlowMo>
+      <DevTools>false</DevTools>
+	  <channel>msedge</channel>
+    </LaunchOptions>
+  </Playwright>
+</RunSettings>
