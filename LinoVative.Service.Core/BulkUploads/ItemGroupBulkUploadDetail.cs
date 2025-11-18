@@ -7,6 +7,7 @@ namespace LinoVative.Service.Core.BulkUploads
     {
         [Key]
         public Guid Id { get; set; }
+        public ItemGroupBulkUpload? ItemGroupBulkUpload { get; set; }
         public Guid? ItemGroupBulkUploadId { get; set; }
 
         public string? Column1 { get; set; }
