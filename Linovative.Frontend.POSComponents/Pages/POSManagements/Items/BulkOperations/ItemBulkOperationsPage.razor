@@ -1,8 +1,10 @@
 ﻿@using Linovative.Frontend.POSComponents.Bases
 @using Linovative.Frontend.POSComponents.Enums
+@using Linovative.Frontend.Services.BulkUploads
 @using Linovative.Frontend.Services.FrontendServices.Resources
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@using Microsoft.AspNetCore.Components.Forms
 
 @attribute [Route(PageRoutes.PostManagement.ItemMaster.BulkOperations)]
 @inherits POSManagementPageBase
@@ -15,6 +17,7 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 @inject IResourceDownload _resourceService
+@inject IBulkUploadService _bulkUploadService;
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
@@ -24,14 +27,16 @@
 <MudText Typo="Typo.h6">@EntityName @(Title is null ? null : $" - {Title}")</MudText>
 <LinovativeGap />
 
+<AppSuccessAllert @ref="@successAllert" AutoClose="true" />
+<AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
 
 <div style="width: 400px">
     <MudSelect Value="@SelectedOperation"
-               ValueChanged="@((e) => SetValue(() => { 
-                        SelectedOperation = e; 
+               ValueChanged="@((e) => SetValue(() => {
+                        SelectedOperation = e;
                         SelectedEntityType = null;
                         SelectedActionTypes = null;}))"
-               T="BulkOperations?" Variant="ComponentSettings.InputVariant" Label="@Label("Operation")" 
+               T="BulkOperations?" Variant="ComponentSettings.InputVariant" Label="@Label("Operation")"
                Clearable="true" FullWidth="false">
         <MudSelectItem T="BulkOperations?" Value="BulkOperations.Create">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}")</MudSelectItem>
         <MudSelectItem T="BulkOperations?" Value="BulkOperations.Update">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}")</MudSelectItem>
@@ -43,9 +48,13 @@
 <LinovativeGap />
 <div style="width: 400px">
     <MudSelect Value="@SelectedEntityType" T="BulkDataEntityTypes?"
-               ValueChanged="((e) => SetValue(() => SelectedEntityType = e))"
-               Disabled="@(SelectedOperation is null)"
-               Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
+               ValueChanged="((e) =>
+        {
+        SetValue(() => SelectedEntityType = e);
+        fileToUplaod = null;
+        })"
+        Disabled="@(SelectedOperation is null)"
+        Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
         <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.ItemMaster">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.ItemMaster}")</MudSelectItem>
         <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Group">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Group}")</MudSelectItem>
         <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Category">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Category}")</MudSelectItem>
@@ -53,10 +62,13 @@
     </MudSelect>
 </div>
 
+<!-- Action Dropdown -->
 <LinovativeGap />
 <div style="width: 400px">
     <MudSelect Disabled="@(SelectedOperation is null)"
-               @bind-Value="@SelectedActionTypes" T="BulkActionTypes?"
+               Value="@SelectedActionTypes"
+               ValueChanged="@OnActionChange"
+               T="BulkActionTypes?"
                Variant="ComponentSettings.InputVariant" Label="@Label("Actions")" Clearable="true" FullWidth="false">
         @foreach (var actionType in ActionTypeSources)
         {
@@ -66,40 +78,66 @@
 </div>
 
 
-<ItemAdvanceActoionPageItemFilterAndView 
-    SelectedOperation=@SelectedOperation
-    SelectedEntityType=@SelectedEntityType
-    SelectedActionTypes=@SelectedActionTypes
-    ShowRecord=@ShowRecord
-    @ref=itemView />
+
+@if (SelectedEntityType is not null && (SelectedActionTypes == BulkActionTypes.Delete_Upload ||
+   SelectedActionTypes == BulkActionTypes.Create_Upload ||
+   SelectedActionTypes == BulkActionTypes.Update_Upload))
+{
+
+    <LinovativeGap />
+    <div class="d-flex align-center gap-2" style="width: 400px">
+        <div style="width: 100%">
+            <MudFileUpload Style="width: 100%" Accept=".xlsx" T="IBrowserFile" FilesChanged="UploadFile">
+                <ActivatorContent>
+                    <LinovativeInputText Value="@fileToUplaod?.Name" Placeholder="@Label("BrowseFile")" Label="@Label("BrowseFile")" ReadOnly="true" Clearable="true" />
+                </ActivatorContent>
+            </MudFileUpload>
+        </div>
+    </div>
+
+    <LinovativeGap />
+    <MudButton Disabled="@(fileToUplaod is null)"
+               Variant="ComponentSettings.AddNewButtonVariant"
+               StartIcon="@Icons.Material.Filled.Upload"
+               OnClick="Upload"
+               Color="Color.Primary">@ButtonText("Upload")</MudButton>
+}
 
 
-    
-<ItemAdvanceActoionPageCategoryFilterAndView  SelectedOperation=@SelectedOperation
-    SelectedEntityType=@SelectedEntityType
-    SelectedActionTypes=@SelectedActionTypes
-    ShowRecord=@ShowRecord
-    @ref=categoryView />
+
+<ItemAdvanceActoionPageItemFilterAndView SelectedOperation=@SelectedOperation
+                                         SelectedEntityType=@SelectedEntityType
+                                         SelectedActionTypes=@SelectedActionTypes
+                                         ShowRecord=@ShowRecord
+                                         @ref=itemView />
+
+
+
+<ItemAdvanceActoionPageCategoryFilterAndView SelectedOperation=@SelectedOperation
+                                             SelectedEntityType=@SelectedEntityType
+                                             SelectedActionTypes=@SelectedActionTypes
+                                             ShowRecord=@ShowRecord
+                                             @ref=categoryView />
 
 <ItemAdvanceActoionPageGroupFilterAndView SelectedEntityType=@SelectedEntityType
-    SelectedActionTypes=@SelectedActionTypes
-    ShowRecord=@ShowRecord
-    @ref=groupView  />
+                                          SelectedActionTypes=@SelectedActionTypes
+                                          ShowRecord=@ShowRecord
+                                          @ref=groupView />
 
 <ItemAdvanceActoionPageUnitFilterAndView SelectedEntityType=@SelectedEntityType
-    SelectedActionTypes=@SelectedActionTypes
-    ShowRecord=@ShowRecord
-    @ref=unitView />
+                                         SelectedActionTypes=@SelectedActionTypes
+                                         ShowRecord=@ShowRecord
+                                         @ref=unitView />
 
+<ItemGroupBulkUploadRecords SelectedEntityType=@SelectedEntityType
+                            SelectedActionTypes=@SelectedActionTypes
+                            @ref=@bulkGroupRecords />
 
 <LinovativeGap />
-
-
-
 <div class="d-flex justify-start flex-grow-1 gap-4">
     @if ((SelectedEntityType is BulkDataEntityTypes.ItemMaster or BulkDataEntityTypes.Category or BulkDataEntityTypes.Group or BulkDataEntityTypes.Unit) && (
-       SelectedActionTypes == BulkActionTypes.Update_DownloadFromData || 
-       SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
+    SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
+    SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
     {
         <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
@@ -109,7 +147,7 @@
     }
 
 
-    @if(DownloadActions.Any(x => x == SelectedActionTypes))
+    @if (DownloadActions.Any(x => x == SelectedActionTypes))
     {
         <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
@@ -120,7 +158,7 @@
 </div>
 
 
-@code{
+@code {
 
     protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
@@ -128,7 +166,7 @@
     private string? Title => SelectedOperation switch
     {
         BulkOperations.Create => _loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}"),
-        BulkOperations.Update =>_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}"),
+        BulkOperations.Update => _loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}"),
         BulkOperations.Delete => _loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Delete}"),
         _ => null
 
@@ -151,11 +189,11 @@
             BulkActionTypes.Delete_Upload}},
     };
 
-    List<BulkActionTypes> ActionTypeSources => SelectedOperation is null ? new() :  ActionOperationMapping[SelectedOperation.Value];
+    List<BulkActionTypes> ActionTypeSources => SelectedOperation is null ? new() : ActionOperationMapping[SelectedOperation.Value];
     List<BulkActionTypes> UploadActions = new List<BulkActionTypes>() { BulkActionTypes.Create_Upload, BulkActionTypes.Update_Upload, BulkActionTypes.Delete_Upload };
     List<BulkActionTypes?> DownloadActions = new List<BulkActionTypes?>() {
-        BulkActionTypes.Update_DownloadBlankTemplate, 
-        BulkActionTypes.Update_DownloadFromData, 
+        BulkActionTypes.Update_DownloadBlankTemplate,
+        BulkActionTypes.Update_DownloadFromData,
         BulkActionTypes.Update_DownloadFromDataMapping,
         BulkActionTypes.Create_DownloadTemplate,
         BulkActionTypes.Delete_DownloadBlankTemplate,
@@ -164,7 +202,7 @@
 
 
 
-    // ======================== PROPERTIES ================================    
+    // ======================== PROPERTIES ================================
 
     private BulkOperations? SelectedOperation { get; set; }
     private BulkDataEntityTypes? SelectedEntityType { get; set; }
@@ -173,9 +211,12 @@
     private ItemAdvanceActoionPageCategoryFilterAndView categoryView { get; set; } = default!;
     private ItemAdvanceActoionPageGroupFilterAndView groupView { get; set; } = default!;
     private ItemAdvanceActoionPageUnitFilterAndView unitView { get; set; } = default!;
-    
-    private bool ShowRecord { get; set; }
+    private ItemGroupBulkUploadRecords bulkGroupRecords { get; set; } = default!;
 
+    private bool ShowRecord { get; set; }
+    private CancellationTokenSource cts = new();
+    AppSuccessAllert? successAllert = null;
+    AppErrorAlert? formErrorAlert = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -217,22 +258,64 @@
     }
 
 
+    private readonly long maxFileSize = 20 * 1024 * 1024;
+    async Task Upload()
+    {
+        var response = await _bulkUploadService.UploadItemGroups(fileToUplaod!, cts.Token);
+        if (response)
+        {
+            successAllert!.ShowAlert(Label("UploadSuccessMessage"));
+            fileToUplaod = null;
+            await LoadDataUpload();
+            return;
+        }
+
+        formErrorAlert?.ShowAlert(response);
+        await Task.CompletedTask;
+    }
+
+    async Task OnActionChange(BulkActionTypes? value)
+    {
+        SelectedActionTypes = value;
+        fileToUplaod = null;
+
+        await LoadDataUpload();
+
+    }
+
+    async Task LoadDataUpload()
+    {
+        if (SelectedEntityType == BulkDataEntityTypes.Group && (SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
+            await bulkGroupRecords.LoadData();
+    }
+
     async Task OnButtonViewItemClicked()
+    {
+        await LoadData();
+    }
+
+    async Task LoadData()
     {
 
         if (SelectedEntityType == BulkDataEntityTypes.ItemMaster)
-            await itemView.LoadItems();
+            await itemView.LoadData();
 
         if (SelectedEntityType == BulkDataEntityTypes.Category)
-            await categoryView.LoadItems();
+            await categoryView.LoadData();
 
         if (SelectedEntityType == BulkDataEntityTypes.Group)
-            await groupView.LoadItems();
+            await groupView.LoadData();
 
         if (SelectedEntityType == BulkDataEntityTypes.Unit)
-            await unitView.LoadItems();
+            await unitView.LoadData();
 
         ShowRecord = true;
+    }
+
+    IBrowserFile? fileToUplaod { get; set; }
+    private void UploadFile(IBrowserFile file)
+    {
+        fileToUplaod = file;
     }
 
 }

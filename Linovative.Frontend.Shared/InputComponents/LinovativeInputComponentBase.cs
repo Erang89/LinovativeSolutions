@@ -39,6 +39,9 @@ namespace Linovative.Frontend.Shared.InputComponents
         public string? Label { get; set; }
 
         [Parameter]
+        public string? Id { get; set; }
+
+        [Parameter]
         public string? Placeholder { get; set; }
 
         [Parameter]

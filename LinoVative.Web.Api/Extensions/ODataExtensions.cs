@@ -1,4 +1,5 @@
 ﻿using Linovative.Dto.MasterData.People;
+using LinoVative.Shared.Dto.BulkUploads;
 using LinoVative.Shared.Dto.ItemDtos;
 using LinoVative.Shared.Dto.MasterData.Accountings;
 using LinoVative.Shared.Dto.MasterData.Payments;
@@ -57,6 +58,8 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<COAGroupDto>("COAGroups");
             modelBuilder.EntitySet<AccountViewDto>("Accounts");
             modelBuilder.EntitySet<SalesCOAMappingViewDto>("SalesCOAMappings");
+            modelBuilder.EntitySet<BulkUploadItemGroupDto>("BulkUploadItemGroups");
+            modelBuilder.EntitySet<BulkUploadItemGroupDetailDto>("BulkUploadItemGroupDetails");
 
             return modelBuilder.GetEdmModel();
         }

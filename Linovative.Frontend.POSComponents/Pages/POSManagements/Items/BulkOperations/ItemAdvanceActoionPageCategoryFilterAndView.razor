@@ -97,7 +97,7 @@
 
 
     // Load Items
-    public async Task LoadItems()
+    public async Task LoadData()
     {
         var odataFilter = new ODataFilter()
         {
@@ -121,7 +121,7 @@
     async Task OnSelectedPageChanged(int page)
     {
         currentPage = page;
-        await LoadItems();
+        await LoadData();
     }
 
     void OnClearFilter()

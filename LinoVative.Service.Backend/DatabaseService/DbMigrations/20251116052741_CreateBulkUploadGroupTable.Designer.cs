@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.DatabaseService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251116052741_CreateBulkUploadGroupTable")]
+    partial class CreateBulkUploadGroupTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,9 +309,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 
                     b.Property<Guid?>("LastModifiedBy")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int?>("Operation")
-                        .HasColumnType("int");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
@@ -1583,7 +1583,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
             modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUploadDetail", b =>
                 {
                     b.HasOne("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUpload", null)
-                        .WithMany("Details")
+                        .WithMany()
                         .HasForeignKey("ItemGroupBulkUploadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1850,11 +1850,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
             modelBuilder.Entity("LinoVative.Service.Core.Accountings.Account", b =>
                 {
                     b.Navigation("Childs");
-                });
-
-            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUpload", b =>
-                {
-                    b.Navigation("Details");
                 });
 
             modelBuilder.Entity("LinoVative.Service.Core.Items.Item", b =>
