@@ -12,6 +12,8 @@ namespace Linovative.Frontend.Shared.InputComponents
         [Parameter] public LinovativeColor Color { get; set; }
         [Parameter] public LinovativeInputComponentVariant Variant { get; set; }
         [Parameter] public EventCallback OnClicked { get; set; }
-        
+        [Parameter]
+        public string? Id { get; set; }
+
     }
 }

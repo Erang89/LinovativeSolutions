@@ -15,7 +15,7 @@
     <div style="max-width: 400px; margin: auto;">
         <MudGrid Spacing="10">
 
-            
+
             <MudItem xs="12" lg="12">
                 <MudText Align="Align.Center" Typo="Typo.h4">@Lang("Title")</MudText>
 
@@ -27,7 +27,8 @@
 
             <MudItem xs="12" lg="12">
 
-                <LinovativeInputText IsRequired=true
+                <LinovativeInputText Id="username_textbox"
+                                     IsRequired=true
                                      LocalizerResource="@LocalizerResource"
                                      InputType="@InputType.Email"
                                      LocalizerKey="UserName"
@@ -36,7 +37,7 @@
                 <LinovativeGap />
 
 
-                <LinovativeInputText IsRequired=true
+                <LinovativeInputText Id="password_textbox" IsRequired=true
                                      LocalizerResource="@LocalizerResource"
                                      InputType="@InputType.Password"
                                      LocalizerKey="Password"
@@ -46,7 +47,7 @@
             </MudItem>
 
             <MudItem xs="12" lg="12">
-                <LinovativeButton OnClicked="@Submit" Disabled="isFormSubmitting" Size="LinoSize.Large" FullWidth="true" Text="@Text("Login.Button")" />
+                <LinovativeButton Id="login_button" OnClicked="@Submit" Disabled="isFormSubmitting" Size="LinoSize.Large" FullWidth="true" Text="@Text("Login.Button")" />
                 <LinovativeGap />
                 <div style="text-align: center">
                     <MudText Align="Align.Center" Typo="Typo.caption">@Text("Register.Description")</MudText>
@@ -120,5 +121,5 @@
         formErrorAlert?.HideAlert();
     }
 
-   void Register() => _nav.NavigateTo("/register/new/company");
+    void Register() => _nav.NavigateTo("/register/new/company");
 }
