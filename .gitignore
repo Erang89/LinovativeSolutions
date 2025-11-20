@@ -47,3 +47,4 @@ bld/
 *.Publish.xml
 
 .vs/
+POSManagementTest/playwright/.auth

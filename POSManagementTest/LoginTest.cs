@@ -1,9 +1,11 @@
 ﻿using Microsoft.Playwright;
+using POSManagementTest.Bases;
 
 namespace POSManagementTest
 {
     public class LoginTest : PageTestBase
     {
+
         [Fact]
         public async Task ValidLogin()
         {
@@ -15,6 +17,7 @@ namespace POSManagementTest
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Password*" }).FillAsync("NotSecure@1");
             await Page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
             await Expect(Page).ToHaveURLAsync($"{RootUri}");
+            await Context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = StoragePath });
         }
 
         [Fact]
