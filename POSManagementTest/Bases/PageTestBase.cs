@@ -1,12 +1,13 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
+using POSManagementTest.Constans;
 
 namespace POSManagementTest.Bases
 {
     public class PageTestBase : PageTest
     {
-        protected Uri RootUri => new Uri("https://localhost:7081");
-        protected const string StoragePath = "../../../playwright/.auth/state.json";
+        protected Uri RootUri = new Uri(TestConstants.POSWebUrl);
+        protected string StoragePath => TestConstants.StoragePath;
 
         public override BrowserNewContextOptions ContextOptions()
         {

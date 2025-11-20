@@ -1,10 +1,14 @@
 ﻿using Microsoft.Playwright;
-using POSManagementTest.Bases;
+using Microsoft.Playwright.Xunit;
+using POSManagementTest.Constans;
 
 namespace POSManagementTest
 {
-    public class LoginTest : PageTestBase
+    public class LoginTest : PageTest
     {
+        protected Uri RootUri = new Uri(TestConstants.POSWebUrl);
+        protected string StoragePath => TestConstants.StoragePath;
+
 
         [Fact]
         public async Task ValidLogin()
@@ -17,6 +21,10 @@ namespace POSManagementTest
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Password*" }).FillAsync("NotSecure@1");
             await Page.GetByRole(AriaRole.Button, new() { Name = "Login" }).ClickAsync();
             await Expect(Page).ToHaveURLAsync($"{RootUri}");
+            if(!File.Exists(StoragePath))
+            {
+                File.Create(StoragePath);
+            }
             await Context.StorageStateAsync(new BrowserContextStorageStateOptions { Path = StoragePath });
         }
 

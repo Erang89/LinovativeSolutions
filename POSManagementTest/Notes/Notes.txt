@@ -1,0 +1,3 @@
+Notes:
+When the first running, please make sure you need to run login test.
+Login test will produce the JWT token which other pages required
