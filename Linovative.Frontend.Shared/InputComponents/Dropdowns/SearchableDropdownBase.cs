@@ -22,6 +22,7 @@ namespace Linovative.Frontend.Shared.InputComponents.Dropdowns
         [Parameter] public string? ErrorMessage { get; set; }
         [Parameter] public int PageSize { get; set; }
         [Parameter] public string? Placeholder { get; set; }
+        [Parameter] public string? Id { get; set; }
         [Parameter] public bool Clearable { get; set; } = true;
         [Parameter] public string? LocalizerKey { get; set; }
         [Parameter] public string? LocalizerResource { get; set; }

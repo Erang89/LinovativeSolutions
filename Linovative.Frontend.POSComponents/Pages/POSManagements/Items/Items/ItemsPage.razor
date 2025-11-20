@@ -44,12 +44,14 @@
             <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
 
                 <LinovativeInputText @bind-Value="@item.Name"
+                                     Id="item_name"
                                      IsRequired="true"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Name)" />
                 <LinovativeGap />
                 <LinovativeInputText @bind-Value="@item.Code"
+                                     Id="item_code"
                                      IsRequired="true"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
@@ -57,12 +59,14 @@
 
                 <LinovativeGap />
                 <LinovativeInputText @bind-Value="@item.Description"
+                                     Id="item_description"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Description)" />
 
                 <LinovativeGap />
                 <ItemUnitDropdown @bind-Value="@itemUnit"
+                                  Id="item_unit"
                                   Required="true"
                                   Errors="@formResponse?.Errors"
                                   LocalizerResource="@LocalizerResource"
@@ -71,6 +75,7 @@
 
                 <LinovativeGap />
                 <ItemCategoryDropdown @bind-Value="@itemCategory"
+                                      Id="item_category"
                                       Required="true"
                                       Errors="@formResponse?.Errors"
                                       LocalizerResource="@LocalizerResource"
@@ -79,6 +84,7 @@
 
                 <LinovativeGap />
                 <LinovativeTextBox T="decimal?"
+                                   Id="item_sell_price"
                                    ValueChanged="@(x => item.SellPrice = x)"
                                    Format="N2"
                                    Value="@item.SellPrice"
@@ -100,8 +106,8 @@
             </MudForm>
         </MudItem>
 
-         <MudItem xs="12" sm="6" lg="4">
-            
+        <MudItem xs="12" sm="6" lg="4">
+
         </MudItem>
     </MudGrid>
 }
