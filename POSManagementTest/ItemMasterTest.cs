@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using POSManagementTest.Bases;
+using POSManagementTest.Helpers;
 using System.Text.RegularExpressions;
 
 namespace POSManagementTest
@@ -16,18 +17,21 @@ namespace POSManagementTest
         [Fact]
         public async Task AddNewItemTest()
         {
+            var itemSources =  await Page.EnsureDataSourceAvailable();
             await Page.GotoAsync($"{RootUri}pos/management/item-master/items");
+
+            const string itemName = "TestAddNewItem01";
 
             // Arrange 1 : Create new item
             await Page.GetByRole(AriaRole.Button, new() { Name = "Add New" }).ClickAsync();
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Name*" }).ClickAsync();
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Name*" }).FillAsync("Test Add New Item");
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Name*" }).PressAsync("Tab");
-            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Code*" }).FillAsync("TestAddNewItem01");
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Code*" }).FillAsync(itemName);
             await Page.GetByRole(AriaRole.Button).Filter(new() { HasTextRegex = new Regex("^$") }).Nth(3).ClickAsync();
-            await Page.GetByText("Test", new() { Exact = true }).ClickAsync();
+            await Page.GetByText(itemSources.UnitName, new() { Exact = true }).ClickAsync();
             await Page.GetByRole(AriaRole.Button).Filter(new() { HasTextRegex = new Regex("^$") }).Nth(5).ClickAsync();
-            await Page.GetByText("Yeah").ClickAsync();
+            await Page.GetByText(itemSources.CategoryName).ClickAsync();
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).ClickAsync();
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).FillAsync("10000");
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).PressAsync("Enter");
@@ -42,9 +46,9 @@ namespace POSManagementTest
 
             // Arrange 2 : Search created item
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Search" }).ClickAsync();
-            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Search" }).FillAsync("TestAddNewItem01");
-            await Page.GetByRole(AriaRole.Cell, new() { Name = "TestAddNewItem01" }).ClickAsync();
-            await Page.GetByRole(AriaRole.Row, new() { Name = "TestAddNewItem01 Test Add New" }).GetByLabel("", new() { Exact = true }).CheckAsync();
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Search" }).FillAsync(itemName);
+            await Page.GetByRole(AriaRole.Cell, new() { Name = itemName }).ClickAsync();
+            await Page.GetByRole(AriaRole.Row, new() { Name = $"{itemName} Test Add New" }).GetByLabel("", new() { Exact = true }).CheckAsync();
 
             // Action 2 : Delete created item
             await Page.GetByRole(AriaRole.Button, new() { Name = "Delete" }).ClickAsync();
@@ -66,7 +70,7 @@ namespace POSManagementTest
         [Fact]
         public async Task CreateItemWithDuplicateItemCode()
         {
-
+            var itemSources = await Page.EnsureDataSourceAvailable();
             await Page.GotoAsync($"{RootUri}pos/management/item-master/items");
             const string itemCode = "TestDuplicateCode0001";
 
@@ -77,9 +81,9 @@ namespace POSManagementTest
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Name*" }).PressAsync("Tab");
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Code*" }).FillAsync(itemCode);
             await Page.GetByRole(AriaRole.Button).Filter(new() { HasTextRegex = new Regex("^$") }).Nth(3).ClickAsync();
-            await Page.GetByText("Test", new() { Exact = true }).ClickAsync();
+            await Page.GetByText(itemSources.UnitName, new() { Exact = true }).ClickAsync();
             await Page.GetByRole(AriaRole.Button).Filter(new() { HasTextRegex = new Regex("^$") }).Nth(5).ClickAsync();
-            await Page.GetByText("Yeah").ClickAsync();
+            await Page.GetByText(itemSources.CategoryName).ClickAsync();
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).ClickAsync();
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).FillAsync("10000");
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).PressAsync("Enter");
@@ -93,9 +97,9 @@ namespace POSManagementTest
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Name*" }).PressAsync("Tab");
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Code*" }).FillAsync(itemCode);
             await Page.GetByRole(AriaRole.Button).Filter(new() { HasTextRegex = new Regex("^$") }).Nth(3).ClickAsync();
-            await Page.GetByText("Test", new() { Exact = true }).ClickAsync();
+            await Page.GetByText(itemSources.UnitName, new() { Exact = true }).ClickAsync();
             await Page.GetByRole(AriaRole.Button).Filter(new() { HasTextRegex = new Regex("^$") }).Nth(5).ClickAsync();
-            await Page.GetByText("Yeah").ClickAsync();
+            await Page.GetByText(itemSources.CategoryName).ClickAsync();
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).ClickAsync();
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).FillAsync("10000");
             await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).PressAsync("Enter");
