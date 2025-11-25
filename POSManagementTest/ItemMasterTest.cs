@@ -8,6 +8,11 @@ namespace POSManagementTest
     public class ItemMasterTest : PageTestBase
     {
 
+        // Properties
+        public string ItemPageLink => $"{RootUri}pos/management/item-master/items";
+
+
+
         /// <summary>
         /// Given I am a loggedin user,
         /// When I create a new item
@@ -18,7 +23,7 @@ namespace POSManagementTest
         public async Task AddNewItemTest()
         {
             var itemSources =  await Page.EnsureDataSourceAvailable();
-            await Page.GotoAsync($"{RootUri}pos/management/item-master/items");
+            await Page.GotoAsync(ItemPageLink);
 
             const string itemName = "TestAddNewItem01";
 
@@ -71,7 +76,7 @@ namespace POSManagementTest
         public async Task CreateItemWithDuplicateItemCode()
         {
             var itemSources = await Page.EnsureDataSourceAvailable();
-            await Page.GotoAsync($"{RootUri}pos/management/item-master/items");
+            await Page.GotoAsync(ItemPageLink);
             const string itemCode = "TestDuplicateCode0001";
 
             // Arrange 1 : Create new item
@@ -119,6 +124,55 @@ namespace POSManagementTest
             // Action 2 : Delete created item
             await Page.GetByRole(AriaRole.Button, new() { Name = "Delete" }).ClickAsync();
             await Page.GetByRole(AriaRole.Button, new() { Name = "Yes" }).ClickAsync();
+        }
+
+
+        [Fact]
+        public async Task ItemFilterTest()
+        {
+            var itemSources = await Page.EnsureDataSourceAvailable();
+            await Page.GotoAsync(ItemPageLink);
+
+            const string itemName1 = "Test Filter Itemx 1";
+            const string itemCode1 = "TFIx1";
+            //const string itemName2 = "Test Filter Itemxx 2";
+            //const string itemCode2 = "TFIx2";
+
+            await Page.PauseAsync();
+
+            // Create Item with desire name
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Add New" }).ClickAsync();
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Name*" }).ClickAsync();
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Name*" }).FillAsync(itemName1);
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Code*" }).ClickAsync();
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Code*" }).FillAsync(itemCode1);
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Unit*" }).ClickAsync();
+            await Page.GetByText(itemSources.UnitName).ClickAsync();
+            await Page.GetByRole(AriaRole.Button).Filter(new() { HasTextRegex = new Regex("^$") }).Nth(5).ClickAsync();
+            await Page.GetByText(itemSources.CategoryName).ClickAsync();
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).ClickAsync();
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).FillAsync("10000");
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Sell Price*" }).PressAsync("Enter");
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Save" }).ClickAsync();
+
+            
+
+            // Arrange and execute filter
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Show Filter" }).ClickAsync();
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Code" }).ClickAsync();
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Code" }).FillAsync(itemCode1);
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Filter", Exact = true }).ClickAsync();
+
+            // Assert filter
+            var rows = await Page.Locator("tbody.mud-table-body tr.mud-table-row").CountAsync();
+            Assert.Equal(1, rows);
+
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Search" }).FillAsync("TFIx1");
+            await Page.GetByRole(AriaRole.Textbox, new() { Name = "Search" }).PressAsync("Enter");
+            await Page.GetByRole(AriaRole.Row, new() { Name = "TFIx1 Test Filter Itemx 1" }).GetByLabel("", new() { Exact = true }).CheckAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Delete" }).ClickAsync();
+            await Page.GetByRole(AriaRole.Button, new() { Name = "Yes" }).ClickAsync();
+
         }
     }
 }

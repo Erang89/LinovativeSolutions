@@ -10,11 +10,16 @@ namespace POSManagementTest.Helpers
         public string GroupName { get; set; }
     }
 
+
+    
+
     public static class MasterItemDataSourceHelper
     {
+
+        private static bool ItemDataHasChecked = false;
+
         public static async Task<ItemDropdownItemSource> EnsureDataSourceAvailable(this IPage page)
         {
-            await page.PauseAsync();
 
             Uri uri = new Uri(TestConstants.POSWebUrl);
             string groupsPageLink = $"{uri}pos/management/item-master/groups";
@@ -23,6 +28,18 @@ namespace POSManagementTest.Helpers
             string groupName = "Automated Test Group";
             string categoryName = "Automated Test Category";
             string unitName = "Automated Test Unit";
+
+            if (ItemDataHasChecked)
+            {
+                return new()
+                {
+                    UnitName = unitName,
+                    CategoryName = categoryName,
+                    GroupName = groupName,
+                };
+            }
+
+            ItemDataHasChecked = true;
 
             await page.GotoAsync(groupsPageLink);
             await page.GetByRole(AriaRole.Textbox, new() { Name = "Search" }).ClickAsync();
