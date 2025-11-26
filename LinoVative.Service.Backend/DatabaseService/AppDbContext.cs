@@ -137,6 +137,11 @@ namespace LinoVative.Service.Backend.DatabaseService
             return tableName;
         }
 
+        public EntityState GetEntityState<T>(T entity)
+        {
+            return this.Entry(entity!).State;
+        }
+
         public IQueryable GetAll<T>() where T : IDto
         {
             var queries = new Dictionary<Type, IQueryable>()

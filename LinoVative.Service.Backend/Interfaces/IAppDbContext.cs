@@ -100,8 +100,7 @@ namespace LinoVative.Service.Backend.Interfaces
         public Task<Result> SaveAsync(IActor actor, CancellationToken token = default);
         public Type GetModelType(string modelName);
         public string? GetTableName(string modelName);
-
-
+        public EntityState GetEntityState<T>(T entity);
 
     }
 }

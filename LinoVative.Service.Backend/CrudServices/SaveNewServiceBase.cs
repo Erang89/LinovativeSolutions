@@ -6,6 +6,8 @@ using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
 using LinoVative.Shared.Dto;
 using LinoVative.Service.Backend.Extensions;
+using Microsoft.EntityFrameworkCore;
+using LinoVative.Service.Core.EntityBases;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
@@ -36,7 +38,30 @@ namespace LinoVative.Service.Backend.CrudServices
 
             _dbSet.AddRange(creatingResult);
 
-            var result = await _dbContext.SaveAsync(_actor, token);
+            if (typeof(IAuditableEntity).IsAssignableFrom(typeof(T)))
+            {
+                foreach (IAuditableEntity entity in creatingResult)
+                {
+                    if(_dbContext.GetEntityState(entity) == EntityState.Added)
+                    {
+                        entity.CreateBy(_actor);
+                    }
+                }
+            }
+
+
+            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
+            {
+                foreach (IsEntityManageByCompany entity in creatingResult)
+                {
+                    if (_dbContext.GetEntityState(entity) == EntityState.Added && entity.CompanyId is null)
+                    {
+                        entity.CompanyId = _actor.CompanyId;
+                    }
+                }
+            }
+
+                var result = await _dbContext.SaveAsync(_actor, token);
             if(result) return Result.OK(creatingResult.Select(x => x.Id).ToList());
 
             return Result.OK(creatingResult.Select(x => x.Id).ToList());

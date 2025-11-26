@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
 
@@ -41,7 +42,7 @@ namespace LinoVative.Service.Backend.CrudServices
                 return validate;
 
             T entity = (await GetById(request.Id))!;
-
+            
             entity = await OnMapping(request, entity);
 
             await BeforeSaveUpdate(request, entity, token);
@@ -49,6 +50,13 @@ namespace LinoVative.Service.Backend.CrudServices
             if(entity is not null && typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
             {
                 ((IsEntityManageByCompany)entity!).CompanyId = _actor.CompanyId;
+            }
+
+            if(entity is not null && _dbContext.GetEntityState(entity) == EntityState.Modified 
+                && typeof(IAuditableEntity).IsAssignableFrom(typeof(T)))
+            {
+                IAuditableEntity auditableEntity = (IAuditableEntity)entity;
+                auditableEntity.ModifyBy(_actor);
             }
 
             return await _dbContext.SaveAsync(_actor, token);
