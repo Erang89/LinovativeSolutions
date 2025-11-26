@@ -26,12 +26,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Test.Web.Api\" />
     <Folder Include="Test.Service.Core\" />
 	<Content Include="..\LinoVative.Web.Api\Resources\**\*.json" Link="Resources\%(RecursiveDir)%(Filename)%(Extension)">
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		<CopyToPublishDirectory>Always</CopyToPublishDirectory>
 	</Content>
+	<Folder Include="Test.Web.Api\ValidatorModules\" />
   </ItemGroup>
 
   <ItemGroup>

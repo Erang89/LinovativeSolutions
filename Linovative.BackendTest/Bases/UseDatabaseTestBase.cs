@@ -15,7 +15,7 @@ using Microsoft.Extensions.Localization;
 
 namespace Linovative.BackendTest.Bases
 {
-    public class UseDatabaseTestBase
+    public class UseDatabaseTestBase : IDisposable
     {
         private readonly SqliteConnection _connection;
         private readonly DbContextOptions<AppDbContext> _options;
@@ -38,10 +38,12 @@ namespace Linovative.BackendTest.Bases
                 .UseSqlite(_connection)
                 .Options;
 
-            var ctx = new AppDbContext(_options);
-            ctx.Database.EnsureCreated();
-
-            _actor = CreateActor(ctx);
+            using (var ctx = new AppDbContext(_options))
+            {
+                ctx.Database.EnsureCreated();
+                _actor = CreateActor(ctx);
+            };
+           
             _mapper = CreateMapper();
             _localizer = CreateStringLocalizer();
             _langService = CreateLanguaService();
@@ -78,7 +80,6 @@ namespace Linovative.BackendTest.Bases
         IStringLocalizer CreateStringLocalizer()
         {
             var filePath = Path.Combine(AppContext.BaseDirectory, "Resources", "common");
-            var filePathValidation = Path.Combine(AppContext.BaseDirectory, "Resources", "en");
             return new JsonStringLocalizer(filePath, "validation");
         }
 
