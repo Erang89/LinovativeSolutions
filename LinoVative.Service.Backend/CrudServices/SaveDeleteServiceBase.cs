@@ -56,6 +56,11 @@ namespace LinoVative.Service.Backend.CrudServices
                     entityToDelete.Delete(_actor);
                 else
                     _dbSet.Remove(entity);
+
+                if(entity is IAuditableEntity auditable)
+                {
+                    auditable.ModifyBy(_actor);
+                }
             }
 
             await BeforeSaveDelete(request, entities, token);
