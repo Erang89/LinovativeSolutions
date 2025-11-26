@@ -23,7 +23,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.Units
             };
 
 
-            // Action
+            // Act
             await createHandler.Handle(createCommand, cts.Token);
             var unit = dbContext.ItemUnits.Where(x => x.Id == createCommand.Id).FirstOrDefault();
             
@@ -46,7 +46,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.Units
             var updateHandler = new UpdateItemUnitHandlerService(dbContext, _actor, _mapper, _appCache, _localizer);
             var updateCommand = new UpdateItemUnitCommand() { Id = createCommand.Id, Name = "Test Update" };
             
-            // Action
+            // Act
             var updateResult = await updateHandler.Handle(updateCommand, cts.Token);
             unit = dbContext.ItemUnits.FirstOrDefault(x => x.Id == updateCommand.Id);
 
@@ -69,7 +69,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.Units
             var deleteHandler = new DeleteItemUnitHandlerService(dbContext, _actor, _mapper, _appCache, _localizer);
             var deleteCommand = new DeleteItemUnitCommand() { Id = createCommand.Id };
 
-            // Action
+            // Act
             await deleteHandler.Handle(deleteCommand, cts.Token);
             unit = dbContext.ItemUnits.FirstOrDefault(x => x.Id == updateCommand.Id);
 

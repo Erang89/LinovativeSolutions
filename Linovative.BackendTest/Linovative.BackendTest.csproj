@@ -31,12 +31,12 @@
 		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		<CopyToPublishDirectory>Always</CopyToPublishDirectory>
 	</Content>
-	<Folder Include="Test.Web.Api\ValidatorModules\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LinoVative.Service.Backend\LinoVative.Service.Backend.csproj" />
     <ProjectReference Include="..\LinoVative.Service.Core\LinoVative.Service.Core.csproj" />
+    <ProjectReference Include="..\LinoVative.Web.Api\LinoVative.Web.Api.csproj" />
   </ItemGroup>
 
 </Project>

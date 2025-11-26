@@ -79,7 +79,7 @@ namespace Linovative.BackendTest.Bases
 
         IStringLocalizer CreateStringLocalizer()
         {
-            var filePath = Path.Combine(AppContext.BaseDirectory, "Resources", "common");
+            var filePath = Path.Combine(AppContext.BaseDirectory, "Resources");
             return new JsonStringLocalizer(filePath, "validation");
         }
 
