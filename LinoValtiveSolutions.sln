@@ -42,6 +42,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.Setting
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.POSCashierComponent", "Linovative.Frontend.POSCashierComponent\Linovative.Frontend.POSCashierComponent.csproj", "{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.BackendTest", "Linovative.BackendTest\Linovative.BackendTest.csproj", "{74E135E1-BDED-4767-BB6A-FBDB96112E0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,10 @@ Global
 		{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74E135E1-BDED-4767-BB6A-FBDB96112E0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74E135E1-BDED-4767-BB6A-FBDB96112E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74E135E1-BDED-4767-BB6A-FBDB96112E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74E135E1-BDED-4767-BB6A-FBDB96112E0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +129,7 @@ Global
 		{D69ECA81-1C4B-488B-9F01-D3B87D8F9D07} = {2D737806-289A-46C3-9531-09D35BAF092A}
 		{1007880A-BCE5-4566-AD87-03B0EBB4DE81} = {2D737806-289A-46C3-9531-09D35BAF092A}
 		{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC} = {2D737806-289A-46C3-9531-09D35BAF092A}
+		{74E135E1-BDED-4767-BB6A-FBDB96112E0D} = {82900310-D21A-497F-877F-D058AA74A317}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {88F8BFDC-EF8A-4319-93F5-575FCBC246F8}
