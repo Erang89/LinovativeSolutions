@@ -2,6 +2,7 @@
 using Linovative.Shared.Interface;
 using Linovative.Shared.Interface.Enums;
 using LinoVative.Service.Backend.ValidatorServices;
+using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Items;
 using LinoVative.Service.Core.OrderTypes;
 using LinoVative.Service.Core.Outlets;
@@ -247,6 +248,37 @@ namespace Linovative.BackendTest.Test.Service.Backend.ValidatorServices
             // Assert
             Assert.True(result1);
             Assert.False(result2);
+
+            await Task.CompletedTask;
+        }
+
+
+        [Fact]
+        public async Task CheckIfAccountExit()
+        {
+            // Arrange
+            var dbContext = CreateContext();
+            var group = new COAGroup() { Name = "COA Test", CompanyId = _actor.CompanyId, Type = COATypes.Asset };
+            var otherGroup = new COAGroup() { Name = "Other COA", CompanyId = _actor.CompanyId, Type = COATypes.Asset };
+
+            var account = new Account() {GroupId = group.Id, Id = Guid.NewGuid(), Name = "Account Test", CompanyId = _actor.CompanyId };
+            var otherAccount = new Account() {GroupId = otherGroup.Id, Id = Guid.NewGuid(), Name = "Other Account", CompanyId = Guid.NewGuid() };
+            dbContext.Accounts.Add(account);
+            dbContext.Accounts.Add(otherAccount);
+            dbContext.CoaGroups.Add(group);
+            dbContext.CoaGroups.Add(otherGroup);
+            await dbContext.SaveAsync(_actor);
+            IEntityIDValidatorService service = new EntityIDValidationService(dbContext);
+
+            // Act
+            var result1 = service.IsValid(EntityTypes.Account, account.Id, _actor);
+            var result2 = service.IsValid(EntityTypes.Account, otherAccount.Id, _actor);
+            var result3 = service.IsValid(EntityTypes.Account, Guid.NewGuid(), _actor);
+
+            // Assert
+            Assert.True(result1);
+            Assert.False(result2);
+            Assert.False(result3);
 
             await Task.CompletedTask;
         }
