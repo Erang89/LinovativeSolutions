@@ -230,8 +230,11 @@ namespace Linovative.BackendTest.Test.Service.Backend.ValidatorServices
         {
             // Arrange
             var dbContext = CreateContext();
-            var shift = new Shift() { Id = Guid.NewGuid(), Name = "Shift Test", CompanyId = _actor.CompanyId };
-            var otherShift = new Shift() { Id = Guid.NewGuid(), Name = "Other Shift", CompanyId = Guid.NewGuid() };
+            var startTime = new TimeSpan(1, 0, 0);
+            var endTime = new TimeSpan(10, 0, 0);
+
+            var shift = new Shift() { Id = Guid.NewGuid(), Name = "Shift Test", CompanyId = _actor.CompanyId, StartTime = startTime, EndTime = endTime };
+            var otherShift = new Shift() { Id = Guid.NewGuid(), Name = "Other Shift", CompanyId = Guid.NewGuid(), StartTime = startTime, EndTime = endTime };
             dbContext.Shifts.Add(shift);
             dbContext.Shifts.Add(otherShift);
             await dbContext.SaveAsync(_actor);
