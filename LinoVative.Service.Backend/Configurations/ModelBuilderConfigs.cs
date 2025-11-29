@@ -307,6 +307,29 @@ namespace LinoVative.Service.Backend.Configurations
                 x.HasOne(x => x.ItemCategoryBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemCategoryBulkUploadId).IsRequired();
             });
 
+            modelBuilder.Entity<ItemBulkUpload>(x =>
+            {
+                x.ToTable("ItemBulkUpload", "temp");
+                x.Property(x => x.headerColum1).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum2).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum3).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum4).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum5).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum6).HasColumnType("varchar(100)");
+            });
+
+            modelBuilder.Entity<ItemBulkUploadDetail>(x =>
+            {
+                x.ToTable("ItemBulkUploadDetail", "temp");
+                x.Property(x => x.Column1).HasColumnType("varchar(100)");
+                x.Property(x => x.Column2).HasColumnType("varchar(100)");
+                x.Property(x => x.Column3).HasColumnType("varchar(100)");
+                x.Property(x => x.Column4).HasColumnType("varchar(100)");
+                x.Property(x => x.Column5).HasColumnType("varchar(100)");
+                x.Property(x => x.Column6).HasColumnType("varchar(100)");
+                x.HasOne(x => x.ItemBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemBulkUploadId).IsRequired();
+            });
+
         }
     }
 }
