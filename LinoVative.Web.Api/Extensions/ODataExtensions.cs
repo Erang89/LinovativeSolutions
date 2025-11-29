@@ -42,6 +42,7 @@ namespace LinoVative.Web.Api.Extensions
             ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
             modelBuilder.EnableLowerCamelCase();
 
+            // Master Datas
             modelBuilder.EntitySet<ItemUnitDto>("ItemUnits");
             modelBuilder.EntitySet<ItemGroupDto>("ItemGroups");
             modelBuilder.EntitySet<ItemCategoryViewDto>("ItemCategories");
@@ -59,6 +60,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<AccountViewDto>("Accounts");
             modelBuilder.EntitySet<SalesCOAMappingViewDto>("SalesCOAMappings");
 
+            // Bulk Uploads Data
             modelBuilder.EntitySet<BulkUploadItemGroupDto>("BulkUploadItemGroups");
             modelBuilder.EntitySet<BulkUploadItemGroupDetailDto>("BulkUploadItemGroupDetails");
             modelBuilder.EntitySet<BulkUploadItemCategoryDetailDto>("BulkUploadItemCategoryDetails");
