@@ -290,6 +290,8 @@ namespace LinoVative.Service.Backend.Configurations
             modelBuilder.Entity<ItemGroupBulkUploadDetail>(x =>
             {
                 x.ToTable("ItemGroupBulkUploadDetail", "temp");
+                x.Property(x => x.Column1).HasColumnType("varchar(100)");
+                x.Property(x => x.Column2).HasColumnType("varchar(100)");
                 x.HasOne(x => x.ItemGroupBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemGroupBulkUploadId).IsRequired();
             });
 
@@ -304,6 +306,8 @@ namespace LinoVative.Service.Backend.Configurations
             modelBuilder.Entity<ItemCategoryBulkUploadDetail>(x =>
             {
                 x.ToTable("ItemCategoryBulkUploadDetail", "temp");
+                x.Property(x => x.Column1).HasColumnType("varchar(100)");
+                x.Property(x => x.Column2).HasColumnType("varchar(100)");
                 x.HasOne(x => x.ItemCategoryBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemCategoryBulkUploadId).IsRequired();
             });
 
