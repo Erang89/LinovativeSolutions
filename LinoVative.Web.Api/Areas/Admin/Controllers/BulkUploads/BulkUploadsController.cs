@@ -32,5 +32,27 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }
         }
+
+
+        [Route("ItemCategory")]
+        [HttpPost]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UploadCategory(BulkUploadCreateItemCategoryCommand c, CancellationToken token)
+        {
+            try
+            {
+                var result = await _mediator.Send(c, token);
+                return StatusCode((int)result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
+        }
     }
 }

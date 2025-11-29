@@ -103,7 +103,8 @@ namespace LinoVative.Service.Backend.DatabaseService
 
         public DbSet<ItemGroupBulkUpload> ItemGroupBulkUploads { get; set; }
         public DbSet<ItemGroupBulkUploadDetail> ItemGroupBulkUploadDetails { get; set; }
-
+        public DbSet<ItemCategoryBulkUpload> ItemCategoryBulkUploads { get; set; }
+        public DbSet<ItemCategoryBulkUploadDetail> ItemCategoryBulkUploadDetails { get; set; }
 
         // Companies DbSet
         public DbSet<Company> Companies { get; set; }

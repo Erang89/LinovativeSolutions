@@ -19,10 +19,10 @@ namespace LinoVative.Service.Backend.CrudServices.BulkUploads
         public List<FilterCondition> Filter { get; set; } = new();
     }
 
-    public class GetAllItemCategoryQueryableDetailHandlerService : QueryServiceBase<ItemGroupBulkUploadDetail, GetAllBulkUploadGroupDetailIQueryableCommand>, IRequestHandler<GetAllBulkUploadGroupDetailIQueryableCommand, IQueryable<BulkUploadItemGroupDetailDto>>
+    public class GetAllItemGroupQueryableDetailHandlerService : QueryServiceBase<ItemGroupBulkUploadDetail, GetAllBulkUploadGroupDetailIQueryableCommand>, IRequestHandler<GetAllBulkUploadGroupDetailIQueryableCommand, IQueryable<BulkUploadItemGroupDetailDto>>
     {
 
-        public GetAllItemCategoryQueryableDetailHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
+        public GetAllItemGroupQueryableDetailHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
         {
         }
 
