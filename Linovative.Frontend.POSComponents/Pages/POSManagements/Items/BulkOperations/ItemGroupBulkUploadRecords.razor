@@ -11,6 +11,7 @@
 @inject IItemGroupService _service
 @inject IApplicationStateService _state
 @inject IBulkUploadItemGroupService _bulkItemGroup
+@inject IBulkUploadItemGroupDetailService _bulkItemGroupDetail
 
 
 @if (SelectedEntityType == BulkDataEntityTypes.Group && (
@@ -29,7 +30,7 @@
         <tbody>
             @if (group is not null)
             {
-                @foreach (var row in group?.Details ?? new())
+                @foreach (var row in details)
                 {
                     <tr>
                         <td>@row.Column1</td>
@@ -64,6 +65,7 @@
 
     // Private properties
     BulkUploadItemGroupDto? group = new();
+    List<BulkUploadItemGroupDetailDto> details = new();
     List<DataGridFilterModel> itemFilterModels { get; set; } = new();
     CancellationTokenSource cts = new();
     int currentPage = 0;
@@ -98,20 +100,36 @@
 
         var odataFilter = new ODataFilter()
             {
+                PageNumber = 1,
+                PageSize = 1,
+                FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
+            };
+
+        var odataFilterDetail = new ODataFilter()
+            {
                 PageNumber = currentPage,
                 PageSize = pageSize,
                 OrderFiled = null,
                 SortDirection = SortDirection.Ascending.ToString(),
-                Options = $"$expand=details",
                 FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
             };
         itemFilterCount = itemFilterModels.Count;
-        var result = await _bulkItemGroup.Get(odataFilter, cts.Token);
-        var records = result?.Count ?? 0;
-        var hasMod = records % pageSize > 0;
+        var task1 = _bulkItemGroup.Get(odataFilter, cts.Token);
+        var task2 = _bulkItemGroupDetail.Get(odataFilterDetail, cts.Token);
+
+        await Task.WhenAll(new List<Task>() { task1, task2 });
+
+        var result = task1.Result;
+        var result2 = task2.Result;
+
+        group = result?.Data?.FirstOrDefault() ?? new();
+        details = result2?.Data?? new();
+        
+        var records = details.Count;
+        var hasMod = details.Count % pageSize > 0;
         recordCount = records;
         pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
-        group = result?.Data?.FirstOrDefault() ?? new();
+        
         _state.NotifyStateChanged();
     }
 
