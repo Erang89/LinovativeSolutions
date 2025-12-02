@@ -65,8 +65,12 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<BulkUploadItemGroupDetailDto>("BulkUploadItemGroupDetails");
             modelBuilder.EntitySet<BulkUploadItemCategoryDto>("BulkUploadItemCategories");
             modelBuilder.EntitySet<BulkUploadItemCategoryDetailDto>("BulkUploadItemCategoryDetails");
+            modelBuilder.EntitySet<BulkUploadItemUnitDto>("BulkUploadItemUnits");
+            modelBuilder.EntitySet<BulkUploadItemUnitDetailDto>("BulkUploadItemUnitDetails");
             modelBuilder.EntitySet<BulkUploadItemDto>("BulkUploadItems");
             modelBuilder.EntitySet<BulkUploadItemDetailDto>("BulkUploadItemDetails");
+
+            
 
             return modelBuilder.GetEdmModel();
         }

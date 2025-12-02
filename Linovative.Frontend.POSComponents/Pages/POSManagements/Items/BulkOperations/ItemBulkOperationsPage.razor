@@ -261,8 +261,16 @@
     private readonly long maxFileSize = 20 * 1024 * 1024;
     async Task Upload()
     {
-        var response = await _bulkUploadService.UploadItemGroups(fileToUplaod!, cts.Token);
-        if (response)
+        Response<Guid?>? response = SelectedEntityType switch
+        {
+            BulkDataEntityTypes.Group => await _bulkUploadService.UploadItemGroups(fileToUplaod!, cts.Token),
+            BulkDataEntityTypes.Category => await _bulkUploadService.UploadItemCategories(fileToUplaod!, cts.Token),
+            BulkDataEntityTypes.ItemMaster => await _bulkUploadService.UploadItems(fileToUplaod!, cts.Token),
+            BulkDataEntityTypes.Unit => await _bulkUploadService.UploadItemUnits(fileToUplaod!, cts.Token),
+            _ => null
+        };
+
+        if (response??false)
         {
             successAllert!.ShowAlert(Label("UploadSuccessMessage"));
             fileToUplaod = null;
@@ -270,7 +278,9 @@
             return;
         }
 
-        formErrorAlert?.ShowAlert(response);
+        if(response != null)
+            formErrorAlert?.ShowAlert(response);
+        
         await Task.CompletedTask;
     }
 

@@ -9,6 +9,9 @@ namespace Linovative.Frontend.Services.BulkUploads
     public interface IBulkUploadService 
     {
         public Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CancellationToken token);
+        public Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CancellationToken token);
+        public Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CancellationToken token);
+        public Task<Response<Guid?>> UploadItems(IBrowserFile file, CancellationToken token);
     }
 
     public class BulkUploadService : RequeserServiceBase, IBulkUploadService
@@ -20,7 +23,7 @@ namespace Linovative.Frontend.Services.BulkUploads
         {
         }
 
-        public async Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CancellationToken token)
+        private async Task<Response<Guid?>> UploadFile(IBrowserFile file, string endpoint, CancellationToken token)
         {
             try
             {
@@ -29,7 +32,7 @@ namespace Linovative.Frontend.Services.BulkUploads
                 var streamContent = new StreamContent(stream);
                 streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream");
                 content.Add(streamContent, "file", file.Name);
-                var httpResponse = await _httpClient.PostAsync($"{_uriPrefix}/ItemGroup", content, token);
+                var httpResponse = await _httpClient.PostAsync($"{_uriPrefix}/{endpoint}", content, token);
                 var response = await httpResponse.ToAppResponse<Guid?>(token);
                 if (response)
                     return response;
@@ -41,6 +44,26 @@ namespace Linovative.Frontend.Services.BulkUploads
                 _logger.LogError(ex, ex.Message);
                 return Response<Guid?>.Failed(Messages.GeneralErrorMessage);
             }
+        }
+
+        public async Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CancellationToken token)
+        {
+            return await UploadFile(file, "ItemGroup", token);
+        }
+
+        public async Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CancellationToken token)
+        {
+            return await UploadFile(file, "ItemCategory", token);
+        }
+
+        public async Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CancellationToken token)
+        {
+            return await UploadFile(file, "Item", token);
+        }
+
+        public async Task<Response<Guid?>> UploadItems(IBrowserFile file, CancellationToken token)
+        {
+            return await UploadFile(file, "Item", token);
         }
     }
 }
