@@ -9,7 +9,7 @@ using LinoVative.Shared.Dto.Commons;
 using Mapster;
 using MapsterMapper;
 
-namespace LinoVative.Service.Backend.CrudServices.BulkUploads
+namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Queries
 {
     public class GetAllBulkUploadGroupIQueryableCommand : IRequest<IQueryable<BulkUploadItemGroupDto>>
     {

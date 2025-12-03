@@ -13,7 +13,7 @@
 @inject IBulkUploadItemGroupDetailService _bulkItemGroupDetail
 
 
-@if (SelectedEntityType == BulkDataEntityTypes.Group && (
+@if (SelectedEntityType == BulkDataEntityTypes.Group && details.Count > 0 && (
      SelectedActionTypes == BulkActionTypes.Create_Upload ||
      SelectedActionTypes == BulkActionTypes.Update_Upload))
 {
@@ -38,9 +38,9 @@
                 }
                 <tr>
                     <td colspan="5">
-                        @if (group?.Details.Count  > 0)
+                        @if (group?.Details.Count > 0)
                         {
-                            <MudText>@(recordCount < pageSize ? recordCount : pageSize) of @recordCount records</MudText>
+                            <MudText>@(recordCount<pageSize? recordCount : pageSize) of @recordCount records</MudText>
                         }
                     </td>
                 </tr>
@@ -48,6 +48,15 @@
         </tbody>
         <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
     </MudSimpleTable>
+
+    <LinovativeGap />
+    <div>
+        <MudButton Disabled="@(group is null || details.Count == 0)"
+                   Variant="ComponentSettings.AddNewButtonVariant"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   OnClick="@DeleteRecords"
+                   Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
+    </div>
 
 }
 
@@ -86,6 +95,28 @@
         itemFilterModels = fieldValues;
     }
 
+    async Task DeleteRecords()
+    {
+        if (group == null)
+            return;
+
+        var cts = new CancellationTokenSource();
+        Func<Task<Response>>? removeFunc = SelectedActionTypes switch
+        {
+            BulkActionTypes.Create_Upload => ()=> _bulkItemGroup.RemoveBulkCreate(cts.Token),
+            BulkActionTypes.Update_Upload => () => _bulkItemGroup.RemoveBulkUpdate(cts.Token),
+            BulkActionTypes.Delete_Upload => () => _bulkItemGroup.RemoveBulkDelete(cts.Token),
+            _ => null
+        };
+
+        if (removeFunc != null) 
+        {
+            await removeFunc!();
+            Reset();
+        }
+
+        cts.Dispose();
+    }
 
     public async Task LoadData()
     {
@@ -98,20 +129,20 @@
         };
 
         var odataFilter = new ODataFilter()
-            {
-                PageNumber = 1,
-                PageSize = 1,
-                FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
-            };
+        {
+            PageNumber = 1,
+            PageSize = 1,
+            FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
+        };
 
         var odataFilterDetail = new ODataFilter()
-            {
-                PageNumber = currentPage,
-                PageSize = pageSize,
-                OrderFiled = null,
-                SortDirection = SortDirection.Ascending.ToString(),
-                FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
-            };
+        {
+            PageNumber = currentPage,
+            PageSize = pageSize,
+            OrderFiled = null,
+            SortDirection = SortDirection.Ascending.ToString(),
+            FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
+        };
         itemFilterCount = itemFilterModels.Count;
         var task1 = _bulkItemGroup.Get(odataFilter, cts.Token);
         var task2 = _bulkItemGroupDetail.Get(odataFilterDetail, cts.Token);
@@ -122,13 +153,13 @@
         var result2 = task2.Result;
 
         group = result?.Data?.FirstOrDefault() ?? new();
-        details = result2?.Data?? new();
-        
+        details = result2?.Data ?? new();
+
         var records = details.Count;
         var hasMod = details.Count % pageSize > 0;
         recordCount = records;
         pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
-        
+
         _state.NotifyStateChanged();
     }
 

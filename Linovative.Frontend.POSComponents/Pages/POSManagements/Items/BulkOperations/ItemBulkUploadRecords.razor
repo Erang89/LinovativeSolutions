@@ -13,7 +13,7 @@
 @inject IBulkUploadItemDetailService _bulkItemDetail
 
 
-@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && (
+@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && details.Count > 0 && (
     SelectedActionTypes == BulkActionTypes.Create_Upload ||
     SelectedActionTypes == BulkActionTypes.Update_Upload))
 {
@@ -48,6 +48,15 @@
         </tbody>
         <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
     </MudSimpleTable>
+
+    <LinovativeGap />
+    <div>
+        <MudButton Disabled="@(item is null || details.Count == 0)"
+                   Variant="ComponentSettings.AddNewButtonVariant"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   OnClick="@DeleteRecords"
+                   Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
+    </div>
 
 }
 
@@ -84,6 +93,29 @@
     void OnItemFilterValueChanged(List<DataGridFilterModel> fieldValues)
     {
         itemFilterModels = fieldValues;
+    }
+
+    async Task DeleteRecords()
+    {
+        if (item == null)
+            return;
+
+        var cts = new CancellationTokenSource();
+        Func<Task<Response>>? removeFunc = SelectedActionTypes switch
+        {
+            BulkActionTypes.Create_Upload => ()=> _bulkItem.RemoveBulkCreate(cts.Token),
+            BulkActionTypes.Update_Upload => () => _bulkItem.RemoveBulkUpdate(cts.Token),
+            BulkActionTypes.Delete_Upload => () => _bulkItem.RemoveBulkDelete(cts.Token),
+            _ => null
+        };
+
+        if (removeFunc != null) 
+        {
+            await removeFunc!();
+            Reset();
+        }
+
+        cts.Dispose();
     }
 
 

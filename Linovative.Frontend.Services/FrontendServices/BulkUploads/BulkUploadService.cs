@@ -19,7 +19,7 @@ namespace Linovative.Frontend.Services.BulkUploads
 
         private readonly long maxFileSize = 20 * 1024 * 1024; // 20 MB
 
-        public BulkUploadService(IHttpClientFactory httpFactory, ILogger<BulkUploadService> logger) : base(httpFactory, logger, "BulkUploads")
+        public BulkUploadService(IHttpClientFactory httpFactory, ILogger<BulkUploadService> logger) : base(httpFactory, logger, "/")
         {
         }
 
@@ -32,7 +32,7 @@ namespace Linovative.Frontend.Services.BulkUploads
                 var streamContent = new StreamContent(stream);
                 streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream");
                 content.Add(streamContent, "file", file.Name);
-                var httpResponse = await _httpClient.PostAsync($"{_uriPrefix}/{endpoint}", content, token);
+                var httpResponse = await _httpClient.PostAsync($"{endpoint}/upload", content, token);
                 var response = await httpResponse.ToAppResponse<Guid?>(token);
                 if (response)
                     return response;
@@ -48,22 +48,22 @@ namespace Linovative.Frontend.Services.BulkUploads
 
         public async Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CancellationToken token)
         {
-            return await UploadFile(file, "ItemGroup", token);
+            return await UploadFile(file, "BulkUploadItemGroups", token);
         }
 
         public async Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CancellationToken token)
         {
-            return await UploadFile(file, "ItemCategory", token);
+            return await UploadFile(file, "BulkUploadItemCategories", token);
         }
 
         public async Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CancellationToken token)
         {
-            return await UploadFile(file, "Item", token);
+            return await UploadFile(file, "BulkUploadItemUnits", token);
         }
 
         public async Task<Response<Guid?>> UploadItems(IBrowserFile file, CancellationToken token)
         {
-            return await UploadFile(file, "Item", token);
+            return await UploadFile(file, "BulkUploadItems", token);
         }
     }
 }

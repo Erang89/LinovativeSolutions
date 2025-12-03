@@ -106,7 +106,7 @@
 }
 
 
-
+<!-- Records Filters -->
 <ItemAdvanceActoionPageItemFilterAndView SelectedOperation=@SelectedOperation
                                          SelectedEntityType=@SelectedEntityType
                                          SelectedActionTypes=@SelectedActionTypes
@@ -131,6 +131,8 @@
                                          ShowRecord=@ShowRecord
                                          @ref=unitView />
 
+
+<!-- Display Records -->
 <ItemGroupBulkUploadRecords SelectedEntityType=@SelectedEntityType
                             SelectedActionTypes=@SelectedActionTypes
                             @ref=@bulkGroupRecords />
@@ -147,6 +149,8 @@
                             SelectedActionTypes=@SelectedActionTypes
                             @ref=@bulkItemUnitRecords />
 
+
+<!-- Buttons -->
 <LinovativeGap />
 <div class="d-flex justify-start flex-grow-1 gap-4">
     @if ((SelectedEntityType is BulkDataEntityTypes.ItemMaster or BulkDataEntityTypes.Category or BulkDataEntityTypes.Group or BulkDataEntityTypes.Unit) && (

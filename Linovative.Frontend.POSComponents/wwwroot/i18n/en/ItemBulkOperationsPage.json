@@ -11,6 +11,7 @@
   "Button.ShowRecord.Text": "Show Record",
   "Button.Download.Text": "Download",
   "Button.Upload.Text": "Upload",
+  "Button.ClearRecord.Text": "Clear all uploaded record(s)",
 
   "Column.ItemCode.Text": "Item Code",
   "Column.ItemName.Text": "Item Name",

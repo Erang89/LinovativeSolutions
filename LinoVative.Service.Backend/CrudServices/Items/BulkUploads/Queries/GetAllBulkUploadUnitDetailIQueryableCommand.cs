@@ -6,10 +6,10 @@ using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto.BulkUploads;
 using LinoVative.Shared.Dto.Commons;
-using Mapster; 
+using Mapster;
 using MapsterMapper;
 
-namespace LinoVative.Service.Backend.CrudServices.BulkUploads
+namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Queries
 {
     public class GetAllBulkUploadUnitDetailIQueryableCommand : IRequest<IQueryable<BulkUploadItemUnitDetailDto>>
     {
