@@ -9,11 +9,11 @@
 
 @inherits POSManagementPageBase
 @inject IApplicationStateService _state
-@inject IBulkUploadItemCategoryService _bulkItemCategory
-@inject IBulkUploadItemCategoryDetailService _bulkItemCategoryDetail
+@inject IBulkUploadItemService _bulkItem
+@inject IBulkUploadItemDetailService _bulkItemDetail
 
 
-@if (SelectedEntityType == BulkDataEntityTypes.Category && (
+@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && (
     SelectedActionTypes == BulkActionTypes.Create_Upload ||
     SelectedActionTypes == BulkActionTypes.Update_Upload))
 {
@@ -22,8 +22,8 @@
     <MudSimpleTable Style="overflow-x: auto;">
         <thead>
             <tr>
-                <th>@category?.headerColum1</th>
-                <th>@category?.headerColum2</th>
+                <th>@item?.headerColum1</th>
+                <th>@item?.headerColum2</th>
             </tr>
         </thead>
         <tbody>
@@ -63,12 +63,12 @@
     protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
 
     // Private properties
-    BulkUploadItemCategoryDto? category = new();
-    List<BulkUploadItemCategoryDetailDto> details = new();
+    BulkUploadItemDto? item = new();
+    List<BulkUploadItemDetailDto> details = new();
     List<DataGridFilterModel> itemFilterModels { get; set; } = new();
     CancellationTokenSource cts = new();
     int currentPage = 0;
-    int pageSize = 10;
+    readonly int pageSize = 10;
     int pageCount = 0;
     int recordCount = 0;
     int itemFilterCount = 0;
@@ -89,6 +89,7 @@
 
     public async Task LoadData()
     {
+        cts = new();
         CrudOperations operation = SelectedOperation switch
         {
             BulkOperations.Create => CrudOperations.Create,
@@ -113,15 +114,15 @@
                 FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
             };
         itemFilterCount = itemFilterModels.Count;
-        var task1 = _bulkItemCategory.Get(odataFilter, cts.Token);
-        var task2 = _bulkItemCategoryDetail.Get(odataFilterDetail, cts.Token);
+        var task1 = _bulkItem.Get(odataFilter, cts.Token);
+        var task2 = _bulkItemDetail.Get(odataFilterDetail, cts.Token);
 
         await Task.WhenAll(new List<Task>() { task1, task2 });
 
         var result = task1.Result;
         var result2 = task2.Result;
 
-        category = result?.Data?.FirstOrDefault() ?? new();
+        item = result?.Data?.FirstOrDefault() ?? new();
         details = result2?.Data ?? new();
 
         var records = details.Count;
@@ -130,6 +131,8 @@
         pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
 
         _state.NotifyStateChanged();
+
+        cts.Dispose();
     }
 
     async Task OnSelectedPageChanged(int page)
@@ -148,7 +151,7 @@
 
     public void Reset()
     {
-        category = null;
+        item = null;
         currentPage = 1;
         pageCount = 0;
         recordCount = 0;

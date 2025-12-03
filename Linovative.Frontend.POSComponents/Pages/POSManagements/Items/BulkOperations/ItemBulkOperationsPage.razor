@@ -30,6 +30,8 @@
 <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
 <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
 
+
+<!-- Operation Dropdown -->
 <div style="width: 400px">
     <MudSelect Value="@SelectedOperation"
                ValueChanged="@((e) => SetValue(() => {
@@ -45,14 +47,13 @@
 </div>
 
 
+<!-- Entity Type Dropdown -->
 <LinovativeGap />
 <div style="width: 400px">
-    <MudSelect Value="@SelectedEntityType" T="BulkDataEntityTypes?"
-               ValueChanged="((e) =>
-        {
-        SetValue(() => SelectedEntityType = e);
-        fileToUplaod = null;
-        })"
+    <MudSelect 
+        Value="@SelectedEntityType" 
+        T="BulkDataEntityTypes?"
+        ValueChanged="@OnEntityTypeChange"
         Disabled="@(SelectedOperation is null)"
         Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
         <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.ItemMaster">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.ItemMaster}")</MudSelectItem>
@@ -79,6 +80,7 @@
 
 
 
+<!-- File Browse -->
 @if (SelectedEntityType is not null && (SelectedActionTypes == BulkActionTypes.Delete_Upload ||
    SelectedActionTypes == BulkActionTypes.Create_Upload ||
    SelectedActionTypes == BulkActionTypes.Update_Upload))
@@ -132,6 +134,18 @@
 <ItemGroupBulkUploadRecords SelectedEntityType=@SelectedEntityType
                             SelectedActionTypes=@SelectedActionTypes
                             @ref=@bulkGroupRecords />
+
+<ItemCategoryBulkUploadRecords SelectedEntityType=@SelectedEntityType
+                            SelectedActionTypes=@SelectedActionTypes
+                            @ref=@bulkCategoryRecords />
+
+<ItemBulkUploadRecords SelectedEntityType=@SelectedEntityType
+                            SelectedActionTypes=@SelectedActionTypes
+                            @ref=@bulkItemRecords />
+
+<ItemUnitBulkUploadRecords SelectedEntityType=@SelectedEntityType
+                            SelectedActionTypes=@SelectedActionTypes
+                            @ref=@bulkItemUnitRecords />
 
 <LinovativeGap />
 <div class="d-flex justify-start flex-grow-1 gap-4">
@@ -212,6 +226,9 @@
     private ItemAdvanceActoionPageGroupFilterAndView groupView { get; set; } = default!;
     private ItemAdvanceActoionPageUnitFilterAndView unitView { get; set; } = default!;
     private ItemGroupBulkUploadRecords bulkGroupRecords { get; set; } = default!;
+    private ItemCategoryBulkUploadRecords bulkCategoryRecords { get; set; } = default!;
+    private ItemBulkUploadRecords bulkItemRecords { get; set; } = default!;
+    private ItemUnitBulkUploadRecords bulkItemUnitRecords { get; set; } = default!;
 
     private bool ShowRecord { get; set; }
     private CancellationTokenSource cts = new();
@@ -280,7 +297,7 @@
 
         if(response != null)
             formErrorAlert?.ShowAlert(response);
-        
+
         await Task.CompletedTask;
     }
 
@@ -288,15 +305,33 @@
     {
         SelectedActionTypes = value;
         fileToUplaod = null;
-
         await LoadDataUpload();
 
     }
 
+
+    async Task OnEntityTypeChange(BulkDataEntityTypes? value)
+    {
+            SetValue(() => SelectedEntityType = value);
+            fileToUplaod = null;
+            await LoadDataUpload();
+    }
+
     async Task LoadDataUpload()
     {
-        if (SelectedEntityType == BulkDataEntityTypes.Group && (SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
-            await bulkGroupRecords.LoadData();
+        if (!(SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
+            return;
+
+        var actions = new Dictionary<BulkDataEntityTypes, Func<Task>>()
+        {
+            {BulkDataEntityTypes.Group, bulkGroupRecords.LoadData},    
+            {BulkDataEntityTypes.Category, bulkCategoryRecords.LoadData},    
+            {BulkDataEntityTypes.ItemMaster, bulkItemRecords.LoadData},    
+            {BulkDataEntityTypes.Unit, bulkItemUnitRecords.LoadData},    
+        };
+
+        var task = actions[SelectedEntityType!.Value];
+        await task();
     }
 
     async Task OnButtonViewItemClicked()
