@@ -13,7 +13,7 @@
 @inject IBulkUploadItemUnitDetailService _bulkItemUnitDetail
 
 
-@if (SelectedEntityType == BulkDataEntityTypes.Unit && details.Count > 0 && (
+@if (SelectedEntityType == BulkDataEntityTypes.Unit && (
     SelectedActionTypes == BulkActionTypes.Create_Upload ||
     SelectedActionTypes == BulkActionTypes.Update_Upload))
 {
@@ -22,8 +22,8 @@
     <MudSimpleTable Style="overflow-x: auto;">
         <thead>
             <tr>
-                <th>@unit?.headerColum1</th>
-                <th>@unit?.headerColum2</th>
+                <th>@(unit?.headerColum1?? $"{(Label("Column"))} 1")</th>
+                <th>@(unit?.headerColum2?? $"{(Label("Column"))} 2")</th>
             </tr>
         </thead>
         <tbody>
@@ -46,7 +46,23 @@
                 </tr>
             }
         </tbody>
-        <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
+        
+        @if (details?.Count == 0)
+        {
+            <tbody>
+                <tr>
+                    <td colspan="6"><MudText Typo="Typo.body2">@Label("NoRecordUploaded")</MudText></td>
+                </tr>
+            </tbody>
+        }
+        <tbody>
+            <tr>
+                <td colspan="6">
+                    <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
+                </td>
+            </tr>
+        </tbody>
+
     </MudSimpleTable>
 
     <LinovativeGap />
@@ -57,6 +73,7 @@
                    OnClick="@DeleteRecords"
                    Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
     </div>
+
 }
 
 

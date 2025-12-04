@@ -13,7 +13,7 @@
 @inject IBulkUploadItemDetailService _bulkItemDetail
 
 
-@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && details.Count > 0 && (
+@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && (
     SelectedActionTypes == BulkActionTypes.Create_Upload ||
     SelectedActionTypes == BulkActionTypes.Update_Upload))
 {
@@ -22,8 +22,12 @@
     <MudSimpleTable Style="overflow-x: auto;">
         <thead>
             <tr>
-                <th>@item?.headerColum1</th>
-                <th>@item?.headerColum2</th>
+                <th>@(item?.headerColum1 ?? $"{Label("Column")} 1")</th>
+                <th>@(item?.headerColum2 ?? $"{Label("Column")} 2")</th>
+                <th>@(item?.headerColum3 ?? $"{Label("Column")} 3")</th>
+                <th>@(item?.headerColum4 ?? $"{Label("Column")} 4")</th>
+                <th>@(item?.headerColum5 ?? $"{Label("Column")} 5")</th>
+                <th>@(item?.headerColum6 ?? $"{Label("Column")} 6")</th>
             </tr>
         </thead>
         <tbody>
@@ -34,20 +38,40 @@
                     <tr>
                         <td>@row.Column1</td>
                         <td>@row.Column2</td>
+                        <td>@row.Column3</td>
+                        <td>@row.Column4</td>
+                        <td>@row.Column5</td>
+                        <td>@row.Column6</td>
                     </tr>
                 }
                 <tr>
                     <td colspan="5">
                         @if (details.Count > 0)
                         {
-                            <MudText>@(recordCount < pageSize ? recordCount : pageSize) of @recordCount records</MudText>
+                            <MudText>@(recordCount<pageSize? recordCount : pageSize) of @recordCount records</MudText>
                         }
                     </td>
                 </tr>
             }
         </tbody>
-        <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
+
+        @if(details?.Count == 0)
+        {
+            <tbody>
+                <tr>
+                    <td colspan="6"><MudText Typo="Typo.body2">@Label("NoRecordUploaded")</MudText></td>
+                </tr>
+            </tbody>
+        }
+        <tbody>
+            <tr>
+                <td colspan="6">
+                    <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
+                </td>
+            </tr>
+        </tbody>       
     </MudSimpleTable>
+
 
     <LinovativeGap />
     <div>
@@ -103,13 +127,13 @@
         var cts = new CancellationTokenSource();
         Func<Task<Response>>? removeFunc = SelectedActionTypes switch
         {
-            BulkActionTypes.Create_Upload => ()=> _bulkItem.RemoveBulkCreate(cts.Token),
+            BulkActionTypes.Create_Upload => () => _bulkItem.RemoveBulkCreate(cts.Token),
             BulkActionTypes.Update_Upload => () => _bulkItem.RemoveBulkUpdate(cts.Token),
             BulkActionTypes.Delete_Upload => () => _bulkItem.RemoveBulkDelete(cts.Token),
             _ => null
         };
 
-        if (removeFunc != null) 
+        if (removeFunc != null)
         {
             await removeFunc!();
             Reset();
@@ -131,20 +155,20 @@
         };
 
         var odataFilter = new ODataFilter()
-            {
-                PageNumber = 1,
-                PageSize = 1,
-                FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
-            };
+        {
+            PageNumber = 1,
+            PageSize = 1,
+            FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
+        };
 
         var odataFilterDetail = new ODataFilter()
-            {
-                PageNumber = currentPage,
-                PageSize = pageSize,
-                OrderFiled = null,
-                SortDirection = SortDirection.Ascending.ToString(),
-                FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
-            };
+        {
+            PageNumber = currentPage,
+            PageSize = pageSize,
+            OrderFiled = null,
+            SortDirection = SortDirection.Ascending.ToString(),
+            FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
+        };
         itemFilterCount = itemFilterModels.Count;
         var task1 = _bulkItem.Get(odataFilter, cts.Token);
         var task2 = _bulkItemDetail.Get(odataFilterDetail, cts.Token);

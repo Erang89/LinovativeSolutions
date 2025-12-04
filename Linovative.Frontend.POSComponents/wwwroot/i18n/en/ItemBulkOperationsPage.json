@@ -7,7 +7,11 @@
   "Actions.Label": "Actions",
   "BrowseFile.Label": "Browse file",
   "File.Label": "File",
+  "NoRecordUploaded.Label": "No records uploaded yet!",
   "UploadSuccessMessage.Label": "File uploaded successfully",
+  "Column.Label": "Column",
+
+
   "Button.ShowRecord.Text": "Show Record",
   "Button.Download.Text": "Download",
   "Button.Upload.Text": "Upload",
