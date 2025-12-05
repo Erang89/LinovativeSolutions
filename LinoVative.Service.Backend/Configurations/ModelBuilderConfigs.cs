@@ -284,14 +284,12 @@ namespace LinoVative.Service.Backend.Configurations
             {
                 x.ToTable("ItemGroupBulkUpload", "temp");
                 x.Property(x => x.headerColum1).HasColumnType("varchar(100)");
-                x.Property(x => x.headerColum2).HasColumnType("varchar(100)");
             });
 
             modelBuilder.Entity<ItemGroupBulkUploadDetail>(x =>
             {
                 x.ToTable("ItemGroupBulkUploadDetail", "temp");
                 x.Property(x => x.Column1).HasColumnType("varchar(100)");
-                x.Property(x => x.Column2).HasColumnType("varchar(100)");
                 x.HasOne(x => x.ItemGroupBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemGroupBulkUploadId).IsRequired();
             });
 
@@ -315,14 +313,12 @@ namespace LinoVative.Service.Backend.Configurations
             {
                 x.ToTable("ItemUnitBulkUpload", "temp");
                 x.Property(x => x.headerColum1).HasColumnType("varchar(100)");
-                x.Property(x => x.headerColum2).HasColumnType("varchar(100)");
             });
 
             modelBuilder.Entity<ItemUnitBulkUploadDetail>(x =>
             {
                 x.ToTable("ItemUnitBulkUploadDetail", "temp");
                 x.Property(x => x.Column1).HasColumnType("varchar(100)");
-                x.Property(x => x.Column2).HasColumnType("varchar(100)");
                 x.HasOne(x => x.ItemUnitBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemUnitBulkUploadId).IsRequired();
             });
 

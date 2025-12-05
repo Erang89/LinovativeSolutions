@@ -45,8 +45,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
             {
                 var header = worksheet.Row(1);
                 var header1 = GetValueString(header.Cell(1));
-                var header2 = GetValueString(header.Cell(2));
-                exisitingUpload = new ItemGroupBulkUpload() { headerColum1 = header1, headerColum2 = header2, CompanyId = _actor.CompanyId, UserId = _actor.UserId, Operation = CrudOperations.Create};
+                exisitingUpload = new ItemGroupBulkUpload() { headerColum1 = header1, CompanyId = _actor.CompanyId, UserId = _actor.UserId, Operation = CrudOperations.Create};
                 _dbContext.ItemGroupBulkUploads.Add(exisitingUpload);
             }
 
@@ -58,7 +57,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 {
                     ItemGroupBulkUploadId = exisitingUpload.Id,
                     Column1 = GetValueString(row.Cell(1)),
-                    Column2 = GetValueString(row.Cell(2))
                 };
 
                 _dbContext.ItemGroupBulkUploadDetails.Add(detail);
@@ -148,7 +146,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 var header = worksheet.Row(1);
                 var header1 = GetValueString(header.Cell(1));
                 var header2 = GetValueString(header.Cell(2));
-                if (header1?.ToLower() != existingUpload.headerColum1?.ToLower() || header2?.ToLower() != existingUpload.headerColum2?.ToLower())
+                if (header1?.ToLower() != existingUpload.headerColum1?.ToLower())
                     return Result.Failed(_lang[$"{BulkUploadSettings.BulkUploadCommand}.InvalidHeader"]);
             }
 

@@ -38,7 +38,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Queries
                 q = q.Where(x => x.ItemGroupBulkUpload!.Operation == req.Operation);
 
             if (!string.IsNullOrEmpty(req.SearchKeyword))
-                q = q.Where(x => string.Concat(x.Column1, x.Column2).Contains(req.SearchKeyword??""));
+                q = q.Where(x => string.Concat(x.Column1).Contains(req.SearchKeyword??""));
 
             return q;
         }

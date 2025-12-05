@@ -23,7 +23,6 @@
         <thead>
             <tr>
                 <th>@(unit?.headerColum1?? $"{(Label("Column"))} 1")</th>
-                <th>@(unit?.headerColum2?? $"{(Label("Column"))} 2")</th>
             </tr>
         </thead>
         <tbody>
@@ -33,7 +32,6 @@
                 {
                     <tr>
                         <td>@row.Column1</td>
-                        <td>@row.Column2</td>
                     </tr>
                 }
                 <tr>
