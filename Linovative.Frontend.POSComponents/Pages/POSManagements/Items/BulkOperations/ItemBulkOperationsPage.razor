@@ -335,7 +335,7 @@
 
     async Task LoadDataUpload()
     {
-        if (SelectedOperation != null && !(SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
+        if (SelectedOperation != null && !(SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Delete_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
             return;
 
         var actions = new Dictionary<BulkDataEntityTypes, Func<Task>>()
