@@ -21,7 +21,7 @@
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
-<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.BulkOperations)})" />
+<ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.BulkOperations) })" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.BulkOperation" />
 <LinovativeGap />
 <MudText Typo="Typo.h6">@EntityName @(Title is null ? null : $" - {Title}")</MudText>
@@ -34,15 +34,12 @@
 <!-- Operation Dropdown -->
 <div style="width: 400px">
     <MudSelect Value="@SelectedOperation"
-               ValueChanged="@((e) => SetValue(() => {
-                        SelectedOperation = e;
-                        SelectedEntityType = null;
-                        SelectedActionTypes = null;}))"
-               T="BulkOperations?" Variant="ComponentSettings.InputVariant" Label="@Label("Operation")"
+               ValueChanged="@OnOperationChange"
+               T="BulkOperations ?" Variant="ComponentSettings.InputVariant" Label="@Label("Operation")"
                Clearable="true" FullWidth="false">
-        <MudSelectItem T="BulkOperations?" Value="BulkOperations.Create">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}")</MudSelectItem>
-        <MudSelectItem T="BulkOperations?" Value="BulkOperations.Update">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}")</MudSelectItem>
-        <MudSelectItem T="BulkOperations?" Value="BulkOperations.Delete">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Delete}")</MudSelectItem>
+        <MudSelectItem T="BulkOperations ?" Value="BulkOperations.Create">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}")</MudSelectItem>
+        <MudSelectItem T="BulkOperations ?" Value="BulkOperations.Update">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}")</MudSelectItem>
+        <MudSelectItem T="BulkOperations ?" Value="BulkOperations.Delete">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Delete}")</MudSelectItem>
     </MudSelect>
 </div>
 
@@ -50,16 +47,15 @@
 <!-- Entity Type Dropdown -->
 <LinovativeGap />
 <div style="width: 400px">
-    <MudSelect 
-        Value="@SelectedEntityType" 
-        T="BulkDataEntityTypes?"
-        ValueChanged="@OnEntityTypeChange"
-        Disabled="@(SelectedOperation is null)"
-        Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
-        <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.ItemMaster">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.ItemMaster}")</MudSelectItem>
-        <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Group">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Group}")</MudSelectItem>
-        <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Category">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Category}")</MudSelectItem>
-        <MudSelectItem T="BulkDataEntityTypes?" Value="BulkDataEntityTypes.Unit">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Unit}")</MudSelectItem>
+    <MudSelect Value="@SelectedEntityType"
+               T="BulkDataEntityTypes ?"
+               ValueChanged="@OnEntityTypeChange"
+               Disabled="@(SelectedOperation is null)"
+               Variant="ComponentSettings.InputVariant" Label="@Label("DataType")" Clearable="true" FullWidth="false">
+        <MudSelectItem T="BulkDataEntityTypes ?" Value="BulkDataEntityTypes.ItemMaster">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.ItemMaster}")</MudSelectItem>
+        <MudSelectItem T="BulkDataEntityTypes ?" Value="BulkDataEntityTypes.Group">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Group}")</MudSelectItem>
+        <MudSelectItem T="BulkDataEntityTypes ?" Value="BulkDataEntityTypes.Category">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Category}")</MudSelectItem>
+        <MudSelectItem T="BulkDataEntityTypes ?" Value="BulkDataEntityTypes.Unit">@_loc.Enum($"{nameof(BulkDataEntityTypes)}.{BulkDataEntityTypes.Unit}")</MudSelectItem>
     </MudSelect>
 </div>
 
@@ -69,11 +65,11 @@
     <MudSelect Disabled="@(SelectedOperation is null)"
                Value="@SelectedActionTypes"
                ValueChanged="@OnActionChange"
-               T="BulkActionTypes?"
+               T="BulkActionTypes ?"
                Variant="ComponentSettings.InputVariant" Label="@Label("Actions")" Clearable="true" FullWidth="false">
         @foreach (var actionType in ActionTypeSources)
         {
-            <MudSelectItem T="BulkActionTypes?" Value="actionType">@_loc.Enum($"{nameof(BulkActionTypes)}.{actionType}")</MudSelectItem>
+            <MudSelectItem T="BulkActionTypes ?" Value="actionType">@_loc.Enum($"{nameof(BulkActionTypes)}.{actionType}")</MudSelectItem>
         }
     </MudSelect>
 </div>
@@ -135,27 +131,31 @@
 <!-- Display Records -->
 <ItemGroupBulkUploadRecords SelectedEntityType=@SelectedEntityType
                             SelectedActionTypes=@SelectedActionTypes
+                            SelectedOperation=@SelectedOperation
                             @ref=@bulkGroupRecords />
 
 <ItemCategoryBulkUploadRecords SelectedEntityType=@SelectedEntityType
-                            SelectedActionTypes=@SelectedActionTypes
-                            @ref=@bulkCategoryRecords />
+                               SelectedActionTypes=@SelectedActionTypes
+                               SelectedOperation=@SelectedOperation
+                               @ref=@bulkCategoryRecords />
 
 <ItemBulkUploadRecords SelectedEntityType=@SelectedEntityType
-                            SelectedActionTypes=@SelectedActionTypes
-                            @ref=@bulkItemRecords />
+                       SelectedActionTypes=@SelectedActionTypes
+                       SelectedOperation=@SelectedOperation
+                       @ref=@bulkItemRecords />
 
 <ItemUnitBulkUploadRecords SelectedEntityType=@SelectedEntityType
-                            SelectedActionTypes=@SelectedActionTypes
-                            @ref=@bulkItemUnitRecords />
+                           SelectedActionTypes=@SelectedActionTypes
+                           SelectedOperation=@SelectedOperation
+                           @ref=@bulkItemUnitRecords />
 
 
 <!-- Buttons -->
 <LinovativeGap />
 <div class="d-flex justify-start flex-grow-1 gap-4">
     @if ((SelectedEntityType is BulkDataEntityTypes.ItemMaster or BulkDataEntityTypes.Category or BulkDataEntityTypes.Group or BulkDataEntityTypes.Unit) && (
-    SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
-    SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
+        SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
+        SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
     {
         <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
@@ -291,7 +291,7 @@
             _ => null
         };
 
-        if (response??false)
+        if (response ?? false)
         {
             successAllert!.ShowAlert(Label("UploadSuccessMessage"));
             fileToUplaod = null;
@@ -299,7 +299,7 @@
             return;
         }
 
-        if(response != null)
+        if (response != null)
             formErrorAlert?.ShowAlert(response);
 
         await Task.CompletedTask;
@@ -310,28 +310,40 @@
         SelectedActionTypes = value;
         fileToUplaod = null;
         await LoadDataUpload();
+        _state.NotifyStateChanged();
 
     }
 
 
     async Task OnEntityTypeChange(BulkDataEntityTypes? value)
     {
-            SetValue(() => SelectedEntityType = value);
-            fileToUplaod = null;
-            await LoadDataUpload();
+        SetValue(() => SelectedEntityType = value);
+        fileToUplaod = null;
+        await LoadDataUpload();
+        _state.NotifyStateChanged();
+    }
+
+
+    async Task OnOperationChange(BulkOperations? value)
+    {
+        SelectedOperation = value;
+        SelectedEntityType = null;
+        SelectedActionTypes = null;
+        await LoadDataUpload();
+        _state.NotifyStateChanged();
     }
 
     async Task LoadDataUpload()
     {
-        if (!(SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
+        if (SelectedOperation != null && !(SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
             return;
 
         var actions = new Dictionary<BulkDataEntityTypes, Func<Task>>()
         {
-            {BulkDataEntityTypes.Group, bulkGroupRecords.LoadData},    
-            {BulkDataEntityTypes.Category, bulkCategoryRecords.LoadData},    
-            {BulkDataEntityTypes.ItemMaster, bulkItemRecords.LoadData},    
-            {BulkDataEntityTypes.Unit, bulkItemUnitRecords.LoadData},    
+            {BulkDataEntityTypes.Group, bulkGroupRecords.LoadData},
+            {BulkDataEntityTypes.Category, bulkCategoryRecords.LoadData},
+            {BulkDataEntityTypes.ItemMaster, bulkItemRecords.LoadData},
+            {BulkDataEntityTypes.Unit, bulkItemUnitRecords.LoadData},
         };
 
         var task = actions[SelectedEntityType!.Value];
