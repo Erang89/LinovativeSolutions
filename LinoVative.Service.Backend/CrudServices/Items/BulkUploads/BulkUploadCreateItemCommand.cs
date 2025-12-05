@@ -46,10 +46,10 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 var header = worksheet.Row(1);
                 var header1 = GetValueString(header.Cell(1));
                 var header2 = GetValueString(header.Cell(2));
-                var header3 = GetValueString(header.Cell(2));
-                var header4 = GetValueString(header.Cell(2));
-                var header5 = GetValueString(header.Cell(2));
-                var header6 = GetValueString(header.Cell(2));
+                var header3 = GetValueString(header.Cell(3));
+                var header4 = GetValueString(header.Cell(4));
+                var header5 = GetValueString(header.Cell(5));
+                var header6 = GetValueString(header.Cell(6));
                 exisitingUpload = new ItemBulkUpload() { 
                     headerColum1 = header1, 
                     headerColum2 = header2, 
@@ -72,10 +72,10 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                     ItemBulkUploadId = exisitingUpload.Id,
                     Column1 = GetValueString(row.Cell(1)),
                     Column2 = GetValueString(row.Cell(2)),
-                    Column3 = GetValueString(row.Cell(2)),
-                    Column4 = GetValueString(row.Cell(2)),
-                    Column5 = GetValueString(row.Cell(2)),
-                    Column6 = GetValueString(row.Cell(2)),
+                    Column3 = GetValueString(row.Cell(3)),
+                    Column4 = GetValueString(row.Cell(4)),
+                    Column5 = GetValueString(row.Cell(5)),
+                    Column6 = GetValueString(row.Cell(6)),
                 };
 
                 _dbContext.ItemBulkUploadDetails.Add(detail);
