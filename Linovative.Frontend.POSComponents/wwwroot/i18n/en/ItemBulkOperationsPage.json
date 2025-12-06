@@ -10,6 +10,7 @@
   "NoRecordUploaded.Label": "No records uploaded yet!",
   "UploadSuccessMessage.Label": "File uploaded successfully",
   "Column.Label": "Column",
+  "RecordInfo.Label": "{0} of {1} record(s)",
 
 
   "Button.ShowRecord.Text": "Show Record",

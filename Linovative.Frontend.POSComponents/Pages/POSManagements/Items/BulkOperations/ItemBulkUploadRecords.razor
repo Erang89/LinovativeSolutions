@@ -65,7 +65,7 @@
                     <td colspan="5">
                         @if (details.Count > 0)
                         {
-                            <MudText>@(recordCount<pageSize? recordCount : pageSize) of @recordCount records</MudText>
+                            <MudText>@Lang($"{LocalizerResource}.RecordInfo.Label", details.Count, recordCount)</MudText>
                         }
                     </td>
                 </tr>
@@ -83,7 +83,7 @@
         <tbody>
             <tr>
                 <td colspan="6">
-                    <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
+                    <MudPagination Selected="@currentPage" ShowPageButtons="true" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
                 </td>
             </tr>
         </tbody>       
@@ -199,7 +199,7 @@
         details = result2?.Data ?? new();
 
         var records = result2?.Count??0;
-        var hasMod = details.Count % pageSize > 0;
+        var hasMod = records % pageSize > 0;
         recordCount = records;
         pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
 
