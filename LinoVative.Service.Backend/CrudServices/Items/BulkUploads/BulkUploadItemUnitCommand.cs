@@ -9,19 +9,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
 {
-    public class BulkUploadCreateItemCategoryCommand : IRequest<Result>
+    public class BulkUploadItemUnitCommand : IRequest<Result>
     {
         public IFormFile? File { get; set; }
+        public CrudOperations? Operation { get; set; } = CrudOperations.Create;
     }
 
-    public class BulkUploadCreateItemCategoryService : IRequestHandler<BulkUploadCreateItemCategoryCommand, Result>
+    public class BulkUploadItemUnitService : IRequestHandler<BulkUploadItemUnitCommand, Result>
     {
         private readonly IAppDbContext _dbContext;
         private readonly ILangueageService _lang;
         private readonly IActor _actor;
         private IXLWorkbook? _workBook;
 
-        public BulkUploadCreateItemCategoryService(IAppDbContext db, ILangueageService lang, IActor actor)
+        public BulkUploadItemUnitService(IAppDbContext db, ILangueageService lang, IActor actor)
         {
             _dbContext = db;
             _lang = lang;
@@ -30,7 +31,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
         }
 
 
-        public async Task<Result> Handle(BulkUploadCreateItemCategoryCommand request, CancellationToken ct)
+        public async Task<Result> Handle(BulkUploadItemUnitCommand request, CancellationToken ct)
         {
             var validate = await Validate(request, ct);
             if (!validate)
@@ -46,22 +47,21 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 var header = worksheet.Row(1);
                 var header1 = GetValueString(header.Cell(1));
                 var header2 = GetValueString(header.Cell(2));
-                exisitingUpload = new ItemCategoryBulkUpload() { headerColum1 = header1, headerColum2 = header2, CompanyId = _actor.CompanyId, UserId = _actor.UserId, Operation = CrudOperations.Create};
-                _dbContext.ItemCategoryBulkUploads.Add(exisitingUpload);
+                exisitingUpload = new ItemUnitBulkUpload() { headerColum1 = header1, headerColum2 = header2, CompanyId = _actor.CompanyId, UserId = _actor.UserId, Operation = request.Operation};
+                _dbContext.ItemUnitBulkUploads.Add(exisitingUpload);
             }
 
             var totalRows = worksheet.RowsUsed().Count() - 1;
             for(var i = 2; i<= totalRows; i++)
             {
                 var row = worksheet.Row(i);
-                var detail = new ItemCategoryBulkUploadDetail()
+                var detail = new ItemUnitBulkUploadDetail()
                 {
-                    ItemCategoryBulkUploadId = exisitingUpload.Id,
+                    ItemUnitBulkUploadId = exisitingUpload.Id,
                     Column1 = GetValueString(row.Cell(1)),
-                    Column2 = GetValueString(row.Cell(2))
                 };
 
-                _dbContext.ItemCategoryBulkUploadDetails.Add(detail);
+                _dbContext.ItemUnitBulkUploadDetails.Add(detail);
             }
 
             await _dbContext.SaveAsync(_actor);
@@ -91,7 +91,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
         }
 
         IXLWorksheet? workSheet = null;
-        async Task<IXLWorksheet?> GetWorksheet(BulkUploadCreateItemCategoryCommand request, CancellationToken ct)
+        async Task<IXLWorksheet?> GetWorksheet(BulkUploadItemUnitCommand request, CancellationToken ct)
         {
             if(workSheet is not null) return workSheet;
             using var ms = new MemoryStream();
@@ -105,17 +105,17 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
         }
 
 
-        ItemCategoryBulkUpload? bulkRecord = null;
-        ItemCategoryBulkUpload? GetBulkRecord(BulkUploadCreateItemCategoryCommand request)
+        ItemUnitBulkUpload? bulkRecord = null;
+        ItemUnitBulkUpload? GetBulkRecord(BulkUploadItemUnitCommand request)
         {
             if(bulkRecord is not null)
                 return bulkRecord;
 
-            bulkRecord = _dbContext.ItemCategoryBulkUploads.FirstOrDefault(x => x.UserId == _actor.UserId && x.CompanyId == _actor.CompanyId && !x.IsDeleted && x.Operation == CrudOperations.Create);
+            bulkRecord = _dbContext.ItemUnitBulkUploads.FirstOrDefault(x => x.UserId == _actor.UserId && x.CompanyId == _actor.CompanyId && !x.IsDeleted && x.Operation == request.Operation);
             return bulkRecord;
         }
 
-        async Task<Result> Validate(BulkUploadCreateItemCategoryCommand request, CancellationToken ct)
+        async Task<Result> Validate(BulkUploadItemUnitCommand request, CancellationToken ct)
         {
             var file = request.File;
 

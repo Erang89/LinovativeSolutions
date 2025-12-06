@@ -4,6 +4,7 @@
 @using Linovative.Frontend.Services.FrontendServices.Resources
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@using Linovative.Shared.Interface.Enums
 @using Microsoft.AspNetCore.Components.Forms
 
 @attribute [Route(PageRoutes.PostManagement.ItemMaster.BulkOperations)]
@@ -77,9 +78,10 @@
 
 
 <!-- File Browse -->
-@if (SelectedEntityType is not null && (SelectedActionTypes == BulkActionTypes.Delete_Upload ||
-   SelectedActionTypes == BulkActionTypes.Create_Upload ||
-   SelectedActionTypes == BulkActionTypes.Update_Upload))
+@if (SelectedEntityType is not null && (
+    SelectedActionTypes == BulkActionTypes.Delete_Upload ||
+    SelectedActionTypes == BulkActionTypes.Create_Upload ||
+    SelectedActionTypes == BulkActionTypes.Update_Upload))
 {
 
     <LinovativeGap />
@@ -167,7 +169,7 @@
 
     @if (DownloadActions.Any(x => x == SelectedActionTypes))
     {
-        <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
+        <MudButton Disabled="@(uploading || SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
                    StartIcon="@Icons.Material.Filled.Download"
                    OnClick="Download"
@@ -280,14 +282,24 @@
 
 
     private readonly long maxFileSize = 20 * 1024 * 1024;
+    private bool uploading = false;
     async Task Upload()
     {
+        uploading = true;
+        var operation = SelectedOperation switch
+        {
+            BulkOperations.Create => CrudOperations.Create,
+            BulkOperations.Update => CrudOperations.Update,
+            BulkOperations.Delete => CrudOperations.Delete,            
+            _ => CrudOperations.Create
+        };
+
         Response<Guid?>? response = SelectedEntityType switch
         {
-            BulkDataEntityTypes.Group => await _bulkUploadService.UploadItemGroups(fileToUplaod!, cts.Token),
-            BulkDataEntityTypes.Category => await _bulkUploadService.UploadItemCategories(fileToUplaod!, cts.Token),
-            BulkDataEntityTypes.ItemMaster => await _bulkUploadService.UploadItems(fileToUplaod!, cts.Token),
-            BulkDataEntityTypes.Unit => await _bulkUploadService.UploadItemUnits(fileToUplaod!, cts.Token),
+            BulkDataEntityTypes.Group => await _bulkUploadService.UploadItemGroups(fileToUplaod!, operation, cts.Token),
+            BulkDataEntityTypes.Category => await _bulkUploadService.UploadItemCategories(fileToUplaod!, operation, cts.Token),
+            BulkDataEntityTypes.ItemMaster => await _bulkUploadService.UploadItems(fileToUplaod!, operation, cts.Token),
+            BulkDataEntityTypes.Unit => await _bulkUploadService.UploadItemUnits(fileToUplaod!, operation, cts.Token),
             _ => null
         };
 
@@ -296,12 +308,14 @@
             successAllert!.ShowAlert(Label("UploadSuccessMessage"));
             fileToUplaod = null;
             await LoadDataUpload();
+            uploading = false;
             return;
         }
 
         if (response != null)
             formErrorAlert?.ShowAlert(response);
 
+        uploading = false;
         await Task.CompletedTask;
     }
 

@@ -1,6 +1,7 @@
 ﻿using Linovative.Frontend.Services.Extensions;
 using Linovative.Frontend.Services.FrontendServices.BaseServices;
 using Linovative.Frontend.Services.Models;
+using Linovative.Shared.Interface.Enums;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 
@@ -8,10 +9,10 @@ namespace Linovative.Frontend.Services.BulkUploads
 {
     public interface IBulkUploadService 
     {
-        public Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CancellationToken token);
-        public Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CancellationToken token);
-        public Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CancellationToken token);
-        public Task<Response<Guid?>> UploadItems(IBrowserFile file, CancellationToken token);
+        public Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CrudOperations operation, CancellationToken token);
+        public Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CrudOperations operation, CancellationToken token);
+        public Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CrudOperations operation, CancellationToken token);
+        public Task<Response<Guid?>> UploadItems(IBrowserFile file, CrudOperations operation, CancellationToken token);
     }
 
     public class BulkUploadService : RequeserServiceBase, IBulkUploadService
@@ -23,7 +24,7 @@ namespace Linovative.Frontend.Services.BulkUploads
         {
         }
 
-        private async Task<Response<Guid?>> UploadFile(IBrowserFile file, string endpoint, CancellationToken token)
+        private async Task<Response<Guid?>> UploadFile(IBrowserFile file, CrudOperations operation, string endpoint, CancellationToken token)
         {
             try
             {
@@ -32,6 +33,7 @@ namespace Linovative.Frontend.Services.BulkUploads
                 var streamContent = new StreamContent(stream);
                 streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream");
                 content.Add(streamContent, "file", file.Name);
+                content.Add(new StringContent(operation.ToString()), "operation");
                 var httpResponse = await _httpClient.PostAsync($"{endpoint}/upload", content, token);
                 var response = await httpResponse.ToAppResponse<Guid?>(token);
                 if (response)
@@ -46,24 +48,24 @@ namespace Linovative.Frontend.Services.BulkUploads
             }
         }
 
-        public async Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CancellationToken token)
+        public async Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CrudOperations operation, CancellationToken token)
         {
-            return await UploadFile(file, "BulkUploadItemGroups", token);
+            return await UploadFile(file, operation, "BulkUploadItemGroups",  token);
         }
 
-        public async Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CancellationToken token)
+        public async Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CrudOperations operation, CancellationToken token)
         {
-            return await UploadFile(file, "BulkUploadItemCategories", token);
+            return await UploadFile(file, operation, "BulkUploadItemCategories", token);
         }
 
-        public async Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CancellationToken token)
+        public async Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CrudOperations operation, CancellationToken token)
         {
-            return await UploadFile(file, "BulkUploadItemUnits", token);
+            return await UploadFile(file, operation, "BulkUploadItemUnits", token);
         }
 
-        public async Task<Response<Guid?>> UploadItems(IBrowserFile file, CancellationToken token)
+        public async Task<Response<Guid?>> UploadItems(IBrowserFile file, CrudOperations operation, CancellationToken token)
         {
-            return await UploadFile(file, "BulkUploadItems", token);
+            return await UploadFile(file, operation, "BulkUploadItems", token);
         }
     }
 }

@@ -11,5 +11,6 @@ namespace LinoVative.Service.Core.BulkUploads
         public Guid? ItemUnitBulkUploadId { get; set; }
 
         public string? Column1 { get; set; }
+        public string? Column2 { get; set; }
     }
 }

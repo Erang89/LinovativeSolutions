@@ -8,6 +8,7 @@ namespace LinoVative.Service.Core.BulkUploads
     {
         public Guid? UserId { get; set; }
         public string? headerColum1 { get; set; }
+        public string? headerColum2 { get; set; }
         public CrudOperations? Operation { get; set; }
         public List<ItemGroupBulkUploadDetail> Details { get; set; } = new();
     }

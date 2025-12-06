@@ -9,19 +9,20 @@ using Microsoft.AspNetCore.Http;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
 {
-    public class BulkUploadCreateItemGroupCommand : IRequest<Result>
+    public class BulkUploadItemGroupCommand : IRequest<Result>
     {
         public IFormFile? File { get; set; }
+        public CrudOperations? Operation { get; set; } = CrudOperations.Create;
     }
 
-    public class BulkUploadCreateItemGroupService : IRequestHandler<BulkUploadCreateItemGroupCommand, Result>
+    public class BulkUploadItemGroupService : IRequestHandler<BulkUploadItemGroupCommand, Result>
     {
         private readonly IAppDbContext _dbContext;
         private readonly ILangueageService _lang;
         private readonly IActor _actor;
         private IXLWorkbook? _workBook;
 
-        public BulkUploadCreateItemGroupService(IAppDbContext db, ILangueageService lang, IActor actor)
+        public BulkUploadItemGroupService(IAppDbContext db, ILangueageService lang, IActor actor)
         {
             _dbContext = db;
             _lang = lang;
@@ -30,7 +31,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
         }
 
 
-        public async Task<Result> Handle(BulkUploadCreateItemGroupCommand request, CancellationToken ct)
+        public async Task<Result> Handle(BulkUploadItemGroupCommand request, CancellationToken ct)
         {
             var validate = await Validate(request, ct);
             if (!validate)
@@ -45,7 +46,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
             {
                 var header = worksheet.Row(1);
                 var header1 = GetValueString(header.Cell(1));
-                exisitingUpload = new ItemGroupBulkUpload() { headerColum1 = header1, CompanyId = _actor.CompanyId, UserId = _actor.UserId, Operation = CrudOperations.Create};
+                var header2 = GetValueString(header.Cell(2));
+                exisitingUpload = new ItemGroupBulkUpload() { headerColum1 = header1, headerColum2 = header2, CompanyId = _actor.CompanyId, UserId = _actor.UserId, Operation = request.Operation};
                 _dbContext.ItemGroupBulkUploads.Add(exisitingUpload);
             }
 
@@ -68,7 +70,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
         }
 
 
-        string? GetValueString(IXLCell cell)
+        static string? GetValueString(IXLCell cell)
         {
 
             var type = cell.DataType;
@@ -89,7 +91,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
         }
 
         IXLWorksheet? workSheet = null;
-        async Task<IXLWorksheet?> GetWorksheet(BulkUploadCreateItemGroupCommand request, CancellationToken ct)
+        async Task<IXLWorksheet?> GetWorksheet(BulkUploadItemGroupCommand request, CancellationToken ct)
         {
             if(workSheet is not null) return workSheet;
             using var ms = new MemoryStream();
@@ -104,16 +106,16 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
 
 
         ItemGroupBulkUpload? bulkRecord = null;
-        ItemGroupBulkUpload? GetBulkRecord(BulkUploadCreateItemGroupCommand request)
+        ItemGroupBulkUpload? GetBulkRecord(BulkUploadItemGroupCommand request)
         {
             if(bulkRecord is not null)
                 return bulkRecord;
 
-            bulkRecord = _dbContext.ItemGroupBulkUploads.FirstOrDefault(x => x.UserId == _actor.UserId && x.CompanyId == _actor.CompanyId && !x.IsDeleted && x.Operation == CrudOperations.Create);
+            bulkRecord = _dbContext.ItemGroupBulkUploads.FirstOrDefault(x => x.UserId == _actor.UserId && x.CompanyId == _actor.CompanyId && !x.IsDeleted && x.Operation == request.Operation);
             return bulkRecord;
         }
 
-        async Task<Result> Validate(BulkUploadCreateItemGroupCommand request, CancellationToken ct)
+        async Task<Result> Validate(BulkUploadItemGroupCommand request, CancellationToken ct)
         {
             var file = request.File;
 
@@ -146,7 +148,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 var header = worksheet.Row(1);
                 var header1 = GetValueString(header.Cell(1));
                 var header2 = GetValueString(header.Cell(2));
-                if (header1?.ToLower() != existingUpload.headerColum1?.ToLower())
+                if (header1?.ToLower() != existingUpload.headerColum1?.ToLower() || header2?.ToLower() != existingUpload.headerColum2?.ToLower())
                     return Result.Failed(_lang[$"{BulkUploadSettings.BulkUploadCommand}.InvalidHeader"]);
             }
 

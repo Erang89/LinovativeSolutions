@@ -13,6 +13,7 @@ namespace LinoVative.Service.Core.BulkUploads
         public string? headerColum4 { get; set; }
         public string? headerColum5 { get; set; }
         public string? headerColum6 { get; set; }
+        public string? headerColum7 { get; set; }
         public CrudOperations? Operation { get; set; }
         public List<ItemBulkUploadDetail> Details { get; set; } = new();
     }

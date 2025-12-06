@@ -4,6 +4,7 @@
     {
         public Guid? UserId { get; set; }
         public string? headerColum1 { get; set; }
+        public string? headerColum2 { get; set; }
         public List<BulkUploadItemGroupDetailDto> Details { get; set; } = new();
     }
 
@@ -12,5 +13,6 @@
         public Guid? ItemGroupBulkUploadId { get; set; }
 
         public string? Column1 { get; set; }
+        public string? Column2 { get; set; }
     }
 }

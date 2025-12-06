@@ -22,9 +22,20 @@
 
     <MudSimpleTable Style="overflow-x: auto;">
         <thead>
-            <tr>
-                <th>@(group?.headerColum1?? $"{(Label("Column"))} 1")</th>
-            </tr>
+            @if (details is not null && details.Count > 0)
+            {
+                <tr>
+                    <th>@(group?.headerColum1)</th>
+                    <th>@(group?.headerColum2)</th>
+                </tr>
+            }
+            else
+            {
+                <tr>
+                    <th>@($"{(Label("Column"))} 1")</th>
+                    <th>@($"{(Label("Column"))} 2")</th>
+                </tr>
+            }
         </thead>
         <tbody>
             @if (group is not null)
@@ -33,6 +44,7 @@
                 {
                     <tr>
                         <td>@row.Column1</td>
+                        <td>@row.Column2</td>
                     </tr>
                 }
                 <tr>
@@ -169,7 +181,7 @@
         group = result?.Data?.FirstOrDefault() ?? new();
         details = result2?.Data ?? new();
 
-        var records = details.Count;
+        var records = result2?.Count ?? 0;
         var hasMod = details.Count % pageSize > 0;
         recordCount = records;
         pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
