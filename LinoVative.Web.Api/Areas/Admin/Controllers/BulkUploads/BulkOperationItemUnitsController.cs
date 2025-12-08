@@ -8,19 +8,19 @@ using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
 {
-    public class BulkUploadItemCategoriesController : PrivateAPIBaseController
+   
+    public class BulkOperationItemUnitsController : PrivateAPIBaseController
     {
-        public BulkUploadItemCategoriesController(IMediator mediator, ILogger<BulkUploadItemCategoriesController> logger) : base(mediator, logger)
+        public BulkOperationItemUnitsController(IMediator mediator, ILogger<BulkOperationItemUnitsController> logger) : base(mediator, logger)
         {
 
         }
-
 
         [Route("Upload")]
         [HttpPost]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Upload(BulkUploadtemCategoryCommand c, CancellationToken token)
+        public async Task<IActionResult> Upload(BulkUploadItemUnitCommand c, CancellationToken token)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         [HttpPost]
         [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Download([FromBody] DownloadItemCategoryCommand c, CancellationToken token)
+        public async Task<IActionResult> Download([FromBody] DownloadItemUnitCommand c, CancellationToken token)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
                 if (!result)
                     return StatusCode((int)result.Status, result);
 
-                return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ItemCategories.xlsx");
+                return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ItemUnits.xlsx");
             }
             catch (Exception ex)
             {
@@ -73,7 +73,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         {
             try
             {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.CategoryCreate };
+                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.UnitCreate };
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
@@ -96,7 +96,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         {
             try
             {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.CategoryUpdate };
+                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.UnitUpdate };
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
@@ -118,7 +118,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         {
             try
             {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.CategoryDelete };
+                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.UnitDelete };
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }

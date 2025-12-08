@@ -7,20 +7,18 @@ using Microsoft.Extensions.Logging;
 
 namespace Linovative.Frontend.Services.BulkUploads
 {
-    public interface IBulkUploadItemUnitService : IReadOnlyService<BulkUploadItemUnitDto>, ICrudInterfaces
+    public interface IBulkOperationItemService : IReadOnlyService<BulkUploadItemDto>, ICrudInterfaces
     {
         public Task<Response> RemoveBulkCreate(CancellationToken token);
         public Task<Response> RemoveBulkUpdate(CancellationToken token);
         public Task<Response> RemoveBulkDelete(CancellationToken token);
-
     }
 
-    public class BulkUploadItemUnitService : CrudServiceAbstract<BulkUploadItemUnitDto>, IBulkUploadItemUnitService
+    public class BulkOperationItemService : CrudServiceAbstract<BulkUploadItemDto>, IBulkOperationItemService
     {
-        public BulkUploadItemUnitService(IHttpClientFactory httpFactory, ILogger<BulkUploadItemUnitService> logger) : base(httpFactory, logger, "BulkOperationItemUnits")
+        public BulkOperationItemService(IHttpClientFactory httpFactory, ILogger<BulkOperationItemService> logger) : base(httpFactory, logger, "BulkOperationItems")
         {
         }
-
 
 
         private async Task<Response> Delete(string lastUri, CancellationToken token)
@@ -46,6 +44,7 @@ namespace Linovative.Frontend.Services.BulkUploads
         public Task<Response> RemoveBulkUpdate(CancellationToken token) => Delete("BulkUpdate", token);
 
         public Task<Response> RemoveBulkDelete(CancellationToken token) => Delete("BulkDelete", token);
+
 
     }
 }

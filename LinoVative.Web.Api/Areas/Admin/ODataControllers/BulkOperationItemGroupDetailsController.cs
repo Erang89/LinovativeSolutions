@@ -8,14 +8,14 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class BulkUploadItemUnitDetailsController : PrivateODataBaseController
+    public class BulkOperationItemGroupDetailsController : PrivateODataBaseController
     {
         private readonly ILogger _logger;
-        public BulkUploadItemUnitDetailsController(ILogger<BulkUploadItemUnitDetailsController> log) => _logger = log;
+        public BulkOperationItemGroupDetailsController(ILogger<BulkOperationItemGroupDetailsController> log) => _logger = log;
 
         [EnableQuery]
-        [ProducesResponseType(typeof(APIListResponse<BulkUploadItemUnitDetailDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] GetAllBulkUploadUnitDetailIQueryableCommand c, CancellationToken token)
+        [ProducesResponseType(typeof(APIListResponse<BulkUploadItemGroupDetailDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Post([FromBody] GetAllBulkUploadGroupDetailIQueryableCommand c, CancellationToken token)
         {
             try
             {
@@ -31,7 +31,5 @@ namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }
         }
-
-
     }
 }

@@ -8,16 +8,16 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class BulkUploadItemUnitsController : PrivateODataBaseController
+    public class BulkOperationItemCategoriesController : PrivateODataBaseController
     {
         private readonly ILogger _logger;
-        public BulkUploadItemUnitsController(ILogger<BulkUploadItemUnitsController> log) => _logger = log;
+        public BulkOperationItemCategoriesController(ILogger<BulkOperationItemCategoriesController> log) => _logger = log;
 
 
 
         [EnableQuery]
-        [ProducesResponseType(typeof(APIListResponse<BulkUploadItemUnitDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] GetAllBulkUploadUnitIQueryableCommand c, CancellationToken token)
+        [ProducesResponseType(typeof(APIListResponse<BulkUploadItemCategoryDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Post([FromBody] GetAllBulkUploadCategoryIQueryableCommand c, CancellationToken token)
         {
             try
             {

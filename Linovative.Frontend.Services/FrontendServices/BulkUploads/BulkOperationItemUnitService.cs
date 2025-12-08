@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Linovative.Frontend.Services.BulkUploads
 {
-    public interface IBulkUploadItemGroupService : IReadOnlyService<BulkUploadItemGroupDto>, ICrudInterfaces
+    public interface IBulkOperationItemUnitService : IReadOnlyService<BulkUploadItemUnitDto>, ICrudInterfaces
     {
         public Task<Response> RemoveBulkCreate(CancellationToken token);
         public Task<Response> RemoveBulkUpdate(CancellationToken token);
@@ -15,11 +15,12 @@ namespace Linovative.Frontend.Services.BulkUploads
 
     }
 
-    public class BulkUploadItemGroupService : CrudServiceAbstract<BulkUploadItemGroupDto>, IBulkUploadItemGroupService
+    public class BulkOperationItemUnitService : CrudServiceAbstract<BulkUploadItemUnitDto>, IBulkOperationItemUnitService
     {
-        public BulkUploadItemGroupService(IHttpClientFactory httpFactory, ILogger<BulkUploadItemGroupService> logger) : base(httpFactory, logger, "BulkOperationItemGroups")
+        public BulkOperationItemUnitService(IHttpClientFactory httpFactory, ILogger<BulkOperationItemUnitService> logger) : base(httpFactory, logger, "BulkOperationItemUnits")
         {
         }
+
 
 
         private async Task<Response> Delete(string lastUri, CancellationToken token)
@@ -42,8 +43,9 @@ namespace Linovative.Frontend.Services.BulkUploads
 
         public Task<Response> RemoveBulkCreate(CancellationToken token) => Delete("BulkCreate", token);
 
-        public Task<Response> RemoveBulkDelete(CancellationToken token) => Delete("BulkUpdate", token);
+        public Task<Response> RemoveBulkUpdate(CancellationToken token) => Delete("BulkUpdate", token);
 
-        public Task<Response> RemoveBulkUpdate(CancellationToken token) => Delete("BulkDelete", token);
+        public Task<Response> RemoveBulkDelete(CancellationToken token) => Delete("BulkDelete", token);
+
     }
 }

@@ -8,9 +8,9 @@ using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
 {
-    public class BulkUploadItemsController : PrivateAPIBaseController
+    public class BulkOperationItemGroupsController : PrivateAPIBaseController
     {
-        public BulkUploadItemsController(IMediator mediator, ILogger<BulkUploadItemsController> logger) : base(mediator, logger)
+        public BulkOperationItemGroupsController(IMediator mediator, ILogger<BulkOperationItemGroupsController> logger) : base(mediator, logger)
         {
 
         }
@@ -19,7 +19,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         [HttpPost]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Upload(BulkUploadItemCommand c, CancellationToken token)
+        public async Task<IActionResult> Upload(BulkUploadItemGroupCommand c, CancellationToken token)
         {
             try
             {
@@ -36,22 +36,21 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
             }
         }
 
-
         [Route("Download")]
         [HttpPost]
         [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Download([FromBody] DownloadItemCommand c, CancellationToken token)
+        public async Task<IActionResult> Download([FromBody]DownloadItemGroupCommand c, CancellationToken token)
         {
             try
             {
                 var result = await _mediator.Send(c, token);
                 var ms = (MemoryStream)result.Data!;
 
-                if (!result)
+                if(!result)
                     return StatusCode((int)result.Status, result);
 
-                return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Items.xlsx");
+                return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ItemGroups.xlsx");
             }
             catch (Exception ex)
             {
@@ -63,7 +62,6 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
             }
         }
 
-
         [Route("Remove/BulkCreate")]
         [HttpDelete]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
@@ -72,7 +70,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         {
             try
             {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.ItemCreate };
+                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.GroupCreate };
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
@@ -95,7 +93,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         {
             try
             {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.ItemUpdate };
+                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.GroupUpdate};
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
@@ -117,7 +115,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         {
             try
             {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.ItemDelete };
+                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.GroupDelete };
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
@@ -130,6 +128,5 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }
         }
-
     }
 }
