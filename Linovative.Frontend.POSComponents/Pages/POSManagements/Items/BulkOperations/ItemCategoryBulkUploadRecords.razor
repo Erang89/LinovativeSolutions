@@ -14,6 +14,8 @@
 
 
 @if (SelectedEntityType == BulkDataEntityTypes.Category && (
+    SelectedActionTypes == BulkActionTypes.Update_DownloadFromDataMapping ||
+    SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataMapping ||
     SelectedActionTypes == BulkActionTypes.Create_Upload ||
     SelectedActionTypes == BulkActionTypes.Delete_Upload ||
     SelectedActionTypes == BulkActionTypes.Update_Upload))
@@ -130,33 +132,15 @@
             return;
 
         var cts = new CancellationTokenSource();
-        Func<Task<Response>>? removeFunc = SelectedActionTypes switch
-        {
-            BulkActionTypes.Create_Upload => () => _bulkItemCategory.RemoveBulkCreate(cts.Token),
-            BulkActionTypes.Update_Upload => () => _bulkItemCategory.RemoveBulkUpdate(cts.Token),
-            BulkActionTypes.Delete_Upload => () => _bulkItemCategory.RemoveBulkDelete(cts.Token),
-            _ => null
-        };
-
-        if (removeFunc != null)
-        {
-            await removeFunc!();
-            Reset();
-        }
-
+        await _bulkItemCategory.Remove(SelectedOperation.ToCrudOperations(SelectedActionTypes), cts.Token);
+        Reset();
         cts.Dispose();
     }
 
 
     public async Task LoadData()
     {
-        CrudOperations operation = SelectedOperation switch
-        {
-            BulkOperations.Create => CrudOperations.Create,
-            BulkOperations.Update => CrudOperations.Update,
-            BulkOperations.Delete => CrudOperations.Delete,
-            _ => CrudOperations.Create,
-        };
+        var operation = SelectedOperation.ToCrudOperations(SelectedActionTypes);
 
         var odataFilter = new ODataFilter()
         {

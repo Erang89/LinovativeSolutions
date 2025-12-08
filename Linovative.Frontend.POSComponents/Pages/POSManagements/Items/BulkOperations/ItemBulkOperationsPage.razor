@@ -84,6 +84,8 @@
 
 <!-- File Browse -->
 @if (SelectedEntityType is not null && (
+    SelectedActionTypes == BulkActionTypes.Update_DownloadFromDataMapping ||
+    SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataMapping ||
     SelectedActionTypes == BulkActionTypes.Delete_Upload ||
     SelectedActionTypes == BulkActionTypes.Create_Upload ||
     SelectedActionTypes == BulkActionTypes.Update_Upload))
@@ -323,14 +325,8 @@
     async Task Upload()
     {
         uploading = true;
-        var operation = SelectedOperation switch
-        {
-            BulkOperations.Create => CrudOperations.Create,
-            BulkOperations.Update => CrudOperations.Update,
-            BulkOperations.Delete => CrudOperations.Delete,
-            _ => CrudOperations.Create
-        };
-
+        var operation = SelectedOperation.ToCrudOperations(SelectedActionTypes);
+        _state.NotifyStateChanged();
         Response<Guid?>? response = SelectedEntityType switch
         {
             BulkDataEntityTypes.Group => await _bulkUploadService.UploadItemGroups(fileToUplaod!, operation, cts.Token),
@@ -358,7 +354,7 @@
 
     async Task OnActionChange(BulkActionTypes? value)
     {
-        SelectedActionTypes = value;
+        SetValue(() => SelectedActionTypes = value);
         fileToUplaod = null;
         await LoadDataUpload();
         _state.NotifyStateChanged();
@@ -377,7 +373,7 @@
 
     async Task OnOperationChange(BulkOperations? value)
     {
-        SelectedOperation = value;
+        SetValue(() => SelectedOperation = value);
         SelectedEntityType = null;
         SelectedActionTypes = null;
         await LoadDataUpload();
@@ -386,7 +382,12 @@
 
     async Task LoadDataUpload()
     {
-        if (SelectedOperation != null && !(SelectedActionTypes == BulkActionTypes.Create_Upload || SelectedActionTypes == BulkActionTypes.Delete_Upload || SelectedActionTypes == BulkActionTypes.Update_Upload))
+        if (SelectedOperation != null && !(
+            SelectedActionTypes == BulkActionTypes.Update_DownloadFromDataMapping || 
+            SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataMapping || 
+            SelectedActionTypes == BulkActionTypes.Create_Upload || 
+            SelectedActionTypes == BulkActionTypes.Delete_Upload || 
+            SelectedActionTypes == BulkActionTypes.Update_Upload))
             return;
 
         var actions = new Dictionary<BulkDataEntityTypes, Func<Task>>()

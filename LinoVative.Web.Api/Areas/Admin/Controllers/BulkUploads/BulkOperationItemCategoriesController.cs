@@ -1,4 +1,5 @@
-﻿using LinoVative.Service.Backend.CrudServices.Items.BulkUploads;
+﻿using Linovative.Shared.Interface.Enums;
+using LinoVative.Service.Backend.CrudServices.Items.BulkUploads;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Delete;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download;
 using LinoVative.Service.Core.Interfaces;
@@ -64,16 +65,23 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
             }
         }
 
-
-        [Route("Remove/BulkCreate")]
+        [Route("Remove/{type}")]
         [HttpDelete]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RemoveBulkCreate(CancellationToken token)
+        public async Task<IActionResult> Remove([FromRoute] CrudOperations? type, CancellationToken token)
         {
             try
             {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.CategoryCreate };
+                var removeBulkUploadType = type switch
+                {
+                    CrudOperations.Create => RemoveBulkUploadItemType.CategoryCreate,
+                    CrudOperations.Update => RemoveBulkUploadItemType.CategoryUpdate,
+                    CrudOperations.Delete => RemoveBulkUploadItemType.CategoryDelete,
+                    CrudOperations.Mapping => RemoveBulkUploadItemType.CategoryMapping,
+                    _ => RemoveBulkUploadItemType.CategoryMapping,
+                };
+                var c = new RemoveBulkUploadItemCommand() { UploadType = removeBulkUploadType };
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
@@ -87,49 +95,5 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
             }
         }
 
-
-        [Route("Remove/BulkUpdate")]
-        [HttpDelete]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RemoveBulkUpdate(CancellationToken token)
-        {
-            try
-            {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.CategoryUpdate };
-                var result = await _mediator.Send(c, token);
-                return StatusCode((int)result.Status, result);
-            }
-            catch (Exception ex)
-            {
-                var routeName = ControllerContext.ActionDescriptor.DisplayName;
-                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
-                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
-                responseObject.SetTraceId(HttpContext.TraceIdentifier);
-                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
-            }
-        }
-
-        [Route("Remove/BulkDelete")]
-        [HttpDelete]
-        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> RemoveBulkDelete(CancellationToken token)
-        {
-            try
-            {
-                var c = new RemoveBulkUploadItemCommand() { UploadType = RemoveBulkUploadItemType.CategoryDelete };
-                var result = await _mediator.Send(c, token);
-                return StatusCode((int)result.Status, result);
-            }
-            catch (Exception ex)
-            {
-                var routeName = ControllerContext.ActionDescriptor.DisplayName;
-                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
-                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
-                responseObject.SetTraceId(HttpContext.TraceIdentifier);
-                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
-            }
-        }
     }
 }

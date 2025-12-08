@@ -2,6 +2,7 @@
 using Linovative.Frontend.Services.FrontendServices.BaseServices;
 using Linovative.Frontend.Services.Interfaces;
 using Linovative.Frontend.Services.Models;
+using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.BulkUploads;
 using LinoVative.Shared.Dto.Commons;
 using Microsoft.Extensions.Logging;
@@ -12,9 +13,7 @@ namespace Linovative.Frontend.Services.BulkUploads
 {
     public interface IBulkOperationItemCategoryService : IReadOnlyService<BulkUploadItemCategoryDto>, ICrudInterfaces
     {
-        public Task<Response> RemoveBulkCreate(CancellationToken token);
-        public Task<Response> RemoveBulkUpdate(CancellationToken token);
-        public Task<Response> RemoveBulkDelete(CancellationToken token);
+        public Task<Response> Remove(CrudOperations operation, CancellationToken token);
         public Task Download(List<FilterCondition> filter);
     }
 
@@ -44,12 +43,7 @@ namespace Linovative.Frontend.Services.BulkUploads
                 return Response.Failed(Messages.GeneralErrorMessage);
             }
         }
-
-        public Task<Response> RemoveBulkCreate(CancellationToken token) => Delete("BulkCreate", token);
-
-        public Task<Response> RemoveBulkDelete(CancellationToken token) => Delete("BulkUpdate", token);
-
-        public Task<Response> RemoveBulkUpdate(CancellationToken token) => Delete("BulkDelete", token);
+        public Task<Response> Remove(CrudOperations operation, CancellationToken token) => Delete(operation.ToString(), token);
 
         public async Task Download(List<FilterCondition> filter)
         {
