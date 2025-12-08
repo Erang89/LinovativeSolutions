@@ -1,10 +1,10 @@
 {
-  "Entity.Name.Single": "Item Bulk Operation",
-  "Entity.Name.Plural": "Item Bulk Operations",
+  "Entity.Name.Single": "Bulk Operation",
+  "Entity.Name.Plural": "Bulk Operations",
 
   "Operation.Label": "Operation",
   "DataType.Label": "Data Type",
-  "Actions.Label": "Actions",
+  "Actions.Label": "Option",
   "BrowseFile.Label": "Browse file",
   "File.Label": "File",
   "NoRecordUploaded.Label": "No records uploaded yet!",

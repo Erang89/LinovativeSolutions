@@ -7,17 +7,19 @@ namespace Linovative.Frontend.POSComponents.Extensions
     {
         public static CrudOperations ToCrudOperations(this BulkOperations? SelectedOperation, BulkActionTypes? SelectedActionTypes)
         {
-            CrudOperations operation = (SelectedActionTypes is BulkActionTypes.Update_DownloadFromDataMapping or BulkActionTypes.Delete_DownloadFromDataMapping) ?
-            CrudOperations.Mapping :
-            (SelectedOperation switch
+            if (SelectedActionTypes == BulkActionTypes.Update_DownloadFromDataMapping)
+                return CrudOperations.Mapping;
+
+            if (SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataMapping)
+                return CrudOperations.MappingForDelete;
+
+            return SelectedOperation switch
             {
                 BulkOperations.Create => CrudOperations.Create,
                 BulkOperations.Update => CrudOperations.Update,
                 BulkOperations.Delete => CrudOperations.Delete,
                 _ => CrudOperations.Create,
-            });
-
-            return operation;
+            };
         }
     }
 }

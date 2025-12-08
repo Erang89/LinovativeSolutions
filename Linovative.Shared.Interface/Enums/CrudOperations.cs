@@ -6,5 +6,6 @@
         Update, 
         Delete,
         Mapping,
+        MappingForDelete,
     }
 }

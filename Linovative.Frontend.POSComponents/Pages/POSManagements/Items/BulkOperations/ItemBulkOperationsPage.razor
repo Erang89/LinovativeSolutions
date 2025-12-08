@@ -166,7 +166,7 @@
         SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
         SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
     {
-        <MudButton Disabled="@(SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
+        <MudButton Disabled="@(recordLoading || SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
                    StartIcon="@Icons.Material.Filled.ViewColumn"
                    OnClick="@OnButtonViewItemClicked"
@@ -176,7 +176,7 @@
 
     @if (DownloadActions.Any(x => x == SelectedActionTypes))
     {
-        <MudButton Disabled="@(uploading || SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
+        <MudButton Disabled="@(uploading || downloading || SelectedOperation is null || SelectedEntityType is null || SelectedActionTypes is null)"
                    Variant="ComponentSettings.AddNewButtonVariant"
                    StartIcon="@Icons.Material.Filled.Download"
                    OnClick="Download"
@@ -207,12 +207,12 @@
         {BulkOperations.Update, new List<BulkActionTypes>(){
             BulkActionTypes.Update_DownloadBlankTemplate,
             BulkActionTypes.Update_DownloadFromData,
-            BulkActionTypes.Update_DownloadFromDataMapping,
+            //BulkActionTypes.Update_DownloadFromDataMapping,
             BulkActionTypes.Update_Upload}},
         {BulkOperations.Delete, new List<BulkActionTypes>(){
             BulkActionTypes.Delete_DownloadBlankTemplate,
             BulkActionTypes.Delete_DownloadFromDataFiltering,
-            BulkActionTypes.Delete_DownloadFromDataMapping,
+            //BulkActionTypes.Delete_DownloadFromDataMapping,
             BulkActionTypes.Delete_Upload}},
     };
 
@@ -222,8 +222,10 @@
         BulkActionTypes.Update_DownloadBlankTemplate,
         BulkActionTypes.Update_DownloadFromData,
         BulkActionTypes.Update_DownloadFromDataMapping,
+        BulkActionTypes.Delete_DownloadFromDataMapping,
         BulkActionTypes.Create_DownloadTemplate,
         BulkActionTypes.Delete_DownloadBlankTemplate,
+        BulkActionTypes.Delete_DownloadFromDataFiltering,
     };
 
 
@@ -259,13 +261,14 @@
     void SetValue(Action setValueAction)
     {
         setValueAction();
-        ShowRecord = false;
         _state.NotifyStateChanged();
     }
 
     private record FileMapping(BulkOperations Operation, BulkDataEntityTypes Type, BulkActionTypes Action, string FileName);
     async Task Download()
     {
+        SetValue(() => downloading = true);
+
         var downloadResourceActions = new List<BulkActionTypes?>()
         {
             BulkActionTypes.Create_DownloadTemplate,
@@ -294,6 +297,7 @@
             };
 
             await _resourceService.DownloadExcelFile(fileNames.FirstOrDefault(x => x.Operation == SelectedOperation && x.Type == SelectedEntityType && x.Action == SelectedActionTypes)!.FileName);
+            SetValue(() => downloading = false);
             return;
         }
 
@@ -315,6 +319,7 @@
 
             var func = actions[SelectedEntityType!.Value];
             await func();
+            SetValue(() => downloading = false);
             return;
         }
     }
@@ -322,9 +327,11 @@
 
     private readonly long maxFileSize = 20 * 1024 * 1024;
     private bool uploading = false;
+    private bool downloading = false;
+    private bool recordLoading = false;
     async Task Upload()
     {
-        uploading = true;
+        SetValue(() => uploading = true);
         var operation = SelectedOperation.ToCrudOperations(SelectedActionTypes);
         _state.NotifyStateChanged();
         Response<Guid?>? response = SelectedEntityType switch
@@ -348,7 +355,7 @@
         if (response != null)
             formErrorAlert?.ShowAlert(response);
 
-        uploading = false;
+        SetValue(() => uploading = false);
         await Task.CompletedTask;
     }
 
@@ -404,7 +411,9 @@
 
     async Task OnButtonViewItemClicked()
     {
+        SetValue(() => recordLoading = true);
         await LoadData();
+        SetValue(() => recordLoading = false);
     }
 
     async Task LoadData()
