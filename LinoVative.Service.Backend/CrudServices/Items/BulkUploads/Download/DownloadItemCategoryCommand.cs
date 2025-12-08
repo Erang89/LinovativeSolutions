@@ -28,7 +28,9 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download
 
         public async Task<Result> Handle(DownloadItemCategoryCommand request, CancellationToken ct)
         {
-            
+            var filter = request.Filter.FirstOrDefault(x => x.Field == "ItemGroup.Name");
+            if (filter is not null) filter.Field = "Group.Name";
+
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "ExcelFiles", "UpdateCategoryTemplate.xlsx");
             var wb = new XLWorkbook(filePath);
             var ws = wb.Worksheet(1);

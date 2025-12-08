@@ -6,6 +6,7 @@
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 @using Linovative.Shared.Interface.Enums
 @using Microsoft.AspNetCore.Components.Forms
+@using Linovative.Frontend.Shared.Extensions
 
 @attribute [Route(PageRoutes.PostManagement.ItemMaster.BulkOperations)]
 @inherits POSManagementPageBase
@@ -19,6 +20,10 @@
 @inject IMapper _mapper
 @inject IResourceDownload _resourceService
 @inject IBulkUploadService _bulkUploadService;
+@inject IBulkOperationItemGroupService _bulkOperationGroup;
+@inject IBulkOperationItemCategoryService _bulkOperationCategory;
+@inject IBulkOperationItemUnitService _bulkOperationUnit;
+@inject IBulkOperationItemService _bulkOperationItem;
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
@@ -259,25 +264,57 @@
     private record FileMapping(BulkOperations Operation, BulkDataEntityTypes Type, BulkActionTypes Action, string FileName);
     async Task Download()
     {
-        var fileNames = new List<FileMapping>()
+        var downloadResourceActions = new List<BulkActionTypes?>()
         {
-            new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Unit, BulkActionTypes.Create_DownloadTemplate, "CreateItemUnitTemplate.xlsx"),
-            new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Group, BulkActionTypes.Create_DownloadTemplate, "CreateItemGroupTemplate.xlsx"),
-            new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Category, BulkActionTypes.Create_DownloadTemplate, "CreateItemCategoryTemplate.xlsx"),
-            new FileMapping(BulkOperations.Create, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Create_DownloadTemplate, "CreateItemTemplate.xlsx"),
-
-            new FileMapping(BulkOperations.Update, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateItemTemplate.xlsx"),
-            new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Group, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateGroupTemplate.xlsx"),
-            new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Category, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateCategoryTemplate.xlsx"),
-            new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Unit, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateUnitTemplate.xlsx"),
-
-            new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteItemTemplate.xlsx"),
-            new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Group, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteGroupTemplate.xlsx"),
-            new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Category, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteCategoryTemplate.xlsx"),
-            new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Unit, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteUnitTemplate.xlsx"),
+            BulkActionTypes.Create_DownloadTemplate,
+            BulkActionTypes.Update_DownloadBlankTemplate,
+            BulkActionTypes.Delete_DownloadBlankTemplate
         };
 
-        await _resourceService.DownloadExcelFile(fileNames.FirstOrDefault(x => x.Operation == SelectedOperation && x.Type == SelectedEntityType && x.Action == SelectedActionTypes)!.FileName);
+        if (downloadResourceActions.Any(x => x == SelectedActionTypes))
+        {
+            var fileNames = new List<FileMapping>()
+            {
+                new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Unit, BulkActionTypes.Create_DownloadTemplate, "CreateItemUnitTemplate.xlsx"),
+                new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Group, BulkActionTypes.Create_DownloadTemplate, "CreateItemGroupTemplate.xlsx"),
+                new FileMapping(BulkOperations.Create, BulkDataEntityTypes.Category, BulkActionTypes.Create_DownloadTemplate, "CreateItemCategoryTemplate.xlsx"),
+                new FileMapping(BulkOperations.Create, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Create_DownloadTemplate, "CreateItemTemplate.xlsx"),
+
+                new FileMapping(BulkOperations.Update, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateItemTemplate.xlsx"),
+                new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Group, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateGroupTemplate.xlsx"),
+                new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Category, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateCategoryTemplate.xlsx"),
+                new FileMapping(BulkOperations.Update, BulkDataEntityTypes.Unit, BulkActionTypes.Update_DownloadBlankTemplate, "UpdateUnitTemplate.xlsx"),
+
+                new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.ItemMaster, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteItemTemplate.xlsx"),
+                new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Group, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteGroupTemplate.xlsx"),
+                new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Category, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteCategoryTemplate.xlsx"),
+                new FileMapping(BulkOperations.Delete, BulkDataEntityTypes.Unit, BulkActionTypes.Delete_DownloadBlankTemplate, "DeleteUnitTemplate.xlsx"),
+            };
+
+            await _resourceService.DownloadExcelFile(fileNames.FirstOrDefault(x => x.Operation == SelectedOperation && x.Type == SelectedEntityType && x.Action == SelectedActionTypes)!.FileName);
+            return;
+        }
+
+        var downloadDataAction = new List<BulkActionTypes?>()
+        {
+            BulkActionTypes.Update_DownloadFromData,
+            BulkActionTypes.Delete_DownloadFromDataFiltering,
+        };
+
+        if (downloadDataAction!.Any(x => x == SelectedActionTypes))
+        {
+            var actions = new Dictionary<BulkDataEntityTypes, Func<Task>>()
+            {
+                { BulkDataEntityTypes.Group, ()=> _bulkOperationGroup.Download(groupView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.Category, ()=> _bulkOperationCategory.Download(categoryView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.Unit, ()=> _bulkOperationUnit.Download(unitView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.ItemMaster, ()=> _bulkOperationItem.Download(itemView.FilterModels.ToFilterCondition()) }
+            };
+
+            var func = actions[SelectedEntityType!.Value];
+            await func();
+            return;
+        }
     }
 
 
@@ -290,7 +327,7 @@
         {
             BulkOperations.Create => CrudOperations.Create,
             BulkOperations.Update => CrudOperations.Update,
-            BulkOperations.Delete => CrudOperations.Delete,            
+            BulkOperations.Delete => CrudOperations.Delete,
             _ => CrudOperations.Create
         };
 
