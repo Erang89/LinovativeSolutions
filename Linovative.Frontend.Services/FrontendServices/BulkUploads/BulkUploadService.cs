@@ -50,22 +50,22 @@ namespace Linovative.Frontend.Services.BulkUploads
 
         public async Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CrudOperations operation, CancellationToken token)
         {
-            return await UploadFile(file, operation, "BulkUploadItemGroups",  token);
+            return await UploadFile(file, operation, "BulkOperationItemGroups",  token);
         }
 
         public async Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CrudOperations operation, CancellationToken token)
         {
-            return await UploadFile(file, operation, "BulkUploadItemCategories", token);
+            return await UploadFile(file, operation, "BulkOperationItemCategories", token);
         }
 
         public async Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CrudOperations operation, CancellationToken token)
         {
-            return await UploadFile(file, operation, "BulkUploadItemUnits", token);
+            return await UploadFile(file, operation, "BulkOperationItemUnits", token);
         }
 
         public async Task<Response<Guid?>> UploadItems(IBrowserFile file, CrudOperations operation, CancellationToken token)
         {
-            return await UploadFile(file, operation, "BulkUploadItems", token);
+            return await UploadFile(file, operation, "BulkOperationItems", token);
         }
     }
 }

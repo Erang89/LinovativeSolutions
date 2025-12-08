@@ -16,7 +16,7 @@ namespace Linovative.Frontend.Services.BulkUploads
 
     public class BulkUploadItemService : CrudServiceAbstract<BulkUploadItemDto>, IBulkUploadItemService
     {
-        public BulkUploadItemService(IHttpClientFactory httpFactory, ILogger<BulkUploadItemService> logger) : base(httpFactory, logger, "BulkUploadItems")
+        public BulkUploadItemService(IHttpClientFactory httpFactory, ILogger<BulkUploadItemService> logger) : base(httpFactory, logger, "BulkOperationItems")
         {
         }
 
