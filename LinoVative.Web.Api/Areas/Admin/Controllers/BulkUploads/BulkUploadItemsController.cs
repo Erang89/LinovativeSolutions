@@ -1,5 +1,6 @@
 ﻿using LinoVative.Service.Backend.CrudServices.Items.BulkUploads;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Delete;
+using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,31 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         }
 
 
+        [Route("Download")]
+        [HttpPost]
+        [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Download([FromBody] DownloadItemCommand c, CancellationToken token)
+        {
+            try
+            {
+                var result = await _mediator.Send(c, token);
+                var ms = (MemoryStream)result.Data!;
+
+                if (!result)
+                    return StatusCode((int)result.Status, result);
+
+                return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Items.xlsx");
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
+        }
 
 
         [Route("Remove/BulkCreate")]
