@@ -301,20 +301,14 @@
             return;
         }
 
-        var downloadDataAction = new List<BulkActionTypes?>()
-        {
-            BulkActionTypes.Update_DownloadFromData,
-            BulkActionTypes.Delete_DownloadFromDataFiltering,
-        };
-
-        if (downloadDataAction!.Any(x => x == SelectedActionTypes))
+        if (SelectedActionTypes == BulkActionTypes.Update_DownloadFromData)
         {
             var actions = new Dictionary<BulkDataEntityTypes, Func<Task>>()
             {
-                { BulkDataEntityTypes.Group, ()=> _bulkOperationGroup.Download(groupView.FilterModels.ToFilterCondition()) },
-                { BulkDataEntityTypes.Category, ()=> _bulkOperationCategory.Download(categoryView.FilterModels.ToFilterCondition()) },
-                { BulkDataEntityTypes.Unit, ()=> _bulkOperationUnit.Download(unitView.FilterModels.ToFilterCondition()) },
-                { BulkDataEntityTypes.ItemMaster, ()=> _bulkOperationItem.Download(itemView.FilterModels.ToFilterCondition()) }
+                { BulkDataEntityTypes.Group, ()=> _bulkOperationGroup.DownloadUpdateTemplate(groupView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.Category, ()=> _bulkOperationCategory.DownloadUpdateTemplate(categoryView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.Unit, ()=> _bulkOperationUnit.DownloadUpdateTemplate(unitView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.ItemMaster, ()=> _bulkOperationItem.DownloadUpdateTemplate(itemView.FilterModels.ToFilterCondition()) }
             };
 
             var func = actions[SelectedEntityType!.Value];
@@ -322,6 +316,26 @@
             SetValue(() => downloading = false);
             return;
         }
+
+
+        if (SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering)
+        {
+            var actions = new Dictionary<BulkDataEntityTypes, Func<Task>>()
+            {
+                { BulkDataEntityTypes.Group, ()=> _bulkOperationGroup.DownloadDeleteTemplate(groupView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.Category, ()=> _bulkOperationCategory.DownloadDeleteTemplate(categoryView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.Unit, ()=> _bulkOperationUnit.DownloadDeleteTemplate(unitView.FilterModels.ToFilterCondition()) },
+                { BulkDataEntityTypes.ItemMaster, ()=> _bulkOperationItem.DownloadDeleteTemplate(itemView.FilterModels.ToFilterCondition()) }
+            };
+
+            var func = actions[SelectedEntityType!.Value];
+            await func();
+            SetValue(() => downloading = false);
+            return;
+        }
+
+
+        SetValue(() => downloading = false);
     }
 
 
