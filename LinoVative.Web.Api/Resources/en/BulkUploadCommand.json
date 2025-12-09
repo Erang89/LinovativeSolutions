@@ -5,6 +5,7 @@
   "NoWorksheetFound": "No worksheet found in the uploaded file",
   "SomeColumnsAreMissings": "Some column are missing. Please folow the template",
   "InvalidHeader": "Columns headers don't match with the exisitng column headers",
+
   "ItemGroupName.ColumnHeader": "Group Name",
   "ItemCategoryName.ColumnHeader": "Category Name",
   "ItemUnitName.ColumnHeader": "Unit Name",
@@ -12,8 +13,19 @@
   "ItemCode.ColumnHeader": "Code",
   "ItemSellPrice.ColumnHeader": "Sell Price",
   "Id.ColumnHeader": "ID",
+
+  "CreateItem.SheetName": "Items",
+  "CreateGroup.SheetName": "Groups",
+  "CreateCategory.SheetName": "Categories",
+  "CreateUnit.SheetName": "Units",
+
   "UpdateItem.SheetName": "Items",
   "UpdateGroup.SheetName": "Groups",
   "UpdateCategory.SheetName": "Categories",
-  "UpdateUnit.SheetName": "Units"
+  "UpdateUnit.SheetName": "Units",
+
+  "DeleteItem.SheetName": "Items",
+  "DeleteGroup.SheetName": "Groups",
+  "DeleteCategory.SheetName": "Categories",
+  "DeleteUnit.SheetName": "Units"
 }
