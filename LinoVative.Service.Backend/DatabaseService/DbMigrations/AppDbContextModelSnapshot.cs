@@ -283,7 +283,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.ToTable("RefreshTokens", (string)null);
                 });
 
-            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUpload", b =>
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemBulkUpload", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -319,6 +319,176 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Property<string>("headerColum2")
                         .HasColumnType("varchar(100)");
 
+                    b.Property<string>("headerColum3")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("headerColum4")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("headerColum5")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("headerColum6")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("headerColum7")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ItemBulkUpload", "temp");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemBulkUploadDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Column1")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column2")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column3")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column4")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column5")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column6")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column7")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Errors")
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<Guid?>("ItemBulkUploadId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemBulkUploadId");
+
+                    b.ToTable("ItemBulkUploadDetail", "temp");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemCategoryBulkUpload", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAtUtcTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAtUtcTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("LastModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Operation")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("headerColum1")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("headerColum2")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("headerColum3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ItemCategoryBulkUpload", "temp");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemCategoryBulkUploadDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Column1")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column2")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Errors")
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<Guid?>("ItemCategoryBulkUploadId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemCategoryBulkUploadId");
+
+                    b.ToTable("ItemCategoryBulkUploadDetail", "temp");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUpload", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAtUtcTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAtUtcTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("LastModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Operation")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("headerColum1")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("headerColum2")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("ItemGroupBulkUpload", "temp");
@@ -331,10 +501,13 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Column1")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("varchar(100)");
 
                     b.Property<string>("Column2")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Errors")
+                        .HasColumnType("varchar(1000)");
 
                     b.Property<Guid?>("ItemGroupBulkUploadId")
                         .IsRequired()
@@ -345,6 +518,73 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.HasIndex("ItemGroupBulkUploadId");
 
                     b.ToTable("ItemGroupBulkUploadDetail", "temp");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemUnitBulkUpload", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAtUtcTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAtUtcTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("LastModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Operation")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("headerColum1")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("headerColum2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ItemUnitBulkUpload", "temp");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemUnitBulkUploadDetail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Column1")
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<string>("Column2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Errors")
+                        .HasColumnType("varchar(1000)");
+
+                    b.Property<Guid?>("ItemUnitBulkUploadId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemUnitBulkUploadId");
+
+                    b.ToTable("ItemUnitBulkUploadDetail", "temp");
                 });
 
             modelBuilder.Entity("LinoVative.Service.Core.Companies.Company", b =>
@@ -1580,13 +1820,48 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Navigation("Outlet");
                 });
 
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemBulkUploadDetail", b =>
+                {
+                    b.HasOne("LinoVative.Service.Core.BulkUploads.ItemBulkUpload", "ItemBulkUpload")
+                        .WithMany("Details")
+                        .HasForeignKey("ItemBulkUploadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ItemBulkUpload");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemCategoryBulkUploadDetail", b =>
+                {
+                    b.HasOne("LinoVative.Service.Core.BulkUploads.ItemCategoryBulkUpload", "ItemCategoryBulkUpload")
+                        .WithMany("Details")
+                        .HasForeignKey("ItemCategoryBulkUploadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ItemCategoryBulkUpload");
+                });
+
             modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUploadDetail", b =>
                 {
-                    b.HasOne("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUpload", null)
+                    b.HasOne("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUpload", "ItemGroupBulkUpload")
                         .WithMany("Details")
                         .HasForeignKey("ItemGroupBulkUploadId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("ItemGroupBulkUpload");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemUnitBulkUploadDetail", b =>
+                {
+                    b.HasOne("LinoVative.Service.Core.BulkUploads.ItemUnitBulkUpload", "ItemUnitBulkUpload")
+                        .WithMany("Details")
+                        .HasForeignKey("ItemUnitBulkUploadId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ItemUnitBulkUpload");
                 });
 
             modelBuilder.Entity("LinoVative.Service.Core.Companies.Company", b =>
@@ -1852,7 +2127,22 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Navigation("Childs");
                 });
 
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemBulkUpload", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemCategoryBulkUpload", b =>
+                {
+                    b.Navigation("Details");
+                });
+
             modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemGroupBulkUpload", b =>
+                {
+                    b.Navigation("Details");
+                });
+
+            modelBuilder.Entity("LinoVative.Service.Core.BulkUploads.ItemUnitBulkUpload", b =>
                 {
                     b.Navigation("Details");
                 });

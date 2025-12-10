@@ -1,4 +1,4 @@
-﻿using LinoVative.Service.Backend.CrudServices.BulkUploads;
+﻿using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Queries;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.BulkUploads;
 using Microsoft.AspNetCore.Mvc;
@@ -8,14 +8,14 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class BulkUploadItemGroupDetailsControllersController : PrivateODataBaseController
+    public class BulkOperationItemUnitDetailsController : PrivateODataBaseController
     {
         private readonly ILogger _logger;
-        public BulkUploadItemGroupDetailsControllersController(ILogger<BulkUploadItemGroupDetailsControllersController> log) => _logger = log;
+        public BulkOperationItemUnitDetailsController(ILogger<BulkOperationItemUnitDetailsController> log) => _logger = log;
 
         [EnableQuery]
-        [ProducesResponseType(typeof(APIListResponse<BulkUploadItemGroupDetailDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] GetAllBulkUploadGroupDetailIQueryableCommand c, CancellationToken token)
+        [ProducesResponseType(typeof(APIListResponse<BulkUploadItemUnitDetailDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Post([FromBody] GetAllBulkUploadUnitDetailIQueryableCommand c, CancellationToken token)
         {
             try
             {

@@ -9,23 +9,23 @@ using LinoVative.Shared.Dto.Commons;
 using Mapster;
 using MapsterMapper;
 
-namespace LinoVative.Service.Backend.CrudServices.BulkUploads
+namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Queries
 {
-    public class GetAllBulkUploadGroupIQueryableCommand : IRequest<IQueryable<BulkUploadItemGroupDto>>
+    public class GetAllBulkUploadCategoryIQueryableCommand : IRequest<IQueryable<BulkUploadItemCategoryDto>>
     {
         public Guid? Id { get; set; }
         public CrudOperations? Operation { get; set; }
         public List<FilterCondition> Filter { get; set; } = new();
     }
 
-    public class GetAllItemCategoryQueryableHandlerService : QueryServiceBase<ItemGroupBulkUpload, GetAllBulkUploadGroupIQueryableCommand>, IRequestHandler<GetAllBulkUploadGroupIQueryableCommand, IQueryable<BulkUploadItemGroupDto>>
+    public class GetAllItemCategoryQueryableHandlerService : QueryServiceBase<ItemCategoryBulkUpload, GetAllBulkUploadCategoryIQueryableCommand>, IRequestHandler<GetAllBulkUploadCategoryIQueryableCommand, IQueryable<BulkUploadItemCategoryDto>>
     {
 
         public GetAllItemCategoryQueryableHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
         {
         }
 
-        protected override IQueryable<ItemGroupBulkUpload> OnGetAllFilter(IQueryable<ItemGroupBulkUpload> query, GetAllBulkUploadGroupIQueryableCommand req)
+        protected override IQueryable<ItemCategoryBulkUpload> OnGetAllFilter(IQueryable<ItemCategoryBulkUpload> query, GetAllBulkUploadCategoryIQueryableCommand req)
         {
             var q = base.OnGetAllFilter(query, req).Where(x => x.UserId == _actor.UserId && x.CompanyId == _actor.CompanyId);
 
@@ -38,7 +38,7 @@ namespace LinoVative.Service.Backend.CrudServices.BulkUploads
             return q;
         }
 
-        public Task<IQueryable<BulkUploadItemGroupDto>> Handle(GetAllBulkUploadGroupIQueryableCommand request, CancellationToken ct) 
-            => Task.FromResult(base.GetAll(request).ProjectToType<BulkUploadItemGroupDto>(_mapper.Config).ApplyFilters(request.Filter));
+        public Task<IQueryable<BulkUploadItemCategoryDto>> Handle(GetAllBulkUploadCategoryIQueryableCommand request, CancellationToken ct) 
+            => Task.FromResult(base.GetAll(request).ProjectToType<BulkUploadItemCategoryDto>(_mapper.Config).ApplyFilters(request.Filter));
     }
 }

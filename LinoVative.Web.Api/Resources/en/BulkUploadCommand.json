@@ -4,5 +4,35 @@
   "UploadFileEmplty": "Uploaded file is empty",
   "NoWorksheetFound": "No worksheet found in the uploaded file",
   "SomeColumnsAreMissings": "Some column are missing. Please folow the template",
-  "InvalidHeader": "Columns headers don't match with the exisitng column headers"
+  "InvalidHeader": "Columns headers don't match with the exisitng column headers",
+
+  "ItemGroupName.ColumnHeader": "Group Name",
+  "ItemCategoryName.ColumnHeader": "Category Name",
+  "ItemUnitName.ColumnHeader": "Unit Name",
+  "ItemName.ColumnHeader": "Item Name",
+  "ItemCode.ColumnHeader": "Code",
+  "ItemSellPrice.ColumnHeader": "Sell Price",
+  "Id.ColumnHeader": "ID",
+
+  "CreateItem.SheetName": "Items",
+  "CreateGroup.SheetName": "Groups",
+  "CreateCategory.SheetName": "Categories",
+  "CreateUnit.SheetName": "Units",
+
+  "UpdateItem.SheetName": "Items",
+  "UpdateGroup.SheetName": "Groups",
+  "UpdateCategory.SheetName": "Categories",
+  "UpdateUnit.SheetName": "Units",
+
+  "DeleteItem.SheetName": "Items",
+  "DeleteGroup.SheetName": "Groups",
+  "DeleteCategory.SheetName": "Categories",
+  "DeleteUnit.SheetName": "Units",
+
+  "ExcelRowError.Message": "Some error accourt, Please download excel file to see the error",
+  "GroupNameRequired.Message": "Group Name is required",
+  "GroupNameAlreadyExist.Message": "Group Name is already exist",
+  "InvalidKey.Message": "Some keys are invalid",
+  "NoKeyColumns.Message": "Key fields are invalids",
+  "NoMappingColumns.Message": "Column mapping are required"
 }

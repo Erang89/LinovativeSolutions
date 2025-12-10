@@ -52,11 +52,11 @@
   "BulkActionTypes.Create_DownloadTemplate": "Download Template",
   "BulkActionTypes.Create_Upload": "Upload",
   "BulkActionTypes.Update_DownloadBlankTemplate": "Download Blank Template",
-  "BulkActionTypes.Update_DownloadFromData": "Download From Data",
+  "BulkActionTypes.Update_DownloadFromData": "Download Template with Data",
   "BulkActionTypes.Update_DownloadFromDataMapping": "Download From Data Mapping",
   "BulkActionTypes.Update_Upload": "Upload",
   "BulkActionTypes.Delete_DownloadBlankTemplate": "Download Blank Template",
-  "BulkActionTypes.Delete_DownloadFromDataFiltering": "Download From Data Filtering",
+  "BulkActionTypes.Delete_DownloadFromDataFiltering": "Download Template With Data",
   "BulkActionTypes.Delete_DownloadFromDataMapping": "Download From Data Mapping",
   "BulkActionTypes.Delete_Upload": "Upload",
 

@@ -1,6 +1,7 @@
 ﻿using Linovative.Frontend.Services.Extensions;
 using Linovative.Frontend.Services.FrontendServices.BaseServices;
 using Linovative.Frontend.Services.Models;
+using Linovative.Shared.Interface.Enums;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 
@@ -8,7 +9,10 @@ namespace Linovative.Frontend.Services.BulkUploads
 {
     public interface IBulkUploadService 
     {
-        public Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CancellationToken token);
+        public Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CrudOperations operation, CancellationToken token);
+        public Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CrudOperations operation, CancellationToken token);
+        public Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CrudOperations operation, CancellationToken token);
+        public Task<Response<Guid?>> UploadItems(IBrowserFile file, CrudOperations operation, CancellationToken token);
     }
 
     public class BulkUploadService : RequeserServiceBase, IBulkUploadService
@@ -16,11 +20,11 @@ namespace Linovative.Frontend.Services.BulkUploads
 
         private readonly long maxFileSize = 20 * 1024 * 1024; // 20 MB
 
-        public BulkUploadService(IHttpClientFactory httpFactory, ILogger<BulkUploadService> logger) : base(httpFactory, logger, "BulkUploads")
+        public BulkUploadService(IHttpClientFactory httpFactory, ILogger<BulkUploadService> logger) : base(httpFactory, logger, "/")
         {
         }
 
-        public async Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CancellationToken token)
+        private async Task<Response<Guid?>> UploadFile(IBrowserFile file, CrudOperations operation, string endpoint, CancellationToken token)
         {
             try
             {
@@ -29,7 +33,8 @@ namespace Linovative.Frontend.Services.BulkUploads
                 var streamContent = new StreamContent(stream);
                 streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream");
                 content.Add(streamContent, "file", file.Name);
-                var httpResponse = await _httpClient.PostAsync($"{_uriPrefix}/ItemGroup", content, token);
+                content.Add(new StringContent(operation.ToString()), "operation");
+                var httpResponse = await _httpClient.PostAsync($"{endpoint}/upload", content, token);
                 var response = await httpResponse.ToAppResponse<Guid?>(token);
                 if (response)
                     return response;
@@ -41,6 +46,26 @@ namespace Linovative.Frontend.Services.BulkUploads
                 _logger.LogError(ex, ex.Message);
                 return Response<Guid?>.Failed(Messages.GeneralErrorMessage);
             }
+        }
+
+        public async Task<Response<Guid?>> UploadItemGroups(IBrowserFile file, CrudOperations operation, CancellationToken token)
+        {
+            return await UploadFile(file, operation, "BulkOperationItemGroups",  token);
+        }
+
+        public async Task<Response<Guid?>> UploadItemCategories(IBrowserFile file, CrudOperations operation, CancellationToken token)
+        {
+            return await UploadFile(file, operation, "BulkOperationItemCategories", token);
+        }
+
+        public async Task<Response<Guid?>> UploadItemUnits(IBrowserFile file, CrudOperations operation, CancellationToken token)
+        {
+            return await UploadFile(file, operation, "BulkOperationItemUnits", token);
+        }
+
+        public async Task<Response<Guid?>> UploadItems(IBrowserFile file, CrudOperations operation, CancellationToken token)
+        {
+            return await UploadFile(file, operation, "BulkOperationItems", token);
         }
     }
 }

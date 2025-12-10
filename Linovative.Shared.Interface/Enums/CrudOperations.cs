@@ -4,6 +4,8 @@
     {
         Create,
         Update, 
-        Delete
+        Delete,
+        Mapping,
+        MappingForDelete,
     }
 }

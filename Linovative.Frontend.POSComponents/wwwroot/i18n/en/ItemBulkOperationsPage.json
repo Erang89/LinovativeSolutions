@@ -1,17 +1,43 @@
 {
-  "Entity.Name.Single": "Item Bulk Operation",
-  "Entity.Name.Plural": "Item Bulk Operations",
+  "Entity.Name.Single": "Bulk Operation",
+  "Entity.Name.Plural": "Bulk Operations",
 
   "Operation.Label": "Operation",
   "DataType.Label": "Data Type",
-  "Actions.Label": "Actions",
+  "Actions.Label": "Option",
   "BrowseFile.Label": "Browse file",
   "File.Label": "File",
+  "NoRecordUploaded.Label": "No records uploaded yet!",
   "UploadSuccessMessage.Label": "File uploaded successfully",
+  "Column.Label": "Column",
+  "RecordInfo.Label": "{0} of {1} record(s)",
+
+  "ExcelFields.Label": "Excel File Fields",
+
+  "ItemFields.Label": "Item Fields",
+  "MappingItemFields.Label": "Please mapping uploaded excel fields to item fields",
+  "ItemFieldMapping.Label": "Item Field Mappings",
+
+  "GroupFields.Label": "Group Fields",
+  "GroupFieldMapping.Label": "Group Field Mappings",
+  "MappingGroupFields.Label": "Please mapping uploaded excel fields to group fields",
+
+
+  "CategoryFields.Label": "Category Fields",
+  "CategoryFieldMapping.Label": "Category Field Mappings",
+  "MappingCategoryFields.Label": "Please mapping uploaded excel fields to category fields",
+
+  "UnitFields.Label": "Unit Fields",
+  "UnitFieldMapping.Label": "Unit Field Mappings",
+  "MappingUnitFields.Label": "Please mapping uploaded excel fields to unit fields",
+
+
   "Button.ShowRecord.Text": "Show Record",
   "Button.Download.Text": "Download",
   "Button.Upload.Text": "Upload",
+  "Button.ClearRecord.Text": "Clear all uploaded record(s)",
 
+  "Column.Id.Text": "ID",
   "Column.ItemCode.Text": "Item Code",
   "Column.ItemName.Text": "Item Name",
   "Column.Group.Text": "Group",
@@ -19,5 +45,6 @@
   "Column.Category.Text": "Category",
   "Column.CategoryName.Text": "Category Name",
   "Column.Unit.Text": "Unit",
-  "Column.UnitName.Text": "Unit Name"
+  "Column.UnitName.Text": "Unit Name",
+  "Column.SellPrice.Text": "Sell Price"
 }

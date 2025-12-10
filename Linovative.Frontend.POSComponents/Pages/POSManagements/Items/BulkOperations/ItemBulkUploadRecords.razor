@@ -1,0 +1,230 @@
+﻿@using LinoVative.Shared.Dto.BulkUploads
+@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Enums
+@using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.BulkOperations.Shared
+@using Linovative.Frontend.Services.BulkUploads
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.Extensions
+@using Linovative.Frontend.Shared.InputComponents.FilterComponents
+@using Linovative.Shared.Interface.Enums
+
+@inherits POSManagementPageBase
+@inject IApplicationStateService _state
+@inject IBulkOperationItemService _bulkItem
+@inject IBulkOperationItemDetailService _bulkItemDetail
+
+
+@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && (
+    SelectedActionTypes == BulkActionTypes.Update_DownloadFromDataMapping ||
+    SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataMapping ||
+    SelectedActionTypes == BulkActionTypes.Delete_Upload ||
+    SelectedActionTypes == BulkActionTypes.Create_Upload ||
+    SelectedActionTypes == BulkActionTypes.Update_Upload))
+{
+    <LinovativeGap />
+
+    <MudSimpleTable Style="overflow-x: auto;">
+        <thead>
+            @if (details is not null && details.Count > 0)
+            {
+                <tr>
+                    <th>@(item?.headerColum1)</th>
+                    <th>@(item?.headerColum2)</th>
+                    <th>@(item?.headerColum3)</th>
+                    <th>@(item?.headerColum4)</th>
+                    <th>@(item?.headerColum5)</th>
+                    <th>@(item?.headerColum6)</th>
+                    <th>@(item?.headerColum7)</th>
+                </tr>
+            }else
+            {
+                <tr>
+                    <th>@($"{Label("Column")} 1")</th>
+                    <th>@($"{Label("Column")} 2")</th>
+                    <th>@($"{Label("Column")} 3")</th>
+                    <th>@($"{Label("Column")} 4")</th>
+                    <th>@($"{Label("Column")} 5")</th>
+                    <th>@($"{Label("Column")} 6")</th>
+                    <th>@($"{Label("Column")} 7")</th>
+                </tr>
+            }
+        </thead>
+        <tbody>
+            @if (details is not null)
+            {
+                @foreach (var row in details)
+                {
+                    <tr>
+                        <td>@row.Column1</td>
+                        <td>@row.Column2</td>
+                        <td>@row.Column3</td>
+                        <td>@row.Column4</td>
+                        <td>@row.Column5</td>
+                        <td>@row.Column6</td>
+                        <td>@row.Column7</td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="5">
+                        @if (details.Count > 0)
+                        {
+                            <div class="d-flex">
+                                <div style="width: 200px" class="mr-2"><MudText>@Lang($"{LocalizerResource}.RecordInfo.Label", details.Count, recordCount)</MudText></div>
+                                <div style="width: 100%">
+                                    <MudButton Disabled="@(item is null || details.Count == 0)"
+                                               Variant="ComponentSettings.AddNewButtonVariant"
+                                               StartIcon="@Icons.Material.Filled.Delete"
+                                               OnClick="@DeleteRecords"
+                                               Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
+                                </div>
+                            </div>
+
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+        @if(details?.Count == 0)
+        {
+            <tbody>
+                <tr>
+                    <td colspan="6">
+                        <MudText Typo="Typo.body2">@Label("NoRecordUploaded")</MudText>
+                     </td>
+                </tr>
+            </tbody>
+        }
+        <tbody>
+            <tr>
+                <td colspan="6">
+                    <MudPagination Selected="@currentPage" ShowPageButtons="true" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
+                </td>
+            </tr>
+        </tbody>       
+    </MudSimpleTable>
+
+
+
+
+    @if (item is not null && details.Count > 0)
+    {
+        <LinovativeGap />
+        <MudText Typo="Typo.caption">@Label("MappingItemFields")</MudText>
+        <ItemFieldMappings Columns="@item" ExcludeColumns="@(SelectedOperation == BulkOperations.Create? new(){nameof(ItemViewDto.Id)} : new())" />
+    }
+}
+
+
+
+@code {
+    // Public Properties
+    [Parameter] public BulkOperations? SelectedOperation { get; set; }
+    [Parameter] public BulkDataEntityTypes? SelectedEntityType { get; set; }
+    [Parameter] public BulkActionTypes? SelectedActionTypes { get; set; }
+    [Parameter] public bool ShowRecord { get; set; }
+
+    protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
+
+    // Private properties
+    BulkUploadItemDto? item = new();
+    List<BulkUploadItemDetailDto> details = new();
+    List<DataGridFilterModel> itemFilterModels { get; set; } = new();
+    CancellationTokenSource cts = new();
+    int currentPage = 1;
+    readonly int pageSize = 10;
+    int pageCount = 0;
+    int recordCount = 0;
+    int itemFilterCount = 0;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+
+    void OnItemFilterValueChanged(List<DataGridFilterModel> fieldValues)
+    {
+        itemFilterModels = fieldValues;
+    }
+
+    async Task DeleteRecords()
+    {
+        if (item == null)
+            return;
+
+        var cts = new CancellationTokenSource();
+        var operation = SelectedOperation.ToCrudOperations(SelectedActionTypes);
+        await _bulkItem.Remove(operation, cts.Token);
+        Reset();
+        cts.Dispose();
+    }
+
+
+    public async Task LoadData()
+    {
+        cts = new();
+        var operation = SelectedOperation.ToCrudOperations(SelectedActionTypes);
+
+        var odataFilter = new ODataFilter()
+        {
+            PageNumber = 1,
+            PageSize = 1,
+            FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
+        };
+
+        var odataFilterDetail = new ODataFilter()
+        {
+            PageNumber = currentPage,
+            PageSize = pageSize,
+            OrderFiled = null,
+            SortDirection = SortDirection.Ascending.ToString(),
+            FilterPayload = new { filter = itemFilterModels.ToFilterCondition(), operation = operation }
+        };
+        itemFilterCount = itemFilterModels.Count;
+        var task1 = _bulkItem.Get(odataFilter, cts.Token);
+        var task2 = _bulkItemDetail.Get(odataFilterDetail, cts.Token);
+
+        await Task.WhenAll(new List<Task>() { task1, task2 });
+
+        var result = task1.Result;
+        var result2 = task2.Result;
+
+        item = result?.Data?.FirstOrDefault() ?? new();
+        details = result2?.Data ?? new();
+
+        var records = result2?.Count??0;
+        var hasMod = records % pageSize > 0;
+        recordCount = records;
+        pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
+
+        _state.NotifyStateChanged();
+
+        cts.Dispose();
+    }
+
+    async Task OnSelectedPageChanged(int page)
+    {
+        currentPage = page;
+        await LoadData();
+    }
+
+    void OnClearFilter()
+    {
+        if (itemFilterCount == 0)
+            return;
+
+        Reset();
+    }
+
+    public void Reset()
+    {
+        item = null;
+        details = new();
+        currentPage = 1;
+        pageCount = 0;
+        recordCount = 0;
+    }
+}

@@ -284,13 +284,69 @@ namespace LinoVative.Service.Backend.Configurations
             {
                 x.ToTable("ItemGroupBulkUpload", "temp");
                 x.Property(x => x.headerColum1).HasColumnType("varchar(100)");
-                x.Property(x => x.headerColum2).HasColumnType("varchar(100)");
             });
 
             modelBuilder.Entity<ItemGroupBulkUploadDetail>(x =>
             {
                 x.ToTable("ItemGroupBulkUploadDetail", "temp");
+                x.Property(x => x.Column1).HasColumnType("varchar(100)");
+                x.Property(x => x.Errors).HasColumnType("varchar(1000)");
                 x.HasOne(x => x.ItemGroupBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemGroupBulkUploadId).IsRequired();
+            });
+
+
+            modelBuilder.Entity<ItemCategoryBulkUpload>(x =>
+            {
+                x.ToTable("ItemCategoryBulkUpload", "temp");
+                x.Property(x => x.headerColum1).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum2).HasColumnType("varchar(100)");
+            });
+
+            modelBuilder.Entity<ItemCategoryBulkUploadDetail>(x =>
+            {
+                x.ToTable("ItemCategoryBulkUploadDetail", "temp");
+                x.Property(x => x.Column1).HasColumnType("varchar(100)");
+                x.Property(x => x.Column2).HasColumnType("varchar(100)");
+                x.Property(x => x.Errors).HasColumnType("varchar(1000)");
+                x.HasOne(x => x.ItemCategoryBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemCategoryBulkUploadId).IsRequired();
+            });
+
+            modelBuilder.Entity<ItemUnitBulkUpload>(x =>
+            {
+                x.ToTable("ItemUnitBulkUpload", "temp");
+                x.Property(x => x.headerColum1).HasColumnType("varchar(100)");
+            });
+
+            modelBuilder.Entity<ItemUnitBulkUploadDetail>(x =>
+            {
+                x.ToTable("ItemUnitBulkUploadDetail", "temp");
+                x.Property(x => x.Column1).HasColumnType("varchar(100)");
+                x.Property(x => x.Errors).HasColumnType("varchar(1000)");
+                x.HasOne(x => x.ItemUnitBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemUnitBulkUploadId).IsRequired();
+            });
+
+            modelBuilder.Entity<ItemBulkUpload>(x =>
+            {
+                x.ToTable("ItemBulkUpload", "temp");
+                x.Property(x => x.headerColum1).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum2).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum3).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum4).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum5).HasColumnType("varchar(100)");
+                x.Property(x => x.headerColum6).HasColumnType("varchar(100)");
+            });
+
+            modelBuilder.Entity<ItemBulkUploadDetail>(x =>
+            {
+                x.ToTable("ItemBulkUploadDetail", "temp");
+                x.Property(x => x.Column1).HasColumnType("varchar(100)");
+                x.Property(x => x.Column2).HasColumnType("varchar(100)");
+                x.Property(x => x.Column3).HasColumnType("varchar(100)");
+                x.Property(x => x.Column4).HasColumnType("varchar(100)");
+                x.Property(x => x.Column5).HasColumnType("varchar(100)");
+                x.Property(x => x.Column6).HasColumnType("varchar(100)");
+                x.Property(x => x.Errors).HasColumnType("varchar(1000)");
+                x.HasOne(x => x.ItemBulkUpload).WithMany(x => x.Details).HasForeignKey(x => x.ItemBulkUploadId).IsRequired();
             });
 
         }

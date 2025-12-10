@@ -6,10 +6,10 @@ using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto.BulkUploads;
 using LinoVative.Shared.Dto.Commons;
-using Mapster; 
+using Mapster;
 using MapsterMapper;
 
-namespace LinoVative.Service.Backend.CrudServices.BulkUploads
+namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Queries
 {
     public class GetAllBulkUploadGroupDetailIQueryableCommand : IRequest<IQueryable<BulkUploadItemGroupDetailDto>>
     {
@@ -19,10 +19,10 @@ namespace LinoVative.Service.Backend.CrudServices.BulkUploads
         public List<FilterCondition> Filter { get; set; } = new();
     }
 
-    public class GetAllItemCategoryQueryableDetailHandlerService : QueryServiceBase<ItemGroupBulkUploadDetail, GetAllBulkUploadGroupDetailIQueryableCommand>, IRequestHandler<GetAllBulkUploadGroupDetailIQueryableCommand, IQueryable<BulkUploadItemGroupDetailDto>>
+    public class GetAllItemGroupQueryableDetailHandlerService : QueryServiceBase<ItemGroupBulkUploadDetail, GetAllBulkUploadGroupDetailIQueryableCommand>, IRequestHandler<GetAllBulkUploadGroupDetailIQueryableCommand, IQueryable<BulkUploadItemGroupDetailDto>>
     {
 
-        public GetAllItemCategoryQueryableDetailHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
+        public GetAllItemGroupQueryableDetailHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
         {
         }
 
@@ -38,7 +38,7 @@ namespace LinoVative.Service.Backend.CrudServices.BulkUploads
                 q = q.Where(x => x.ItemGroupBulkUpload!.Operation == req.Operation);
 
             if (!string.IsNullOrEmpty(req.SearchKeyword))
-                q = q.Where(x => string.Concat(x.Column1, x.Column2).Contains(req.SearchKeyword??""));
+                q = q.Where(x => string.Concat(x.Column1).Contains(req.SearchKeyword??""));
 
             return q;
         }

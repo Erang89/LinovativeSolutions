@@ -1,8 +1,10 @@
-﻿using LinoVative.Service.Core.Interfaces;
+﻿using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.BlankTemplates;
+using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.BlankTemplates.Factory;
+using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using Microsoft.Extensions.Localization;
+using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Resources
 {
@@ -28,10 +30,31 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Resources
                 return StatusCode((int)result.Status, result);
             }
 
-
             try
             {
-                var bytes = await System.IO.File.ReadAllBytesAsync(filePath, token);
+                var type = (new Dictionary<string, BulkOperationTemplateType>()
+                {
+                    {"CreateItemTemplate.xlsx", BulkOperationTemplateType.Item_Create },
+                    {"UpdateItemTemplate.xlsx", BulkOperationTemplateType.Item_Update},
+                    {"DeleteItemTemplate.xlsx", BulkOperationTemplateType.Item_Delete },
+
+                    {"CreateItemGroupTemplate.xlsx", BulkOperationTemplateType.Group_Create },
+                    {"UpdateGroupTemplate.xlsx", BulkOperationTemplateType.Group_Update},
+                    {"DeleteGroupTemplate.xlsx", BulkOperationTemplateType.Group_Delete },
+
+                    {"CreateItemCategoryTemplate.xlsx", BulkOperationTemplateType.Category_Create },
+                    {"UpdateCategoryTemplate.xlsx", BulkOperationTemplateType.Category_Update},
+                    {"DeleteCategoryTemplate.xlsx", BulkOperationTemplateType.Category_Delete },
+
+                    {"CreateItemUnitTemplate.xlsx", BulkOperationTemplateType.Unit_Create },
+                    {"UpdateUnitTemplate.xlsx", BulkOperationTemplateType.Unit_Update},
+                    {"DeleteUnitTemplate.xlsx", BulkOperationTemplateType.Unit_Delete },
+                })[fileName];
+
+                var cmd = new BulkOperationExcelTemplateCommand() { Type = type };
+                var result = await _mediator.Send(cmd, token);
+                var ms = (MemoryStream)result.Data!;
+                var bytes = ms.ToArray();
                 var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 return File(bytes, contentType, fileName.Replace(".xlsx", $"_{DateTime.Now.ToString("yyyyMMddhhmmss")}.xlsx"));
             }

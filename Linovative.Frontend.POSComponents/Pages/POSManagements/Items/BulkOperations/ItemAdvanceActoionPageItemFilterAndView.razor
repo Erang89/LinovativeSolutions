@@ -77,7 +77,7 @@
 
     // Private properties
     List<ItemViewDto> itemMasters = new();
-    List<DataGridFilterModel> itemFilterModels { get; set; } = new();
+    public List<DataGridFilterModel> FilterModels { get; set; } = new();
     CancellationTokenSource cts = new();
     int currentPage = 0;
     int pageSize = 10;
@@ -97,7 +97,7 @@
 
     void OnItemFilterValueChanged(List<DataGridFilterModel> fieldValues)
     {
-        itemFilterModels = fieldValues;
+        FilterModels = fieldValues;
     }
 
 
@@ -111,9 +111,9 @@
             OrderFiled = null,
             SortDirection = SortDirection.Ascending.ToString(),
             Options = $"$expand=unit,category($expand=itemGroup)",
-            FilterPayload = new { filter = itemFilterModels.ToFilterCondition() }
+            FilterPayload = new { filter = FilterModels.ToFilterCondition() }
         };
-        itemFilterCount = itemFilterModels.Count;
+        itemFilterCount = FilterModels.Count;
         var result = await _itemService.Get(odataFilter, cts.Token);
         var records = result?.Count ?? 0;
         var hasMod = records % pageSize > 0;

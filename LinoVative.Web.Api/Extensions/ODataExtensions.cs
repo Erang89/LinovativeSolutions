@@ -42,6 +42,7 @@ namespace LinoVative.Web.Api.Extensions
             ODataConventionModelBuilder modelBuilder = new ODataConventionModelBuilder();
             modelBuilder.EnableLowerCamelCase();
 
+            // Master Datas
             modelBuilder.EntitySet<ItemUnitDto>("ItemUnits");
             modelBuilder.EntitySet<ItemGroupDto>("ItemGroups");
             modelBuilder.EntitySet<ItemCategoryViewDto>("ItemCategories");
@@ -58,8 +59,18 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<COAGroupDto>("COAGroups");
             modelBuilder.EntitySet<AccountViewDto>("Accounts");
             modelBuilder.EntitySet<SalesCOAMappingViewDto>("SalesCOAMappings");
-            modelBuilder.EntitySet<BulkUploadItemGroupDto>("BulkUploadItemGroups");
-            modelBuilder.EntitySet<BulkUploadItemGroupDetailDto>("BulkUploadItemGroupDetails");
+
+            // Bulk Uploads Data
+            modelBuilder.EntitySet<BulkUploadItemGroupDto>("BulkOperationItemGroups");
+            modelBuilder.EntitySet<BulkUploadItemGroupDetailDto>("BulkOperationItemGroupDetails");
+            modelBuilder.EntitySet<BulkUploadItemCategoryDto>("BulkOperationItemCategories");
+            modelBuilder.EntitySet<BulkUploadItemCategoryDetailDto>("BulkOperationItemCategoryDetails");
+            modelBuilder.EntitySet<BulkUploadItemUnitDto>("BulkOperationItemUnits");
+            modelBuilder.EntitySet<BulkUploadItemUnitDetailDto>("BulkOperationItemUnitDetails");
+            modelBuilder.EntitySet<BulkUploadItemDto>("BulkOperationItems");
+            modelBuilder.EntitySet<BulkUploadItemDetailDto>("BulkOperationItemDetails");
+
+            
 
             return modelBuilder.GetEdmModel();
         }

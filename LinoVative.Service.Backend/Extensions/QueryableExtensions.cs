@@ -1,7 +1,10 @@
-﻿using LinoVative.Shared.Dto.Commons;
+﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Core.Interfaces;
+using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.Enums;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace LinoVative.Service.Backend.Extensions
 {
@@ -204,6 +207,24 @@ namespace LinoVative.Service.Backend.Extensions
 
             var lambda = Expression.Lambda<Func<T, bool>>(body, parameter);
             return source.Where(lambda);
+        }
+
+
+
+        public static IQueryable<T> GetAll<T>(this IQueryable<T> query, IActor actor, bool includeDeleted = false)
+        {
+            
+            if (typeof(IDeleteableEntity).IsAssignableFrom(typeof(T)) && !includeDeleted)
+            {
+                query = query.Where(e => !((IDeleteableEntity)e).IsDeleted);
+            }
+
+            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
+            {
+                query = query.Where(e => ((IsEntityManageByCompany)e).CompanyId == actor.CompanyId);
+            }
+
+            return query;
         }
 
     }

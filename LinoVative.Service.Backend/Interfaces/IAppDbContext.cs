@@ -92,7 +92,12 @@ namespace LinoVative.Service.Backend.Interfaces
         // Temp Entities
         public DbSet<ItemGroupBulkUpload> ItemGroupBulkUploads { get; set; }
         public DbSet<ItemGroupBulkUploadDetail> ItemGroupBulkUploadDetails { get; set; }
-
+        public DbSet<ItemCategoryBulkUpload> ItemCategoryBulkUploads { get; set; }
+        public DbSet<ItemCategoryBulkUploadDetail> ItemCategoryBulkUploadDetails { get; set; }
+        public DbSet<ItemUnitBulkUpload> ItemUnitBulkUploads { get; set; }
+        public DbSet<ItemUnitBulkUploadDetail> ItemUnitBulkUploadDetails { get; set; }
+        public DbSet<ItemBulkUpload> ItemBulkUploads { get; set; }
+        public DbSet<ItemBulkUploadDetail> ItemBulkUploadDetails { get; set; }
 
 
         // Functions
