@@ -8,14 +8,14 @@ using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.ItemDtos;
 using Microsoft.EntityFrameworkCore;
 
-namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
+namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
 {
-    public class BulkMappingGroupUpdateService : BulkMappingGroupBase, IBulkMapping
+    public class BulkUpdateItemGroupService : BulkUpdateItemGroupBase, IBulkMapping
     {
 
         private readonly ILangueageService _lang;
 
-        public BulkMappingGroupUpdateService(ILangueageService lang, IAppDbContext dbContext, IActor actor) : base(lang, dbContext, actor, CrudOperations.Update)
+        public BulkUpdateItemGroupService(ILangueageService lang, IAppDbContext dbContext, IActor actor) : base(lang, dbContext, actor, CrudOperations.Update)
         {
             _lang = lang;
             _lang.EnsureLoad(x => x.BulkUploadCommand);
