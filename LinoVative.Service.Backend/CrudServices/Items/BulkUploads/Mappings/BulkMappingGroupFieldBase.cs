@@ -3,7 +3,7 @@ using LinoVative.Shared.Dto.ItemDtos;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
 {
-    internal abstract class BulkMappingGroupFieldBase
+    public abstract class BulkMappingGroupFieldBase
     {
         protected static class Fields
         {
