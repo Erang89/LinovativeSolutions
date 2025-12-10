@@ -1,6 +1,7 @@
 ﻿using Linovative.BackendTest.Bases;
 using Linovative.Shared.Interface.Enums;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings;
+using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group;
 using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto.ItemDtos;
@@ -37,7 +38,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
 
             await dbContext.SaveAsync(_actor);
 
-            IBulkMapping bulkUpdateService = new BulkMappingGroupUpdateService(_langService, dbContext, _actor);
+            IBulkMapping bulkUpdateService = new BulkUpdateItemGroupService(_langService, dbContext, _actor);
             var fieldMapping = new Dictionary<string, string>()
             {
                 {nameof(ItemGroupDto.Id), nameof(ItemGroupBulkUploadDetail.Column1) },
