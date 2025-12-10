@@ -1,6 +1,7 @@
 ﻿@using LinoVative.Shared.Dto.BulkUploads
 @using Linovative.Frontend.POSComponents.Bases
 @using Linovative.Frontend.POSComponents.Enums
+@using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.BulkOperations.Shared
 @using Linovative.Frontend.Services.BulkUploads
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.Extensions
@@ -67,7 +68,17 @@
                     <td colspan="5">
                         @if (details.Count > 0)
                         {
-                            <MudText>@Lang($"{LocalizerResource}.RecordInfo.Label", details.Count, recordCount)</MudText>
+                            <div class="d-flex">
+                                <div style="width: 200px" class="mr-2"><MudText>@Lang($"{LocalizerResource}.RecordInfo.Label", details.Count, recordCount)</MudText></div>
+                                <div style="width: 100%">
+                                    <MudButton Disabled="@(item is null || details.Count == 0)"
+                                               Variant="ComponentSettings.AddNewButtonVariant"
+                                               StartIcon="@Icons.Material.Filled.Delete"
+                                               OnClick="@DeleteRecords"
+                                               Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
+                                </div>
+                            </div>
+
                         }
                     </td>
                 </tr>
@@ -78,7 +89,9 @@
         {
             <tbody>
                 <tr>
-                    <td colspan="6"><MudText Typo="Typo.body2">@Label("NoRecordUploaded")</MudText></td>
+                    <td colspan="6">
+                        <MudText Typo="Typo.body2">@Label("NoRecordUploaded")</MudText>
+                     </td>
                 </tr>
             </tbody>
         }
@@ -92,15 +105,14 @@
     </MudSimpleTable>
 
 
-    <LinovativeGap />
-    <div>
-        <MudButton Disabled="@(item is null || details.Count == 0)"
-                   Variant="ComponentSettings.AddNewButtonVariant"
-                   StartIcon="@Icons.Material.Filled.Delete"
-                   OnClick="@DeleteRecords"
-                   Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
-    </div>
 
+
+    @if (item is not null && details.Count > 0)
+    {
+        <LinovativeGap />
+        <MudText Typo="Typo.caption">@Label("MappingItemFields")</MudText>
+        <ItemFieldMappings Columns="@item" ExcludeColumns="@(SelectedOperation == BulkOperations.Create? new(){nameof(ItemViewDto.Id)} : new())" />
+    }
 }
 
 

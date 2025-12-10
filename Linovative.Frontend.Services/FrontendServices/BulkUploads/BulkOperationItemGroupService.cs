@@ -68,7 +68,7 @@ namespace Linovative.Frontend.Services.BulkUploads
 
                 var data = await response.Content.ReadAsByteArrayAsync();
                 var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-                var finalFileName = $"ItemsForUpdate_{timestamp}.xlsx";
+                var finalFileName = $"GroupsForUpdate_{timestamp}.xlsx";
 
                 var base64 = Convert.ToBase64String(data);
                 await _js.InvokeVoidAsync("saveAsFile", finalFileName, base64);
@@ -98,7 +98,7 @@ namespace Linovative.Frontend.Services.BulkUploads
 
                 var data = await response.Content.ReadAsByteArrayAsync();
                 var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-                var finalFileName = $"ItemsForDelete_{timestamp}.xlsx";
+                var finalFileName = $"GroupsForDelete_{timestamp}.xlsx";
 
                 var base64 = Convert.ToBase64String(data);
                 await _js.InvokeVoidAsync("saveAsFile", finalFileName, base64);

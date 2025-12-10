@@ -103,11 +103,11 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
             {
                 var removeBulkUploadType = type switch
                 {
-                    CrudOperations.Create => RemoveBulkUploadItemType.ItemCreate,
-                    CrudOperations.Update => RemoveBulkUploadItemType.ItemUpdate,
-                    CrudOperations.Delete => RemoveBulkUploadItemType.ItemDelete,
-                    CrudOperations.Mapping => RemoveBulkUploadItemType.ItemMapping,
-                    _ => RemoveBulkUploadItemType.ItemMapping,
+                    CrudOperations.Create => RemoveBulkUploadItemType.UnitCreate,
+                    CrudOperations.Update => RemoveBulkUploadItemType.UnitUpdate,
+                    CrudOperations.Delete => RemoveBulkUploadItemType.UnitDelete,
+                    CrudOperations.Mapping => RemoveBulkUploadItemType.UnitMapping,
+                    _ => RemoveBulkUploadItemType.UnitMapping,
                 };
                 var c = new RemoveBulkUploadItemCommand() { UploadType = removeBulkUploadType };
                 var result = await _mediator.Send(c, token);

@@ -103,7 +103,7 @@
     </div>
 
     <LinovativeGap />
-    <MudButton Disabled="@(fileToUplaod is null)"
+    <MudButton Disabled="@(uploading || fileToUplaod is null)"
                Variant="ComponentSettings.AddNewButtonVariant"
                StartIcon="@Icons.Material.Filled.Upload"
                OnClick="Upload"
@@ -362,7 +362,7 @@
             successAllert!.ShowAlert(Label("UploadSuccessMessage"));
             fileToUplaod = null;
             await LoadDataUpload();
-            uploading = false;
+            SetValue(() => uploading = false);
             return;
         }
 

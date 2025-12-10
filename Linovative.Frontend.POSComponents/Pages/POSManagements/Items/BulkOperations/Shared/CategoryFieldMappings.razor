@@ -1,0 +1,124 @@
+﻿@using LinoVative.Shared.Dto.BulkUploads
+@using Linovative.Frontend.POSComponents.Bases
+@inject ILanguageProvider _lang;
+@inject IApplicationStateService _state;
+@inherits POSManagementPageBase
+
+<div class="d-flex flex-grow-1 gap-2">
+
+    <MudPaper Class="flex-none d-flex" Width="300px" Elevation="0">
+        <MudList T="string" SelectedValue="@(SelectedItemField?.Value ?? "")" Style="width: 100%">
+            <MudListSubheader>
+                <MudText Typo="Typo.button">@Label("CategoryFields")</MudText>
+            </MudListSubheader>
+            @foreach (var f in ItemFields.Where(x => !(SelectedPairs.Select(s => s.ItemField.Key)).Contains(x.Key)))
+            {
+                <MudListItem Value="@f.Value"
+                             @ondblclick="@(() => { SelectedItemField = f; Mapping(); })"
+                             OnClick="@(() => SelectedItemField = f)" Text="@f.Value" />
+            }
+        </MudList>
+
+    </MudPaper>
+
+
+    <MudPaper Class="flex-none d-flex" Width="300px" Elevation="0">
+        <MudList T="string" SelectedValue="@(SelectedUploadField?.Value ?? "")" Style="width: 100%">
+            <MudListSubheader>
+                <MudText Typo="Typo.button">@Label("ExcelFields")</MudText>
+            </MudListSubheader>
+            @foreach (var f in UploadFields())
+            {
+                <MudListItem Value="@f.Value"
+                             @ondblclick="@(() => { SelectedUploadField = f; Mapping(); })"
+                             OnClick="@(() => SelectedUploadField = f)" Text="@f.Value" />
+            }
+        </MudList>
+    </MudPaper>
+
+    <MudPaper Class="flex-none d-flex" Width="80px" Elevation="0">
+        <MudButton Style="width: 100%"
+                   Disabled="@(SelectedItemField is null || SelectedUploadField is null)"
+                   OnClick="@Mapping"
+                   Variant="ComponentSettings.AddNewButtonVariant"><MudIcon Icon="@Icons.Material.Filled.KeyboardDoubleArrowRight" /></MudButton>
+    </MudPaper>
+
+    <MudPaper Class="flex-none d-flex" Width="300px" Elevation="0">
+        <MudList T="string" Ico Style="width: 100%">
+            <MudListSubheader>
+                <MudText Typo="Typo.button">@Label("CategoryFieldMapping")</MudText>
+            </MudListSubheader>
+            @foreach (var f in SelectedPairs)
+            {
+                <MudListItem>
+                    <div class="d-flex">
+                        <div style="width: 100%" @ondblclick="(() => Delete(f))">@($"{f.ItemField.Value} = {f.UploadField.Value}")</div>
+                        <div class="flex-none" Width="70px"><MudIcon @onclick="@(() => Delete(f))" Icon="@Icons.Material.Filled.Delete" /></div>
+                    </div>
+                </MudListItem>
+            }
+        </MudList>
+    </MudPaper>
+</div>
+
+@code {
+    protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
+
+    [Parameter] public BulkUploadItemCategoryDto? Columns { get; set; }
+    [Parameter] public List<string> ExcludeColumns { get; set; } = new();
+    [Parameter] public EventCallback<IDictionary<string, string>> FieldMappingChanged { get; set; }
+
+    private List<KeyValuePair<string, string>> ItemFields { get; set; } = new();
+    private List<KeyValuePair<string, string>> UploadFields() => (new Dictionary<string, string>()
+    {
+            {nameof(BulkUploadItemCategoryDetailDto.Column1), Columns?.headerColum1??""},
+            {nameof(BulkUploadItemCategoryDetailDto.Column2), Columns?.headerColum2??""},
+            {nameof(BulkUploadItemCategoryDetailDto.Column3), Columns?.headerColum3??""},
+        })
+        .Where(x => !(SelectedPairs.Select(s => s.UploadField.Key)).Contains(x.Key))
+        .Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => new KeyValuePair<string, string>(x.Key, x.Value))
+        .ToList();
+
+    private sealed record FieldPair(KeyValuePair<string, string> ItemField, KeyValuePair<string, string> UploadField);
+    private List<FieldPair> SelectedPairs { get; set; } = new();
+    private KeyValuePair<string, string>? SelectedItemField = null;
+    private KeyValuePair<string, string>? SelectedUploadField = null;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var itemFields = new Dictionary<string, string>()
+        {
+            {nameof(ItemCategoryViewDto.Id), ColumHeaderText("Id")},
+            {nameof(ItemCategoryViewDto.Name), ColumHeaderText("CategoryName")},
+            {nameof(ItemCategoryViewDto.ItemGroup), ColumHeaderText("GroupName")},
+        };
+
+        ItemFields = itemFields.Where(x => !(ExcludeColumns).Contains(x.Key))
+                        .Select(x => new KeyValuePair<string, string>(x.Key, x.Value))
+                        .ToList();
+
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+    async Task Mapping()
+    {
+        if (SelectedItemField is null || SelectedUploadField is null)
+            return;
+
+        SelectedPairs.Add(new FieldPair(SelectedItemField.Value, SelectedUploadField.Value));
+
+        SelectedItemField = null;
+        SelectedUploadField = null;
+        await FieldMappingChanged.InvokeAsync(SelectedPairs.ToDictionary(x => x.ItemField.Key, x => x.UploadField.Key));
+    }
+
+    async Task Delete(FieldPair value)
+    {
+        SelectedPairs.Remove(value);
+        await FieldMappingChanged.InvokeAsync(SelectedPairs.ToDictionary(x => x.ItemField.Key, x => x.UploadField.Key));
+    }
+
+}

@@ -59,6 +59,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 {
                     ItemUnitBulkUploadId = exisitingUpload.Id,
                     Column1 = GetValueString(row.Cell(1)),
+                    Column2 = GetValueString(row.Cell(2)),
                 };
 
                 _dbContext.ItemUnitBulkUploadDetails.Add(detail);
