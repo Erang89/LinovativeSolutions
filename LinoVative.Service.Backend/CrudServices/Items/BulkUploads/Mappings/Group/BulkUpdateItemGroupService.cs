@@ -87,7 +87,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 if (string.IsNullOrEmpty(dto.Name))
                     errors.Add(getError("GroupNameRequired.Message"));
 
-                if(groups.Any(x => x.Id != dto.Id && x.Name.Equals(dto.Name, StringComparison.InvariantCultureIgnoreCase)) ||
+                else if(groups.Any(x => x.Id != dto.Id && x.Name.Equals(dto.Name, StringComparison.InvariantCultureIgnoreCase)) ||
                     _dbContext.ItemGroups.GetAll(_actor).Any(x => x.Name == dto.Name && x.Id != dto.Id))
                     errors.Add(getError("GroupNameAlreadyExist.Message"));
 
