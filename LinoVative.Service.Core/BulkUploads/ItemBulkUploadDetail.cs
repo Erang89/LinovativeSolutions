@@ -16,5 +16,6 @@ namespace LinoVative.Service.Core.BulkUploads
         public string? Column5 { get; set; }
         public string? Column6 { get; set; }
         public string? Column7 { get; set; }
+        public string? Errors { get; set; }
     }
 }

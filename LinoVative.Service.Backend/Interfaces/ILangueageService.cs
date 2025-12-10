@@ -10,6 +10,7 @@
 
     public class AvailableLanguageKeys
     {
+        public string BulkUploadCommand => nameof(BulkUploadCommand);
         public string ChangeDefaultCompanyCommand => nameof(ChangeDefaultCompanyCommand);
         public string RefreshTokenCommand => nameof(RefreshTokenCommand);
         public string CreateOrUpdateOutletAreaCommand => nameof(CreateOrUpdateOutletAreaCommand);

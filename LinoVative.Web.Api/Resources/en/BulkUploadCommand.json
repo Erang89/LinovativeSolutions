@@ -27,5 +27,12 @@
   "DeleteItem.SheetName": "Items",
   "DeleteGroup.SheetName": "Groups",
   "DeleteCategory.SheetName": "Categories",
-  "DeleteUnit.SheetName": "Units"
+  "DeleteUnit.SheetName": "Units",
+
+  "ExcelRowError.Message": "Some error accourt, Please download excel file to see the error",
+  "GroupNameRequired.Message": "Group Name is required",
+  "GroupNameAlreadyExist.Message": "Group Name is already exist",
+  "InvalidKey.Message": "Some keys are invalid",
+  "NoKeyColumns.Message": "Key fields are invalids",
+  "NoMappingColumns.Message": "Column mapping are required"
 }
