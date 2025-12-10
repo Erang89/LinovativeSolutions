@@ -6,10 +6,11 @@ using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.ItemDtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
 {
-    internal class BulkMappingGroupUpdateService : BulkMappingGroupBase, IBulkMapping
+    public class BulkMappingGroupUpdateService : BulkMappingGroupBase, IBulkMapping
     {
 
         private readonly ILangueageService _lang;
@@ -43,8 +44,23 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
             }
 
             await _dbContext.SaveAsync(_actor);
+            
+            await _dbContext.ItemGroupBulkUploadDetails.Where(x => 
+                x.ItemGroupBulkUpload!.Operation == _crudOperations && 
+                x.ItemGroupBulkUpload.CompanyId == _actor.CompanyId && 
+                x.ItemGroupBulkUpload.UserId == _actor.UserId)
+                .ExecuteDeleteAsync();
+
+            await _dbContext.ItemGroupBulkUploads.Where(x =>
+                x.Operation == _crudOperations &&
+                x.CompanyId == _actor.CompanyId &&
+                x.UserId == _actor.UserId)
+                .ExecuteDeleteAsync();
+
             return Result.OK();
         }
+
+
 
 
         public override async Task<Result> Validate(Dictionary<string, string> fieldMapping, List<string> keyColumns, CancellationToken token)

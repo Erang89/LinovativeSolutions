@@ -12,7 +12,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
 {
    
 
-    internal abstract class BulkMappingGroupBase : BulkMappingGroupFieldBase
+    public abstract class BulkMappingGroupBase : BulkMappingGroupFieldBase
     {
 
         
@@ -66,7 +66,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
                 return Result.Failed(getError("NoKeyColumns.Message"));
 
             // Validate: is any fieldMapping exclude keycolumns
-            if(keyColumns.Count > 0 && fieldMapping.Any(x => !keyColumns.Contains(x.Key)))
+            if(keyColumns.Count > 0 && !fieldMapping.Any(x => !keyColumns.Contains(x.Key)))
                 return Result.Failed(getError("NoMappingColumns.Message"));
 
             return Result.OK();
