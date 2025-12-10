@@ -1,9 +1,9 @@
 ﻿using LinoVative.Shared.Dto.BulkUploads;
 using LinoVative.Shared.Dto.ItemDtos;
 
-namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
+namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
 {
-    public abstract class BulkMappingGroupFieldBase
+    public abstract class BulkUpdateItemGroupFieldBase
     {
         protected static class Fields
         {
