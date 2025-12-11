@@ -69,8 +69,8 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             detail1!.Column2 = "Update 1";
             await dbContext.SaveAsync(_actor);
 
-            var resultSave = await bulkUpdateService.Save(fieldMapping, keyColumn, cts.Token);
             var resultValidate = await bulkUpdateService.Validate(fieldMapping, keyColumn, cts.Token);
+            var resultSave = await bulkUpdateService.Save(fieldMapping, keyColumn, cts.Token);
             var resultGroup1 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == itemGroup1.Id);
             var resultGroup2 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == itemGroup2.Id);
             var resultGroup3 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == itemGroup3.Id);
