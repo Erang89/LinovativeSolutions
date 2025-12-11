@@ -41,5 +41,6 @@
   "DuplicateNameInDB.Message": "Other row with the same {0} already exist in the system",
   "NoKeyColumnsNeeded.Message": "This Operation need no key columns",
   "FieldNotExistInTheSystem.Message": "The {0} not found in the system",
-  "ExcelFieldIsRequiredOrInvalid.Message": "The {0} is required or invalid value"
+  "ExcelFieldIsRequiredOrInvalid.Message": "The {0} is required or invalid value",
+  "NoRecordUploadedYet.Message": "No record(s) found. Please upload the excel file"
 }
