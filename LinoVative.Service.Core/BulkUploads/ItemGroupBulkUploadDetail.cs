@@ -13,5 +13,17 @@ namespace LinoVative.Service.Core.BulkUploads
         public string? Column1 { get; set; }
         public string? Column2 { get; set; }
         public string? Errors { get; set; }
+
+        public void AddError(string error)
+        {
+            if (!string.IsNullOrWhiteSpace(error))
+            {
+                Errors = $"{Errors}, {error}";
+                return;
+            }
+
+            Errors = error;
+                
+        }
     }
 }

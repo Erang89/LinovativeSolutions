@@ -7,48 +7,40 @@ using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.ItemDtos;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
 {
-   
 
-    public abstract class BulkOperationItemGroupBase : BulkUpdateItemGroupFieldBase
+
+    public abstract class BulkOperationItemGroupBase(ILangueageService lang, IAppDbContext dbContext, IActor actor, CrudOperations crudOperations) : BulkUpdateItemGroupFieldBase
     {
 
-        
 
-        protected readonly Dictionary<string, Func<string?, object?>> GroupFieldConverters = new Dictionary<string, Func<string?, object?>>()
+
+        protected readonly Dictionary<string, Func<string?, object?>> GroupFieldConverters = new()
             {
                 {Fields.Id, (x) => StringToGuid(x)},
                 {Fields.Name, (x) => x},
             };
 
-        protected readonly Dictionary<string, Func<ItemGroupBulkUploadDetail, string?>> ExcelFieldConverters = new Dictionary<string, Func<ItemGroupBulkUploadDetail, string?>>()
+        protected readonly Dictionary<string, Func<ItemGroupBulkUploadDetail, string?>> ExcelFieldConverters = new()
             {
                 {ExcelColumns.Column1, (x) => x.Column1},
                 {ExcelColumns.Column2, (x) => x.Column2},
             };
 
-        protected readonly IAppDbContext _dbContext;
-        protected readonly IActor _actor;
-        protected readonly CrudOperations? _crudOperations;
-        protected readonly ILangueageService _lang;
+        protected readonly IAppDbContext _dbContext = dbContext;
+        protected readonly IActor _actor = actor;
+        protected readonly CrudOperations? _crudOperations = crudOperations;
+        protected readonly ILangueageService _lang = lang;
 
-
-        protected BulkOperationItemGroupBase(ILangueageService lang, IAppDbContext dbContext, IActor actor, CrudOperations crudOperations)
-        {
-            _dbContext = dbContext;
-            _actor = actor;
-            _crudOperations = crudOperations;
-            _lang = lang;
-        }
-
+        const string ExcelRowError = "ExcelRowError.Message";
+        const string resources = "BulkUploadCommand";
 
         public virtual async Task<Result> Validate(Dictionary<string, string> fieldMapping, List<string> keyColumns, CancellationToken token)
         {
-            var expectedKeys = new List<string>() { Fields.Id, Fields.Name};
-            var expectedColumns = new List<string>() { ExcelColumns.Column1, ExcelColumns.Column2};
+            var expectedKeys = new List<string>() { Fields.Id, Fields.Name };
+            var expectedColumns = new List<string>() { ExcelColumns.Column1, ExcelColumns.Column2 };
             var bulkUpload = GetBulkUpload();
             var excelRows = GetExcelRows();
 
@@ -71,10 +63,16 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 return Result.Failed(GetError("NoKeyColumns.Message"));
 
             // Validate: is any fieldMapping exclude keycolumns
-            if(keyColumns.Count > 0 && !fieldMapping.Any(x => !keyColumns.Contains(x.Key)))
+            if (keyColumns.Count > 0 && !fieldMapping.Any(x => !keyColumns.Contains(x.Key)))
                 return Result.Failed(GetError("NoMappingColumns.Message"));
 
-            
+            return ValidateRows(bulkUpload, fieldMapping, keyColumns);
+
+        }
+
+        Result ValidateRows(ItemGroupBulkUpload bulkUpload, Dictionary<string, string> fieldMapping, List<string> keyColumns)
+        {
+            var excelRows = GetExcelRows();
 
             foreach (var key in keyColumns)
             {
@@ -82,7 +80,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 var cellGetter = ExcelFieldConverters[excelField];
                 var converter = GroupFieldConverters[key];
                 var inputValues = excelRows.Select(x => converter(cellGetter(x))).Where(x => x != null).ToList();
-                const string ExcelRowError = "ExcelRowError.Message";
+
                 var excelColumnName = excelField switch
                 {
                     ExcelColumns.Column1 => bulkUpload.headerColum1,
@@ -91,56 +89,99 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 };
 
 
-                //Check: Key Column must has value
-                var nullValues = excelRows.Where(x => converter(cellGetter(x)) == null);
-                foreach (var row in nullValues)
-                {
-                    row.Errors = GetError("ExcelFieldIsRequiredOrInvalid.Message", excelColumnName);
-                }
-                if (nullValues.Any()) return Result.Failed(GetError(ExcelRowError));
+                var validate = ValidateRequiredColumns(excelRows, excelColumnName!, cellGetter);
+                if (!validate) return validate;
 
+                validate = ValidateFieldID(key, inputValues, excelRows, cellGetter);
+                if (!validate) return validate;
 
-                if (key == Fields.Id)
-                {
-                    // Check: ID must exist in the database
-                    var itemGroupIds = _dbContext.ItemGroups.GetAll(_actor).Where(x => inputValues.Contains(x.Id)).Select(x => x.Id).ToList();
-                    var notExistIds = inputValues.Where(x => !(itemGroupIds.Select(id => (object?)id)).Contains(x)).ToList();
-                    var anyError = false;
-                    foreach (var id in notExistIds)
-                    {
-                        foreach (var row in excelRows.Where(x => cellGetter(x)!.ToString().Equals(id!.ToString())))
-                        {
-                            anyError = true;
-                            row.Errors = GetError("FieldNotExistInTheSystem.Message", excelColumnName);
-                        }
-                    }
-
-                    if (anyError) return Result.Failed(GetError(ExcelRowError));
-                }
-
-
-
-                if (key == Fields.Name)
-                {
-                    // Check: Name must exist in the database
-                    var itemNames = _dbContext.ItemGroups.GetAll(_actor).Where(x => inputValues.Contains(x.Name)).Select(x => x.Name).ToList();
-                    var notExistNames = inputValues.Where(x => !(itemNames.Select(id => (object?)id)).Contains(x)).ToList();
-                    var anyError = false;
-                    foreach (var name in notExistNames)
-                    {
-                        foreach (var row in excelRows.Where(x => cellGetter(x)!.ToString().Equals(name!)))
-                        {
-                            anyError = true;
-                            row.Errors = GetError("FieldNotExistInTheSystem.Message", excelColumnName);
-                        }
-                    }
-                    if (anyError) return Result.Failed(GetError(ExcelRowError));
-                }
+                validate = ValidateGroupName(key, inputValues, excelRows, cellGetter);
+                if (!validate) return validate;
 
             }
 
             return Result.OK();
+        }
 
+
+        Result ValidateGroupName(string key, List<object?> inputValues, List<ItemGroupBulkUploadDetail> excelRows, Func<ItemGroupBulkUploadDetail, string?> cellGetter)
+        {
+            var entityName = GetEntityName();
+            var fieldName = GetFieldName("ItemGroupName");
+
+            if (key == Fields.Name)
+            {
+                // Check: Name must exist in the database
+                var itemNames = _dbContext.ItemGroups.GetAll(_actor).Where(x => inputValues.Contains(x.Name)).Select(x => x.Name).ToList();
+                var notExistNames = inputValues.Where(x => !(itemNames.Select(id => (object?)id)).Contains(x)).ToList();
+                var anyError = false;
+                foreach (var name in notExistNames)
+                {
+                    foreach (var row in excelRows.Where(x => cellGetter(x)!.ToString().Equals(name!)))
+                    {
+                        anyError = true;
+                        var cellValue = cellGetter(row);
+                        var notFoundIdMessage = string.Format(_lang[$"{resources}.EntityWithFieldNotExist.Message"], entityName, fieldName, cellValue);
+                        row.AddError(notFoundIdMessage);
+                    }
+                }
+                if (anyError) return Result.Failed(GetError(ExcelRowError));
+            }
+
+            return Result.OK();
+        }
+
+
+        Result ValidateFieldID(string key, List<object?> inputValues, List<ItemGroupBulkUploadDetail> excelRows, Func<ItemGroupBulkUploadDetail, string?> cellGetter)
+        {
+            var entityName = GetEntityName();
+
+            if (key == Fields.Id)
+            {
+                var anyError = false;
+                var fieldName = GetFieldName("GroupId");
+
+                //Check: input must invalid GUID
+                foreach (var row in excelRows.Where(x => !Guid.TryParse(cellGetter(x), out _)))
+                {
+                    var cellValue = cellGetter(row);
+                    var cannotConvertMessage = string.Format(_lang[$"{resources}.CanotCoverValueAsField.Message"], cellValue, fieldName);
+                    row.AddError(cannotConvertMessage);
+                    anyError = true;
+                }
+
+                // Check: ID must exist in the database
+                var itemGroupIds = _dbContext.ItemGroups.GetAll(_actor).Where(x => inputValues.Contains(x.Id)).Select(x => x.Id).ToList();
+                var notExistIds = inputValues.Where(x => !(itemGroupIds.Select(id => (object?)id)).Contains(x)).ToList();
+                foreach (var id in notExistIds)
+                {
+                    foreach (var row in excelRows.Where(x => cellGetter(x)!.ToString().Equals(id!.ToString())))
+                    {
+                        var cellValue = cellGetter(row);
+                        var notFoundIdMessage = string.Format(_lang[$"{resources}.EntityWithFieldNotExist.Message"], entityName, fieldName, cellValue);
+                        row.AddError(notFoundIdMessage);
+                        anyError = true;
+                    }
+                }
+
+                if (anyError) return Result.Failed(GetError(ExcelRowError));
+            }
+
+            return Result.OK();
+        }
+
+
+        Result ValidateRequiredColumns(List<ItemGroupBulkUploadDetail> excelRows, string excelColumnName, Func<ItemGroupBulkUploadDetail, string?> cellGetter)
+        {
+            //Check: Key Column must has value
+            var nullValues = excelRows.Where(x => string.IsNullOrWhiteSpace(cellGetter(x)));
+            foreach (var row in nullValues)
+            {
+                row.AddError(GetError("KeyColumnIsEmpty.Message", excelColumnName));
+            }
+            if (nullValues.Any()) return Result.Failed(GetError(ExcelRowError));
+
+            return Result.OK();
         }
 
 
@@ -159,10 +200,13 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
         List<ItemGroupBulkUploadDetail>? _excelRows;
         protected List<ItemGroupBulkUploadDetail> GetExcelRows()
         {
-            if (_excelRows is null) _excelRows =
-                    _dbContext.ItemGroupBulkUploadDetails.GetAll(_actor)
-                    .Where(x => x.ItemGroupBulkUpload!.UserId == _actor.UserId && x.ItemGroupBulkUpload.Operation == _crudOperations)
-                    .ToList();
+            if (_excelRows is not null) return _excelRows;
+
+            _excelRows =
+                    [.. _dbContext.ItemGroupBulkUploadDetails.GetAll(_actor).Where(x => x.ItemGroupBulkUpload!.UserId == _actor.UserId && x.ItemGroupBulkUpload.Operation == _crudOperations)];
+
+            foreach (var row in _excelRows)
+                row.Errors = null;
 
             return _excelRows;
         }
@@ -210,7 +254,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
 
                 selectedRows = excelField switch
                 {
-                    ExcelColumns.Column1 =>  selectedRows.Where(x => x.Column1!.Equals(GetStringValue(group, key), StringComparison.OrdinalIgnoreCase)),
+                    ExcelColumns.Column1 => selectedRows.Where(x => x.Column1!.Equals(GetStringValue(group, key), StringComparison.OrdinalIgnoreCase)),
                     ExcelColumns.Column2 => selectedRows.Where(x => x.Column2!.Equals(GetStringValue(group, key), StringComparison.OrdinalIgnoreCase)),
                     _ => selectedRows
                 };
@@ -218,8 +262,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             return selectedRows;
         }
 
-        protected static ItemGroupBulkUploadDetail? GetRowByGroup(ItemGroupDto group, List<ItemGroupBulkUploadDetail> rows, Dictionary<string, string> fieldMapping, List<string> keyColumns)
-            => GetRowByGroups(group, rows, fieldMapping, keyColumns).FirstOrDefault();
+        protected static ItemGroupBulkUploadDetail? GetRowByGroupDto(ItemGroupDto groupDto, List<ItemGroupBulkUploadDetail> rows, Dictionary<string, string> fieldMapping, List<string> keyColumns)
+            => GetRowByGroups(groupDto, rows, fieldMapping, keyColumns).FirstOrDefault();
 
         protected static IEnumerable<ItemGroupBulkUploadDetail> GetRowByGroups(ItemGroupDto group, List<ItemGroupBulkUploadDetail> rows, Dictionary<string, string> fieldMapping, List<string> keyColumns)
         {
@@ -281,6 +325,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
         }
 
         protected string GetError(string key, object? value = default) => value is null ? _lang[$"BulkUploadCommand.{key}"] : _lang.Format($"BulkUploadCommand.{key}", value);
+        protected string GetFieldName(string key) => _lang[$"BulkUploadCommand.{key}.ColumnHeader"];
+        protected string GetEntityName() => _lang[$"BulkUploadCommand.Group.EntityName"];
 
 
     }
