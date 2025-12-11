@@ -33,11 +33,13 @@
   "GroupNameRequired.Message": "Group Name is required",
   "GroupNameAlreadyExist.Message": "Group Name is already exist",
   "InvalidKey.Message": "Some keys are invalid",
-  "NoKeyColumns.Message": "Key fields are invalids",
+  "NoKeyColumns.Message": "Key Columns are required",
   "NoMappingColumns.Message": "Column mapping are required",
   "DuplicateIdInExcel.Message": "Duplicate {0} value in excel",
   "DuplicateIdInDB.Message": "Other row with the same {0} already exist in the system",
   "DuplicateNameInExcel.Message": "Duplicate {0} value in excel",
   "DuplicateNameInDB.Message": "Other row with the same {0} already exist in the system",
-  "NoKeyColumnsNeeded.Message": "This Operation need no key columns"
+  "NoKeyColumnsNeeded.Message": "This Operation need no key columns",
+  "FieldNotExistInTheSystem.Message": "The {0} not found in the system",
+  "ExcelFieldIsRequiredOrInvalid.Message": "The {0} is required or invalid value"
 }

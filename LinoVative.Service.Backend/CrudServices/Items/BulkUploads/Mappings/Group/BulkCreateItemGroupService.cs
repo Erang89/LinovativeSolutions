@@ -7,7 +7,7 @@ using LinoVative.Shared.Dto;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
 {
-    public class BulkCreateItemGroupService : BulkUpdateItemGroupBase, IBulkMapping
+    public class BulkCreateItemGroupService : BulkOperationItemGroupBase, IBulkMapping
     {
         const string ExcelRowError = "ExcelRowError.Message";
 
@@ -19,7 +19,12 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
         public async Task<Result> Save(Dictionary<string, string> fieldMapping, List<string> keyColumns, CancellationToken token)
         {
             var validate = await Validate(fieldMapping, keyColumns, token);
-            if (!validate) return validate;
+            if (!validate)
+            {
+                await _dbContext.SaveAsync(_actor, token);
+                return validate;
+            }
+
 
             var newGroups = new List<ItemGroup>();
 

@@ -9,7 +9,7 @@ using LinoVative.Shared.Dto.ItemDtos;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
 {
-    public class BulkUpdateItemGroupService(ILangueageService lang, IAppDbContext dbContext, IActor actor) : BulkUpdateItemGroupBase(lang, dbContext, actor, CrudOperations.Update), IBulkMapping
+    public class BulkUpdateItemGroupService(ILangueageService lang, IAppDbContext dbContext, IActor actor) : BulkOperationItemGroupBase(lang, dbContext, actor, CrudOperations.Update), IBulkMapping
     {
         public async Task<Result> Save(Dictionary<string, string> fieldMapping, List<string> keyColumns, CancellationToken token)
         {
