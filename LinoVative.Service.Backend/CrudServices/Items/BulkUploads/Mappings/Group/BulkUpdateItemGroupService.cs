@@ -106,7 +106,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
 
             foreach (var group in groups)
             {
-                var row = GetRowByGroup(group, rows, fieldMapping, keyColumns);
+                var row = GetRowByGroupDto(group, rows, fieldMapping, keyColumns);
                 if (row is null) continue;
 
                 result.Add(new(group, row));
