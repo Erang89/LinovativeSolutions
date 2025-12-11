@@ -8,7 +8,7 @@ using LinoVative.Shared.Dto.ItemDtos;
 
 namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOperation
 {
-    public class ItemGroupBulkUpdate : UseDatabaseTestBase
+    public class ItemGroupBulkUpdateTest : UseDatabaseTestBase
     {
         [Fact]
         public async Task BulkUpdate_Submiting_Success()
