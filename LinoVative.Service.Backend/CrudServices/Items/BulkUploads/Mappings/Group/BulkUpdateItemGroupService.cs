@@ -9,26 +9,20 @@ using LinoVative.Shared.Dto.ItemDtos;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
 {
-    public class BulkUpdateItemGroupService : BulkUpdateItemGroupBase, IBulkMapping
+    public class BulkUpdateItemGroupService(ILangueageService lang, IAppDbContext dbContext, IActor actor) : BulkUpdateItemGroupBase(lang, dbContext, actor, CrudOperations.Update), IBulkMapping
     {
-
-        public BulkUpdateItemGroupService(ILangueageService lang, IAppDbContext dbContext, IActor actor) : base(lang, dbContext, actor, CrudOperations.Update)
-        {
-            
-        }
-
         public async Task<Result> Save(Dictionary<string, string> fieldMapping, List<string> keyColumns, CancellationToken token)
         {
             var validate = await Validate(fieldMapping, keyColumns, token);
 
             if (!validate)
             {
-                await _dbContext.SaveAsync(_actor);
+                await _dbContext.SaveAsync(_actor, token);
                 return validate;
             }
 
             var groups = await GetGroups(fieldMapping, keyColumns);
-            var rows =  GetExcelRows();
+            var rows = GetExcelRows();
 
 
             foreach (var group in groups)
@@ -36,10 +30,10 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 var row = GetRowByGroup(group, rows, fieldMapping, keyColumns);
                 if (row is null) continue;
 
-                Mapping(group, row, fieldMapping, keyColumns);
+                MappingGroup(group, row, fieldMapping, keyColumns);
             }
 
-            await _dbContext.SaveAsync(_actor);
+            await _dbContext.SaveAsync(_actor, token);
             await DeleteBulkUploadRecords();
 
             return Result.OK();
@@ -51,61 +45,61 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
         public override async Task<Result> Validate(Dictionary<string, string> fieldMapping, List<string> keyColumns, CancellationToken token)
         {
 
-            var validate =  await base.Validate(fieldMapping, keyColumns, token);
+            var validate = await base.Validate(fieldMapping, keyColumns, token);
             if (!validate) return validate;
 
             var groups = await GetGroups(fieldMapping, keyColumns);
-            var groupDtos = groups.Select(x =>  new ItemGroupDto() { Id = x.Id, Name = x.Name}).ToList();
+            var groupDtos = groups.Select(x => new ItemGroupDto() { Id = x.Id, Name = x.Name }).ToList();
             var dtoMapping = MappingDtos(ref groupDtos, fieldMapping, keyColumns);
             var hasError = false;
-            Func<string, string> getError = (key) => _lang[$"BulkUploadCommand.{key}"];
+            string getError(string key) => _lang[$"BulkUploadCommand.{key}"];
 
             foreach (var map in dtoMapping)
             {
                 var dto = map.Key;
                 var row = map.Value;
 
-                if(row is null) continue;
+                if (row is null) continue;
 
                 var errors = new List<string>();
-               
+
                 if (string.IsNullOrEmpty(dto.Name))
                     errors.Add(getError("GroupNameRequired.Message"));
 
-                else if(groups.Any(x => x.Id != dto.Id && x.Name!.Equals(dto.Name, StringComparison.InvariantCultureIgnoreCase)) ||
+                else if (groups.Any(x => x.Id != dto.Id && x.Name!.Equals(dto.Name, StringComparison.InvariantCultureIgnoreCase)) ||
                     _dbContext.ItemGroups.GetAll(_actor).Any(x => x.Name == dto.Name && x.Id != dto.Id))
                     errors.Add(getError("GroupNameAlreadyExist.Message"));
 
                 row.Errors = errors.Count == 0 ? null : string.Join(", ", errors);
-                if(errors.Count > 0) hasError = true;   
+                if (errors.Count > 0) hasError = true;
             }
 
-            return !hasError?  Result.OK() : Result.Failed(getError("ExcelRowError.Message"));
+            return !hasError ? Result.OK() : Result.Failed(getError("ExcelRowError.Message"));
         }
 
 
 
-        void Mapping(ItemGroup group, ItemGroupBulkUploadDetail row, Dictionary<string, string> fieldMapping, List<string> keyColumns)
+        void MappingGroup(ItemGroup group, ItemGroupBulkUploadDetail row, Dictionary<string, string> fieldMapping, List<string> keyColumns)
         {
-            if(fieldMapping.Count == 0) return;
+            if (fieldMapping.Count == 0) return;
 
             var setters = new Dictionary<string, Action<string?>>()
             {
                 { Fields.Name, (name) => group.Name = name }
             };
 
-            foreach (var field in fieldMapping!)
+            foreach (var key in fieldMapping!.Select(x => x.Key))
             {
-                if (keyColumns.Contains(field.Key)) continue;
+                if (keyColumns.Contains(key)) continue;
 
-                var rowColumn = fieldMapping![field.Key];
+                var rowColumn = fieldMapping![key];
                 var getter = ExcelFieldConverters[rowColumn];
-                var setter = setters[field.Key];
+                var setter = setters[key];
                 setter(getter(row));
             }
         }
 
-        List<KeyValuePair<ItemGroupDto, ItemGroupBulkUploadDetail?>> MappingDtos(ref List<ItemGroupDto> groups,  Dictionary<string, string> fieldMapping, List<string> keyColumns)
+        List<KeyValuePair<ItemGroupDto, ItemGroupBulkUploadDetail?>> MappingDtos(ref List<ItemGroupDto> groups, Dictionary<string, string> fieldMapping, List<string> keyColumns)
         {
             var rows = GetExcelRows();
             var result = new List<KeyValuePair<ItemGroupDto, ItemGroupBulkUploadDetail?>>();
@@ -115,14 +109,14 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 var row = GetRowByGroup(group, rows, fieldMapping, keyColumns);
                 if (row is null) continue;
 
-                result.Add(new (group, row));
-                Mapping(group, row, fieldMapping, keyColumns);
+                result.Add(new(group, row));
+                MappingGroupDto(group, row, fieldMapping, keyColumns);
             }
 
             return result;
         }
-        
-        void Mapping(ItemGroupDto group, ItemGroupBulkUploadDetail row, Dictionary<string, string> fieldMapping, List<string> keyColumns)
+
+        void MappingGroupDto(ItemGroupDto group, ItemGroupBulkUploadDetail row, Dictionary<string, string> fieldMapping, List<string> keyColumns)
         {
             if (fieldMapping.Count == 0) return;
 
@@ -131,13 +125,13 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 { Fields.Name, (name) => group.Name = name }
             };
 
-            foreach (var field in fieldMapping!)
+            foreach (var key in fieldMapping!.Select(x => x.Key))
             {
-                if (keyColumns.Contains(field.Key)) continue;
+                if (keyColumns.Contains(key)) continue;
 
-                var rowColumn = fieldMapping[field.Key];
+                var rowColumn = fieldMapping[key];
                 var getter = ExcelFieldConverters[rowColumn];
-                var setter = setters[field.Key];
+                var setter = setters[key];
                 setter(getter(row));
             }
         }

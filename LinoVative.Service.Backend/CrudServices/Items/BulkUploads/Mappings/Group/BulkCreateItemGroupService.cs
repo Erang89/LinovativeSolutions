@@ -29,9 +29,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
 
                 var group = new ItemGroup();
 
-                foreach (var map in fieldMapping!.ToList())
+                foreach (var key in fieldMapping!.Select(x => x.Key))
                 {
-                    var key = map.Key;
                     var excelField = fieldMapping[key];
                     var cellGetter = ExcelFieldConverters[excelField];
                     var converter = GroupFieldConverters[key];
@@ -51,7 +50,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             }
 
             _dbContext.ItemGroups.AddRange(newGroups);
-            var result = await _dbContext.SaveAsync(_actor);
+            await _dbContext.SaveAsync(_actor, token);
             await DeleteBulkUploadRecords();
             return Result.OK();
         }
@@ -69,9 +68,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             if (keyColumns.Count > 0)
                 return Result.Failed(getError("NoKeyColumnsNeeded.Message", null));
 
-            foreach (var mapping in fieldMapping!.ToList())
+            foreach (var key in fieldMapping!.Select(x => x.Key))
             {
-                var key = mapping.Key;
                 var excelField = fieldMapping[key];
                 var cellGetter = ExcelFieldConverters[excelField];
                 var converter = GroupFieldConverters[key];
