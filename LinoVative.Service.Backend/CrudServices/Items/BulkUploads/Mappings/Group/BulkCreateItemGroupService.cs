@@ -21,14 +21,17 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             var validate = await Validate(fieldMapping, keyColumns, token);
             if (!validate) return validate;
 
+            var newGroups = new List<ItemGroup>();
+
             var excelRows = GetExcelRows();
             foreach (var row in excelRows)
             {
 
                 var group = new ItemGroup();
 
-                foreach (var key in keyColumns)
+                foreach (var map in fieldMapping!.ToList())
                 {
+                    var key = map.Key;
                     var excelField = fieldMapping[key];
                     var cellGetter = ExcelFieldConverters[excelField];
                     var converter = GroupFieldConverters[key];
@@ -36,16 +39,19 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                     if (key == Fields.Id && cellGetter(row) != null)
                         group.Id = (Guid)converter(cellGetter(row))!;
 
-                    if (key == Fields.Name)
+                    else if (key == Fields.Name)
                         group.Name = (string)converter(cellGetter(row))!;
 
-                    group.CompanyId = _actor.CompanyId;
-                    group.CreateBy(_actor);
-                    _dbContext.ItemGroups.Add(group);
                 }
+
+                group.CompanyId = _actor.CompanyId;
+                group.CreateBy(_actor);
+                newGroups.Add(group);
+
             }
 
-            await _dbContext.SaveAsync(_actor);
+            _dbContext.ItemGroups.AddRange(newGroups);
+            var result = await _dbContext.SaveAsync(_actor);
             await DeleteBulkUploadRecords();
             return Result.OK();
         }
@@ -57,11 +63,15 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             var validate = await base.Validate(fieldMapping, keyColumns, token);
             if (!validate) return validate;
 
-            Func<string, object?, string> getError = (key, value) => value is null ? _lang[$"BulkUploadCommand.{key}"] : _lang.Format(key, value);
+            Func<string, object?, string> getError = (key, value) => value is null ? _lang[$"BulkUploadCommand.{key}"] : _lang.Format($"BulkUploadCommand.{key}", value);
             var bulkUpload = GetBulkUpload()!;
 
-            foreach (var key in keyColumns)
+            if (keyColumns.Count > 0)
+                return Result.Failed(getError("NoKeyColumnsNeeded.Message", null));
+
+            foreach (var mapping in fieldMapping!.ToList())
             {
+                var key = mapping.Key;
                 var excelField = fieldMapping[key];
                 var cellGetter = ExcelFieldConverters[excelField];
                 var converter = GroupFieldConverters[key];
@@ -96,7 +106,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
 
                 // Check Duplicate ID from excel
                 var groupingById = excelRows.GroupBy(x => cellGetter(x)).Select(x => new { Id = x.Key, Count = x.Count(), rows = x.ToList() });
-                var duplicateRows = groupingById.SelectMany(x => x.rows).ToList() ?? new();
+                var duplicateRows = groupingById.Where(x => x.Count > 1).SelectMany(x => x.rows).ToList() ?? new();
                 foreach (var rows in duplicateRows)
                 {
                     rows.Errors = getError("DuplicateIdInExcel.Message", excelColumnName);
@@ -137,8 +147,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
 
 
                 // Check duplicate name from excel
-                var groupNames = excelRows.GroupBy(x => cellGetter(x)).Select(x => new { Id = x.Key, Count = x.Count(), rows = x.ToList() });
-                var duplicateRows = groupNames.SelectMany(x => x.rows).ToList() ?? new();
+                var groupNames = excelRows.GroupBy(x => cellGetter(x)!.ToLower()).Select(x => new { Id = x.Key, Count = x.Count(), rows = x.ToList() });
+                var duplicateRows = groupNames.Where(x => x.Count > 1).SelectMany(x => x.rows).ToList() ?? new();
                 foreach (var rows in duplicateRows)
                 {
                     rows.Errors = getError("DuplicateNameInExcel.Message", excelColumnName);
