@@ -34,5 +34,9 @@
   "GroupNameAlreadyExist.Message": "Group Name is already exist",
   "InvalidKey.Message": "Some keys are invalid",
   "NoKeyColumns.Message": "Key fields are invalids",
-  "NoMappingColumns.Message": "Column mapping are required"
+  "NoMappingColumns.Message": "Column mapping are required",
+  "DuplicateIdInExcel.Message": "Duplicate {0} value in excel",
+  "DuplicateIdInDB.Message": "Other row with the same {0} already exist in the sistem",
+  "DuplicateNameInExcel.Message": "Duplicate {0} value in excel",
+  "DuplicateNameInDB.Message": "Other row with the same {0} already exist in the system"
 }
