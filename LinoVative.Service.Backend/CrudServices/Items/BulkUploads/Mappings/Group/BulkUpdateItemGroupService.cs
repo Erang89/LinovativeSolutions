@@ -6,19 +6,15 @@ using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.ItemDtos;
-using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
 {
     public class BulkUpdateItemGroupService : BulkUpdateItemGroupBase, IBulkMapping
     {
 
-        private readonly ILangueageService _lang;
-
         public BulkUpdateItemGroupService(ILangueageService lang, IAppDbContext dbContext, IActor actor) : base(lang, dbContext, actor, CrudOperations.Update)
         {
-            _lang = lang;
-            _lang.EnsureLoad(x => x.BulkUploadCommand);
+            
         }
 
         public async Task<Result> Save(Dictionary<string, string> fieldMapping, List<string> keyColumns, CancellationToken token)
@@ -44,18 +40,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             }
 
             await _dbContext.SaveAsync(_actor);
-            
-            await _dbContext.ItemGroupBulkUploadDetails.Where(x => 
-                x.ItemGroupBulkUpload!.Operation == _crudOperations && 
-                x.ItemGroupBulkUpload.CompanyId == _actor.CompanyId && 
-                x.ItemGroupBulkUpload.UserId == _actor.UserId)
-                .ExecuteDeleteAsync();
-
-            await _dbContext.ItemGroupBulkUploads.Where(x =>
-                x.Operation == _crudOperations &&
-                x.CompanyId == _actor.CompanyId &&
-                x.UserId == _actor.UserId)
-                .ExecuteDeleteAsync();
+            await DeleteBulkUploadRecords();
 
             return Result.OK();
         }
@@ -87,7 +72,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 if (string.IsNullOrEmpty(dto.Name))
                     errors.Add(getError("GroupNameRequired.Message"));
 
-                else if(groups.Any(x => x.Id != dto.Id && x.Name.Equals(dto.Name, StringComparison.InvariantCultureIgnoreCase)) ||
+                else if(groups.Any(x => x.Id != dto.Id && x.Name!.Equals(dto.Name, StringComparison.InvariantCultureIgnoreCase)) ||
                     _dbContext.ItemGroups.GetAll(_actor).Any(x => x.Name == dto.Name && x.Id != dto.Id))
                     errors.Add(getError("GroupNameAlreadyExist.Message"));
 
@@ -113,7 +98,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             {
                 if (keyColumns.Contains(field.Key)) continue;
 
-                var rowColumn = fieldMapping[field.Key];
+                var rowColumn = fieldMapping![field.Key];
                 var getter = ExcelFieldConverters[rowColumn];
                 var setter = setters[field.Key];
                 setter(getter(row));

@@ -7,6 +7,7 @@ using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.ItemDtos;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
 {
@@ -72,6 +73,9 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             return Result.OK();
 
         }
+
+
+        protected ItemGroupBulkUpload? GetBulkUpload() => _dbContext.ItemGroupBulkUploads.FirstOrDefault(x => x.UserId == _actor.UserId && x.CompanyId == _actor.CompanyId);
 
 
         static Guid? StringToGuid(string? str)
@@ -192,6 +196,21 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             return values;
         }
 
+        protected async Task DeleteBulkUploadRecords()
+        {
+            await _dbContext.ItemGroupBulkUploadDetails.Where(x =>
+                x.ItemGroupBulkUpload!.Operation == _crudOperations &&
+                x.ItemGroupBulkUpload.CompanyId == _actor.CompanyId &&
+                x.ItemGroupBulkUpload.UserId == _actor.UserId)
+                .ExecuteDeleteAsync();
+
+            await _dbContext.ItemGroupBulkUploads.Where(x =>
+                x.Operation == _crudOperations &&
+                x.CompanyId == _actor.CompanyId &&
+                x.UserId == _actor.UserId)
+                .ExecuteDeleteAsync();
+        }
+        
     }
 
 }
