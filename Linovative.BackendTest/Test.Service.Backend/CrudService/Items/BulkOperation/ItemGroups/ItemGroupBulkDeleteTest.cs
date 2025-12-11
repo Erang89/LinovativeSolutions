@@ -7,7 +7,7 @@ using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto.ItemDtos;
 using Microsoft.EntityFrameworkCore;
 
-namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOperation
+namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOperation.ItemGroups
 {
     public class ItemGroupBulkDeleteTest : UseDatabaseTestBase
     {

@@ -6,7 +6,7 @@ using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto.ItemDtos;
 
-namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOperation
+namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOperation.ItemGroups
 {
     public class ItemGroupBulkCreateTest : UseDatabaseTestBase
     {
