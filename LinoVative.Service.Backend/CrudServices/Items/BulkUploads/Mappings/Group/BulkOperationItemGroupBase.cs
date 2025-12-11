@@ -49,29 +49,32 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
         {
             var expectedKeys = new List<string>() { Fields.Id, Fields.Name};
             var expectedColumns = new List<string>() { ExcelColumns.Column1, ExcelColumns.Column2};
-            Func<string, string> getError = (key) => _lang[$"BulkUploadCommand.{key}"];
+            var bulkUpload = GetBulkUpload();
+            var excelRows = GetExcelRows();
+
+            if (bulkUpload is null || excelRows.Count == 0)
+                return Result.Failed(GetError("NoRecordUploadedYet.Message"));
 
             // Validate: is group keys valid
             if (fieldMapping.Any(x => !expectedKeys.Contains(x.Key)))
-                return Result.Failed(getError("InvalidKey.Message"));
+                return Result.Failed(GetError("InvalidKey.Message"));
 
             // Validate: is excel keys valid
             if (fieldMapping.Any(x => !expectedColumns.Contains(x.Value)))
-                return Result.Failed(getError("InvalidKey.Message"));
+                return Result.Failed(GetError("InvalidKey.Message"));
 
             // Validate: is keyColums valid
             if (_crudOperations is CrudOperations.Update or CrudOperations.Delete && keyColumns.Count == 0)
-                return Result.Failed(getError("NoKeyColumns.Message"));
+                return Result.Failed(GetError("NoKeyColumns.Message"));
 
             if (keyColumns.Count > 0 && keyColumns.Any(x => !fieldMapping.Select(k => k.Key).Contains(x)))
-                return Result.Failed(getError("NoKeyColumns.Message"));
+                return Result.Failed(GetError("NoKeyColumns.Message"));
 
             // Validate: is any fieldMapping exclude keycolumns
             if(keyColumns.Count > 0 && !fieldMapping.Any(x => !keyColumns.Contains(x.Key)))
-                return Result.Failed(getError("NoMappingColumns.Message"));
+                return Result.Failed(GetError("NoMappingColumns.Message"));
 
-            var excelRows = GetExcelRows();
-            var bulkUpload = GetBulkUpload()!;
+            
 
             foreach (var key in keyColumns)
             {
@@ -101,7 +104,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 {
                     // Check: ID must exist in the database
                     var itemGroupIds = _dbContext.ItemGroups.GetAll(_actor).Where(x => inputValues.Contains(x.Id)).Select(x => x.Id).ToList();
-                    var notExistIds = inputValues.Where(x => itemGroupIds.Select(id => (object?)id).Contains(x)).ToList();
+                    var notExistIds = inputValues.Where(x => !(itemGroupIds.Select(id => (object?)id)).Contains(x)).ToList();
                     var anyError = false;
                     foreach (var id in notExistIds)
                     {
@@ -121,7 +124,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 {
                     // Check: Name must exist in the database
                     var itemNames = _dbContext.ItemGroups.GetAll(_actor).Where(x => inputValues.Contains(x.Name)).Select(x => x.Name).ToList();
-                    var notExistNames = inputValues.Where(x => itemNames.Select(id => (object?)id).Contains(x)).ToList();
+                    var notExistNames = inputValues.Where(x => !(itemNames.Select(id => (object?)id)).Contains(x)).ToList();
                     var anyError = false;
                     foreach (var name in notExistNames)
                     {
