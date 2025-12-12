@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CrudServices\Items\BulkUploads\Mappings\Group\BulkCreateItemGroupService.cs" />
+    <Compile Remove="CrudServices\Items\BulkUploads\Mappings\Group\BulkDeleteGroupService.cs" />
+    <Compile Remove="CrudServices\Items\BulkUploads\Mappings\Group\BulkOperationItemGroupBase.cs" />
+    <Compile Remove="CrudServices\Items\BulkUploads\Mappings\Group\BulkUpdateItemGroupFieldBase.cs" />
+    <Compile Remove="CrudServices\Items\BulkUploads\Mappings\Group\BulkUpdateItemGroupService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
     <PackageReference Include="ClosedXML" Version="0.105.0" />
     <PackageReference Include="Mapster" Version="7.4.0" />
@@ -32,6 +40,7 @@
 
   <ItemGroup>
     <Folder Include="Bases\" />
+    <Folder Include="CrudServices\Items\BulkUploads\Mappings\Category\" />
   </ItemGroup>
 
 </Project>

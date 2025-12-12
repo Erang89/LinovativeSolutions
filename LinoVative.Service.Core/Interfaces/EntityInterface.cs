@@ -1,4 +1,5 @@
 ﻿using Linovative.Shared.Interface;
+using Linovative.Shared.Interface.Enums;
 
 namespace LinoVative.Service.Core.Interfaces
 {
@@ -26,5 +27,15 @@ namespace LinoVative.Service.Core.Interfaces
     public interface IsEntityManageByCompany
     {
         public Guid? CompanyId { get; set; }
+    }
+
+    public interface IEntityManageByUser
+    {
+        public Guid? UserId { get; set; }
+    }
+
+    public interface IExcelBulkUpload : IEntityManageByUser, IsEntityManageByCompany
+    {
+        CrudOperations? Operation { get; set; }
     }
 }

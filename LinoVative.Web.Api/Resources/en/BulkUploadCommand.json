@@ -32,8 +32,8 @@
   "DeleteGroup.SheetName": "Groups",
   "DeleteCategory.SheetName": "Categories",
   "DeleteUnit.SheetName": "Units",
-  
-  
+
+
   "Group.EntityName": "Group",
 
   "ExcelRowError.Message": "Some error accourt, Please download excel file to see the error",
@@ -41,17 +41,21 @@
   "GroupNameAlreadyExist.Message": "Group Name is already exist",
   "InvalidKey.Message": "Some keys are invalid",
   "NoKeyColumns.Message": "Key Columns are required",
-  "NoMappingColumns.Message": "Column mapping are required",
+  "NoMappingColumns.Message": "Should have at lease one column mapping other than ID",
   "DuplicateIdInExcel.Message": "Duplicate {0} value in excel",
   "DuplicateIdInDB.Message": "Other row with the same {0} already exist in the system",
   "DuplicateNameInExcel.Message": "Duplicate {0} value in excel",
   "DuplicateNameInDB.Message": "Other row with the same {0} already exist in the system",
   "NoKeyColumnsNeeded.Message": "This Operation need no key columns",
   "FieldNotExistInTheSystem.Message": "The {0} not found in the system",
+  "ValueNotFoundInTheSystem.Message": "{0} not found in the system",
+  "ValueAlreadyExistInTheSystem.Message": "{0} already exist in the system",
   "EntityWithFieldNotExist.Message": "{0} with {1}: '{2}' not found in the system",
   "ExcelFieldIsRequiredOrInvalid.Message": "The {0} is required or invalid value",
+  "ExcelFieldValueRequires.Message": "The {0} is required",
   "NoRecordUploadedYet.Message": "No record(s) found. Please upload the excel file",
   "CannotConvertValueForField.Message": "Can't convert '{0}' for {1}",
   "KeyColumnIsEmpty.Message": "{0} is required when mapping as key column",
-  "CanotCoverValueAsField.Message": "'{0}' can't convert as {1}'"
+  "CanotCoverValueAsField.Message": "'{0}' can't convert as {1}'",
+  "UnExpectedKeyColumn.Message": "Invalid Key Column'"
 }
