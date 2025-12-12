@@ -40,7 +40,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             await dbContext.SaveAsync(_actor);
 
 
-            IBulkOperationProcess bulkService = new BulkCreateGroupService(dbContext, _actor, _langService);
+            var bulkService = new BulkCreateGroupService(dbContext, _actor, _langService);
             var fieldMapping = new Dictionary<string, string>()
             {
                 {nameof(ItemGroupDto.Id), nameof(ItemGroupBulkUploadDetail.Column1) },
@@ -115,7 +115,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             await dbContext.SaveAsync(_actor);
 
 
-            IBulkOperationProcess bulkService = new BulkCreateGroupService(dbContext, _actor, _langService);
+            var bulkService = new BulkCreateGroupService(dbContext, _actor, _langService);
             var fieldMapping = new Dictionary<string, string>()
             {
                 {nameof(ItemGroupDto.Id), nameof(ItemGroupBulkUploadDetail.Column1) },
@@ -142,7 +142,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             Assert.Contains(resultDetail2_Error, uploadDetail2.Errors);
             Assert.Contains(resultDetail6_Error, uploadDetail5.Errors);
 
-            var validateResult1 = await bulkService.Validate(new(), cts.Token);
+            var validateResult1 = await bulkService.Validate([], cts.Token);
             var validateResult2 = await bulkService.Validate(new() { { "Name", "Column2"} }, cts.Token);
             Assert.False(validateResult1);
             Assert.False(validateResult2);
