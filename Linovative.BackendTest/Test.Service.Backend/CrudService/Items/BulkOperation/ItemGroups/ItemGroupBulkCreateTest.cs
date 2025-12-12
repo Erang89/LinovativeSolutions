@@ -11,99 +11,141 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
     public class ItemGroupBulkCreateTest : UseDatabaseTestBase
     {
         [Fact]
-        public async Task BulkUpdate_Submiting_Success()
+        public async Task BulkCreate_Success()
         {
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();
 
-            var itemGroup1 = new ItemGroup() {CompanyId = _actor.CompanyId, Name = "Item Group 1" };
-            var itemGroup2 = new ItemGroup() {CompanyId = _actor.CompanyId, Name = "Item Group 2" };
-            var itemGroup3 = new ItemGroup() {CompanyId = _actor.CompanyId, Name = "Item Group 3" };
-            var itemGroup4 = new ItemGroup() {CompanyId = Guid.NewGuid(), Name = "Other Company Item Group" };
+            var itemGroup1 = new ItemGroup() { CompanyId = _actor.CompanyId, Name = "Item Group 1" };
+            var itemGroup2 = new ItemGroup() { CompanyId = _actor.CompanyId, Name = "Item Group 2" };
+            var itemGroup3 = new ItemGroup() { CompanyId = _actor.CompanyId, Name = "Item Group 3" };
+            var itemGroup4 = new ItemGroup() { CompanyId = Guid.NewGuid(), Name = "Item Group 4" };
             dbContext.ItemGroups.Add(itemGroup1);
             dbContext.ItemGroups.Add(itemGroup2);
             dbContext.ItemGroups.Add(itemGroup3);
             dbContext.ItemGroups.Add(itemGroup4);
 
-            var groupBulkUpload = new ItemGroupBulkUpload() { 
-                Id = Guid.NewGuid(), 
-                headerColum1 = "Id", 
-                headerColum2 = "Name", 
-                Operation = CrudOperations.Create, 
-                UserId = _actor.UserId, 
-                CompanyId = _actor.CompanyId!.Value };
-            var uploadDetail1 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = groupBulkUpload.Id, Column1 = itemGroup1.Id.ToString(), Column2 = "Item Group 1" };
-            var uploadDetail2 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = groupBulkUpload.Id, Column1 = itemGroup2.Id.ToString(), Column2 = "Item Group 2" };
-            dbContext.ItemGroupBulkUploads.Add(groupBulkUpload);
+            var bulkUpload = new ItemGroupBulkUpload() { Id = Guid.NewGuid(), headerColum1 = "Id", headerColum2 = "Name", Operation = CrudOperations.Create, UserId = _actor.UserId, CompanyId = _actor.CompanyId!.Value };
+            dbContext.ItemGroupBulkUploads.Add(bulkUpload);
+
+            var uploadDetail1 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = null, Column2 = "Create Group 1" };            
+            var uploadDetail2 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = Guid.NewGuid().ToString(), Column2 = "Create Group 2" };
+            var uploadDetail3 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = Guid.NewGuid().ToString(), Column2 = "Create Group 3" };
+            var uploadDetail4 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = Guid.NewGuid().ToString(), Column2 = "Item Group 4" };
             dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail1);
             dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail2);
+            dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail3);
+            dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail4);
 
             await dbContext.SaveAsync(_actor);
 
-            IBulkMapping bulkService = new BulkCreateItemGroupService(_langService, dbContext, _actor);
+
+            IBulkOperationProcess bulkService = new BulkCreateGroupService(dbContext, _actor, _langService);
             var fieldMapping = new Dictionary<string, string>()
             {
                 {nameof(ItemGroupDto.Id), nameof(ItemGroupBulkUploadDetail.Column1) },
                 {nameof(ItemGroupDto.Name), nameof(ItemGroupBulkUploadDetail.Column2) },
             };
 
-            var keyColumn = new List<string>() { nameof(ItemGroupDto.Id) };
 
             // ASERT GROUP 1
-            var result1 = await bulkService.Validate(fieldMapping, keyColumn, cts.Token);
-            var result2 = await bulkService.Validate(fieldMapping, new(), cts.Token);
-            var expectedError1 = _langService.Format("BulkUploadCommand.DuplicateIdInDB.Message", "Id");
-            Assert.False(result1);
-            Assert.False(result2);
-            Assert.Equal(expectedError1, uploadDetail1.Errors);
-            Assert.Equal(expectedError1, uploadDetail2.Errors);
+            var validateResult = await bulkService.Validate(new() { { "Name", "Column2" } }, cts.Token);
+            var validateResult2 = await bulkService.Validate(new() { { "xx", "Column2" } }, cts.Token);
+            var validateResult3 = await bulkService.Validate(new() { { "Name", "xx" } }, cts.Token);
+            var result1 = await bulkService.Save(fieldMapping, cts.Token);
+            var resultDetail1 = dbContext.ItemGroups.FirstOrDefault(x => x.Name == "Create Group 1");
+            var resultDetail2 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == new Guid(uploadDetail2.Column1!));
+            var resultDetail3 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == new Guid(uploadDetail3.Column1!));
+            var resultDetail4 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == new Guid(uploadDetail4.Column1!));
+            var resultDetail5 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == itemGroup4.Id);
+
+            Assert.True(validateResult);
+            Assert.False(validateResult2);
+            Assert.False(validateResult3);
+            Assert.True(result1);
+            Assert.NotNull(resultDetail1);
+            Assert.NotNull(resultDetail2);
+            Assert.NotNull(resultDetail3);
+            Assert.NotNull(resultDetail4);
+            Assert.NotNull(resultDetail5);
+            Assert.Equal(uploadDetail1.Column2, resultDetail1.Name);
+            Assert.Equal(uploadDetail2.Column2, resultDetail2.Name);
+            Assert.Equal(uploadDetail3.Column2, resultDetail3.Name);
+            Assert.Equal(uploadDetail4.Column2, resultDetail4.Name);
+            Assert.Equal(itemGroup4.Name, resultDetail5.Name);
+            Assert.NotEqual(itemGroup4.CompanyId, _actor.CompanyId);
+            Assert.Equal(resultDetail1.CompanyId, _actor.CompanyId);
+            Assert.Equal(resultDetail1.CreatedBy, _actor.UserId);
 
 
-            // ASERT GROUP 2
-            uploadDetail1.Column1 = Guid.NewGuid().ToString();
-            uploadDetail2.Column1 = Guid.NewGuid().ToString();
+            cts.Dispose();
+        }
+
+
+        [Fact]
+        public async Task BulkCreate_Failed_DueToDuplicateNameOrID()
+        {
+            var dbContext = CreateContext();
+            var cts = new CancellationTokenSource();
+            const string resources = "BulkUploadCommand";
+
+            var itemGroup1 = new ItemGroup() { CompanyId = _actor.CompanyId, Name = "Item Group 1" };
+            var itemGroup2 = new ItemGroup() { CompanyId = _actor.CompanyId, Name = "Item Group 2" };
+            var itemGroup3 = new ItemGroup() { CompanyId = _actor.CompanyId, Name = "Item Group 3" };
+            var itemGroup4 = new ItemGroup() { CompanyId = Guid.NewGuid(), Name = "Item Group 4" };
+            dbContext.ItemGroups.Add(itemGroup1);
+            dbContext.ItemGroups.Add(itemGroup2);
+            dbContext.ItemGroups.Add(itemGroup3);
+            dbContext.ItemGroups.Add(itemGroup4);
+
+            var bulkUpload = new ItemGroupBulkUpload() { Id = Guid.NewGuid(), headerColum1 = "Id", headerColum2 = "Name", Operation = CrudOperations.Create, UserId = _actor.UserId, CompanyId = _actor.CompanyId!.Value };
+            dbContext.ItemGroupBulkUploads.Add(bulkUpload);
+
+            var uploadDetail1 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = null, Column2 = "Create Group 1" };
+            var uploadDetail2 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = Guid.NewGuid().ToString(), Column2 = "Item Group 2" };
+            var uploadDetail3 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = Guid.NewGuid().ToString(), Column2 = "Create Group 3" };
+            var uploadDetail4 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = itemGroup4.Id.ToString(), Column2 = "Item Group 4" };
+            var uploadDetail5 = new ItemGroupBulkUploadDetail() { ItemGroupBulkUploadId = bulkUpload.Id, Column1 = itemGroup4.Id.ToString(), Column2 = "" };
+            dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail1);
+            dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail2);
+            dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail3);
+            dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail4);
+            dbContext.ItemGroupBulkUploadDetails.Add(uploadDetail5);
+
             await dbContext.SaveAsync(_actor);
-            var result3 = await bulkService.Validate(fieldMapping, new(), cts.Token);            
-            var expectedError2 = _langService.Format("BulkUploadCommand.DuplicateNameInDB.Message", "Name");
-            Assert.False(result3);
-            Assert.Equal(expectedError2, uploadDetail1.Errors);
-            Assert.Equal(expectedError2, uploadDetail2.Errors);
 
 
-            // ASERT GROUP 3
-            uploadDetail1.Column2 = "Test Create 2";
-            uploadDetail2.Column2 = "test create 2";
-            await dbContext.SaveAsync(_actor);
-            var result4 = await bulkService.Validate(fieldMapping, new(), cts.Token);
-            var expectedError3 = _langService.Format("BulkUploadCommand.DuplicateNameInExcel.Message", "Name");
-            Assert.False(result4);
-            Assert.Equal(expectedError3, uploadDetail1.Errors);
-            Assert.Equal(expectedError3, uploadDetail2.Errors);
+            IBulkOperationProcess bulkService = new BulkCreateGroupService(dbContext, _actor, _langService);
+            var fieldMapping = new Dictionary<string, string>()
+            {
+                {nameof(ItemGroupDto.Id), nameof(ItemGroupBulkUploadDetail.Column1) },
+                {nameof(ItemGroupDto.Name), nameof(ItemGroupBulkUploadDetail.Column2) },
+            };
 
 
-            // ASERT GROUP 4
-            uploadDetail1.Column2 = null;
-            uploadDetail2.Column2 = "test create 2";
-            await dbContext.SaveAsync(_actor);
-            var result5 = await bulkService.Validate(fieldMapping, new(), cts.Token);
-            var expectedError5 = _langService.Format("BulkUploadCommand.GroupNameRequired.Message", "Name");
-            Assert.False(result5);
-            Assert.Equal(expectedError5, uploadDetail1.Errors);
+            // ASERT GROUP 1
+            var saveResult = await bulkService.Save(fieldMapping, cts.Token);
+            var resultDetail1 = dbContext.ItemGroups.FirstOrDefault(x => x.Name == "Create Group 1");
+            var resultDetail2 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == new Guid(uploadDetail2.Column1!));
+            var resultDetail3 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == new Guid(uploadDetail3.Column1!));
+            var resultDetail4 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == new Guid(uploadDetail4.Column1!));
+            var resultDetail5_Error = _langService.Format($"{resources}.ValueAlreadyExistInTheSystem.Message", itemGroup4.Id);
+            var resultDetail2_Error = _langService.Format($"{resources}.ValueAlreadyExistInTheSystem.Message", uploadDetail2.Column2);
+            var resultDetail6_Error = _langService.Format($"{resources}.ExcelFieldValueRequires.Message", bulkUpload.headerColum2);
 
+            Assert.False(saveResult);
+            Assert.Null(resultDetail1);
+            Assert.Null(resultDetail2);
+            Assert.Null(resultDetail3);
+            Assert.NotNull(resultDetail4);
+            Assert.Contains(resultDetail5_Error, uploadDetail4.Errors);
+            Assert.Contains(resultDetail2_Error, uploadDetail2.Errors);
+            Assert.Contains(resultDetail6_Error, uploadDetail5.Errors);
 
-            // ASERT GROUP 5
-            uploadDetail1.Column2 = "Test Create 1";
-            uploadDetail2.Column2 = "Test Create 2";
-            await dbContext.SaveAsync(_actor);
-            var result6 = await bulkService.Save(fieldMapping, new(), cts.Token);
-            var newRow1 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == new Guid(uploadDetail1.Column1));
-            var newRow2 = dbContext.ItemGroups.FirstOrDefault(x => x.Id == new Guid(uploadDetail2.Column1));
-            Assert.True(result6);
-            Assert.NotNull(newRow1);
-            Assert.NotNull(newRow2);
-            Assert.Equal("Test Create 1", newRow1.Name);
-            Assert.Equal("Test Create 2", newRow2.Name);
-
+            var validateResult1 = await bulkService.Validate(new(), cts.Token);
+            var validateResult2 = await bulkService.Validate(new() { { "Name", "Column2"} }, cts.Token);
+            Assert.False(validateResult1);
+            Assert.False(validateResult2);
 
             cts.Dispose();
         }
