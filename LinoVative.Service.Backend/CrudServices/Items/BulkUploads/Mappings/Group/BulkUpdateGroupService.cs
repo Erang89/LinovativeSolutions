@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Items;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
@@ -13,8 +14,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
         protected override async Task BulkOperationHandler(CancellationToken token)
         {
             var rows = GetRecords();
-            var ids = GetInputValues(_columnId).Select(x => (Guid)x).ToList();
-            var groups = _dbContext.ItemGroups.GetAll(_actor).Where(x => ids.Contains(x.Id)).ToList();
+            var ids = GetInputValues(_columnId).Select(x => (Guid)x!).ToList();
+            var groups = await _dbContext.ItemGroups.GetAll(_actor).Where(x => ids.Contains(x.Id)).ToListAsync(token);
             var (cell, converter) = GetGetterAndConverter(_columnId);
             foreach (var row in rows)
             {
@@ -38,6 +39,10 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
 
                 if (mapper is not null) mapper(row, itemGroup);
             }
+
+            if (_dbContext.GetEntityState(itemGroup) == EntityState.Modified)
+                itemGroup.ModifyBy(_actor);
+
         }
 
         private void MapingName(ItemGroupBulkUploadDetail detail, ItemGroup group)
