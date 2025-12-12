@@ -1,9 +1,10 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Core.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace LinoVative.Service.Core.BulkUploads
 {
-    public class ItemGroupBulkUploadDetail : IEntityId
+    public class ItemGroupBulkUploadDetail : IEntityId, IBuklUploadDetail
     {
         [Key]
         public Guid Id { get; set; }
@@ -16,7 +17,7 @@ namespace LinoVative.Service.Core.BulkUploads
 
         public void AddError(string error)
         {
-            if (!string.IsNullOrWhiteSpace(error))
+            if (!string.IsNullOrWhiteSpace(Errors))
             {
                 Errors = $"{Errors}, {error}";
                 return;
@@ -25,5 +26,7 @@ namespace LinoVative.Service.Core.BulkUploads
             Errors = error;
                 
         }
+
+        public void ClearError() => Errors = null;
     }
 }

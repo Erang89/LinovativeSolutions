@@ -1,10 +1,11 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Service.Core.EntityBases;
+using LinoVative.Service.Core.Interfaces;
 
 namespace LinoVative.Service.Core.BulkUploads
 {
     
-    public class ItemBulkUpload : AuditableEntityUnderCompany
+    public class ItemBulkUpload : AuditableEntityUnderCompany, IExcelBulkUpload
     {
         public Guid? UserId { get; set; }
         public string? headerColum1 { get; set; }
