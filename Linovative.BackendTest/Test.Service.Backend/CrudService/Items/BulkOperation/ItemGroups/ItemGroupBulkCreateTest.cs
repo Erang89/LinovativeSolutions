@@ -11,7 +11,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
     public class ItemGroupBulkCreateTest : UseDatabaseTestBase
     {
         [Fact]
-        public async Task BulkCreate_Success()
+        public async Task BulkCreateItemGroup_Success()
         {
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();
@@ -83,7 +83,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
 
 
         [Fact]
-        public async Task BulkCreate_Failed_DueToDuplicateNameOrID()
+        public async Task BulkCreateItemGroup_Failed_DueToDuplicateNameOrID()
         {
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();

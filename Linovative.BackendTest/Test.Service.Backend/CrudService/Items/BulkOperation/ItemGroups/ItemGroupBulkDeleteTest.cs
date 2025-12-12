@@ -15,7 +15,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
         const string resources = "BulkUploadCommand";
 
         [Fact]
-        public async Task BulkDelete_Submiting_Success()
+        public async Task BulkDeleteItemGroup_Submiting_Success()
         {
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();
@@ -69,7 +69,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
 
 
         [Fact]
-        public async Task BulkDelete_Failed_DueToInCorectID()
+        public async Task BulkDeleteItemGroup_Failed_DueToInCorectID()
         {
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();
@@ -124,7 +124,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
 
 
         [Fact]
-        public async Task BulkDelete_FailedDueToNoKeyMapping()
+        public async Task BulkDeleteItemGroup_FailedDueToNoKeyMapping()
         {
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();

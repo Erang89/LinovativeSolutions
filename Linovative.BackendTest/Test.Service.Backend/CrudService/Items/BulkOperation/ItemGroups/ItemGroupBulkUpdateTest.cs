@@ -12,7 +12,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
         const string resources = "BulkUploadCommand";
 
         [Fact]
-        public async Task BulkUpdate_Submiting_Success()
+        public async Task BulkUpdateItemGroup_Submiting_Success()
         {
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();
@@ -61,7 +61,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
 
 
         [Fact]
-        public async Task BulkUpdateGroup_FailedDueToInvalidID()
+        public async Task BulkUpdateItemGroup_FailedDueToInvalidID()
         {
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();
