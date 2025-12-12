@@ -74,13 +74,13 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
         protected override bool IdsShouldExist(IEnumerable<Guid> ids)
         {
             var groupIds = _dbContext.ItemGroups.Where(x => ids.Contains(x.Id)).Select(x => x.Id);
-            var notFoundIds = groupIds.Where(x => !ids.Contains(x)).ToList();
-            var (cell, converter) = GetGetterAndConverter(_columnId);
+            var notFoundIds = ids.Where(x => !groupIds.Contains(x)).ToList();
+            var (cell, _) = GetGetterAndConverter(_columnId);
             var notFoundIdsString = notFoundIds.Select(x => x.ToString()).ToList();
-            foreach (var row in GetRecords().Where(x => notFoundIdsString.Contains(converter(cell(x)!))))
+            foreach (var row in GetRecords().Where(x => notFoundIdsString.Contains(cell(x)!)))
                 row.AddError(GetError("ValueNotFoundInTheSystem.Message", cell(row)));
 
-            return !notFoundIds.Any();
+            return notFoundIds.Count == 0;
         }
 
 
@@ -92,7 +92,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
             foreach (var row in GetRecords().Where(x => existingIdsString.Contains(cell(x)!)))
                 row.AddError(GetError("ValueAlreadyExistInTheSystem.Message", cell(row)));
 
-            return !existingIds.Any();
+            return existingIds.Count == 0;
         }
 
 

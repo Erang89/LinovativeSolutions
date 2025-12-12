@@ -38,7 +38,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
         protected DbSet<TUpload> _bulkUploads;
         protected DbSet<TRecord> _bulkUploadDetails;
         protected CrudOperations? _operation;
-        protected Dictionary<string, string> _fieldMapping = new();
+        protected Dictionary<string, string> _fieldMapping = [];
         
 
         // Constructor
@@ -86,14 +86,12 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
             var cellGetter = Getters[excelColumn];
             var converter = Converters[key];
             var excelRows = GetRecords();
-            return excelRows.Select(x => converter(cellGetter(x))).Where(x => x != null).ToList();
+            return [.. excelRows.Select(x => converter(cellGetter(x))).Where(x => x != null)];
         }
 
         protected (Func<TRecord, string?>, Func<string?, object?>) GetGetterAndConverter(string key)
         {
-            if (!_fieldMapping.ContainsKey(key)) return ((TRecord) => null, (_) => null);
-
-            var excelColumn = _fieldMapping[key];
+            if (!_fieldMapping.TryGetValue(key, out string? excelColumn)) return ((TRecord) => null, (_) => null);
             var cellGetter = Getters[excelColumn];
             var converter = Converters[key];
             return (cellGetter, converter);
@@ -175,7 +173,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
             var checkInput = CheckInputId();
             var checkDuplicateInput = CheckDuplicateInputId();
             var checkExistOrNotExisitId = true;
-            if(_fieldMapping.Keys.Contains(_columnId))
+            if (_fieldMapping.ContainsKey(_columnId))
                 checkExistOrNotExisitId = 
                 _operation == CrudOperations.Create ? 
                 IdsShouldNOTExist(GetInputValues(_columnId).Select(x => (Guid)x!)) :
@@ -206,13 +204,13 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
             var validate = await Validate(fieldMapping, token);
             if (!validate)
             {
-                await _dbContext.SaveAsync(_actor);
+                await _dbContext.SaveAsync(_actor, token);
                 return validate;
             }
 
             await BulkOperationHandler(token);
 
-            await _dbContext.SaveAsync(_actor);
+            await _dbContext.SaveAsync(_actor, token);
             await DeleteBulkUploadRecords();
             return Result.OK();
         }
