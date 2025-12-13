@@ -17,7 +17,7 @@ namespace LinoVative.Service.Core.Items
         public ItemCategory? Category { get; set; }
 
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public decimal SellPrice { get; set; }
 
 

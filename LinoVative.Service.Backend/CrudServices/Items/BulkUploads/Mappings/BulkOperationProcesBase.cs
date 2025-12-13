@@ -29,7 +29,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
         protected abstract IQueryable<TRecord> FilterRecords(IQueryable<TRecord> query, Guid? uploadId);
         protected abstract bool IdsShouldExist(IEnumerable<Guid> ids);
         protected abstract bool IdsShouldNOTExist(IEnumerable<Guid> ids);
-
+        
 
         // Properties
         protected readonly IAppDbContext _dbContext;
@@ -58,7 +58,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
 
         protected virtual string GetEntityName() => _lang[$"BulkUploadCommand.{EntityKey}.EntityName"];
         protected virtual string GetFieldName(string key) => _lang[$"BulkUploadCommand.{key}.ColumnHeader"];
-
+        protected virtual List<string> RequieredFieldWhenCreated { get; } = [];
 
 
         TUpload? _bulkUpload = null;
@@ -244,6 +244,11 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
             // Validate: Should have at least one colum mapping other then ID
             if (!_fieldMapping.Any(x => x.Key != _columnId))
                 return Result.Failed(GetError("NoMappingColumns.Message"));
+
+            // Check Required Filed
+            if(RequieredFieldWhenCreated.Count > 0 && _fieldMapping.Keys.Any(x => !RequieredFieldWhenCreated.Contains(x)))
+                return Result.Failed(GetError("FieldsRequired.Message", string.Join(",", RequieredFieldWhenCreated.Select(x => GetError(x)))));
+
 
             var isValidId = IsValidID();
             var isValidFields = IsValidFields();

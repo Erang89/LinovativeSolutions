@@ -17,6 +17,13 @@
   "GroupId.ColumnHeader": "Group ID",
   "CategoryId.ColumnHeader": "Category ID",
   "UnitId.ColumnHeader": "Unit ID",
+  "Unit.ColumnHeader": "Unit",
+  "Group.ColumnHeader": "Group",
+  "Category.ColumnHeader": "Category",
+  "Code.ColumnHeader": "Code",
+  "SellPrice.ColumnHeader": "Sell Price",
+  "Description.ColumnHeader": "Description",
+  "IsActive.ColumnHeader": "Active Status",
 
   "CreateItem.SheetName": "Items",
   "CreateGroup.SheetName": "Groups",
@@ -35,6 +42,9 @@
 
 
   "Group.EntityName": "Group",
+  "Category.EntityName": "Category",
+  "Unit.EntityName": "Unit",
+  "Item.EntityName": "Item",
 
   "ExcelRowError.Message": "Some error accourt, Please download excel file to see the error",
   "GroupNameRequired.Message": "Group Name is required",
@@ -57,5 +67,8 @@
   "CannotConvertValueForField.Message": "Can't convert '{0}' for {1}",
   "KeyColumnIsEmpty.Message": "{0} is required when mapping as key column",
   "CanotCoverValueAsField.Message": "'{0}' can't convert as {1}'",
-  "UnExpectedKeyColumn.Message": "Invalid Key Column'"
+  "UnExpectedKeyColumn.Message": "Invalid Key Column'",
+  "FailedToConvertAsBoolean.Message": "'{0}' can't conver to boolean'",
+  "FailedToConvertAsDecimal.Message": "'{0}' can't conver to number'",
+  "FieldsRequired.Message": "'{0}' are required'"
 }

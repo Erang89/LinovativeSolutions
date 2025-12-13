@@ -4,9 +4,9 @@ using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Items;
 
-namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group
+namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Unit
 {
-    public class BulkCreateGroupService(IAppDbContext dbContext, IActor actor, ILangueageService lang) : BulkOperationGroupBase(dbContext, actor, lang, CrudOperations.Create)
+    public class BulkCreateUnitService(IAppDbContext dbContext, IActor actor, ILangueageService lang) : BulkOperationnitBase(dbContext, actor, lang, CrudOperations.Create)
     {
         protected override List<string> RequieredFieldWhenCreated => [Keys.Name];
 
@@ -18,12 +18,12 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
         }
 
 
-        private void MapRow(ItemGroupBulkUploadDetail row)
+        private void MapRow(ItemUnitBulkUploadDetail row)
         {
-            var group = new ItemGroup() { CompanyId = _actor.CompanyId};
+            var unit = new ItemUnit() { CompanyId = _actor.CompanyId};
             foreach(var key in _fieldMapping.Keys)
             {
-                Action<ItemGroupBulkUploadDetail, ItemGroup>? mapper = key switch
+                Action<ItemUnitBulkUploadDetail, ItemUnit>? mapper = key switch
                 {
                     Keys.Id => MappingId,
                     Keys.Name => MappingName,
@@ -32,28 +32,28 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Gro
                 
                 if (mapper == null) continue;
 
-                mapper(row, group);
+                mapper(row, unit);
             }
 
-            group.CreateBy(_actor);
-            _dbContext.ItemGroups.Add(group);
+            unit.CreateBy(_actor);
+            _dbContext.ItemUnits.Add(unit);
         }
 
 
 
-        private void MappingName(ItemGroupBulkUploadDetail row, ItemGroup group)
+        private void MappingName(ItemUnitBulkUploadDetail row, ItemUnit unit)
         {
             var (cell, converter) = GetGetterAndConverter(Keys.Name);
-            group.Name = (string)converter(cell(row)!)!;
+            unit.Name = (string)converter(cell(row)!)!;
         }
 
 
 
-        private void MappingId(ItemGroupBulkUploadDetail row, ItemGroup group)
+        private void MappingId(ItemUnitBulkUploadDetail row, ItemUnit unit)
         {
             var (cell, converter) = GetGetterAndConverter(Keys.Id);
             if (string.IsNullOrWhiteSpace(cell(row))) return;
-            group.Id = (Guid)converter(cell(row)!)!;
+            unit.Id = (Guid)converter(cell(row)!)!;
         }
     }
 }
