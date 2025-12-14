@@ -13,6 +13,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Ite
 
         const string RequiredMessageResourceKey = "ExcelFieldValueRequires.Message";
         const string AlreadyExistMessageResourceKey = "ValueAlreadyExistInTheSystem.Message";
+        const string ResourceMessage = "BulkUploadCommand";
 
         protected static class Keys
         {
@@ -143,9 +144,11 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Ite
             var columnName = GetExcelHeader(excelColumn);
             var nullValues = rows.Where(x => string.IsNullOrWhiteSpace(cell(x))).ToList();
             var invalidValues = rows.Where(x => !nullValues.Contains(x) && !decimal.TryParse(cell(x), out _)).ToList();
+            var invalidRangeValue = rows.Where(x => !nullValues.Contains(x) && !invalidValues.Contains(x) && decimal.TryParse(cell(x), out decimal price) && price < 0).ToList();
             foreach (var row in nullValues) row.AddError(GetError(RequiredMessageResourceKey, columnName));
             foreach (var row in invalidValues) row.AddError(GetError("FailedToConvertAsDecimal.Message", cell(row)));
-            return nullValues.Count == 0 && invalidValues.Count == 0;
+            foreach (var row in invalidRangeValue) row.AddError(string.Format(_lang[$"{ResourceMessage}.ValueMustGreaterOrEqualThan.Message"], columnName, "0"));
+            return nullValues.Count == 0 && invalidValues.Count == 0 && invalidRangeValue.Count == 0;
         }
 
 
@@ -180,15 +183,15 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Ite
 
         private bool CheckCategorytExist()
         {
-            var (groupCell, _) = GetGetterAndConverter(Keys.Category);
+            var (cell, _) = GetGetterAndConverter(Keys.Category);
             var rows = GetRecords();
             var inputNames = GetInputValues(Keys.Category).Select(x => (string)x!).ToList();
             var existingIdNames = _dbContext.ItemCategories.GetAll(_actor).Select(x => x.Name);
             var notExistNames = inputNames.Where(x => !existingIdNames.Contains(x));
-            var invalidRows = rows.Where(x => notExistNames.Contains(groupCell(x)));
+            var invalidRows = rows.Where(x => notExistNames.Contains(cell(x)));
             foreach (var row in invalidRows)
             {
-                row.AddError(GetError(AlreadyExistMessageResourceKey, groupCell(row)));
+                row.AddError(GetError("ValueNotFoundInTheSystem.Message", cell(row)));
             }
             return !invalidRows.Any();
         }
@@ -224,15 +227,15 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Ite
 
         private bool CheckUnitExist()
         {
-            var (groupCell, _) = GetGetterAndConverter(Keys.Unit);
+            var (cell, _) = GetGetterAndConverter(Keys.Unit);
             var rows = GetRecords();
             var inputNames = GetInputValues(Keys.Unit).Select(x => (string)x!).ToList();
             var existingIdNames = _dbContext.ItemUnits.GetAll(_actor).Select(x => x.Name);
             var notExistNames = inputNames.Where(x => !existingIdNames.Contains(x));
-            var invalidRows = rows.Where(x => notExistNames.Contains(groupCell(x)));
+            var invalidRows = rows.Where(x => notExistNames.Contains(cell(x)));
             foreach (var row in invalidRows)
             {
-                row.AddError(GetError(AlreadyExistMessageResourceKey, groupCell(row)));
+                row.AddError(GetError("ValueNotFoundInTheSystem.Message", cell(row)));
             }
             return !invalidRows.Any();
         }
