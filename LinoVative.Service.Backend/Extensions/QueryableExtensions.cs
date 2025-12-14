@@ -216,12 +216,12 @@ namespace LinoVative.Service.Backend.Extensions
             
             if (typeof(IDeleteableEntity).IsAssignableFrom(typeof(T)) && !includeDeleted)
             {
-                query = query.Where(e => !((IDeleteableEntity)e).IsDeleted);
+                query = query.Where(e => !((IDeleteableEntity)e!).IsDeleted);
             }
 
             if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
             {
-                query = query.Where(e => ((IsEntityManageByCompany)e).CompanyId == actor.CompanyId);
+                query = query.Where(e => ((IsEntityManageByCompany)e!).CompanyId == actor.CompanyId);
             }
 
             return query;
