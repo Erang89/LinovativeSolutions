@@ -127,7 +127,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Cat
         {
             var (groupCell, _) = GetGetterAndConverter(Keys.Group);
             var rows = GetRecords();
-            var inputNames = GetInputValues(Keys.Group).Select(x => (string)x!).ToList();
+            var inputNames = GetInputValues(Keys.Group).Select(x => (string)x!).Where(x => !string.IsNullOrEmpty(x)).ToList();
             var existingIdNames = _dbContext.ItemGroups.GetAll(_actor).Select(x => x.Name);
             var notExistNames = inputNames.Where(x => !existingIdNames.Contains(x));
             var invalidRows = rows.Where(x => notExistNames.Contains(groupCell(x)));

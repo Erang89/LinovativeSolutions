@@ -246,7 +246,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
                 return Result.Failed(GetError("NoMappingColumns.Message"));
 
             // Check Required Filed
-            if(RequieredFieldWhenCreated.Count > 0 && _fieldMapping.Keys.Any(x => !RequieredFieldWhenCreated.Contains(x)))
+            if(RequieredFieldWhenCreated.Count > 0 && RequieredFieldWhenCreated.Any(x => !_fieldMapping.Keys.Contains(x)))
                 return Result.Failed(GetError("FieldsRequired.Message", string.Join(",", RequieredFieldWhenCreated.Select(x => GetError(x)))));
 
 
