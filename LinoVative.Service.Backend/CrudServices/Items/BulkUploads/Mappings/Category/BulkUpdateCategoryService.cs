@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Category
 {
-    public class BulkUpdateCategoryService(IAppDbContext dbContext, IActor actor, ILangueageService lang) : BulkOperationCategoryBase(dbContext, actor, lang, CrudOperations.Create)
+    public class BulkUpdateCategoryService(IAppDbContext dbContext, IActor actor, ILangueageService lang) : BulkOperationCategoryBase(dbContext, actor, lang, CrudOperations.Update)
     {
         protected override async Task BulkOperationHandler(CancellationToken token)
         {
@@ -45,8 +45,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Cat
                 mapper(row, category);
             }
 
-            category.CreateBy(_actor);
-            _dbContext.ItemCategories.Add(category);
+            category.ModifyBy(_actor);
         }
 
         List<ItemGroup>? _groups = null;

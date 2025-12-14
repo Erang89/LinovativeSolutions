@@ -57,7 +57,7 @@
   "DuplicateNameInExcel.Message": "Duplicate {0} value in excel",
   "DuplicateNameInDB.Message": "Other row with the same {0} already exist in the system",
   "NoKeyColumnsNeeded.Message": "This Operation need no key columns",
-  "FieldNotExistInTheSystem.Message": "The {0} not found in the system",
+  "FieldNotExistInTheSystem.Message": "'{0}' not found in the system",
   "ValueNotFoundInTheSystem.Message": "{0} not found in the system",
   "ValueAlreadyExistInTheSystem.Message": "{0} already exist in the system",
   "EntityWithFieldNotExist.Message": "{0} with {1}: '{2}' not found in the system",

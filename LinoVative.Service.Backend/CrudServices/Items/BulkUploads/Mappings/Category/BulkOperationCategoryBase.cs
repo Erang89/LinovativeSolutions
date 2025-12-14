@@ -133,7 +133,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Cat
             var invalidRows = rows.Where(x => notExistNames.Contains(groupCell(x)));
             foreach (var row in invalidRows)
             {
-                row.AddError(GetError("ValueAlreadyExistInTheSystem.Message", groupCell(row)));
+                row.AddError(GetError("FieldNotExistInTheSystem.Message", groupCell(row)));
             }
             return !invalidRows.Any();
         }
