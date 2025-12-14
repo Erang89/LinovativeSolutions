@@ -142,7 +142,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             var error4 = string.Format(_langService[$"{resources}.ExcelFieldValueRequires.Message"], uploadDetail1.Column3);
             var error5 = string.Format(_langService[$"{resources}.ExcelFieldValueRequires.Message"], uploadDetail1.Column4);
             var error6 = string.Format(_langService[$"{resources}.FailedToConvertAsDecimal.Message"], uploadDetail3.Column6);
-
+           
             Assert.False(result1);
             Assert.Contains(error1, uploadDetail1.Errors);
             Assert.Contains(error2, uploadDetail1.Errors);
@@ -150,6 +150,14 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             Assert.Contains(error4, uploadDetail2.Errors);
             Assert.Contains(error5, uploadDetail2.Errors);
             Assert.Contains(error6, uploadDetail3.Errors);
+
+            fieldMapping.Remove("Unit");
+            var result = await bulkService.Save(fieldMapping, cts.Token);
+            var fields = new List<string>() { "Name", "Code", "Unit", "Category", "SellPrice" };
+            var requiredFields = string.Join(", ", fields.Select(x => string.Format(_langService[$"{resources}.{x}.ColumnHeader"], x)));
+            var error7 = string.Format(_langService[$"{resources}.FieldsRequired.Message"], requiredFields);
+            Assert.False(result);
+            Assert.Contains(error7, result.Message);
 
             cts.Dispose();
         }
