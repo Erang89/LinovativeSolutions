@@ -17,8 +17,8 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             var dbContext = CreateContext();
             var cts = new CancellationTokenSource();
 
-            var group = new ItemGroup() { Name = "Group 1", CompanyId = _actor.CompanyId };
-            var otherGroup = new ItemGroup() { Name = "Group 1", CompanyId = _actor.CompanyId };
+            var group = new ItemGroup() { Id = new Guid("52184401-8e8a-4687-9b1d-16af87900c1e"), Name = "Group 1", CompanyId = _actor.CompanyId };
+            var otherGroup = new ItemGroup() { Name = "Group 1", CompanyId = Guid.NewGuid()};
             dbContext.ItemGroups.AddRange(group, otherGroup);
 
             var category1 = new ItemCategory() { Name = "Category 1", GroupId = group.Id, CompanyId = _actor.CompanyId };
@@ -86,7 +86,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             var cts = new CancellationTokenSource();
 
             var group = new ItemGroup() { Name = "Group 1", CompanyId = _actor.CompanyId };
-            var otherGroup = new ItemGroup() { Name = "Group 1", CompanyId = _actor.CompanyId };
+            var otherGroup = new ItemGroup() { Name = "Group 1", CompanyId = Guid.NewGuid() };
             dbContext.ItemGroups.AddRange(group, otherGroup);
 
             var category1 = new ItemCategory() { Name = "Category 1", GroupId = group.Id, CompanyId = _actor.CompanyId };
