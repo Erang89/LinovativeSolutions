@@ -78,7 +78,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Cat
 
         protected override bool IdsShouldExist(IEnumerable<Guid> ids)
         {
-            var groupIds = _dbContext.ItemCategories.Where(x => ids.Contains(x.Id)).Select(x => x.Id);
+            var groupIds = _dbContext.ItemCategories.GetAll(_actor).Where(x => ids.Contains(x.Id)).Select(x => x.Id);
             var notFoundIds = ids.Where(x => !groupIds.Contains(x)).ToList();
             var (cell, _) = GetGetterAndConverter(_columnId);
             var notFoundIdsString = notFoundIds.Select(x => x.ToString()).ToList();
