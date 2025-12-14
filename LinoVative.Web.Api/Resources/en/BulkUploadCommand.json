@@ -17,9 +17,11 @@
   "GroupId.ColumnHeader": "Group ID",
   "CategoryId.ColumnHeader": "Category ID",
   "UnitId.ColumnHeader": "Unit ID",
+  "UnitName.ColumnHeader": "Name",
   "Unit.ColumnHeader": "Unit",
   "Group.ColumnHeader": "Group",
   "Category.ColumnHeader": "Category",
+  "CategoryName.ColumnHeader": "Name",
   "Code.ColumnHeader": "Code",
   "SellPrice.ColumnHeader": "Sell Price",
   "Description.ColumnHeader": "Description",
@@ -70,5 +72,6 @@
   "UnExpectedKeyColumn.Message": "Invalid Key Column'",
   "FailedToConvertAsBoolean.Message": "'{0}' can't conver to boolean'",
   "FailedToConvertAsDecimal.Message": "'{0}' can't conver to number'",
-  "FieldsRequired.Message": "'{0}' are required'"
+  "FieldsRequired.Message": "'{0}' are required'",
+  "ValueMustGreaterOrEqualThan.Message": "'{0}' Must Greater or equal to {1}"
 }
