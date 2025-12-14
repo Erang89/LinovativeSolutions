@@ -26,6 +26,7 @@
   "SellPrice.ColumnHeader": "Sell Price",
   "Description.ColumnHeader": "Description",
   "IsActive.ColumnHeader": "Active Status",
+  "Name.ColumnHeader": "Name",
 
   "CreateItem.SheetName": "Items",
   "CreateGroup.SheetName": "Groups",

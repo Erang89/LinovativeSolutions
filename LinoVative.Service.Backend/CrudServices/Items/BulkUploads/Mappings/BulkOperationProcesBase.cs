@@ -247,7 +247,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
 
             // Check Required Filed
             if(RequieredFieldWhenCreated.Count > 0 && RequieredFieldWhenCreated.Any(x => !_fieldMapping.Keys.Contains(x)))
-                return Result.Failed(GetError("FieldsRequired.Message", string.Join(",", RequieredFieldWhenCreated.Select(x => GetError(x)))));
+                return Result.Failed(GetError("FieldsRequired.Message", string.Join(", ", RequieredFieldWhenCreated.Select(x => $"{x}.ColumnHeader").Select(x => GetError(x)))));
 
 
             var isValidId = IsValidID();
