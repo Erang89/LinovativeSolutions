@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Delete;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.DeleteTemplateWithData;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.UpdateTemplateWithData;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Enums;
+using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -108,6 +109,36 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
                     _ => BulkOperationTypes.GroupMapping,
                 };
                 var c = new RemoveBulkUploadItemCommand() { UploadType = removeBulkUploadType };
+                var result = await _mediator.Send(c, token);
+                return StatusCode((int)result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
+        }
+
+
+        [Route("Save/{type}")]
+        [HttpPost]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Save([FromBody] Dictionary<string, string> fieldMapping, [FromRoute] CrudOperations? type, CancellationToken token)
+        {
+            try
+            {
+                var bulkOperationType = type switch
+                {
+                    CrudOperations.Create => BulkOperationTypes.GroupCreate,
+                    CrudOperations.Update => BulkOperationTypes.GroupUpdate,
+                    CrudOperations.Delete => BulkOperationTypes.GroupDelete,
+                    _ => throw new NotImplementedException(),
+                };
+                var c = new BulkOperationProcessCommand() { Type = bulkOperationType, FieldMapping = fieldMapping };
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
             }
