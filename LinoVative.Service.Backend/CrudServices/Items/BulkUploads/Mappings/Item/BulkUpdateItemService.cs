@@ -98,7 +98,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Ite
             var unit = _units.FirstOrDefault(x => x.Name!.Equals(cell(detail), StringComparison.CurrentCultureIgnoreCase));
             if (unit == null) return;
 
-            item.CategoryId = unit.Id;
+            item.UnitId = unit.Id;
         }
 
         private void MappingDescription(ItemBulkUploadDetail detail, ItemMaster item)
