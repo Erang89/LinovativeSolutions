@@ -66,7 +66,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads
                 _dbContext.ItemBulkUploads.Add(exisitingUpload);
             }
 
-            var totalRows = worksheet.RowsUsed().Count() - 1;
+            var totalRows = worksheet.RowsUsed().Count();
             for(var i = 2; i<= totalRows; i++)
             {
                 var row = worksheet.Row(i);
