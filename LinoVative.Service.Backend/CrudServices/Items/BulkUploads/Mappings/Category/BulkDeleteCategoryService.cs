@@ -5,7 +5,7 @@ using LinoVative.Service.Backend.Interfaces;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Category
 {
-    public class BulkDeleteItemGroupService(IAppDbContext dbContext, IActor actor, ILangueageService lang) : BulkOperationCategoryBase(dbContext, actor, lang, CrudOperations.Delete)
+    public class BulkDeleteItemCategoryService(IAppDbContext dbContext, IActor actor, ILangueageService lang) : BulkOperationCategoryBase(dbContext, actor, lang, CrudOperations.Delete)
     {
         protected override async Task BulkOperationHandler(CancellationToken token)
         {
