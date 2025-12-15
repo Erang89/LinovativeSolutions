@@ -2,6 +2,7 @@
 @using Linovative.Frontend.POSComponents.Bases
 @inject ILanguageProvider _lang;
 @inject IApplicationStateService _state;
+@using Linovative.Frontend.POSComponents.Enums
 @inherits POSManagementPageBase
 
 <div class="d-flex flex-grow-1 gap-2">
@@ -15,7 +16,7 @@
             {
                 <MudListItem Value="@f.Value"
                              @ondblclick="@(() => { SelectedItemField = f; Mapping(); })"
-                             OnClick="@(() => SelectedItemField = f)" Text="@f.Value" />
+                             OnClick="@(() => SelectedItemField = f)" Text="@($"{f.Value} {RequiredSign(f)}")" />
             }
         </MudList>
 
@@ -67,6 +68,9 @@
     [Parameter] public BulkUploadItemGroupDto? Columns { get; set; }
     [Parameter] public List<string> ExcludeColumns { get; set; } = new();
     [Parameter] public EventCallback<IDictionary<string, string>> FieldMappingChanged { get; set; }
+    [Parameter] public List<string> RequiredFields { get; set; } = new();
+    [Parameter] public BulkOperations? Operations { get; set; }
+    [Parameter] public EventCallback<bool> RequiredFieldMappingChanged { get; set; }
 
     private List<KeyValuePair<string, string>> ItemFields { get; set; } = new();
     private List<KeyValuePair<string, string>> UploadFields() => (new Dictionary<string, string>()
@@ -110,6 +114,8 @@
 
         SelectedItemField = null;
         SelectedUploadField = null;
+        var hasMapped = !RequiredFields.Any(x => !SelectedPairs.Select(p => p.ItemField.Key).ToList().Contains(x));
+        await RequiredFieldMappingChanged.InvokeAsync(hasMapped);
         await FieldMappingChanged.InvokeAsync(SelectedPairs.ToDictionary(x => x.ItemField.Key, x => x.UploadField.Key));
     }
 
@@ -117,6 +123,17 @@
     {
         SelectedPairs.Remove(value);
         await FieldMappingChanged.InvokeAsync(SelectedPairs.ToDictionary(x => x.ItemField.Key, x => x.UploadField.Key));
+    }
+
+
+    string? RequiredSign(KeyValuePair<string, string> mapping)
+    {
+        const string requiredSign = "*";
+
+        if (RequiredFields.Contains(mapping.Key))
+            return requiredSign;
+
+        return null;
     }
 
 }

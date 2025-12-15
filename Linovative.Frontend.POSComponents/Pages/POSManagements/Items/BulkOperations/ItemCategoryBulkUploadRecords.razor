@@ -96,8 +96,19 @@
     {
         <LinovativeGap />
         <MudText Typo="Typo.caption">@Label("MappingCategoryFields")</MudText>
-        <CategoryFieldMappings Columns="@category" ExcludeColumns="@(SelectedOperation == BulkOperations.Create ? new() { nameof(ItemGroupViewDto.Id) } : new())" />
+        <CategoryFieldMappings Operations="@SelectedOperation"
+                               RequiredFields="@RequiredFields"
+                               FieldMappingChanged="@((mapping) => FieldMapping = mapping)"
+                               RequiredFieldMappingChanged="@((x) => RequiredFieldsHasMapped = x)"
+                               Columns="@category" />
     }
+
+    <LinovativeGap />
+    <MudButton Disabled="@(!RequiredFieldsHasMapped || !AnyUpdatingFieldSelected)"
+               Variant="ComponentSettings.AddNewButtonVariant"
+               StartIcon="@Icons.Material.Filled.Save"
+               OnClick="@Save"
+               Color="Color.Primary">@ButtonText("Save")</MudButton>
 
 }
 
@@ -122,6 +133,9 @@
     int pageCount = 0;
     int recordCount = 0;
     int itemFilterCount = 0;
+    bool RequiredFieldsHasMapped = false;
+    IDictionary<string, string> FieldMapping = new Dictionary<string, string>();
+    bool AnyUpdatingFieldSelected => SelectedOperation is not BulkOperations.Update || FieldMapping.Any(x => x.Key != "Id");
 
 
     protected override async Task OnInitializedAsync()
@@ -147,6 +161,11 @@
         cts.Dispose();
     }
 
+
+    async Task Save()
+    {
+        await Task.CompletedTask;
+    }
 
     public async Task LoadData()
     {
@@ -179,7 +198,7 @@
         category = result?.Data?.FirstOrDefault() ?? new();
         details = result2?.Data ?? new();
 
-        var records = result2?.Count??0;
+        var records = result2?.Count ?? 0;
         var hasMod = records % pageSize > 0;
         recordCount = records;
         pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
@@ -209,4 +228,8 @@
         pageCount = 0;
         recordCount = 0;
     }
+
+    List<string> RequiredFields => SelectedOperation is BulkOperations.Create ?
+         new List<string>() { "Name", "Group" } :
+         new List<string>() { "Id" };
 }

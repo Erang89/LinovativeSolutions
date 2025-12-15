@@ -70,7 +70,7 @@
                 </tr>
             }
         </tbody>
-        
+
         @if (details?.Count == 0)
         {
             <tbody>
@@ -94,8 +94,19 @@
     {
         <LinovativeGap />
         <MudText Typo="Typo.caption">@Label("MappingUnitFields")</MudText>
-        <UnitFieldMappings Columns="@unit" ExcludeColumns="@(SelectedOperation == BulkOperations.Create ? new() { nameof(ItemGroupViewDto.Id) } : new())" />
+        <UnitFieldMappings Operations="@SelectedOperation"
+                           RequiredFields="@RequiredFields"
+                           FieldMappingChanged="@((mapping) => FieldMapping = mapping)"
+                           RequiredFieldMappingChanged="@((x) => RequiredFieldsHasMapped = x)"
+                           Columns="@unit" />
     }
+
+    <LinovativeGap />
+    <MudButton Disabled="@(!RequiredFieldsHasMapped || !AnyUpdatingFieldSelected)"
+               Variant="ComponentSettings.AddNewButtonVariant"
+               StartIcon="@Icons.Material.Filled.Save"
+               OnClick="@Save"
+               Color="Color.Primary">@ButtonText("Save")</MudButton>
 }
 
 
@@ -119,7 +130,9 @@
     int pageCount = 0;
     int recordCount = 0;
     int itemFilterCount = 0;
-
+    bool RequiredFieldsHasMapped = false;
+    IDictionary<string, string> FieldMapping = new Dictionary<string, string>();
+    bool AnyUpdatingFieldSelected => SelectedOperation is not BulkOperations.Update || FieldMapping.Any(x => x.Key != "Id");
 
     protected override async Task OnInitializedAsync()
     {
@@ -142,6 +155,12 @@
         await _bulkItemUnit.Remove(SelectedOperation.ToCrudOperations(SelectedActionTypes), cts.Token);
         Reset();
         cts.Dispose();
+    }
+
+
+    async Task Save()
+    {
+        await Task.CompletedTask;
     }
 
 
@@ -206,4 +225,8 @@
         pageCount = 0;
         recordCount = 0;
     }
+
+    List<string> RequiredFields => SelectedOperation is BulkOperations.Create ?
+         new List<string>() { "Name" } :
+         new List<string>() { "Id" };
 }
