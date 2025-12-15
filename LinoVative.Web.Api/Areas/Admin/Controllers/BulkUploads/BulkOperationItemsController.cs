@@ -3,6 +3,7 @@ using LinoVative.Service.Backend.CrudServices.Items.BulkUploads;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Delete;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.DeleteTemplateWithData;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.UpdateTemplateWithData;
+using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Enums;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -103,11 +104,11 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
             {
                 var removeBulkUploadType = type switch
                 {
-                    CrudOperations.Create => RemoveBulkUploadItemType.ItemCreate,
-                    CrudOperations.Update => RemoveBulkUploadItemType.ItemUpdate,
-                    CrudOperations.Delete => RemoveBulkUploadItemType.ItemDelete,
-                    CrudOperations.Mapping => RemoveBulkUploadItemType.ItemMapping,
-                    _ => RemoveBulkUploadItemType.ItemMapping,
+                    CrudOperations.Create => BulkOperationTypes.ItemCreate,
+                    CrudOperations.Update => BulkOperationTypes.ItemUpdate,
+                    CrudOperations.Delete => BulkOperationTypes.ItemDelete,
+                    CrudOperations.Mapping => BulkOperationTypes.ItemMapping,
+                    _ => BulkOperationTypes.ItemMapping,
                 };
                 var c = new RemoveBulkUploadItemCommand() { UploadType = removeBulkUploadType };
                 var result = await _mediator.Send(c, token);
