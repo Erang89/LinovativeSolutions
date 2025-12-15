@@ -41,7 +41,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
 
             await dbContext.SaveAsync(_actor);
 
-            var service = new BulkDeleteItemGroupService(dbContext, _actor, _langService);
+            var service = new BulkDeleteItemCategoryService(dbContext, _actor, _langService);
             var mapping = new Dictionary<string, string>()
             {
                 {"Id", "Column1" },
@@ -99,7 +99,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
 
             await dbContext.SaveAsync(_actor);
 
-            var service = new BulkDeleteItemGroupService(dbContext, _actor, _langService);
+            var service = new BulkDeleteItemCategoryService(dbContext, _actor, _langService);
             var mapping = new Dictionary<string, string>()
             {
                 {"Id", "Column1" },
