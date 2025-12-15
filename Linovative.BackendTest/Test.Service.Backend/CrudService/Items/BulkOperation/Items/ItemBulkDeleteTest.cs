@@ -72,6 +72,7 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             Assert.True(item1.IsDeleted);
             Assert.True(item2.IsDeleted);
             Assert.True(item3.IsDeleted);
+            Assert.Equal(_actor.UserId, item3.LastModifiedBy);
 
             cts.Dispose();
         }
