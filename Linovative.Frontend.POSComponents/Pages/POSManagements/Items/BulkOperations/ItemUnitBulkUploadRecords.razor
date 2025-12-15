@@ -35,8 +35,8 @@
             else
             {
                 <tr>
-                    <th>@($"{(Label("Column"))} 1")</th>
-                    <th>@($"{(Label("Column"))} 2")</th>
+                    <th>A</th>
+                    <th>B</th>
                 </tr>
             }
         </thead>
@@ -94,7 +94,7 @@
     {
         <LinovativeGap />
         <MudText Typo="Typo.caption">@Label("MappingUnitFields")</MudText>
-        <UnitFieldMappings Operations="@SelectedOperation"
+        <UnitFieldMappings @ref="@MappingFieldUI" Operations="@SelectedOperation"
                            RequiredFields="@RequiredFields"
                            FieldMappingChanged="@((mapping) => FieldMapping = mapping)"
                            RequiredFieldMappingChanged="@((x) => RequiredFieldsHasMapped = x)"
@@ -116,6 +116,9 @@
     [Parameter] public BulkOperations? SelectedOperation { get; set; }
     [Parameter] public BulkDataEntityTypes? SelectedEntityType { get; set; }
     [Parameter] public BulkActionTypes? SelectedActionTypes { get; set; }
+    [Parameter] public EventCallback<Response?> SaveResponseChanged { get; set; }
+    [Parameter] public EventCallback OnSubmiting { get; set; }
+
     [Parameter] public bool ShowRecord { get; set; }
 
     protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
@@ -133,6 +136,7 @@
     bool RequiredFieldsHasMapped = false;
     IDictionary<string, string> FieldMapping = new Dictionary<string, string>();
     bool AnyUpdatingFieldSelected => SelectedOperation is not BulkOperations.Update || FieldMapping.Any(x => x.Key != "Id");
+    UnitFieldMappings? MappingFieldUI;
 
     protected override async Task OnInitializedAsync()
     {
@@ -160,7 +164,25 @@
 
     async Task Save()
     {
-        await Task.CompletedTask;
+        cts = new();
+        var type = SelectedOperation switch
+        {
+            BulkOperations.Create => CrudOperations.Create,
+            BulkOperations.Update => CrudOperations.Update,
+            BulkOperations.Delete => CrudOperations.Delete,
+            _ => CrudOperations.Update,
+        };
+        await OnSubmiting.InvokeAsync();
+        var result = await _bulkItemUnit.Save(type, FieldMapping, cts.Token);
+        if (result)
+        {
+            unit = null;
+            details = new();
+            await MappingFieldUI!.Reset();
+            FieldMapping.Clear();
+        }
+        await SaveResponseChanged.InvokeAsync(result);
+        cts.Dispose();
     }
 
 

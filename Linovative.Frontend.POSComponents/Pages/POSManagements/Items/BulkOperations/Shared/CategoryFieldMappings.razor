@@ -138,4 +138,12 @@
         return null;
     }
 
+
+    public async Task Reset()
+    {
+        ItemFields = new();
+        await Task.CompletedTask;
+    }
+
+
 }

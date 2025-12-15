@@ -50,6 +50,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
             _bulkUploads = _dbContext.Set<TUpload>();
             _bulkUploadDetails = _dbContext.Set<TRecord>();
             _operation = operation;
+            lang.EnsureLoad(x => x.BulkUploadCommand);
         }
 
 
@@ -253,7 +254,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
             var isValidId = IsValidID();
             var isValidFields = IsValidFields();
             var isValid = isValidId && isValidFields;
-            return isValid ? Result.OK() : Result.Failed(GetError(_excelRowError));
+            var errorMessage = GetError(_excelRowError);
+            return isValid ? Result.OK() : Result.Failed(errorMessage);
         }
 
         #endregion
