@@ -111,8 +111,20 @@
     {
         <LinovativeGap />
         <MudText Typo="Typo.caption">@Label("MappingItemFields")</MudText>
-        <ItemFieldMappings Columns="@item" ExcludeColumns="@(SelectedOperation == BulkOperations.Create? new(){nameof(ItemViewDto.Id)} : new())" />
+        <ItemFieldMappings 
+            RequiredFields="@RequiredFields"
+            RequiredFieldMappingChanged="@((x) => RequiredFieldsHasMapped = x)"
+            FieldMappingChanged="@((mapping) => FieldMapping = mapping)"
+            Operations="@SelectedOperation" Columns="@item" />
     }
+
+
+    <LinovativeGap />
+    <MudButton Disabled="@(!RequiredFieldsHasMapped || !AnyUpdatingFieldSelected)"
+               Variant="ComponentSettings.AddNewButtonVariant"
+               StartIcon="@Icons.Material.Filled.Save"
+               OnClick="@Save"
+               Color="Color.Primary">@ButtonText("Save")</MudButton>
 }
 
 
@@ -136,7 +148,9 @@
     int pageCount = 0;
     int recordCount = 0;
     int itemFilterCount = 0;
-
+    bool RequiredFieldsHasMapped = false;
+    IDictionary<string, string> FieldMapping = new Dictionary<string, string>();
+    bool AnyUpdatingFieldSelected => SelectedOperation is not BulkOperations.Update || FieldMapping.Any(x => x.Key != "Id");
 
     protected override async Task OnInitializedAsync()
     {
@@ -162,6 +176,10 @@
         cts.Dispose();
     }
 
+    async Task Save()
+    {
+        await Task.CompletedTask;
+    }
 
     public async Task LoadData()
     {
@@ -227,4 +245,8 @@
         pageCount = 0;
         recordCount = 0;
     }
+
+    List<string> RequiredFields => SelectedOperation is BulkOperations.Create ?
+         new List<string>() { "Name", "Unit", "Category", "SellPrice", "Code" } :
+         new List<string>() { "Id" };
 }
