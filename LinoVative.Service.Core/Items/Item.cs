@@ -22,6 +22,11 @@ namespace LinoVative.Service.Core.Items
 
 
         public bool SellPriceIncludeTaxService { get; set; }
+
+        public bool HasCostumePrice { get; set; }
         public List<ItemCostumePrice> CostumePrices { get; set; } = new();
+
+
+        public bool CanBePurchased { get; set; }
     }
 }

@@ -106,6 +106,7 @@
             {nameof(ItemViewDto.Category.ItemGroup), ColumHeaderText("Group")},
             {nameof(ItemViewDto.Category), ColumHeaderText("Category")},
             {nameof(ItemViewDto.SellPrice), ColumHeaderText("SellPrice")},
+            {"IsActive", ColumHeaderText("IsActive")},
         };
 
         ItemFields = itemFields.Where(x => !(ExcludeColumns).Contains(x.Key))

@@ -23,9 +23,14 @@ namespace LinoVative.Shared.Dto.ItemDtos
         public Guid? CategoryId { get; set; }
        
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         [LocalizedRequired]
         public decimal? SellPrice { get; set; }
+
+        public bool SellPriceIncludeTaxService { get; set; }
+
+        public bool HasCostumePrice { get; set; }
+        public bool CanBePurchased { get; set; }
 
     }
 

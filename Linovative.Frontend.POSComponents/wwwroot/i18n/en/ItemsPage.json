@@ -12,6 +12,10 @@
   "FilterItem.Label": "Filter Items",
   "ShowFilter.Label": "Show Filter",
   "HideFilter.Label": "Hide Filter",
+  "IsActive.Label": "Active",
+  "SellPriceIncludeTaxService.Label": "Sell Price contains service and tax",
+  "CanBePurchased.Label": "Purchasing Item",
+  "CustomePrice.Label": "Custome Price",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",

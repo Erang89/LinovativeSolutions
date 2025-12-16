@@ -18,13 +18,13 @@
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
-<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Item)})" />
+<ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Item) })" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.Item" />
 <CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting">
     @if (pageMode == PageModes.List)
     {
         <MudBadge Class="ms-1" Content="@(filterFalues.Count())" Origin="Origin.BottomRight" Overlap="true">
-            <MudButton Variant="Variant.Outlined" StartIcon="@(showFilter? Icons.Material.Filled.RemoveRedEye : Icons.Material.Outlined.RemoveRedEye)" OnClick="@TogleFilter">@(showFilter ? @Label("HideFilter") : Label("ShowFilter"))</MudButton>
+            <MudButton Variant="Variant.Outlined" StartIcon="@(showFilter? Icons.Material.Filled.RemoveRedEye : Icons.Material.Outlined.RemoveRedEye)" OnClick="@TogleFilter">@(showFilter? @Label("HideFilter") : Label("ShowFilter"))</MudButton>
         </MudBadge>
     }
 </CrudButtons>
@@ -35,11 +35,12 @@
 {
     <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
 
-    <MudGrid>
-        <MudItem xs="12" sm="6" lg="4">
+    <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+    <LinovativeGap />
 
-            <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
-            <LinovativeGap />
+    <MudGrid>
+        <MudItem xs="12" sm="4" lg="4" Class="">
+
 
             <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
 
@@ -65,50 +66,52 @@
                                      LocalizerKey="@nameof(ItemDto.Description)" />
 
                 <LinovativeGap />
-                <ItemUnitDropdown @bind-Value="@itemUnit"
-                                  Id="item_unit"
-                                  Required="true"
-                                  Errors="@formResponse?.Errors"
-                                  LocalizerResource="@LocalizerResource"
-                                  LocalizerKey="@nameof(ItemDto.UnitId)" />
 
 
-                <LinovativeGap />
-                <ItemCategoryDropdown @bind-Value="@itemCategory"
-                                      Id="item_category"
-                                      Required="true"
-                                      Errors="@formResponse?.Errors"
-                                      LocalizerResource="@LocalizerResource"
-                                      LocalizerKey="@nameof(ItemDto.CategoryId)" />
 
-
-                <LinovativeGap />
-                <LinovativeTextBox T="decimal?"
-                                   Id="item_sell_price"
-                                   ValueChanged="@(x => item.SellPrice = x)"
-                                   Format="N2"
-                                   Value="@item.SellPrice"
-                                   IsRequired="true"
-                                   Errors="@formResponse?.Errors"
-                                   LocalizerResource="@LocalizerResource"
-                                   LocalizerKey="@nameof(ItemDto.SellPrice)"
-                                   Clearable="true" />
-
-                <LinovativeGap />
-                <div class="d-flex">
-                    <MudSwitch Value="false" Label="Active" Color="Color.Info" />
-                    <MudSwitch Value="false" Label="Can Sell" Color="Color.Info" />
-                    <MudSwitch Value="false" Label="Can Purchase" Color="Color.Info" />
-                    <MudSwitch Value="false" Label="Has Milti Price" Color="Color.Info" />
-                    <MudSwitch Value="false" Label="Service & Tax Included" Color="Color.Info" />
-                </div>
 
             </MudForm>
         </MudItem>
 
-        <MudItem xs="12" sm="6" lg="4">
+        <MudItem xs="12" sm="4" lg="4">
+            <ItemUnitDropdown @bind-Value="@itemUnit"
+                              Id="item_unit"
+                              Required="true"
+                              Errors="@formResponse?.Errors"
+                              LocalizerResource="@LocalizerResource"
+                              LocalizerKey="@nameof(ItemDto.UnitId)" />
 
+
+            <LinovativeGap />
+            <ItemCategoryDropdown @bind-Value="@itemCategory"
+                                  Id="item_category"
+                                  Required="true"
+                                  Errors="@formResponse?.Errors"
+                                  LocalizerResource="@LocalizerResource"
+                                  LocalizerKey="@nameof(ItemDto.CategoryId)" />
+
+
+            <LinovativeGap />
+            <LinovativeTextBox T="decimal?"
+                               Id="item_sell_price"
+                               ValueChanged="@(x => item.SellPrice = x)"
+                               Format="N2"
+                               Value="@item.SellPrice"
+                               IsRequired="true"
+                               Errors="@formResponse?.Errors"
+                               LocalizerResource="@LocalizerResource"
+                               LocalizerKey="@nameof(ItemDto.SellPrice)"
+                               Clearable="true" />
         </MudItem>
+
+        <MudItem xs="12" sm="4" lg="4">
+            <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
+            <LinovativeGap /> <div class="d-flex"><MudSwitch @bind-Value="@item.SellPriceIncludeTaxService" Label="@Label("SellPriceIncludeTaxService")" Color="Color.Info" /></div>
+            <LinovativeGap /> <div class="d-flex"><MudSwitch @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
+            <LinovativeGap /> <div class="d-flex"><MudSwitch @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div>
+        </MudItem>
+
+
     </MudGrid>
 }
 
@@ -119,15 +122,15 @@
 
 @if (pageMode == PageModes.List)
 {
-    <MudPaper class="@(showFilter? "rounded-0 rounded-t" : "d-none")">
-        <ItemFilterComponent OnClearFilter="@ClearFilter" OnFilterButtonClick="@(()=> table!.ReloadServerData())" FieldValues="@filterFalues" FieldValuesChanged="@(x => filterFalues = x)" @ref=@itemFilterComponent Label="@Label("FilterItem")">
+    <MudPaper class="@(showFilter ? "rounded-0 rounded-t" : "d-none")">
+        <ItemFilterComponent OnClearFilter="@ClearFilter" OnFilterButtonClick="@(() => table!.ReloadServerData())" FieldValues="@filterFalues" FieldValuesChanged="@(x => filterFalues = x)" @ref=@itemFilterComponent Label="@Label("FilterItem")">
             <AdditionalButton>
                 <MudButton Class="ms-2" Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.Close" OnClick="@(() => showFilter = !showFilter)" Color="Color.Primary">@_loc.Global("Button.Close")</MudButton>
             </AdditionalButton>
         </ItemFilterComponent>
     </MudPaper>
 
-    <MudTable Class="@(showFilter? "rounded-0 rounded-b" : "")" ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
+    <MudTable Class="@(showFilter ? "rounded-0 rounded-b" : "")" ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
         <ToolBarContent>
             <MudText Typo="Typo.h6">@EntityPluralName</MudText>
             <MudSpacer />
@@ -154,7 +157,7 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd>
-                <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
+                <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context))" T="bool"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Code">@context.Code</MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
@@ -312,11 +315,11 @@
     async Task Delete()
     {
         bool? result = await _dialogService.ShowMessageBox(DELETE, DeleteConfirmation, yesText: YES, cancelText: CANCEL, options: new DialogOptions()
-            {
-                FullWidth = true,
-                CloseOnEscapeKey = true,
-                BackdropClick = false,
-            });
+        {
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+        });
 
         if (!(result ?? false)) return;
 
@@ -354,14 +357,14 @@
         _state.NotifyStateChanged();
 
         var odataFilter = new ODataFilter()
-            {
-                PageNumber = state.Page + 1,
-                PageSize = state.PageSize,
-                OrderFiled = state.SortLabel,
-                SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
-                Options = $"$expand={nameof(ItemViewDto.Unit)},{nameof(ItemViewDto.Category)}($expand={nameof(ItemCategoryViewDto.ItemGroup)})",
-                FilterPayload = new { SearchKeyword = searchString, filter = filterFalues.ToFilterCondition() }
-            };
+        {
+            PageNumber = state.Page + 1,
+            PageSize = state.PageSize,
+            OrderFiled = state.SortLabel,
+            SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
+            Options = $"$expand={nameof(ItemViewDto.Unit)},{nameof(ItemViewDto.Category)}($expand={nameof(ItemCategoryViewDto.ItemGroup)})",
+            FilterPayload = new { SearchKeyword = searchString, filter = filterFalues.ToFilterCondition() }
+        };
 
         var result = await _service.Get(odataFilter, cts.Token);
         dataSource = result?.Data ?? new();

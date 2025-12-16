@@ -50,5 +50,6 @@
   "Column.CategoryName.Text": "Category Name",
   "Column.Unit.Text": "Unit",
   "Column.UnitName.Text": "Unit Name",
-  "Column.SellPrice.Text": "Sell Price"
+  "Column.SellPrice.Text": "Sell Price",
+  "Column.IsActive.Text": "Is Active"
 }
