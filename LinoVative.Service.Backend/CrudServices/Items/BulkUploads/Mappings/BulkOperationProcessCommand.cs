@@ -3,25 +3,28 @@ using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Categor
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Item;
 using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Unit;
+using LinoVative.Service.Core.Interfaces;
+using LinoVative.Shared.Dto;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
 {
-    public interface IBulkOperationProcessFactory
+    public class BulkOperationProcessCommand : IRequest<Result>
     {
-        public IBulkOperationProcess GetBulkOperationProvider(BulkOperationTypes type);
+        public BulkOperationTypes? Type { get; set; }
+        public Dictionary<string, string> FieldMapping { get; set; } = new();
     }
 
-    public class BulkOperationProcessFactoryService : IBulkOperationProcessFactory
+    public class BulkOperationProcessHandler : IRequestHandler<BulkOperationProcessCommand, Result>
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public BulkOperationProcessFactoryService(IServiceProvider sp)
+        public BulkOperationProcessHandler(IServiceProvider sp)
         {
             _serviceProvider = sp;
         }
 
-        public IBulkOperationProcess GetBulkOperationProvider(BulkOperationTypes type)
+        private IBulkOperationProcess GetBulkOperationProvider(BulkOperationTypes? type)
         {
             return type switch
             {
@@ -44,5 +47,9 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings
                 _ => throw new ArgumentException($"Unknown provider type: {type}")
             };
         }
+
+
+        public Task<Result> Handle(BulkOperationProcessCommand request, CancellationToken ct) =>
+            GetBulkOperationProvider(request.Type).Save(request.FieldMapping, ct);
     }
 }

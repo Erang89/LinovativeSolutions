@@ -16,6 +16,7 @@ namespace Linovative.Frontend.Services.BulkUploads
         public Task<Response> Remove(CrudOperations operation, CancellationToken token);
         public Task DownloadUpdateTemplate(List<FilterCondition> filter);
         public Task DownloadDeleteTemplate(List<FilterCondition> filter);
+        public Task<Response> Save(CrudOperations operation, IDictionary<string, string> fieldMapping, CancellationToken token);
 
     }
 
@@ -107,6 +108,21 @@ namespace Linovative.Frontend.Services.BulkUploads
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error downloading file");
+            }
+        }
+
+        public async Task<Response> Save(CrudOperations operation, IDictionary<string, string> fieldMapping, CancellationToken token)
+        {
+            try
+            {
+                var httpResponse = await _httpClient.PostAsJsonAsync($"{_uriPrefix}/save/{operation}", fieldMapping, token);
+                var response = await httpResponse.ToAppBoolResponse(token);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Response.Failed(Messages.GeneralErrorMessage);
             }
         }
     }

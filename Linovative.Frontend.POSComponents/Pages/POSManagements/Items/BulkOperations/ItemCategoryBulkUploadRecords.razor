@@ -36,9 +36,9 @@
             else
             {
                 <tr>
-                    <th>@($"{(Label("Column"))} 1")</th>
-                    <th>@($"{(Label("Column"))} 2")</th>
-                    <th>@($"{(Label("Column"))} 3")</th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
                 </tr>
             }
         </thead>
@@ -96,7 +96,7 @@
     {
         <LinovativeGap />
         <MudText Typo="Typo.caption">@Label("MappingCategoryFields")</MudText>
-        <CategoryFieldMappings Operations="@SelectedOperation"
+        <CategoryFieldMappings @ref="@MappingFieldUI" Operations="@SelectedOperation"
                                RequiredFields="@RequiredFields"
                                FieldMappingChanged="@((mapping) => FieldMapping = mapping)"
                                RequiredFieldMappingChanged="@((x) => RequiredFieldsHasMapped = x)"
@@ -120,6 +120,8 @@
     [Parameter] public BulkDataEntityTypes? SelectedEntityType { get; set; }
     [Parameter] public BulkActionTypes? SelectedActionTypes { get; set; }
     [Parameter] public bool ShowRecord { get; set; }
+    [Parameter] public EventCallback<Response?> SaveResponseChanged { get; set; }
+    [Parameter] public EventCallback OnSubmiting { get; set; }
 
     protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
 
@@ -136,7 +138,7 @@
     bool RequiredFieldsHasMapped = false;
     IDictionary<string, string> FieldMapping = new Dictionary<string, string>();
     bool AnyUpdatingFieldSelected => SelectedOperation is not BulkOperations.Update || FieldMapping.Any(x => x.Key != "Id");
-
+    CategoryFieldMappings? MappingFieldUI;
 
     protected override async Task OnInitializedAsync()
     {
@@ -164,7 +166,25 @@
 
     async Task Save()
     {
-        await Task.CompletedTask;
+        cts = new();
+        var type = SelectedOperation switch
+        {
+            BulkOperations.Create => CrudOperations.Create,
+            BulkOperations.Update => CrudOperations.Update,
+            BulkOperations.Delete => CrudOperations.Delete,
+            _ => CrudOperations.Update,
+        };
+        await OnSubmiting.InvokeAsync();
+        var result = await _bulkItemCategory.Save(type, FieldMapping, cts.Token);
+        if(result)
+        {
+            category = null;
+            details = new();
+            await MappingFieldUI!.Reset();
+            FieldMapping.Clear();
+        }
+        await SaveResponseChanged.InvokeAsync(result);
+        cts.Dispose();
     }
 
     public async Task LoadData()

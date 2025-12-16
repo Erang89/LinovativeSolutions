@@ -26,6 +26,13 @@
 @inject IBulkOperationItemService _bulkOperationItem;
 
 
+<MudOverlay Visible="@submitting" DarkBackground="true" Absolute="true" ZIndex="9999" Style="height: 100vh; position: fixed">
+    <div>
+        <div style="text-align: center"><MudProgressCircular Color="Color.Primary" Size="Size.Medium" Indeterminate="true" /></div>
+        <div>@Label("SubmitingMessage")</div>
+    </div>
+</MudOverlay>
+
 <LinovativePageTitle Title="@EntityPluralName" />
 <ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.BulkOperations) })" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.BulkOperation" />
@@ -141,21 +148,29 @@
 <ItemGroupBulkUploadRecords SelectedEntityType=@SelectedEntityType
                             SelectedActionTypes=@SelectedActionTypes
                             SelectedOperation=@SelectedOperation
+                            SaveResponseChanged="@OnSaveResponseChanged"
+                            OnSubmiting="@OnSubmiting"
                             @ref=@bulkGroupRecords />
 
 <ItemCategoryBulkUploadRecords SelectedEntityType=@SelectedEntityType
                                SelectedActionTypes=@SelectedActionTypes
                                SelectedOperation=@SelectedOperation
+                               SaveResponseChanged="@OnSaveResponseChanged"
+                               OnSubmiting="@OnSubmiting"
                                @ref=@bulkCategoryRecords />
 
 <ItemBulkUploadRecords SelectedEntityType=@SelectedEntityType
                        SelectedActionTypes=@SelectedActionTypes
                        SelectedOperation=@SelectedOperation
+                       SaveResponseChanged="@OnSaveResponseChanged"
+                       OnSubmiting="@OnSubmiting"
                        @ref=@bulkItemRecords />
 
 <ItemUnitBulkUploadRecords SelectedEntityType=@SelectedEntityType
                            SelectedActionTypes=@SelectedActionTypes
                            SelectedOperation=@SelectedOperation
+                           SaveResponseChanged="@OnSaveResponseChanged"
+                           OnSubmiting="@OnSubmiting"
                            @ref=@bulkItemUnitRecords />
 
 
@@ -249,6 +264,7 @@
     private CancellationTokenSource cts = new();
     AppSuccessAllert? successAllert = null;
     AppErrorAlert? formErrorAlert = null;
+    Response? SaveResponse { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -343,6 +359,7 @@
     private bool uploading = false;
     private bool downloading = false;
     private bool recordLoading = false;
+    private bool submitting = false;
     async Task Upload()
     {
         SetValue(() => uploading = true);
@@ -452,6 +469,23 @@
     private void UploadFile(IBrowserFile file)
     {
         fileToUplaod = file;
+    }
+
+    async Task OnSaveResponseChanged(Response? response)
+    {
+        submitting = false;
+        SaveResponse = response;
+        if (response!) successAllert!.ShowAlert(Label("SubmitDataSuccess"));
+        else formErrorAlert!.ShowAlert(response!);
+
+        _state.NotifyStateChanged();
+        await Task.CompletedTask;
+    }
+
+    async Task OnSubmiting()
+    {
+        submitting = true;
+        _state.NotifyStateChanged();
     }
 
 }

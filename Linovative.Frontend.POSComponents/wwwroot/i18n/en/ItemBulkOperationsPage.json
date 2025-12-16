@@ -30,6 +30,8 @@
   "UnitFields.Label": "Unit Fields",
   "UnitFieldMapping.Label": "Unit Field Mappings",
   "MappingUnitFields.Label": "Please mapping uploaded excel fields to unit fields",
+  "SubmitingMessage.Label": "Please wait until the process finish",
+  "SubmitDataSuccess.Label": "Data has been saved successfully.",
 
 
   "Button.ShowRecord.Text": "Show Record",
