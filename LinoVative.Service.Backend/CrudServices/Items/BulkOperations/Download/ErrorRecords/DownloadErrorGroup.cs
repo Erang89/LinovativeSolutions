@@ -47,7 +47,10 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperations.Download.
             var row = worksheet.Row(1);
             row.Cell(1).Value = upload.headerColum1;
             row.Cell(2).Value = upload.headerColum2;
+            row.Cell(1).CopyTo(row.Cell(3));
             row.Cell(3).Value = _lang[$"BulkUploadCommand.Errors.ColumnHeader"];
+            worksheet.Column(3).Width = 50;
+            worksheet.Column(3).Style.Font.FontColor = XLColor.Red;
 
             var rowIndex = 2;
 
@@ -57,6 +60,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperations.Download.
                 row.Cell(1).Value = data.Column1;
                 row.Cell(2).Value = data.Column2;
                 row.Cell(3).Value = data.Errors;
+
+                rowIndex++;
             }
         }
     }

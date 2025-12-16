@@ -39,6 +39,7 @@
   "Button.Upload.Text": "Upload",
   "Button.ClearRecord.Text": "Clear all uploaded record(s)",
   "Button.Save.Text": "Bulk Save Record(s)",
+  "Button.DownloadErrorLog.Text": "Download Error(s)",
 
   "Column.Id.Text": "ID",
   "Column.ItemCode.Text": "Item Code",

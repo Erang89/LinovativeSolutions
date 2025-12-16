@@ -157,7 +157,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
         }
 
         [Route("Error/Download/{type}")]
-        [HttpPost]
+        [HttpGet]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ErrorDownload([FromRoute] CrudOperations? type, CancellationToken token)

@@ -72,8 +72,8 @@
   "KeyColumnIsEmpty.Message": "{0} is required when mapping as key column",
   "CanotCoverValueAsField.Message": "'{0}' can't convert as {1}'",
   "UnExpectedKeyColumn.Message": "Invalid Key Column'",
-  "FailedToConvertAsBoolean.Message": "'{0}' can't conver to boolean'",
-  "FailedToConvertAsDecimal.Message": "'{0}' can't conver to number'",
-  "FieldsRequired.Message": "'{0}' are required'",
+  "FailedToConvertAsBoolean.Message": "'{0}' can't conver to boolean",
+  "FailedToConvertAsDecimal.Message": "'{0}' can't conver to number",
+  "FieldsRequired.Message": "'{0}' are required",
   "ValueMustGreaterOrEqualThan.Message": "'{0}' Must Greater or equal to {1}"
 }

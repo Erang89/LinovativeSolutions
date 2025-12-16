@@ -17,6 +17,7 @@ namespace Linovative.Frontend.Services.BulkUploads
         public Task DownloadUpdateTemplate(List<FilterCondition> filter);
         public Task DownloadDeleteTemplate(List<FilterCondition> filter);
         public Task<Response> Save(CrudOperations operation, IDictionary<string, string> fieldMapping, CancellationToken token);
+        public Task DownloadErrorFile(CrudOperations operation);
     }
 
     public class BulkOperationItemService : CrudServiceAbstract<BulkUploadItemDto>, IBulkOperationItemService
@@ -77,6 +78,34 @@ namespace Linovative.Frontend.Services.BulkUploads
             }
         }
 
+
+        public async Task DownloadErrorFile(CrudOperations operation)
+        {
+            try
+            {
+                var url = $"{_uriPrefix}/Error/Download/{operation}";
+
+                using var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var respText = await response.Content.ReadAsStringAsync();
+                    _logger.LogError("Download failed. Status: {StatusCode}. Response: {Response}", response.StatusCode, respText);
+                    return;
+                }
+
+                var data = await response.Content.ReadAsByteArrayAsync();
+                var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+                var finalFileName = $"ErrorItems_{operation}_{timestamp}.xlsx";
+
+                var base64 = Convert.ToBase64String(data);
+                await _js.InvokeVoidAsync("saveAsFile", finalFileName, base64);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error downloading file");
+            }
+        }
 
 
         public async Task DownloadDeleteTemplate(List<FilterCondition> filter)

@@ -44,8 +44,8 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.U
             {
                 var row = ws.Row(rowNumber);
                 row.Cell("A").Value = g.Id.ToString();
-                row.Cell("B").Value = g.GroupName?.ToString();
-                row.Cell("C").Value = g.Name?.ToString();
+                row.Cell("B").Value = g.Name?.ToString();
+                row.Cell("C").Value = g.GroupName?.ToString();
                 rowNumber++;
             }
 
