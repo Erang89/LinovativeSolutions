@@ -106,13 +106,28 @@
 
         <MudItem xs="12" sm="4" lg="4">
             <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
-            <LinovativeGap /> <div class="d-flex"><MudSwitch @bind-Value="@item.SellPriceIncludeTaxService" Label="@Label("SellPriceIncludeTaxService")" Color="Color.Info" /></div>
+            <LinovativeGap /> <div class="d-flex"><MudSwitch @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div>
             <LinovativeGap /> <div class="d-flex"><MudSwitch @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
             <LinovativeGap /> <div class="d-flex"><MudSwitch @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div>
         </MudItem>
 
 
     </MudGrid>
+
+    <LinovativeGap />
+    <MudText Typo="Typo.h6">@Label("ItemSettingsSection")</MudText>
+    <LinovativeGap />
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.HasCostumePrice)">
+            ....
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.HasSellingTaxAndService)">
+            ....
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="@Label("PurchaseSettingSection")" Disabled="@(!item.CanBePurchased)">
+            ....
+        </MudExpansionPanel>       
+    </MudExpansionPanels>
 }
 
 

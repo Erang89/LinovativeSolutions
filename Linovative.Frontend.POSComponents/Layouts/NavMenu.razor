@@ -9,10 +9,10 @@
   <MudDivider Class="my-2"/>
     <MudNavLink Icon="@Icons.Material.Outlined.Home" Href="@PageRoutes.PostManagement.IndexMaster" Match="NavLinkMatch.All">@(_loc.Global("Home"))</MudNavLink>
     <MudNavLink Icon="@Icons.Material.Filled.Dataset" Href="@PageRoutes.PostManagement.ItemMaster.IndexItems" Match="NavLinkMatch.Prefix">@_loc.PosManagement("Menu.ItemMaster")</MudNavLink>
-
+@* 
     <MudNavGroup Icon="@Icons.Material.Outlined.DocumentScanner" Title="@_loc.PosManagement("Menu.Reports")">
         
-    </MudNavGroup>
+    </MudNavGroup> *@
 
     <MudNavGroup Expanded="@(_nav.Uri.Contains(PageRoutes.PostManagement.PosSettings.IndexPosSettings, StringComparison.OrdinalIgnoreCase))" Icon="@Icons.Material.Outlined.Settings" Title="@_loc.PosManagement("Menu.PosSettings")">
         <MudNavLink Icon="@Icons.Material.Filled.ShoppingBag" Href="@PageRoutes.PostManagement.PosSettings.Outlets.IndexOutlets" Match="NavLinkMatch.Prefix">@_loc.PosManagement("Menu.Outlets")</MudNavLink>

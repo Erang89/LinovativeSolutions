@@ -1,8 +1,8 @@
 {
-  "POS.Management.Title": "POS Management",
+  "POS.Management.Title": "Master Data",
   "Menu.ItemMaster": "Item Master",
   "Menu.Reports": "Reports",
-  "Menu.PosSettings": "POS Settings",
+  "Menu.PosSettings": "Configuration",
   "Menu.Outlets": "Outlets",
   "Menu.Transactions": "Trasactions",
   "Menu.WorkingShifts": "Working Shifts",

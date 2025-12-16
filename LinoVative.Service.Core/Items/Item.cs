@@ -19,7 +19,7 @@ namespace LinoVative.Service.Core.Items
 
         public bool IsActive { get; set; } = true;
         public decimal SellPrice { get; set; }
-
+        public bool HasSellingTaxAndService { get; set; }
 
         public bool SellPriceIncludeTaxService { get; set; }
 
