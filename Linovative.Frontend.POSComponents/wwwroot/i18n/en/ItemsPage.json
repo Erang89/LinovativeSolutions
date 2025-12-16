@@ -21,6 +21,7 @@
   "PurchaseSettingSection.Label": "Purchasing Settings",
   "CustomePriceSettingSection.Label": "Custome Selling Price",
   "HasSellingTaxAndService.Label": "Has Selling Tax & Service",
+  "POSSettingSection.Label": "POS Settings",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",

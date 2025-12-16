@@ -4,6 +4,10 @@
 
   "Name.Label": "Name",
   "OutletType.Label": "Type",
+  "OutletSettingsSection.Label": "Settings",
+  "TrasactionSettings.Label": "Transactions",
+  "ItemSettings.Label": "Items",
+  "ShiftSettings.Label": "Shifts",
 
   "Name.Required.ErrorMessage": "Name is required",
   "OutletType.Required.ErrorMessage": "Type required"

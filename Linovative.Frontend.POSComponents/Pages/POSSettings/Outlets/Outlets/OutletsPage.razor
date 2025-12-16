@@ -29,7 +29,7 @@
     <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
 
     <MudGrid>
-        <MudItem xs="12" sm="6" lg="4">
+        <MudItem xs="12" sm="4" lg="4">
 
             <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
             <LinovativeGap />
@@ -50,8 +50,24 @@
                     LocalizerKey="OutletType"
                     @bind-Value="@item.OutletType" />
             </MudForm>
-        </MudItem>
+        </MudItem>       
     </MudGrid>
+
+    <LinovativeGap />
+    <MudText Typo="Typo.h6">@Label("OutletSettingsSection")</MudText>
+    <LinovativeGap />
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Text="@Label("TrasactionSettings")">
+            ....
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="@Label("ItemSettings")">
+            ....
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="@Label("ShiftSettings")">
+            ....
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+
 }
 
 
