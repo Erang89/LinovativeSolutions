@@ -1,5 +1,5 @@
-﻿using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.BlankTemplates;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.BlankTemplates.Factory;
+﻿using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.BlankTemplates;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.BlankTemplates.Factory;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;

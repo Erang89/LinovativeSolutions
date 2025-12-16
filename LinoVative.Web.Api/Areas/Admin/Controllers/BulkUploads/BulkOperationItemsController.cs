@@ -1,10 +1,10 @@
 ﻿using Linovative.Shared.Interface.Enums;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Delete;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.DeleteTemplateWithData;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Download.UpdateTemplateWithData;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Enums;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Delete;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.DeleteTemplateWithData;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.UpdateTemplateWithData;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Enums;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperations;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
