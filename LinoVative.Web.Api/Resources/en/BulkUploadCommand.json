@@ -27,6 +27,7 @@
   "Description.ColumnHeader": "Description",
   "IsActive.ColumnHeader": "Active Status",
   "Name.ColumnHeader": "Name",
+  "Errors.ColumnHeader": "Errors",
 
   "CreateItem.SheetName": "Items",
   "CreateGroup.SheetName": "Groups",
