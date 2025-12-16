@@ -5,6 +5,7 @@ using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.Delet
 using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.UpdateTemplateWithData;
 using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Enums;
 using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperations;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperations.Download.ErrorRecords;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -144,6 +145,43 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.BulkUploads
                 var c = new BulkOperationProcessCommand() { Type = bulkOperationType, FieldMapping = fieldMapping };
                 var result = await _mediator.Send(c, token);
                 return StatusCode((int)result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
+        }
+
+
+        [Route("Error/Download/{type}")]
+        [HttpGet]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ErrorDownload([FromRoute] CrudOperations? type, CancellationToken token)
+        {
+            try
+            {
+                var bulkOperationType = type switch
+                {
+                    CrudOperations.Create => BulkOperationTypes.CategoryCreate,
+                    CrudOperations.Update => BulkOperationTypes.CategoryUpdate,
+                    CrudOperations.Delete => BulkOperationTypes.CategoryDelete,
+                    _ => throw new NotImplementedException(),
+                };
+                var c = new DownloadErrorRecordCommand() { Type = bulkOperationType };
+                var result = await _mediator.Send(c, token);
+
+
+                if (!result)
+                    return StatusCode((int)result.Status, result);
+
+                var ms = (MemoryStream)result.Data!;
+                return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"ErrorCategories_{DateTime.Now.ToString("yyyyMMddHHmmss")}.xlsx");
+
             }
             catch (Exception ex)
             {

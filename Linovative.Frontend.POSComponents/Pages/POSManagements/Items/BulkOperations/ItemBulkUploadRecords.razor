@@ -76,6 +76,14 @@
                                                StartIcon="@Icons.Material.Filled.Delete"
                                                OnClick="@DeleteRecords"
                                                Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
+
+
+                                    <MudButton Disabled="@(saveResult is null || details.Count == 0 || saveResult)"
+                                               Variant="ComponentSettings.AddNewButtonVariant"
+                                               StartIcon="@Icons.Material.Filled.Download"
+                                               Class="ms-2"
+                                               OnClick="@DownloadError"
+                                               Color="Color.Warning">@ButtonText("DownloadErrorLog")</MudButton>
                                 </div>
                             </div>
 
@@ -121,7 +129,9 @@
 
 
     <LinovativeGap />
-    <MudButton Disabled="@(!RequiredFieldsHasMapped || !AnyUpdatingFieldSelected)"
+    <AppErrorAlert AutoClose="true" @ref="@formErrorAlert" />
+
+    <MudButton Disabled="@(!RequiredFieldsHasMapped || !AnyUpdatingFieldSelected || details.Count == 0)"
                Variant="ComponentSettings.AddNewButtonVariant"
                StartIcon="@Icons.Material.Filled.Save"
                OnClick="@Save"
@@ -155,6 +165,8 @@
     IDictionary<string, string> FieldMapping = new Dictionary<string, string>();
     bool AnyUpdatingFieldSelected => SelectedOperation is not BulkOperations.Update || FieldMapping.Any(x => x.Key != "Id");
     ItemFieldMappings? MappingFieldUI;
+    AppErrorAlert? formErrorAlert;
+    Response? saveResult;
 
     protected override async Task OnInitializedAsync()
     {
@@ -193,15 +205,18 @@
 
         await OnSubmiting.InvokeAsync();
         var result = await _bulkItem.Save(type, FieldMapping, cts.Token);
+        saveResult = result;
         if(result)
         {
             item = null;
             details = new();
             await MappingFieldUI!.Reset();
-            FieldMapping.Clear();
+            FieldMapping.Clear();            
         }
+        if (!result) formErrorAlert?.ShowAlert(result);
         await SaveResponseChanged.InvokeAsync(result);
         cts.Dispose();
+        _state.NotifyStateChanged();
     }
 
     public async Task LoadData()
@@ -272,4 +287,16 @@
     List<string> RequiredFields => SelectedOperation is BulkOperations.Create ?
          new List<string>() { "Name", "Unit", "Category", "SellPrice", "Code" } :
          new List<string>() { "Id" };
+
+    async Task DownloadError()
+    {
+        var crudOperation = SelectedOperation switch
+        {
+            BulkOperations.Create => CrudOperations.Create,
+            BulkOperations.Update => CrudOperations.Update,
+            BulkOperations.Delete => CrudOperations.Delete,
+            _ => throw new NotImplementedException()
+        };
+        await _bulkItem.DownloadErrorFile(crudOperation);
+    }
 }
