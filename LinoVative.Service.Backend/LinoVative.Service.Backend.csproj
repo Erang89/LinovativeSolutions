@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="CrudServices\Items\BulkUploads\BookOperationProces\Group\BulkCreateItemGroupService.cs" />
-    <Compile Remove="CrudServices\Items\BulkUploads\BookOperationProces\Group\BulkDeleteGroupService.cs" />
-    <Compile Remove="CrudServices\Items\BulkUploads\BookOperationProces\Group\BulkOperationItemGroupBase.cs" />
-    <Compile Remove="CrudServices\Items\BulkUploads\BookOperationProces\Group\BulkUpdateItemGroupFieldBase.cs" />
-    <Compile Remove="CrudServices\Items\BulkUploads\BookOperationProces\Group\BulkUpdateItemGroupService.cs" />
+    <Compile Remove="CrudServices\Items\BulkOperations\BookOperationProces\Group\BulkCreateItemGroupService.cs" />
+    <Compile Remove="CrudServices\Items\BulkOperations\BookOperationProces\Group\BulkDeleteGroupService.cs" />
+    <Compile Remove="CrudServices\Items\BulkOperations\BookOperationProces\Group\BulkOperationItemGroupBase.cs" />
+    <Compile Remove="CrudServices\Items\BulkOperations\BookOperationProces\Group\BulkUpdateItemGroupFieldBase.cs" />
+    <Compile Remove="CrudServices\Items\BulkOperations\BookOperationProces\Group\BulkUpdateItemGroupService.cs" />
   </ItemGroup>
 
   <ItemGroup>

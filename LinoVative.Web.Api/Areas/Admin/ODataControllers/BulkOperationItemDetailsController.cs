@@ -1,4 +1,4 @@
-﻿using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Queries;
+﻿using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Queries;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.BulkUploads;
 using Microsoft.AspNetCore.Mvc;
