@@ -1,6 +1,6 @@
 ﻿using Linovative.BackendTest.Bases;
 using Linovative.Shared.Interface.Enums;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Category;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperations.Category;
 using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Items;
 

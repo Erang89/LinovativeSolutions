@@ -1,8 +1,8 @@
 ﻿using DocumentFormat.OpenXml.InkML;
 using Linovative.BackendTest.Bases;
 using Linovative.Shared.Interface.Enums;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings;
-using LinoVative.Service.Backend.CrudServices.Items.BulkUploads.Mappings.Group;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperations;
+using LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperations.Group;
 using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto.ItemDtos;
