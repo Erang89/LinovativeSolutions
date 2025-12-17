@@ -10,6 +10,8 @@
             {
                 public const string IndexItems = $"{PostManagement.IndexMaster}/item-master";
                 public const string Item = $"{IndexItems}/items";
+                public const string ItemAdd = $"{IndexItems}/items/add";
+                public const string ItemUpdate = IndexItems + "/items/update/{Id}";
                 public const string Groups = $"{IndexItems}/groups";
                 public const string Categories = $"{IndexItems}/categories";
                 public const string Units = $"{IndexItems}/units";

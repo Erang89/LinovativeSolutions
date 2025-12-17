@@ -3,11 +3,11 @@
 @inject IJsonLocalizer _loc
 
 <MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Item))" Text="@items" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Groups))" Text="@groups" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Categories))" Text="@categories" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Units))" Text="@units" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.BulkOperations))" Text="@bulkOperation" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.ItemMaster.Item))" Text="@items" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.ItemMaster.Groups))" Text="@groups" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.ItemMaster.Categories))" Text="@categories" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.ItemMaster.Units))" Text="@units" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.ItemMaster.BulkOperations))" Text="@bulkOperation" />
 </MudTabs>
 
 <LinovativeGap />
@@ -30,6 +30,17 @@
     string? categories { get; set; }
     string? units { get; set; }
     string? bulkOperation { get; set; }
+
+    private bool _isInitialized = false;
+    async Task Navigate(string navigateTo)
+    {
+        if (!_isInitialized)
+        {
+            _isInitialized = true;
+            return;
+        }
+        _nav.NavigateTo(navigateTo);
+    }
 
     protected override async Task OnInitializedAsync()
     {

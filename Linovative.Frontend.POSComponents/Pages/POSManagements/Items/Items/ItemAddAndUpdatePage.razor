@@ -1,0 +1,255 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@using Linovative.Frontend.Shared.InputComponents.FilterComponents
+@using Linovative.Frontend.Shared.Extensions
+
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.ItemAdd)]
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.ItemUpdate)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IItemService _service
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+@inject IAppNavigationService _nav
+
+
+
+<LinovativePageTitle Title="@EntityPluralName" />
+<ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Item) })" />
+<ItemTabs SelectedTab="ItemTabs.Tabs.Item" />
+<CrudButtons PageMode="@(Id is null ? PageModes.Create : PageModes.Update)"
+             OnSave="Save"
+             OnCancel="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Item))"
+             IsFormSubmitting="isFormSubmitting">
+</CrudButtons>
+<LinovativeGap />
+
+<MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+
+<AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+<LinovativeGap />
+@if (loaded)
+{
+    <MudGrid>
+
+        <MudItem xs="12" sm="4" lg="4" Class="">
+
+            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+
+                <LinovativeInputText @bind-Value="@item.Name"
+                                     Id="item_name"
+                                     IsRequired="true"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="@nameof(ItemDto.Name)" />
+                <LinovativeGap />
+                <LinovativeInputText @bind-Value="@item.Code"
+                                     Id="item_code"
+                                     IsRequired="true"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="@nameof(ItemDto.Code)" />
+
+                <LinovativeGap />
+                <LinovativeInputText @bind-Value="@item.Description"
+                                     Id="item_description"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="@nameof(ItemDto.Description)" />
+
+                <LinovativeGap />
+
+            </MudForm>
+        </MudItem>
+
+
+        <MudItem xs="12" sm="4" lg="4">
+
+            <ItemUnitDropdown @bind-Value="@itemUnit"
+                              Id="item_unit"
+                              Required="true"
+                              Errors="@formResponse?.Errors"
+                              LocalizerResource="@LocalizerResource"
+                              LocalizerKey="@nameof(ItemDto.UnitId)" />
+
+
+            <LinovativeGap />
+            <ItemCategoryDropdown @bind-Value="@itemCategory"
+                                  Id="item_category"
+                                  Required="true"
+                                  Errors="@formResponse?.Errors"
+                                  LocalizerResource="@LocalizerResource"
+                                  LocalizerKey="@nameof(ItemDto.CategoryId)" />
+
+
+            <LinovativeGap />
+            <LinovativeTextBox T="decimal?"
+                               Id="item_sell_price"
+                               ValueChanged="@(x => item.SellPrice = x)"
+                               Format="N2"
+                               Value="@item.SellPrice"
+                               IsRequired="true"
+                               Errors="@formResponse?.Errors"
+                               LocalizerResource="@LocalizerResource"
+                               LocalizerKey="@nameof(ItemDto.SellPrice)"
+                               Clearable="true" />
+        </MudItem>
+
+
+        <MudItem xs="12" sm="4" lg="4">
+            <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
+            <LinovativeGap />
+            <div class="d-flex"><MudSwitch @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div>
+            <LinovativeGap />
+            <div class="d-flex"><MudSwitch @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
+            <LinovativeGap />
+            <div class="d-flex"><MudSwitch @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div>
+        </MudItem>
+
+
+    </MudGrid>
+
+
+    <LinovativeGap />
+    <MudText Typo="Typo.h6">@Label("ItemSettingsSection")</MudText>
+
+
+    <LinovativeGap />
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.HasCostumePrice)">
+            ....
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.HasSellingTaxAndService)">
+            ....
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="@Label("PurchaseSettingSection")" Disabled="@(!item.CanBePurchased)">
+            ....
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="@Label("POSSettingSection")">
+            ....
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+
+
+@code {
+
+    [Parameter] public string? Id { get; set; }
+
+    protected override string LocalizerResource => nameof(ItemsPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    private List<ItemViewDto> selectedItems { get; set; } = new();
+    private CancellationTokenSource cts { get; set; } = new();
+    private ItemDto item { get; set; } = new();
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private bool selectedAll { get; set; }
+    private List<ItemViewDto> dataSource { get; set; } = new();
+    private ItemUnitDto? itemUnit = null;
+    private ItemCategoryDto? itemCategory = null;
+    private bool showFilter;
+    private bool loaded;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        _topBarService.SetTitle(EntityPluralName);
+        if (Id is not null) await LoadData();
+        loaded = true;
+        await base.OnInitializedAsync();
+        _state.NotifyStateChanged();
+    }
+
+
+    void OnFormKeyPress()
+    {
+        formResponse = null;
+        formErrorAlert?.HideAlert();
+        _state.NotifyStateChanged();
+    }
+
+
+    async Task Reset()
+    {
+        item = new();
+
+        formResponse = null;
+        isFormSubmitting = false;
+        selectedItems = new();
+        selectedAll = false;
+        _state.NotifyStateChanged();
+    }
+
+
+    Task Save()
+    {
+        form!.Validate();
+
+        if (!isFormValid)
+            return Task.CompletedTask;
+
+        if (Id is null) return SaveNew();
+
+        return SaveUpdate();
+    }
+
+
+    async Task SaveNew()
+    {
+        isFormSubmitting = true;
+
+        item.UnitId = itemUnit!.Id;
+        item.CategoryId = itemCategory!.Id;
+        formResponse = await _service.Create(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+
+    async Task SaveUpdate()
+    {
+        isFormSubmitting = true;
+
+        item.UnitId = itemUnit!.Id;
+        item.CategoryId = itemCategory!.Id;
+        formResponse = await _service.Update(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+
+
+    async Task LoadData()
+    {
+        var itemRequest = await _service.Get(new Guid(Id!), cts.Token, $"$expand={nameof(ItemViewDto.Unit)},{nameof(ItemViewDto.Category)}");
+        var itemView = itemRequest.Data!;
+        item = itemView;
+        itemUnit = new ItemUnitDto() { Id = itemView.Unit!.Id, Name = itemView.Unit.Name };
+        itemCategory = new ItemCategoryDto() { Id = item.CategoryId!.Value, Name = itemView.Category!.Name };
+    }
+
+
+}

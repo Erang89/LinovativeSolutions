@@ -14,213 +14,97 @@
 @inject IItemService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
+@inject IAppNavigationService _nav
 
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
 <ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Item) })" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.Item" />
-<CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting">
-    @if (pageMode == PageModes.List)
-    {
-        <MudBadge Class="ms-1" Content="@(filterFalues.Count())" Origin="Origin.BottomRight" Overlap="true">
-            <MudButton Variant="Variant.Outlined" StartIcon="@(showFilter? Icons.Material.Filled.RemoveRedEye : Icons.Material.Outlined.RemoveRedEye)" OnClick="@TogleFilter">@(showFilter? @Label("HideFilter") : Label("ShowFilter"))</MudButton>
-        </MudBadge>
-    }
+<CrudButtons PageMode="PageModes.List" OnAddNew="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.ItemAdd))" 
+    OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count">
+    <MudBadge Class="ms-1" Content="@(filterFalues.Count())" Origin="Origin.BottomRight" Overlap="true">
+        <MudButton Variant="Variant.Outlined" StartIcon="@(showFilter? Icons.Material.Filled.RemoveRedEye : Icons.Material.Outlined.RemoveRedEye)" OnClick="@TogleFilter">@(showFilter? @Label("HideFilter") : Label("ShowFilter"))</MudButton>
+    </MudBadge>
 </CrudButtons>
 <LinovativeGap />
 
 
-@if (pageMode == PageModes.Create || pageMode == PageModes.Update)
-{
-    <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
-
-    <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
-    <LinovativeGap />
-
-    <MudGrid>
-        <MudItem xs="12" sm="4" lg="4" Class="">
-
-
-            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
-
-                <LinovativeInputText @bind-Value="@item.Name"
-                                     Id="item_name"
-                                     IsRequired="true"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="@nameof(ItemDto.Name)" />
-                <LinovativeGap />
-                <LinovativeInputText @bind-Value="@item.Code"
-                                     Id="item_code"
-                                     IsRequired="true"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="@nameof(ItemDto.Code)" />
-
-                <LinovativeGap />
-                <LinovativeInputText @bind-Value="@item.Description"
-                                     Id="item_description"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="@nameof(ItemDto.Description)" />
-
-                <LinovativeGap />
-
-
-
-
-            </MudForm>
-        </MudItem>
-
-        <MudItem xs="12" sm="4" lg="4">
-            <ItemUnitDropdown @bind-Value="@itemUnit"
-                              Id="item_unit"
-                              Required="true"
-                              Errors="@formResponse?.Errors"
-                              LocalizerResource="@LocalizerResource"
-                              LocalizerKey="@nameof(ItemDto.UnitId)" />
-
-
-            <LinovativeGap />
-            <ItemCategoryDropdown @bind-Value="@itemCategory"
-                                  Id="item_category"
-                                  Required="true"
-                                  Errors="@formResponse?.Errors"
-                                  LocalizerResource="@LocalizerResource"
-                                  LocalizerKey="@nameof(ItemDto.CategoryId)" />
-
-
-            <LinovativeGap />
-            <LinovativeTextBox T="decimal?"
-                               Id="item_sell_price"
-                               ValueChanged="@(x => item.SellPrice = x)"
-                               Format="N2"
-                               Value="@item.SellPrice"
-                               IsRequired="true"
-                               Errors="@formResponse?.Errors"
-                               LocalizerResource="@LocalizerResource"
-                               LocalizerKey="@nameof(ItemDto.SellPrice)"
-                               Clearable="true" />
-        </MudItem>
-
-        <MudItem xs="12" sm="4" lg="4">
-            <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
-            <LinovativeGap /> 
-            <div class="d-flex"><MudSwitch @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div>
-            <LinovativeGap /> 
-            <div class="d-flex"><MudSwitch @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
-            <LinovativeGap /> 
-            <div class="d-flex"><MudSwitch @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div>
-        </MudItem>
-
-
-    </MudGrid>
-
-    <LinovativeGap />
-    <MudText Typo="Typo.h6">@Label("ItemSettingsSection")</MudText>
-    <LinovativeGap />
-    <MudExpansionPanels MultiExpansion="true">
-        <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.HasCostumePrice)">
-            ....
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.HasSellingTaxAndService)">
-            ....
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("PurchaseSettingSection")" Disabled="@(!item.CanBePurchased)">
-            ....
-        </MudExpansionPanel>   
-        <MudExpansionPanel Text="@Label("POSSettingSection")">
-            ....
-        </MudExpansionPanel>
-    </MudExpansionPanels>
-}
-
-
 <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
 <AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
+<GlobalMessage AutoClose="true" />
 
 
-@if (pageMode == PageModes.List)
-{
-    <MudPaper class="@(showFilter ? "rounded-0 rounded-t" : "d-none")">
-        <ItemFilterComponent OnClearFilter="@ClearFilter" OnFilterButtonClick="@(() => table!.ReloadServerData())" FieldValues="@filterFalues" FieldValuesChanged="@(x => filterFalues = x)" @ref=@itemFilterComponent Label="@Label("FilterItem")">
-            <AdditionalButton>
-                <MudButton Class="ms-2" Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.Close" OnClick="@(() => showFilter = !showFilter)" Color="Color.Primary">@_loc.Global("Button.Close")</MudButton>
-            </AdditionalButton>
-        </ItemFilterComponent>
-    </MudPaper>
+<MudPaper class="@(showFilter ? "rounded-0 rounded-t" : "d-none")">
+    <ItemFilterComponent OnClearFilter="@ClearFilter" OnFilterButtonClick="@(() => table!.ReloadServerData())" FieldValues="@filterFalues" FieldValuesChanged="@(x => filterFalues = x)" @ref=@itemFilterComponent Label="@Label("FilterItem")">
+        <AdditionalButton>
+            <MudButton Class="ms-2" Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.Close" OnClick="@(() => showFilter = !showFilter)" Color="Color.Primary">@_loc.Global("Button.Close")</MudButton>
+        </AdditionalButton>
+    </ItemFilterComponent>
+</MudPaper>
 
-    <MudTable Class="@(showFilter ? "rounded-0 rounded-b" : "")" ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">@EntityPluralName</MudText>
-            <MudSpacer />
-            <MudTextField T="string"
-                          Immediate="true"
-                          Clearable="true"
-                          ValueChanged="@(s=>OnSearch(s))"
-                          Placeholder="@_loc.Global("Label.Search")" Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                          Class="mt-0"></MudTextField>
+<MudTable Class="@(showFilter ? "rounded-0 rounded-b" : "")" ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">@EntityPluralName</MudText>
+        <MudSpacer />
+        <MudTextField T="string"
+                      Immediate="true"
+                      Clearable="true"
+                      ValueChanged="@(s=>OnSearch(s))"
+                      Placeholder="@_loc.Global("Label.Search")" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0"></MudTextField>
 
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh Style="width: 30px">
-                <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
-            </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Code))" T="ItemViewDto">@_loc[$"{LocalizerResource}.Code.Label"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Name))" T="ItemViewDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Unit.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.UnitId))</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.ItemGroup.Name))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.CategoryId))</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.SellPrice))" T="ItemViewDto">@Label(nameof(ItemViewDto.SellPrice))</MudTableSortLabel></MudTh>
-            <MudTh Style="width: 60px"></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd>
-                <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context))" T="bool"></MudCheckBox>
-            </MudTd>
-            <MudTd DataLabel="Code">@context.Code</MudTd>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Unit">@context.Unit?.Name</MudTd>
-            <MudTd DataLabel="Group">@context.Category?.ItemGroup?.Name</MudTd>
-            <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
-            <MudTd DataLabel="Category">@context.SellPrice?.ToString("N2")</MudTd>
-            <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
-        </RowTemplate>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh Style="width: 30px">
+            <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
+        </MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Code))" T="ItemViewDto">@_loc[$"{LocalizerResource}.Code.Label"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Name))" T="ItemViewDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Unit.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.UnitId))</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.ItemGroup.Name))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.CategoryId))</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.SellPrice))" T="ItemViewDto">@Label(nameof(ItemViewDto.SellPrice))</MudTableSortLabel></MudTh>
+        <MudTh Style="width: 60px"></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context))" T="bool"></MudCheckBox>
+        </MudTd>
+        <MudTd DataLabel="Code">@context.Code</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Unit">@context.Unit?.Name</MudTd>
+        <MudTd DataLabel="Group">@context.Category?.ItemGroup?.Name</MudTd>
+        <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
+        <MudTd DataLabel="Category">@context.SellPrice?.ToString("N2")</MudTd>
+        <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+    </RowTemplate>
 
-        <NoRecordsContent>
-            <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>@_loc.Global("Label.Loading")</MudText>
-        </LoadingContent>
-        <PagerContent>
-            <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
-        </PagerContent>
-        <FooterContent>
-            <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
-        </FooterContent>
-    </MudTable>
+    <NoRecordsContent>
+        <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>@_loc.Global("Label.Loading")</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
+    </PagerContent>
+    <FooterContent>
+        <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
+    </FooterContent>
+</MudTable>
 
-}
+
 
 @code {
 
     protected override string LocalizerResource => nameof(ItemsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
-    private double? test { get; set; } = 20;
     private List<ItemViewDto> selectedItems { get; set; } = new();
-    private CancellationTokenSource cts = new();
-    private PageModes? pageMode { get; set; } = PageModes.List;
+    private CancellationTokenSource cts { get; set; } = new();
     private ItemDto item { get; set; } = new();
-    private bool isFormValid { get; set; }
-    private string[] formErrors { get; set; } = { };
-    private MudForm? form { get; set; }
-    private Response? formResponse { get; set; } = null;
-    private bool isFormSubmitting { get; set; }
-    private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
     private MudTable<ItemViewDto>? table;
@@ -232,6 +116,8 @@
     private bool showFilter;
     private List<DataGridFilterModel> filterFalues = new();
     private ItemFilterComponent? itemFilterComponent { get; set; }
+
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -248,29 +134,9 @@
         }
     }
 
-    void OnFormKeyPress()
-    {
-        formResponse = null;
-        formErrorAlert?.HideAlert();
-        _state.NotifyStateChanged();
-    }
-
-    private Guid? TestGuid { get; set; }
-
-    async Task TestOnBlur()
-    {
-        TestGuid = Guid.NewGuid();
-        _state.NotifyStateChanged();
-        await Task.CompletedTask;
-    }
-
     async Task Reset()
     {
         item = new();
-
-        pageMode = PageModes.List;
-        formResponse = null;
-        isFormSubmitting = false;
         selectedItems = new();
         selectedAll = false;
         await HideAllAllert();
@@ -279,59 +145,10 @@
 
     async Task HideAllAllert()
     {
-        if (form is not null) await form.ResetAsync();
         successAllert?.HideAlert();
         deleteAllert?.HideAlert();
-        formErrorAlert?.HideAlert();
     }
 
-    Task Save()
-    {
-        form!.Validate();
-
-        if (!isFormValid)
-            return Task.CompletedTask;
-
-        if (pageMode == PageModes.Create)
-            return SaveNew();
-
-        return SaveUpdate();
-    }
-
-    async Task SaveNew()
-    {
-        isFormSubmitting = true;
-
-        item.UnitId = itemUnit!.Id;
-        item.CategoryId = itemCategory!.Id;
-        formResponse = await _service.Create(item, cts.Token);
-        if (formResponse)
-        {
-            await Reset();
-            successAllert!.ShowAlert(CreatedSuccessMessage);
-            return;
-        }
-
-        isFormSubmitting = false;
-        formErrorAlert!.ShowAlert(formResponse);
-    }
-
-    async Task SaveUpdate()
-    {
-        isFormSubmitting = true;
-
-        item.UnitId = itemUnit!.Id;
-        item.CategoryId = itemCategory!.Id;
-        formResponse = await _service.Update(item, cts.Token);
-        if (formResponse)
-        {
-            await Reset();
-            successAllert!.ShowAlert(UpdateSuccessMessage);
-        }
-
-        isFormSubmitting = false;
-        formErrorAlert!.ShowAlert(formResponse);
-    }
 
     async Task Delete()
     {
@@ -355,8 +172,6 @@
         await Reset();
         table?.ReloadServerData();
         successAllert?.ShowAlert(DeleteSuccessMessage);
-
-
     }
 
     private void ClearFilter()
@@ -393,22 +208,10 @@
         return new TableData<ItemViewDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
-    async Task AddNew()
-    {
-        pageMode = PageModes.Create;
-        await HideAllAllert();
-    }
 
     async Task Update(ItemViewDto record)
     {
-        item = record;
-        pageMode = PageModes.Update;
-
-        itemUnit = new ItemUnitDto() { Id = record.Unit!.Id, Name = record.Unit.Name };
-        itemCategory = new ItemCategoryDto() { Id = record.CategoryId!.Value, Name = record.Category!.Name };
-
-        await HideAllAllert();
-        _state.NotifyStateChanged();
+        _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.ItemUpdate.Replace("{Id}", record.Id.ToString()));
     }
 
     void SelectRecord(bool selected, ItemViewDto data)
@@ -426,7 +229,6 @@
 
         selectedItems.Add(data);
         UpdateSelectedAll();
-
     }
 
     void SelectAll(bool select)
@@ -446,6 +248,7 @@
         var selectedIds = selectedItems.Select(x => x.Id);
         selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
     }
+
     bool IsSelected(ItemDto data) => selectedItems.Any(x => x.Id == data.Id);
 
 }
