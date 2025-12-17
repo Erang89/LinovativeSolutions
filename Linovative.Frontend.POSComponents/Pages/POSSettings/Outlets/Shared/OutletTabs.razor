@@ -3,9 +3,9 @@
 @inject IJsonLocalizer _loc
 
 <MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.OutletList))" Text="@_loc.PosManagement("Menu.Outlets")" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts))" Text="@_loc.PosManagement("Menu.WorkingShifts")" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.Table))" Text="@_loc.PosManagement("Menu.Tables")" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.PosSettings.Outlets.OutletList))" Text="@_loc.PosManagement("Menu.Outlets")" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts))" Text="@_loc.PosManagement("Menu.WorkingShifts")" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.PosSettings.Outlets.Table))" Text="@_loc.PosManagement("Menu.Tables")" />
 </MudTabs>
 
 <LinovativeGap />
@@ -19,6 +19,18 @@
         Outlets,
         WorkingShift,
         Tables
+    }
+
+
+    private bool _isInitialized = false;
+    async Task Navigate(string navigateTo)
+    {
+         if (!_isInitialized)
+        {
+            _isInitialized = true;
+            return;
+        }
+        _nav.NavigateTo(navigateTo);
     }
 
 

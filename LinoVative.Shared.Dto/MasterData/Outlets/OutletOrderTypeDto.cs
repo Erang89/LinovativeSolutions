@@ -1,5 +1,6 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
+using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.OrderTypes;
 
 namespace LinoVative.Shared.Dto.Outlets
@@ -26,7 +27,7 @@ namespace LinoVative.Shared.Dto.Outlets
     public class OutletOrderTypeViewDto : OutletOrderTypeDto
     {
 
-        public OutletViewDto? Outlet { get; set; }
-        public OrderTypeViewDto? OrderType { get; set; }
+        public IdWithNameDto? Outlet { get; set; }
+        public IdWithNameDto? OrderType { get; set; }
     }
 }

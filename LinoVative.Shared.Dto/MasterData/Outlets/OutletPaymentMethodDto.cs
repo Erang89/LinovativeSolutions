@@ -1,5 +1,6 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
+using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.MasterData.Payments;
 
 namespace LinoVative.Shared.Dto.Outlets
@@ -23,7 +24,7 @@ namespace LinoVative.Shared.Dto.Outlets
 
     public class OutletPaymentMethodViewDto : OutletPaymentMethodDto
     {
-        public OutletViewDto? Outlet { get; set; }
-        public PaymentMethodViewDto? PaymentMethod { get; set; }
+        public IdWithNameDto? Outlet { get; set; }
+        public IdWithNameDto? PaymentMethod { get; set; }
     }
 }

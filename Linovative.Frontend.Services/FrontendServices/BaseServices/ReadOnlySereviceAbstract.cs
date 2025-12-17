@@ -43,10 +43,9 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
             {
                 odataOption = odataOption is not null ? $"&{odataOption}" : null;
                 var url = $"oData/{_uriPrefix}?$filter=id eq ({id}){odataOption}";
-                var httpResponse = await _httpClient.GetAsync(url, token);
+                var httpResponse = await _httpClient.PostAsJsonAsync(url, new { }, token);
                 var response = await httpResponse.ToAppResponse<List<T>>(token);
-                if (response)
-                    return Response<T>.Ok((response.Data ?? new()).FirstOrDefault());
+                if (response) return Response<T>.Ok((response.Data ?? new()).FirstOrDefault());
 
                 return Response<T>.Failed(response.Title, response.Errors);
             }

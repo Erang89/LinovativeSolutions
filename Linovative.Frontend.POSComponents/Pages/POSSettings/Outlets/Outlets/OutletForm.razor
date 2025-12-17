@@ -1,0 +1,184 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
+@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Shared.Interface.Enums
+
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.OutletListAdd)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.OutletListUpdate)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IOutletService _service
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+@inject IAppNavigationService _nav
+@inject IPaymentMethodService _paymentMethodService
+@inject IGlobalMessage _globalMessage
+
+<LinovativePageTitle Title="@EntityPluralName" />
+<OutletBreadcrumb />
+<OutletTabs SelectedTab="OutletTabs.Tabs.Outlets" />
+<CrudButtons PageMode="@(Id is not null ? PageModes.Create : PageModes.Update)" OnSave="Save" OnCancel="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.OutletList))" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
+<LinovativeGap />
+
+<MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="4" lg="4">
+
+        <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+        <LinovativeGap />
+
+        <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+
+            <LinovativeInputText @bind-Value="@item.Name"
+                                 IsRequired="true"
+                                 Errors="@formResponse?.Errors"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="Name" />
+
+            <LinovativeGap />
+            <OutletTypeDropdown Required="true"
+                                Errors="@formResponse?.Errors"
+                                LocalizerResource="@LocalizerResource"
+                                LocalizerKey="OutletType"
+                                @bind-Value="@item.OutletType" />
+        </MudForm>
+    </MudItem>
+</MudGrid>
+
+<LinovativeGap />
+<MudText Typo="Typo.h6">@Label("OutletSettingsSection")</MudText>
+<LinovativeGap />
+<MudExpansionPanels MultiExpansion="true">
+    <MudExpansionPanel Text="@Label("TrasactionSettings")">
+        ....
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="@Label("ItemSettings")">
+        ....
+    </MudExpansionPanel>
+    <MudExpansionPanel Text="@Label("ShiftSettings")">
+        ....
+    </MudExpansionPanel>
+</MudExpansionPanels>
+
+
+@code {
+    [Parameter] public string? Id { get; set; }
+
+    protected override string LocalizerResource => nameof(OutletsPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    private List<OutletViewDto> selectedItems { get; set; } = new();
+    private OutletDto item { get; set; } = new();
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private MudTable<OutletViewDto>? table;
+    private bool selectedAll { get; set; }
+    private List<OutletViewDto> dataSource { get; set; } = new();
+    private CancellationTokenSource cts { get;set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _topBarService.SetTitle(EntityPluralName);
+        if (Id is not null) await LoadDetail();
+    }
+
+
+    void OnFormKeyPress()
+    {
+        formResponse = null;
+        formErrorAlert?.HideAlert();
+        _state.NotifyStateChanged();
+    }
+
+
+    async Task Reset()
+    {
+        item = new();
+
+        formResponse = null;
+        isFormSubmitting = false;
+        selectedItems = new();
+        selectedAll = false;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        formErrorAlert?.HideAlert();
+    }
+
+    Task Save()
+    {
+        form!.Validate();
+
+        if (!isFormValid)
+            return Task.CompletedTask;
+
+        if (Id is null)return SaveNew();
+
+        return SaveUpdate();
+    }
+
+    async Task SaveNew()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Create(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.OutletList);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task SaveUpdate()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Update(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.OutletList);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task LoadDetail()
+    {
+        var itemDetail = _service.Get(new Guid(Id!), cts.Token, $"$expand={nameof(OutletViewDto.PaymentMethods)}");
+        var paymentMethods = _paymentMethodService.GetAll(cts.Token);
+
+        await Task.WhenAll(itemDetail, paymentMethods);
+
+        item = itemDetail.Result!.Data!;
+
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+
+}

@@ -24,5 +24,6 @@ namespace LinoVative.Shared.Dto.Outlets
 
     public class OutletViewDto : OutletDto 
     {
+
     }
 }

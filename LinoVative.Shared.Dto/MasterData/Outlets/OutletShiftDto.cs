@@ -1,5 +1,6 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
+using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.MasterData.Shifts;
 
 namespace LinoVative.Shared.Dto.Outlets
@@ -27,7 +28,7 @@ namespace LinoVative.Shared.Dto.Outlets
 
     public class OutletShiftViewDto : OutletShiftDto
     {
-        public ShiftViewDto? Shift { get; set; }
-        public OutletViewDto? Outlet { get; set; }
+        public IdWithNameDto? Shift { get; set; }
+        public IdWithNameDto? Outlet { get; set; }
     }
 }

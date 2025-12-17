@@ -24,6 +24,8 @@
                 {
                     public const string IndexOutlets = $"{PosSettings.IndexPosSettings}/outlets";
                     public const string OutletList = $"{IndexOutlets}/lists";
+                    public const string OutletListAdd = $"{IndexOutlets}/add";
+                    public const string OutletListUpdate = IndexOutlets + "/{Id}";
                     public const string WorkingShifts = $"{IndexOutlets}/shifts";
                     public const string OutletUsers = $"{IndexOutlets}/users";
                     public const string Table = $"{IndexOutlets}/tables";

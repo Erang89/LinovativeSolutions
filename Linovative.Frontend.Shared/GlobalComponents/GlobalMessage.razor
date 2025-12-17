@@ -1,0 +1,58 @@
+﻿@inject IApplicationStateService _state;
+@inject IGlobalMessage _globalMessage;
+
+@if (_globalMessage.Message is not null)
+{
+    <MudAlert Severity="@(_globalMessage.Message? Severity.Success: Severity.Error)" ContentAlignment="HorizontalAlignment.Left" ShowCloseIcon="true" CloseIconClicked="(HideAlert)">
+        @_globalMessage.Message.Message
+    </MudAlert>
+    <LinovativeGap />
+}
+
+@code {
+
+    [Parameter]
+    public int Duration { get; set; } = 10000;
+
+    [Parameter]
+    public bool AutoClose { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+
+        if (_globalMessage.Message != null && AutoClose)
+        {
+            _ = Task.Run(async () =>
+           {
+               await Task.Delay(Duration);
+               _globalMessage.Clear();
+               _state.NotifyStateChanged();
+           });
+        }
+
+    }
+
+    public void HideAlert()
+    {
+        _globalMessage.Clear();
+        _state.NotifyStateChanged();
+    }
+
+    public void ShowAlert(string response)
+    {
+        _globalMessage.Clear();
+        _state.NotifyStateChanged();
+
+        if (!AutoClose) return;
+
+        _ = Task.Run(async () =>
+       {
+           await Task.Delay(5000);
+           _globalMessage.Clear();
+           _state.NotifyStateChanged();
+       });
+    }
+}

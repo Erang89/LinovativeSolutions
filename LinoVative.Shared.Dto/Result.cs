@@ -46,7 +46,8 @@ namespace LinoVative.Shared.Dto
             Status = HttpStatusCode.BadRequest;
         }
 
-        
+        public static Result SuccessMessage(string message) =>
+            new Result() { Message = message, Status = HttpStatusCode.OK };
 
         public static Result OK(object? data = default, string? message = default, string? title = default)
         {

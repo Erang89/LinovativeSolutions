@@ -16,112 +16,62 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 @inject IAppNavigationService _nav
+@inject IPaymentMethodService _paymentMethodService
 
 <LinovativePageTitle Title="@EntityPluralName" />
 <OutletBreadcrumb />
 <OutletTabs SelectedTab="OutletTabs.Tabs.Outlets" />
-<CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
+<CrudButtons PageMode="PageModes.List" OnAddNew="(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.OutletListAdd))" />
 <LinovativeGap />
-
-
-@if (pageMode == PageModes.Create || pageMode == PageModes.Update)
-{
-    <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
-
-    <MudGrid>
-        <MudItem xs="12" sm="4" lg="4">
-
-            <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
-            <LinovativeGap />
-
-            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
-
-                <LinovativeInputText @bind-Value="@item.Name"
-                                     IsRequired="true"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="Name" />
-
-                <LinovativeGap />
-                <OutletTypeDropdown
-                    Required="true"
-                    Errors="@formResponse?.Errors"
-                    LocalizerResource="@LocalizerResource"
-                    LocalizerKey="OutletType"
-                    @bind-Value="@item.OutletType" />
-            </MudForm>
-        </MudItem>       
-    </MudGrid>
-
-    <LinovativeGap />
-    <MudText Typo="Typo.h6">@Label("OutletSettingsSection")</MudText>
-    <LinovativeGap />
-    <MudExpansionPanels MultiExpansion="true">
-        <MudExpansionPanel Text="@Label("TrasactionSettings")">
-            ....
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("ItemSettings")">
-            ....
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("ShiftSettings")">
-            ....
-        </MudExpansionPanel>
-    </MudExpansionPanels>
-
-}
-
 
 <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
 <AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
+<GlobalMessage AutoClose="true" />
+
+<MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">@EntityPluralName</MudText>
+        <MudSpacer />
+        <MudTextField T="string"
+                        Immediate="true"
+                        ValueChanged="@(s=>OnSearch(s))"
+                        Placeholder="@_loc.Global("Label.Search")" Adornment="Adornment.Start"
+                        AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                        Class="mt-0"></MudTextField>
+    </ToolBarContent>
+
+    <HeaderContent>
+        <MudTh Style="width: 30px">
+            <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
+        </MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(OutletDto.Name))" T="ItemGroupViewDto">@Label("Name")</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(OutletDto.OutletType))" T="ItemGroupViewDto">@Label("OutletType")</MudTableSortLabel></MudTh>
+        <MudTh Style="width: 60px"></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
+        </MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Type">@_loc.Enum($"{nameof(OutletTypes)}.{context.OutletType}")</MudTd>
+        <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+    </RowTemplate>
+
+    <NoRecordsContent>
+        <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>@_loc.Global("Label.Loading")</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
+    </PagerContent>
+    <FooterContent>
+        <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
+    </FooterContent>
+</MudTable>
 
 
-
-@if (pageMode == PageModes.List)
-{
-    <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">@EntityPluralName</MudText>
-            <MudSpacer />
-            <MudTextField T="string"
-                          Immediate="true"
-                          ValueChanged="@(s=>OnSearch(s))"
-                          Placeholder="@_loc.Global("Label.Search")" Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                          Class="mt-0"></MudTextField>
-        </ToolBarContent>
-
-        <HeaderContent>
-            <MudTh Style="width: 30px">
-                <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
-            </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(OutletDto.Name))" T="ItemGroupViewDto">@Label("Name")</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(OutletDto.OutletType))" T="ItemGroupViewDto">@Label("OutletType")</MudTableSortLabel></MudTh>
-            <MudTh Style="width: 60px"></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd>
-                <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
-            </MudTd>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Type">@_loc.Enum($"{nameof(OutletTypes)}.{context.OutletType}")</MudTd>
-            <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
-        </RowTemplate>
-
-        <NoRecordsContent>
-            <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>@_loc.Global("Label.Loading")</MudText>
-        </LoadingContent>
-        <PagerContent>
-            <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
-        </PagerContent>
-        <FooterContent>
-            <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
-        </FooterContent>
-    </MudTable>
-
-}
 
 
 
@@ -132,15 +82,11 @@
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
     private List<OutletViewDto> selectedItems { get; set; } = new();
-    private CancellationTokenSource cts = new();
-    private PageModes? pageMode { get; set; } = PageModes.List;
+    private CancellationTokenSource cts { get; set; } = new();
     private OutletDto item { get; set; } = new();
-    private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
-    private MudForm? form { get; set; }
     private Response? formResponse { get; set; } = null;
     private bool isFormSubmitting { get; set; }
-    private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
     private MudTable<OutletViewDto>? table;
@@ -158,24 +104,14 @@
     void OnFormKeyPress()
     {
         formResponse = null;
-        formErrorAlert?.HideAlert();
         _state.NotifyStateChanged();
     }
 
-    private Guid? TestGuid { get; set; }
-
-    async Task TestOnBlur()
-    {
-        TestGuid = Guid.NewGuid();
-        _state.NotifyStateChanged();
-        await Task.CompletedTask;
-    }
 
     async Task Reset()
     {
         item = new();
 
-        pageMode = PageModes.List;
         formResponse = null;
         isFormSubmitting = false;
         selectedItems = new();
@@ -186,52 +122,8 @@
 
     async Task HideAllAllert()
     {
-        if (form is not null) await form.ResetAsync();
         successAllert?.HideAlert();
         deleteAllert?.HideAlert();
-        formErrorAlert?.HideAlert();
-    }
-
-    Task Save()
-    {
-        form!.Validate();
-
-        if (!isFormValid)
-            return Task.CompletedTask;
-
-        if (pageMode == PageModes.Create)
-            return SaveNew();
-
-        return SaveUpdate();
-    }
-
-    async Task SaveNew()
-    {
-        isFormSubmitting = true;
-        formResponse = await _service.Create(item, cts.Token);
-        if (formResponse)
-        {
-            await Reset();
-            successAllert!.ShowAlert(CreatedSuccessMessage);
-            return;
-        }
-
-        isFormSubmitting = false;
-        formErrorAlert!.ShowAlert(formResponse);
-    }
-
-    async Task SaveUpdate()
-    {
-        isFormSubmitting = true;
-        formResponse = await _service.Update(item, cts.Token);
-        if (formResponse)
-        {
-            await Reset();
-            successAllert!.ShowAlert(UpdateSuccessMessage);
-        }
-
-        isFormSubmitting = false;
-        formErrorAlert!.ShowAlert(formResponse);
     }
 
     async Task Delete()
@@ -288,18 +180,10 @@
         return new TableData<OutletViewDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
-    async Task AddNew()
-    {
-        pageMode = PageModes.Create;
-        await HideAllAllert();
-    }
 
     async Task Update(OutletViewDto record)
     {
-        item = record;
-        pageMode = PageModes.Update;
-        await HideAllAllert();
-        _state.NotifyStateChanged();
+        _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.OutletListUpdate.Replace("{Id}", record.Id.ToString()));
     }
 
     void SelectRecord(bool selected, OutletViewDto data)
@@ -333,6 +217,7 @@
         var selectedIds = selectedItems.Select(x => x.Id);
         selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
     }
+
     bool IsSelected(OutletViewDto data) => selectedItems.Any(x => x.Id == data.Id);
 
 }
