@@ -1,0 +1,41 @@
+﻿@typeparam T
+@inherits LinovativeInputComponentBase<T>
+
+<MudTextField Value="@Value"
+              ValueChanged="@(x => ValueChanged.InvokeAsync(x))"
+              Required="IsRequired"
+              ReadOnly="ReadOnly"
+              Label="@_label"
+              Immediate="true"
+              id="@Id"
+              @onclick="@(async () => await OnClick.InvokeAsync())"
+              T="T"
+              InputType="InputType"
+              Placeholder="@Placeholder"
+              Error="@_isError"
+              ErrorText="@_errorMessage"
+              RequiredError="@_requiredMessage"
+              Style="@Style"
+              Clearable="@Clearable"
+              Variant="@variant"
+              ClearIcon="@ClearIcon"
+              IconSize="@IconSize"
+              Adornment="@Adornment"
+              OnClearButtonClick="@OnClearButtonClick"></MudTextField>
+
+@code {
+    MudBlazor.Variant variant => Variant.ToMudBlazorVariant();
+    bool _isError => Error || _containErrors;
+    bool _containErrors => (ErrorKey is not null && Errors is not null && Errors.Count() > 0 && Errors.ContainsKey(ErrorKey));
+    string? _errorMessage => Error ? ErrorMessage : _containErrors ? string.Join(" ", getError()) : (IsRequired && string.IsNullOrEmpty(Value.ToString())) ? _requiredMessage : "";
+    string? _label => !string.IsNullOrEmpty(Label) ? Label : string.IsNullOrWhiteSpace(LocalizerKey) ? "" : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
+    string? _requiredMessage => !string.IsNullOrWhiteSpace(RequiredMessage) ? RequiredMessage : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Required.ErrorMessage"];
+
+    List<string> getError() => Errors is not null && !string.IsNullOrEmpty(ErrorKey) && Errors.ContainsKey(ErrorKey) ? Errors[ErrorKey] : new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ErrorKey = ErrorKey ?? LocalizerKey;
+        await base.OnInitializedAsync();
+    }
+}

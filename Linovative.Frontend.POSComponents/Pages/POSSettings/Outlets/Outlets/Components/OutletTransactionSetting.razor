@@ -1,0 +1,165 @@
+﻿@using LinoVative.Shared.Dto
+@using LinoVative.Shared.Dto.MasterData.Payments
+@using LinoVative.Shared.Dto.OrderTypes
+@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Frontend.POSComponents.Bases
+@using System.Threading.Tasks
+@using Linovative.Frontend.Services.Models
+
+@inherits POSManagementPageBase
+@inject IPaymentMethodService _paymentMethodService
+@inject IOrderTypeService _OrderTypeService
+@inject IBankNoteService _bankNotesService
+
+<MudGrid Spacing="20" Justify="Justify.SpaceBetween">
+
+    <MudItem xs="12" sm="5" lg="4">
+        <MudText Typo="Typo.h6">@Label("PaymentMethods")</MudText>
+        <MudSimpleTable Style="overflow-x: auto;">
+            <tbody>
+                @foreach (var p in _paymentMethods)
+                {
+                    <tr>
+
+                        <td style="min-width: 150px">
+                            <div class="d-flex"><MudSwitch @bind-Value="@p.Value.IsActive" Label="@p.Key.Name" Color="Color.Info" /></div>
+                        </td>
+
+
+                        <td style="width: 100px">
+                            <LinovativeInputGeneric T="int"
+                                                    Value="@p.Value.Sequence"
+                                                    ValueChanged="@(x => p.Value.Sequence = x)"
+                                                    IsRequired="true"
+                                                    Style="width: 150px"
+                                                    Errors="@Result?.Errors"
+                                                    LocalizerResource="@LocalizerResource"
+                                                    LocalizerKey="Sequence" />
+                        </td>
+
+
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
+        <LinovativeGap />
+        <MudText Typo="Typo.h6">@Label("BankNotes")</MudText>
+        <MudSimpleTable Style="overflow-x: auto;">
+            <tbody>
+                @foreach (var p in _bankNotes)
+                {
+                    <tr>
+
+                        <td style="min-width: 150px">
+                            <div class="d-flex"><MudSwitch @bind-Value="@p.Value.IsActive" Label="@($"{p.Key.Note}")" Color="Color.Info" /></div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
+    </MudItem>
+
+    <MudItem xs="12" sm="6" lg="7">
+        <MudText Typo="Typo.h6">@Label("OrderTypes")</MudText>
+        <MudSimpleTable Style="overflow-x: auto;">
+            <tbody>
+                @foreach (var ot in _orderTypes)
+                {
+                    <tr>
+
+                        <td style="min-width: 200px">
+                            <div class="d-flex"><MudSwitch @bind-Value="@ot.Value.IsActive" Label="@ot.Key.Name" Color="Color.Info" /></div>
+                        </td>
+
+
+                        <td style="width: 150px">
+                            <LinovativeInputGeneric T="decimal"
+                                                    Value="@ot.Value.TaxPercent"
+                                                    ValueChanged="@(x => ot.Value.TaxPercent = x)"
+                                                    IsRequired="true"
+                                                    Errors="@Result?.Errors"
+                                                    Style="width: 150px"
+                                                    LocalizerResource="@LocalizerResource"
+                                                    LocalizerKey="TaxPercent" />
+                        </td>
+
+
+
+                        <td style="width: 150px">
+                            <LinovativeInputGeneric T="decimal"
+                                                    Value="@ot.Value.ServicePercent"
+                                                    ValueChanged="@(x => ot.Value.ServicePercent = x)"
+                                                    IsRequired="true"
+                                                    Errors="@Result?.Errors"
+                                                    Style="width: 150px"
+                                                    LocalizerResource="@LocalizerResource"
+                                                    LocalizerKey="ServicePercent" />
+                        </td>
+
+
+                        <td style="width: 150px">
+                            <LinovativeInputGeneric T="int"
+                                                    Value="@ot.Value.Sequence"
+                                                    ValueChanged="@(x => ot.Value.Sequence = x)"
+                                                    IsRequired="true"
+                                                    Style="width: 150px"
+                                                    Errors="@Result?.Errors"
+                                                    LocalizerResource="@LocalizerResource"
+                                                    LocalizerKey="Sequence" />
+                        </td>
+
+
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
+    </MudItem>
+
+
+</MudGrid>
+@code {
+
+    [Parameter] public OutletDto? Outlet { get; set; }
+    [Parameter] public Response? Result { get; set; }
+
+    protected override string LocalizerResource => nameof(OutletsPage);
+
+    private List<KeyValuePair<PaymentMethodViewDto, OutletPaymentMethodDto>> _paymentMethods { get; set; } = new();
+    private List<KeyValuePair<OrderTypeViewDto, OutletOrderTypeDto>> _orderTypes { get; set; } = new();
+    private List<KeyValuePair<BankNoteDto, OutletBankNoteDto>> _bankNotes { get; set; } = new();
+    private CancellationTokenSource cancellationTokenSource { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadPaymentMethod();
+    }
+
+
+    async Task LoadPaymentMethod()
+    {
+        var paymentMethodTask = _paymentMethodService.GetAll(cancellationTokenSource.Token);
+        var orderTypeTasks = _OrderTypeService.GetAll(cancellationTokenSource.Token);
+        var bankNoteTask = _bankNotesService.GetAll(cancellationTokenSource.Token);
+
+        await Task.WhenAll(paymentMethodTask, orderTypeTasks, bankNoteTask);
+
+        _paymentMethods = (await paymentMethodTask).Data!
+        .Select(x => new KeyValuePair<PaymentMethodViewDto, OutletPaymentMethodDto>(x, Outlet?.PaymentMethods
+            .FirstOrDefault(x => x.PaymentMethodId == x.Id) ?? new() { IsActive = false })).ToList();
+
+        _orderTypes = (await orderTypeTasks).Data!
+        .Select(x => new KeyValuePair<OrderTypeViewDto, OutletOrderTypeDto>(x, Outlet?.OrderTypes
+        .FirstOrDefault(x => x.OrderTypeId == x.Id) ?? new() { IsActive = false })).ToList();
+
+        _bankNotes = (await bankNoteTask).Data!
+        .Select(x => new KeyValuePair<BankNoteDto, OutletBankNoteDto>(x, Outlet?.BankNotes
+        .FirstOrDefault(x => x.BankNoteId == x.Id) ?? new() { IsActive = false })).ToList();
+    }
+
+}

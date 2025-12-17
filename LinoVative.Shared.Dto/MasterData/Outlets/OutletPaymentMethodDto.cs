@@ -19,7 +19,7 @@ namespace LinoVative.Shared.Dto.Outlets
 
 
         public int Sequence { get; set; }
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; } = true;        
     }
 
     public class OutletPaymentMethodViewDto : OutletPaymentMethodDto

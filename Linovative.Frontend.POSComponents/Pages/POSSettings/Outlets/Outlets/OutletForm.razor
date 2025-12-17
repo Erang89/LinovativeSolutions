@@ -1,4 +1,5 @@
 ﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Outlets.Components
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
@@ -53,11 +54,12 @@
 </MudGrid>
 
 <LinovativeGap />
+<LinovativeGap />
 <MudText Typo="Typo.h6">@Label("OutletSettingsSection")</MudText>
 <LinovativeGap />
 <MudExpansionPanels MultiExpansion="true">
     <MudExpansionPanel Text="@Label("TrasactionSettings")">
-        ....
+        <OutletTransactionSetting Outlet="@item" Result="@formResponse" />
     </MudExpansionPanel>
     <MudExpansionPanel Text="@Label("ItemSettings")">
         ....
