@@ -1,4 +1,5 @@
-﻿using Linovative.Shared.Interface.Enums;
+﻿using Linovative.Shared.Interface;
+using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
 using LinoVative.Shared.Dto.ItemDtos;
 
@@ -7,7 +8,7 @@ namespace LinoVative.Shared.Dto.Outlets
 
 
     [LocalizerKey(nameof(OutletItemGroupDto))]
-    public class OutletItemGroupDto : EntityDtoBase
+    public class OutletItemGroupDto : EntityDtoBase, IHasSequence
     {
 
         [LocalizedRequired, EntityID(EntityTypes.Outlet)]

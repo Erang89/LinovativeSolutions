@@ -1,14 +1,14 @@
-﻿using Linovative.Shared.Interface.Enums;
+﻿using Linovative.Shared.Interface;
+using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
 using LinoVative.Shared.Dto.Commons;
-using LinoVative.Shared.Dto.MasterData.Payments;
 
 namespace LinoVative.Shared.Dto.Outlets
 {
 
 
     [LocalizerKey(nameof(OutletPaymentMethodDto))]
-    public class OutletPaymentMethodDto : EntityDtoBase
+    public class OutletPaymentMethodDto : EntityDtoBase, IHasSequence, IActiveFlag
     {
 
         [LocalizedRequired, EntityID(EntityTypes.Outlet)]

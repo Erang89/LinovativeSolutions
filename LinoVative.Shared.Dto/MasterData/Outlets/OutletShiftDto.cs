@@ -1,12 +1,12 @@
-﻿using Linovative.Shared.Interface.Enums;
+﻿using Linovative.Shared.Interface;
+using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
 using LinoVative.Shared.Dto.Commons;
-using LinoVative.Shared.Dto.MasterData.Shifts;
 
 namespace LinoVative.Shared.Dto.Outlets
 {
     [LocalizerKey(nameof(OutletShiftDto))]
-    public class OutletShiftDto : EntityDtoBase
+    public class OutletShiftDto : EntityDtoBase, IHasSequence
     {
 
         [LocalizedRequired, EntityID(EntityTypes.Outlet)]

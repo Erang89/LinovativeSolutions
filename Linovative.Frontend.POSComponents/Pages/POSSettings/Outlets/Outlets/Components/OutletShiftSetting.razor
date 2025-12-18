@@ -6,6 +6,7 @@
 @using Linovative.Frontend.POSComponents.Bases
 @using System.Threading.Tasks
 @using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.Extensions
 
 @inherits POSManagementPageBase
 @inject IShiftService _shiftService
@@ -107,8 +108,7 @@
         .FirstOrDefault(x => x.ShiftId == x.Id) ?? CreateNewShift(x)))
         .ToList();
 
-        SortShift(shifts.OrderBy(x => x.Value.Sequence));
-
+        shifts.ReAssignSequence();
         _shifts = shifts;
     }
 
@@ -123,41 +123,8 @@
 
     void Move(bool moveUp)
     {
-        if (selectedShift == null) return;
-
-
-        if (moveUp && selectedShift.Sequence > 1)
-        {
-            selectedShift.Sequence--;
-
-            var otherShift = _shifts.Select(x => x.Value).FirstOrDefault(x => x != selectedShift && x.Sequence == selectedShift.Sequence);
-            if (otherShift is not null)
-                otherShift.Sequence++;
-
-            _state.NotifyStateChanged();
-            return;
-        }
-
-        if (!moveUp && _shifts.Where(x => x.Value != selectedShift).Max(x => x.Value.Sequence) >= selectedShift.Sequence)
-        {
-            selectedShift.Sequence++;
-
-            var otherShift = _shifts.Select(x => x.Value).FirstOrDefault(x => x != selectedShift && x.Sequence == selectedShift.Sequence);
-            if (otherShift is not null) 
-                otherShift.Sequence--;
-
-            _state.NotifyStateChanged();
-        }
+        _shifts.SortObject(moveUp, selectedShift);
     }
 
-    void SortShift(IEnumerable<KeyValuePair<ShiftViewDto, OutletShiftDto>> shifts)
-    {
-        var seq = 1;
-        foreach (var shift in shifts.Select(x => x.Value))
-        {
-            shift.Sequence = seq;
-            seq++;
-        }
-    }
 
 }

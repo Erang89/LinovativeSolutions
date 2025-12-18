@@ -6,9 +6,21 @@
 @using Linovative.Frontend.POSComponents.Bases
 @using System.Threading.Tasks
 @using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.Extensions
 
 @inherits POSManagementPageBase
 @inject IItemCategoryService _categoryService
+
+
+<MudToolBar>
+    <MudTooltip Class="cursor-pointer" Text="@Label("Sort")">
+        <MudIconButton OnClick="@(() => { moveMode = !moveMode; selectedObject = null; })"
+                       Color="@(moveMode? Color.Primary : Color.Inherit)" Icon="@Icons.Material.Filled.SortByAlpha" Class="mr-5" />
+    </MudTooltip>
+    <MudTooltip Class="cursor-pointer" Text="@Label("MoveUp")"><MudIconButton onclick="@(() => Move(true))" Disabled="@(!moveMode || selectedObject is null)" Icon="@Icons.Material.Filled.ArrowUpward" /></MudTooltip>
+    <MudTooltip Class="cursor-pointer" Text="@Label("MoveDown")"><MudIconButton onclick="@(() => Move(false))" Disabled="@(!moveMode || selectedObject is null)" Icon="@Icons.Material.Filled.ArrowDownward" /></MudTooltip>
+</MudToolBar>
+
 
 @if (Outlet is not null)
 {
@@ -29,23 +41,32 @@
                     <tbody>
                         @foreach (var g in _groups.OrderBy(x => x.Value.Sequence))
                         {
-                            <tr>
-                                <td>
-                                    <div class="d-flex">
-                                        <div><MudSwitch @bind-Value="@g.Value.IsActive" Label="@g.Key.Name" Color="Color.Info" /></div>
-                                    </div>
-                                    @if (g.Value.IsActive)
-                                    {
-                                        <div class="ms-15">
-                                            <div class="d-flex"><MudSwitch Disabled="@(!g.Value.IsActive)" @bind-Value="@g.Value.UseAllItemCategories" Label="@Label("UseAllItemCategories")" Color="Color.Info" /></div>
-                                            @foreach(var c in GetCategories(g.Key.Id))
-                                            {
-                                                <div class="d-flex"><MudSwitch Disabled="@(g.Value.UseAllItemCategories)" @bind-Value="@c.Value.IsActive" Label="@c.Key.Name" Color="Color.Info" /></div>
-                                            }
+                            @if (!moveMode)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex">
+                                            <div><MudSwitch @bind-Value="@g.Value.IsActive" Label="@g.Key.Name" Color="Color.Info" /></div>
                                         </div>
-                                    }
-                                </td>
-                            </tr>
+                                        @if (g.Value.IsActive)
+                                        {
+                                            <div class="ms-15">
+                                                <div class="d-flex"><MudSwitch Disabled="@(!g.Value.IsActive)" @bind-Value="@g.Value.UseAllItemCategories" Label="@Label("UseAllItemCategories")" Color="Color.Info" /></div>
+                                                @foreach (var c in GetCategories(g.Key.Id))
+                                                {
+                                                    <div class="d-flex"><MudSwitch Disabled="@(g.Value.UseAllItemCategories)" @bind-Value="@c.Value.IsActive" Label="@c.Key.Name" Color="Color.Info" /></div>
+                                                }
+                                            </div>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td class="@(selectedObject == g.Value ? "mud-theme-primary" : "")"><div @onclick="@(() => { selectedObject = g.Value; })" class="full-width cursor-pointer py-4">@g.Key.Name</div></td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </MudSimpleTable>
@@ -66,7 +87,8 @@
     private List<KeyValuePair<ItemGroupDto, OutletItemGroupDto>> _groups { get; set; } = new();
     private List<KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>> _categories { get; set; } = new();
     private CancellationTokenSource cancellationTokenSource { get; set; } = new();
-
+    private bool moveMode { get; set; }
+    private object? selectedObject { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -90,11 +112,13 @@
 
         await Task.WhenAll(categoryTask);
 
-        _groups = (await categoryTask).Data!
+        var groups = (await categoryTask).Data!
         .OrderBy(x => x.ItemGroup!.Name)
         .GroupBy(x => new { Id = x.ItemGroup!.Id, Name = x.ItemGroup!.Name })
         .Select(x => new KeyValuePair<ItemGroupDto, OutletItemGroupDto>(new ItemGroupDto { Id = x.Key.Id, Name = x.Key.Name }, Outlet?.ItemGroups
         .FirstOrDefault(x => x.ItemGroupId == x.Id) ?? CreateNewGroup())).ToList();
+        groups.ReAssignSequence();
+        _groups = groups;
 
         _categories = (await categoryTask).Data!
         .Select(x => new KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>(x, Outlet?.ItemCategories
@@ -115,5 +139,7 @@
         Outlet.ItemGroups.Add(newGroup);
         return newGroup;
     }
+
+    void Move(bool isMoveUp) => _groups.SortObject(isMoveUp, selectedObject);
 
 }
