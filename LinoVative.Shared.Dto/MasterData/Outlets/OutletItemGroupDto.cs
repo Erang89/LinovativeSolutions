@@ -16,6 +16,7 @@ namespace LinoVative.Shared.Dto.Outlets
         [LocalizedRequired, EntityID(EntityTypes.ItemGroup)]
         public Guid? ItemGroupId { get; set; }
 
+        public bool UseAllItemCategories { get; set; } = true;
 
         public int Sequence { get; set; }
         public bool IsActive { get; set; } = true;       

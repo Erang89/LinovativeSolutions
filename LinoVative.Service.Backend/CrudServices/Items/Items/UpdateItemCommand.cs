@@ -1,4 +1,5 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.CrudServices.Items.Items.Helpers;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
@@ -20,6 +21,12 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
         {
         }
 
+
+        protected override async Task BeforeSaveUpdate(UpdateItemCommand request, Item entity, CancellationToken token)
+        {
+            await base.BeforeSaveUpdate(request, entity, token);
+            entity.UpdateItemNameInOtherTable(_dbContext);
+        }
 
         protected override async Task<Result> ValidateSaveUpdate(UpdateItemCommand request, CancellationToken token)
         {

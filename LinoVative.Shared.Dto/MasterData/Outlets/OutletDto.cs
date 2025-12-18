@@ -1,5 +1,6 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
+using LinoVative.Shared.Dto.MasterData.Outlets;
 
 namespace LinoVative.Shared.Dto.Outlets
 {
@@ -19,6 +20,12 @@ namespace LinoVative.Shared.Dto.Outlets
         public List<OutletBankNoteDto> BankNotes { get; set; } = new();
         public List<OutletPaymentMethodDto> PaymentMethods { get; set; } = new();
         public List<OutletOrderTypeDto> OrderTypes { get; set; } = new();
+        public List<OutletItemExceptional> OutletItemExceptionals { get; set; } = new();
+        public List<OutletItemGroupDto> ItemGroups { get; set; } = new();
+        public List<OutletItemCategoryDto> ItemCategories { get; set; } = new();
+
+        public bool UseAllItemGroup { get; set; } = true;
+
     }
 
 

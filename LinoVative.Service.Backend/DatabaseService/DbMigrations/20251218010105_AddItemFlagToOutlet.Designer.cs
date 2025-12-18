@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.DatabaseService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251218010105_AddItemFlagToOutlet")]
+    partial class AddItemFlagToOutlet
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1143,46 +1146,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.ToTable("OutletItemCategories", (string)null);
                 });
 
-            modelBuilder.Entity("LinoVative.Service.Core.Outlets.OutletItemExceptional", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedAtUtcTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("EntityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAtUtcTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("OutletId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Type")
-                        .HasColumnType("Varchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OutletId");
-
-                    b.ToTable("OutletItemExceptionals", (string)null);
-                });
-
             modelBuilder.Entity("LinoVative.Service.Core.Outlets.OutletItemGroup", b =>
                 {
                     b.Property<Guid>("Id")
@@ -2047,15 +2010,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Navigation("Outlet");
                 });
 
-            modelBuilder.Entity("LinoVative.Service.Core.Outlets.OutletItemExceptional", b =>
-                {
-                    b.HasOne("LinoVative.Service.Core.Outlets.Outlet", null)
-                        .WithMany("OutletItemExceptionals")
-                        .HasForeignKey("OutletId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("LinoVative.Service.Core.Outlets.OutletItemGroup", b =>
                 {
                     b.HasOne("LinoVative.Service.Core.Items.ItemGroup", "ItemGroup")
@@ -2232,8 +2186,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Navigation("ItemGroups");
 
                     b.Navigation("OrderTypes");
-
-                    b.Navigation("OutletItemExceptionals");
 
                     b.Navigation("PaymentMethods");
 

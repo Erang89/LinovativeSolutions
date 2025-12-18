@@ -62,10 +62,10 @@
         <OutletTransactionSetting Outlet="@item" Result="@formResponse" />
     </MudExpansionPanel>
     <MudExpansionPanel Text="@Label("ItemSettings")">
-        ....
+        <OutletItemSettings Outlet="@item" Result="@formResponse" />
     </MudExpansionPanel>
     <MudExpansionPanel Text="@Label("ShiftSettings")">
-        ....
+        <OutletShiftSetting Outlet="@item" Result="@formResponse" />
     </MudExpansionPanel>
 </MudExpansionPanels>
 

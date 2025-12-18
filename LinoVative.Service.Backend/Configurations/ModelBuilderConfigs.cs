@@ -233,6 +233,13 @@ namespace LinoVative.Service.Backend.Configurations
                 x.HasOne(x => x.Outlet).WithMany(x => x.Areas).HasForeignKey(x => x.OutletId).IsRequired();
                 x.Property(x => x.Name).IsRequired();
             });
+
+            modelBuilder.Entity<OutletItemExceptional>(x =>
+            {
+                x.ToTable("OutletItemExceptionals");
+                x.HasOne<Outlet>().WithMany(x => x.OutletItemExceptionals).HasForeignKey(x => x.OutletId).IsRequired();
+                x.Property(x => x.Type).HasColumnType("Varchar(20)");
+            });
         }
 
         static void ConfigureOrderTypeEntities(this ModelBuilder modelBuilder)

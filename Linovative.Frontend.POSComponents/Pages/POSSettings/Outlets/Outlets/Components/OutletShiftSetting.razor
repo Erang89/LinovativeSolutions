@@ -1,0 +1,119 @@
+﻿@using LinoVative.Shared.Dto
+@using LinoVative.Shared.Dto.MasterData.Payments
+@using LinoVative.Shared.Dto.MasterData.Shifts
+@using LinoVative.Shared.Dto.OrderTypes
+@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Frontend.POSComponents.Bases
+@using System.Threading.Tasks
+@using Linovative.Frontend.Services.Models
+
+@inherits POSManagementPageBase
+@inject IShiftService _shiftService
+
+<div class="d-flex gap-2 ps-5">
+    
+    <MudText Typo="Typo.caption">@Label("Sort"):</MudText>
+
+    <MudTooltip Class="cursor-pointer" Disabled="@(SelectedShift is null)" Text="@Label("MoveUp")">
+        <MudIcon Icon="@Icons.Material.Filled.ArrowUpward" Title="Favorite" />
+    </MudTooltip>
+
+    <MudTooltip Class="cursor-pointer" Disabled="@(SelectedShift is null)" Text="@Label("MoveDown")">
+        <MudIcon Icon="@Icons.Material.Filled.ArrowDownward" Title="Favorite" />
+    </MudTooltip>
+</div>
+
+<MudGrid Spacing="20" Justify="Justify.SpaceBetween">
+
+    <MudItem xs="12" md="6">
+        <MudSimpleTable Style="overflow-x: auto;">
+            <tbody>
+                @foreach (var shift in _shifts)
+                {
+                    <tr @onclick="@(() => SelectedShift = shift.Value)">
+
+                        <td style="min-width: 150px">
+                            <div class="d-flex"><MudSwitch @bind-Value="@shift.Value.IsActive" Label="@shift.Key.Name" Color="Color.Info" /></div>
+                        </td>
+
+
+                        <td style="width: 100px">
+                            <LinovativeInputGeneric Disabled="@(!shift.Value.IsActive)"
+                                                    T="int"
+                                                    Value="@shift.Value.Sequence"
+                                                    ValueChanged="@(x => shift.Value.Sequence = x)"
+                                                    IsRequired="true"
+                                                    Style="width: 150px"
+                                                    Errors="@Result?.Errors"
+                                                    LocalizerResource="@LocalizerResource"
+                                                    LocalizerKey="Sequence" />
+                        </td>
+
+
+                        <td style="width: 200px">
+                            <LinovativeTimePicker Disabled="@(!shift.Value.IsActive)"
+                                                  Value="@shift.Value.StartTime"
+                                                  ValueChanged="@(x => shift.Value.StartTime = x)"
+                                                  IsRequired="true"
+                                                  Errors="@Result?.Errors"
+                                                  LocalizerResource="@LocalizerResource"
+                                                  LocalizerKey="StartTime" />
+                        </td>
+
+                        <td style="width: 200px">
+                            <LinovativeTimePicker Disabled="@(!shift.Value.IsActive)"
+                                                  Value="@shift.Value.EndTime"
+                                                  ValueChanged="@(x => shift.Value.EndTime = x)"
+                                                  IsRequired="true"
+                                                  Errors="@Result?.Errors"
+                                                  LocalizerResource="@LocalizerResource"
+                                                  LocalizerKey="EndTime" />
+                        </td>
+
+
+                    </tr>
+                }
+            </tbody>
+        </MudSimpleTable>
+
+    </MudItem>
+
+</MudGrid>
+@code {
+
+    [Parameter] public OutletDto? Outlet { get; set; }
+    [Parameter] public Response? Result { get; set; }
+
+    protected override string LocalizerResource => nameof(OutletsPage);
+
+    private List<KeyValuePair<ShiftViewDto, OutletShiftDto>> _shifts { get; set; } = new();
+    private CancellationTokenSource cancellationTokenSource { get; set; } = new();
+    private OutletShiftDto? SelectedShift;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadPaymentMethod();
+    }
+
+
+    async Task LoadPaymentMethod()
+    {
+        var shiftTask = _shiftService.GetAll(cancellationTokenSource.Token);
+
+        await Task.WhenAll(shiftTask);
+
+        _shifts = (await shiftTask).Data!
+        .Select(x => new KeyValuePair<ShiftViewDto, OutletShiftDto>(x, Outlet?.Shifts
+        .FirstOrDefault(x => x.ShiftId == x.Id) ?? CreateNewShift(x))).ToList();
+    }
+
+
+    OutletShiftDto CreateNewShift(ShiftViewDto shift)
+    {
+        var newShift = new OutletShiftDto() { IsActive = false, StartTime = shift.StartTime, EndTime = shift.EndTime };
+        Outlet!.Shifts.Add(newShift);
+        return newShift;
+    }
+
+}

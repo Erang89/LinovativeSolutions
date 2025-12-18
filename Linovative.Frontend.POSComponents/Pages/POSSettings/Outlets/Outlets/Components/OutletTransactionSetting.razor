@@ -1,5 +1,6 @@
 ﻿@using LinoVative.Shared.Dto
 @using LinoVative.Shared.Dto.MasterData.Payments
+@using LinoVative.Shared.Dto.MasterData.Shifts
 @using LinoVative.Shared.Dto.OrderTypes
 @using LinoVative.Shared.Dto.Outlets
 @using Linovative.Frontend.POSComponents.Bases
@@ -10,6 +11,7 @@
 @inject IPaymentMethodService _paymentMethodService
 @inject IOrderTypeService _OrderTypeService
 @inject IBankNoteService _bankNotesService
+@inject IShiftService _shiftService
 
 <MudGrid Spacing="20" Justify="Justify.SpaceBetween">
 
@@ -27,7 +29,7 @@
 
 
                         <td style="width: 100px">
-                            <LinovativeInputGeneric T="int"
+                            <LinovativeInputGeneric Disabled="@(!p.Value.IsActive)" T="int"
                                                     Value="@p.Value.Sequence"
                                                     ValueChanged="@(x => p.Value.Sequence = x)"
                                                     IsRequired="true"
@@ -76,7 +78,8 @@
 
 
                         <td style="width: 150px">
-                            <LinovativeInputGeneric T="decimal"
+                            <LinovativeInputGeneric Disabled="@(!ot.Value.IsActive)"
+                                                    T="decimal"
                                                     Value="@ot.Value.TaxPercent"
                                                     ValueChanged="@(x => ot.Value.TaxPercent = x)"
                                                     IsRequired="true"
@@ -90,6 +93,7 @@
 
                         <td style="width: 150px">
                             <LinovativeInputGeneric T="decimal"
+                                                    Disabled="@(!ot.Value.IsActive)"
                                                     Value="@ot.Value.ServicePercent"
                                                     ValueChanged="@(x => ot.Value.ServicePercent = x)"
                                                     IsRequired="true"
@@ -102,6 +106,7 @@
 
                         <td style="width: 150px">
                             <LinovativeInputGeneric T="int"
+                                                    Disabled="@(!ot.Value.IsActive)"
                                                     Value="@ot.Value.Sequence"
                                                     ValueChanged="@(x => ot.Value.Sequence = x)"
                                                     IsRequired="true"
@@ -131,6 +136,7 @@
     private List<KeyValuePair<PaymentMethodViewDto, OutletPaymentMethodDto>> _paymentMethods { get; set; } = new();
     private List<KeyValuePair<OrderTypeViewDto, OutletOrderTypeDto>> _orderTypes { get; set; } = new();
     private List<KeyValuePair<BankNoteDto, OutletBankNoteDto>> _bankNotes { get; set; } = new();
+    private List<KeyValuePair<ShiftViewDto, OutletShiftDto>> _shift { get; set; } = new();
     private CancellationTokenSource cancellationTokenSource { get; set; } = new();
 
 
@@ -146,20 +152,47 @@
         var paymentMethodTask = _paymentMethodService.GetAll(cancellationTokenSource.Token);
         var orderTypeTasks = _OrderTypeService.GetAll(cancellationTokenSource.Token);
         var bankNoteTask = _bankNotesService.GetAll(cancellationTokenSource.Token);
+        var shiftTask = _shiftService.GetAll(cancellationTokenSource.Token);
 
-        await Task.WhenAll(paymentMethodTask, orderTypeTasks, bankNoteTask);
+        await Task.WhenAll(paymentMethodTask, orderTypeTasks, bankNoteTask, shiftTask);
 
         _paymentMethods = (await paymentMethodTask).Data!
         .Select(x => new KeyValuePair<PaymentMethodViewDto, OutletPaymentMethodDto>(x, Outlet?.PaymentMethods
-            .FirstOrDefault(x => x.PaymentMethodId == x.Id) ?? new() { IsActive = false })).ToList();
+            .FirstOrDefault(x => x.PaymentMethodId == x.Id) ?? CreateNewPaymentMethod())).ToList();
 
         _orderTypes = (await orderTypeTasks).Data!
         .Select(x => new KeyValuePair<OrderTypeViewDto, OutletOrderTypeDto>(x, Outlet?.OrderTypes
-        .FirstOrDefault(x => x.OrderTypeId == x.Id) ?? new() { IsActive = false })).ToList();
+        .FirstOrDefault(x => x.OrderTypeId == x.Id) ?? CreateNewOrderType())).ToList();
 
         _bankNotes = (await bankNoteTask).Data!
         .Select(x => new KeyValuePair<BankNoteDto, OutletBankNoteDto>(x, Outlet?.BankNotes
         .FirstOrDefault(x => x.BankNoteId == x.Id) ?? new() { IsActive = false })).ToList();
+
+        _shift = (await shiftTask).Data!
+        .Select(x => new KeyValuePair<ShiftViewDto, OutletShiftDto>(x, Outlet?.Shifts
+        .FirstOrDefault(x => x.ShiftId == x.Id) ?? CreateNewShift())).ToList();
+    }
+
+
+    OutletPaymentMethodDto CreateNewPaymentMethod()
+    {
+        var newPaymentMethod = new OutletPaymentMethodDto() { IsActive = true };
+        Outlet.PaymentMethods.Add(newPaymentMethod);
+        return newPaymentMethod;
+    }
+
+    OutletOrderTypeDto CreateNewOrderType()
+    {
+        var newOrderType = new OutletOrderTypeDto() { IsActive = true };
+        Outlet.OrderTypes.Add(newOrderType);
+        return newOrderType;
+    }
+
+    OutletShiftDto CreateNewShift()
+    {
+        var newShift = new OutletShiftDto() { IsActive = true };
+        Outlet.Shifts.Add(newShift);
+        return newShift;
     }
 
 }

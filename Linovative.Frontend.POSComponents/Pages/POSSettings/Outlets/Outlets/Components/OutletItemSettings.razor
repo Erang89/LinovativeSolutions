@@ -1,0 +1,119 @@
+﻿@using LinoVative.Shared.Dto
+@using LinoVative.Shared.Dto.MasterData.Payments
+@using LinoVative.Shared.Dto.MasterData.Shifts
+@using LinoVative.Shared.Dto.OrderTypes
+@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Frontend.POSComponents.Bases
+@using System.Threading.Tasks
+@using Linovative.Frontend.Services.Models
+
+@inherits POSManagementPageBase
+@inject IItemCategoryService _categoryService
+
+@if (Outlet is not null)
+{
+    <MudGrid Spacing="20" Justify="Justify.SpaceBetween">
+
+        <MudItem xs="12">
+            <div class="d-flex">
+                <MudSwitch @bind-Value="@Outlet.UseAllItemGroup" Label="@Label("UseAllItemGroup")" Color="Color.Info" />
+            </div>
+
+        </MudItem>
+
+
+        @if (!Outlet.UseAllItemGroup)
+        {
+            <MudItem xs="12" md="6" Class="pt-4">
+                <MudSimpleTable Style="overflow-x: auto; max-width: 600px">
+                    <tbody>
+                        @foreach (var g in _groups.OrderBy(x => x.Value.Sequence))
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex">
+                                        <div><MudSwitch @bind-Value="@g.Value.IsActive" Label="@g.Key.Name" Color="Color.Info" /></div>
+                                    </div>
+                                    @if (g.Value.IsActive)
+                                    {
+                                        <div class="ms-15">
+                                            <div class="d-flex"><MudSwitch Disabled="@(!g.Value.IsActive)" @bind-Value="@g.Value.UseAllItemCategories" Label="@Label("UseAllItemCategories")" Color="Color.Info" /></div>
+                                            @foreach(var c in GetCategories(g.Key.Id))
+                                            {
+                                                <div class="d-flex"><MudSwitch Disabled="@(g.Value.UseAllItemCategories)" @bind-Value="@c.Value.IsActive" Label="@c.Key.Name" Color="Color.Info" /></div>
+                                            }
+                                        </div>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </MudItem>
+        }
+
+
+    </MudGrid>
+}
+
+@code {
+
+    [Parameter] public OutletDto? Outlet { get; set; }
+    [Parameter] public Response? Result { get; set; }
+
+    protected override string LocalizerResource => nameof(OutletsPage);
+
+    private List<KeyValuePair<ItemGroupDto, OutletItemGroupDto>> _groups { get; set; } = new();
+    private List<KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>> _categories { get; set; } = new();
+    private CancellationTokenSource cancellationTokenSource { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await LoadData();
+    }
+
+    IEnumerable<KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>> GetCategories(Guid groupId)
+    {
+        return _categories.Where(x => x.Key.GroupId == groupId);
+    }
+
+    async Task LoadData()
+    {
+        var oDataFilter = new ODataFilter()
+        {
+            Options = $"$expand={nameof(ItemCategoryViewDto.ItemGroup)}"
+        };
+
+        var categoryTask = _categoryService.GetAll(oDataFilter, cancellationTokenSource.Token);
+
+        await Task.WhenAll(categoryTask);
+
+        _groups = (await categoryTask).Data!
+        .OrderBy(x => x.ItemGroup!.Name)
+        .GroupBy(x => new { Id = x.ItemGroup!.Id, Name = x.ItemGroup!.Name })
+        .Select(x => new KeyValuePair<ItemGroupDto, OutletItemGroupDto>(new ItemGroupDto { Id = x.Key.Id, Name = x.Key.Name }, Outlet?.ItemGroups
+        .FirstOrDefault(x => x.ItemGroupId == x.Id) ?? CreateNewGroup())).ToList();
+
+        _categories = (await categoryTask).Data!
+        .Select(x => new KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>(x, Outlet?.ItemCategories
+        .FirstOrDefault(x => x.ItemCategoryId == x.Id) ?? CreateNewCategory())).ToList();
+
+    }
+
+    OutletItemCategoryDto CreateNewCategory()
+    {
+        var newCategory = new OutletItemCategoryDto() { OutletId = Outlet!.Id, IsActive = true };
+        Outlet.ItemCategories.Add(newCategory);
+        return newCategory;
+    }
+
+    OutletItemGroupDto CreateNewGroup()
+    {
+        var newGroup = new OutletItemGroupDto() { OutletId = Outlet!.Id, IsActive = true, UseAllItemCategories = true };
+        Outlet.ItemGroups.Add(newGroup);
+        return newGroup;
+    }
+
+}

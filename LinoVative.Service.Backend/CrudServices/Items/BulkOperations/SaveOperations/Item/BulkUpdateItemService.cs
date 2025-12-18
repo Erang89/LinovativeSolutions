@@ -1,5 +1,6 @@
 ﻿using Linovative.Shared.Interface;
 using Linovative.Shared.Interface.Enums;
+using LinoVative.Service.Backend.CrudServices.Items.Items.Helpers;
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.BulkUploads;
@@ -111,6 +112,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
         {
             var (cell, converter) = GetGetterAndConverter(Keys.Name);
             item.Name = (string?)converter(cell(detail));
+            item.UpdateItemNameInOtherTable(_dbContext);
         }
     }
 }

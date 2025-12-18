@@ -10,8 +10,10 @@ namespace LinoVative.Service.Core.Outlets
         public decimal DefaultTaxPercent { get; set; }
         public decimal DefaultServicePercent { get; set; }
 
+        public bool UseAllItemGroup { get; set; } = true;
         public List<OutletItemGroup> ItemGroups { get; set; } = new();
         public List<OutletItemCategory> ItemCategories { get; set; } = new();
+        public List<OutletItemExceptional> OutletItemExceptionals { get; set; } = new();
         public List<OutletTable> Tables { get; set; } = new();
         public List<OutletUser> Users { get; set; } = new();
         public List<OutletArea> Areas { get; set; } = new();

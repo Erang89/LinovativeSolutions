@@ -8,6 +8,7 @@ namespace LinoVative.Service.Core.Outlets
     {
         public Guid? OutletId { get; set; }
         public Guid? ItemGroupId { get; set; }
+        public bool UseAllItemCategories { get; set; } = true;
         public int Sequence { get; set; }
         public bool IsActive { get; set; } = true;
         public Outlet? Outlet { get; set; }

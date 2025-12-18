@@ -62,6 +62,7 @@ namespace LinoVative.Service.Backend.Interfaces
         public DbSet<OutletShift> OutletShifts{ get; set; }
         public DbSet<OutletTable> OutletTables{ get; set; }
         public DbSet<OutletUser> OutletUsers{ get; set; }
+        public DbSet<OutletItemExceptional> OutletItemExceptionals { get; set; }
 
 
         // DbSet Payments
