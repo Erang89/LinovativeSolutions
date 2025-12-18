@@ -9,69 +9,64 @@
 
 @inherits POSManagementPageBase
 @inject IShiftService _shiftService
+@inject IApplicationStateService _state
 
-<div class="d-flex gap-2 ps-5">
-    
-    <MudText Typo="Typo.caption">@Label("Sort"):</MudText>
-
-    <MudTooltip Class="cursor-pointer" Disabled="@(SelectedShift is null)" Text="@Label("MoveUp")">
-        <MudIcon Icon="@Icons.Material.Filled.ArrowUpward" Title="Favorite" />
+<MudToolBar>
+    <MudTooltip Class="cursor-pointer" Text="@Label("Sort")">
+        <MudIconButton OnClick="@(() => { moveMode = !moveMode; selectedShift = null; })"
+                       Color="@(moveMode? Color.Primary : Color.Inherit)" Icon="@Icons.Material.Filled.SortByAlpha" Class="mr-5" />
     </MudTooltip>
+    <MudTooltip Class="cursor-pointer" Text="@Label("MoveUp")"><MudIconButton onclick="@(() => Move(true))" Disabled="@(!moveMode || selectedShift is null)" Icon="@Icons.Material.Filled.ArrowUpward" /></MudTooltip>
+    <MudTooltip Class="cursor-pointer" Text="@Label("MoveDown")"><MudIconButton onclick="@(() => Move(false))" Disabled="@(!moveMode || selectedShift is null)" Icon="@Icons.Material.Filled.ArrowDownward" /></MudTooltip>
+</MudToolBar>
 
-    <MudTooltip Class="cursor-pointer" Disabled="@(SelectedShift is null)" Text="@Label("MoveDown")">
-        <MudIcon Icon="@Icons.Material.Filled.ArrowDownward" Title="Favorite" />
-    </MudTooltip>
-</div>
 
 <MudGrid Spacing="20" Justify="Justify.SpaceBetween">
 
     <MudItem xs="12" md="6">
+
         <MudSimpleTable Style="overflow-x: auto;">
             <tbody>
-                @foreach (var shift in _shifts)
+                @foreach (var shift in _shifts.OrderBy(x => x.Value.Sequence))
                 {
-                    <tr @onclick="@(() => SelectedShift = shift.Value)">
-
-                        <td style="min-width: 150px">
-                            <div class="d-flex"><MudSwitch @bind-Value="@shift.Value.IsActive" Label="@shift.Key.Name" Color="Color.Info" /></div>
-                        </td>
-
-
-                        <td style="width: 100px">
-                            <LinovativeInputGeneric Disabled="@(!shift.Value.IsActive)"
-                                                    T="int"
-                                                    Value="@shift.Value.Sequence"
-                                                    ValueChanged="@(x => shift.Value.Sequence = x)"
-                                                    IsRequired="true"
-                                                    Style="width: 150px"
-                                                    Errors="@Result?.Errors"
-                                                    LocalizerResource="@LocalizerResource"
-                                                    LocalizerKey="Sequence" />
-                        </td>
+                    @if (!moveMode)
+                    {
+                        <tr>
+                            <td style="min-width: 150px">
+                                <div class="d-flex"><MudSwitch @bind-Value="@shift.Value.IsActive" Label="@shift.Key.Name" Color="Color.Info" /></div>
+                            </td>
 
 
-                        <td style="width: 200px">
-                            <LinovativeTimePicker Disabled="@(!shift.Value.IsActive)"
-                                                  Value="@shift.Value.StartTime"
-                                                  ValueChanged="@(x => shift.Value.StartTime = x)"
-                                                  IsRequired="true"
-                                                  Errors="@Result?.Errors"
-                                                  LocalizerResource="@LocalizerResource"
-                                                  LocalizerKey="StartTime" />
-                        </td>
+                            <td style="width: 200px">
+                                <LinovativeTimePicker Disabled="@(!shift.Value.IsActive)"
+                                                      Value="@shift.Value.StartTime"
+                                                      ValueChanged="@(x => shift.Value.StartTime = x)"
+                                                      IsRequired="true"
+                                                      Errors="@Result?.Errors"
+                                                      LocalizerResource="@LocalizerResource"
+                                                      LocalizerKey="StartTime" />
+                            </td>
 
-                        <td style="width: 200px">
-                            <LinovativeTimePicker Disabled="@(!shift.Value.IsActive)"
-                                                  Value="@shift.Value.EndTime"
-                                                  ValueChanged="@(x => shift.Value.EndTime = x)"
-                                                  IsRequired="true"
-                                                  Errors="@Result?.Errors"
-                                                  LocalizerResource="@LocalizerResource"
-                                                  LocalizerKey="EndTime" />
-                        </td>
+                            <td style="width: 200px">
+                                <LinovativeTimePicker Disabled="@(!shift.Value.IsActive)"
+                                                      Value="@shift.Value.EndTime"
+                                                      ValueChanged="@(x => shift.Value.EndTime = x)"
+                                                      IsRequired="true"
+                                                      Errors="@Result?.Errors"
+                                                      LocalizerResource="@LocalizerResource"
+                                                      LocalizerKey="EndTime" />
+                            </td>
 
-
-                    </tr>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="@(selectedShift == shift.Value ? "mud-theme-primary" : "")"><div @onclick="@(() => { selectedShift = shift.Value; })" class="full-width cursor-pointer py-4">@shift.Key.Name @shift.Value.Sequence</div></td>
+                            <td class="@(selectedShift == shift.Value ? "mud-theme-primary" : "")"><div @onclick="@(() => { selectedShift = shift.Value; })" class="full-width cursor-pointer py-4">@shift.Value.StartTime</div></td>
+                            <td class="@(selectedShift == shift.Value ? "mud-theme-primary" : "")"><div @onclick="@(() => { selectedShift = shift.Value; })" class="full-width cursor-pointer py-4">@shift.Value.EndTime</div></td>
+                        </tr>
+                    }
                 }
             </tbody>
         </MudSimpleTable>
@@ -88,7 +83,8 @@
 
     private List<KeyValuePair<ShiftViewDto, OutletShiftDto>> _shifts { get; set; } = new();
     private CancellationTokenSource cancellationTokenSource { get; set; } = new();
-    private OutletShiftDto? SelectedShift;
+    private OutletShiftDto? selectedShift;
+    private bool moveMode;
 
     protected override async Task OnInitializedAsync()
     {
@@ -97,23 +93,71 @@
     }
 
 
+
+    int lastSequence = 0;
     async Task LoadPaymentMethod()
     {
+        lastSequence = Outlet?.Shifts.Count == 0? 0 : Outlet!.Shifts.Max(x => x.Sequence);
         var shiftTask = _shiftService.GetAll(cancellationTokenSource.Token);
 
         await Task.WhenAll(shiftTask);
 
-        _shifts = (await shiftTask).Data!
+        var shifts  = (await shiftTask).Data!
         .Select(x => new KeyValuePair<ShiftViewDto, OutletShiftDto>(x, Outlet?.Shifts
-        .FirstOrDefault(x => x.ShiftId == x.Id) ?? CreateNewShift(x))).ToList();
+        .FirstOrDefault(x => x.ShiftId == x.Id) ?? CreateNewShift(x)))
+        .ToList();
+
+        SortShift(shifts.OrderBy(x => x.Value.Sequence));
+
+        _shifts = shifts;
     }
 
 
     OutletShiftDto CreateNewShift(ShiftViewDto shift)
     {
-        var newShift = new OutletShiftDto() { IsActive = false, StartTime = shift.StartTime, EndTime = shift.EndTime };
+        lastSequence++;
+        var newShift = new OutletShiftDto() { IsActive = false, StartTime = shift.StartTime, EndTime = shift.EndTime, Sequence = lastSequence };
         Outlet!.Shifts.Add(newShift);
         return newShift;
+    }
+
+    void Move(bool moveUp)
+    {
+        if (selectedShift == null) return;
+
+
+        if (moveUp && selectedShift.Sequence > 1)
+        {
+            selectedShift.Sequence--;
+
+            var otherShift = _shifts.Select(x => x.Value).FirstOrDefault(x => x != selectedShift && x.Sequence == selectedShift.Sequence);
+            if (otherShift is not null)
+                otherShift.Sequence++;
+
+            _state.NotifyStateChanged();
+            return;
+        }
+
+        if (!moveUp && _shifts.Where(x => x.Value != selectedShift).Max(x => x.Value.Sequence) >= selectedShift.Sequence)
+        {
+            selectedShift.Sequence++;
+
+            var otherShift = _shifts.Select(x => x.Value).FirstOrDefault(x => x != selectedShift && x.Sequence == selectedShift.Sequence);
+            if (otherShift is not null) 
+                otherShift.Sequence--;
+
+            _state.NotifyStateChanged();
+        }
+    }
+
+    void SortShift(IEnumerable<KeyValuePair<ShiftViewDto, OutletShiftDto>> shifts)
+    {
+        var seq = 1;
+        foreach (var shift in shifts.Select(x => x.Value))
+        {
+            shift.Sequence = seq;
+            seq++;
+        }
     }
 
 }
