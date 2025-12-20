@@ -28,13 +28,13 @@
 <LinovativeGap />
 
 <MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="4" lg="4">
+        <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+        <LinovativeGap />
 
-    <MudGrid>
-        <MudItem xs="12" sm="4" lg="4">
-
-            <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
-            <LinovativeGap />
-
+        @if (loaded)
+        {            
             <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
 
                 <LinovativeInputText @bind-Value="@item.Name"
@@ -50,13 +50,22 @@
                                     LocalizerKey="OutletType"
                                     @bind-Value="@item.OutletType" />
             </MudForm>
-        </MudItem>
-    </MudGrid>
+        }
+        else
+        {
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+        }
+    </MudItem>
+</MudGrid>
 
-    <LinovativeGap />
-    <LinovativeGap />
-    <MudText Typo="Typo.h6">@Label("OutletSettingsSection")</MudText>
-    <LinovativeGap />
+<LinovativeGap />
+<LinovativeGap />
+<MudText Typo="Typo.h6">@Label("OutletSettingsSection")</MudText>
+<LinovativeGap />
+
+@if (loaded)
+{
     <MudExpansionPanels MultiExpansion="true">
         <MudExpansionPanel Text="@Label("TrasactionSettings")">
             <OutletTransactionSetting Outlet="@item" Result="@formResponse" />
@@ -68,6 +77,13 @@
             <OutletShiftSetting Outlet="@item" Result="@formResponse" />
         </MudExpansionPanel>
     </MudExpansionPanels>
+}
+else
+{
+    <MudSkeleton Width="100%" Height="56px;" Style="margin-bottom: 1px; transform: scale(1, 1)" />
+    <MudSkeleton Width="100%" Height="56px;" Style="margin-bottom: 1px; transform: scale(1, 1)" />
+    <MudSkeleton Width="100%" Height="56px;" Style="margin-bottom: 1px; transform: scale(1, 1)" />
+}
 
 
 @code {
@@ -93,12 +109,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _topBarService.SetTitle(EntityPluralName);
-        if (Id is not null) await LoadDetail();
+        if (Id is not null) 
+            await LoadDetail();
         else item = new();
+
         loaded = true;
-        await base.OnInitializedAsync();
         _state.NotifyStateChanged();
     }
 
@@ -186,13 +204,8 @@
             nameof(OutletDto.OutletItemExceptionals),
         };
         var itemDetail = _service.Get(new Guid(Id!), cts.Token, $"$expand={string.Join(",", expandObjects)}");
-        var paymentMethods = _paymentMethodService.GetAll(cts.Token);
-
-        await Task.WhenAll(itemDetail, paymentMethods);
-
-        item = itemDetail.Result!.Data!;
+        item = (await itemDetail).Data!;
         await HideAllAllert();
-        _state.NotifyStateChanged();
     }
 
 

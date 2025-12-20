@@ -1,31 +1,44 @@
-﻿using Newtonsoft.Json;
+﻿
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Xml;
 
 namespace Linovative.Frontend.Services.Converter
 {
     public class Iso8601TimeSpanConverter : JsonConverter<TimeSpan?>
     {
-        public override void WriteJson(JsonWriter writer, TimeSpan? value, JsonSerializer serializer)
+        public override TimeSpan? Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options)
+        {
+            if (reader.TokenType == JsonTokenType.Null)
+                return null;
+
+            if (reader.TokenType != JsonTokenType.String)
+                throw new JsonException($"Unexpected token parsing TimeSpan. Token: {reader.TokenType}");
+
+            var value = reader.GetString();
+
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
+            return XmlConvert.ToTimeSpan(value); // e.g. "PT3H"
+        }
+
+        public override void Write(
+            Utf8JsonWriter writer,
+            TimeSpan? value,
+            JsonSerializerOptions options)
         {
             if (value.HasValue)
             {
-                writer.WriteValue(XmlConvert.ToString(value.Value)); // Write as ISO 8601 string
+                writer.WriteStringValue(XmlConvert.ToString(value.Value)); // ISO 8601
             }
             else
             {
-                writer.WriteNull();
+                writer.WriteNullValue();
             }
-        }
-
-        public override TimeSpan? ReadJson(JsonReader reader, Type objectType, TimeSpan? existingValue, bool hasExistingValue, JsonSerializer serializer)
-        {
-            if (reader.TokenType == JsonToken.Null)
-            {
-                return null;
-            }
-
-            var isoDuration = reader.Value.ToString();
-            return XmlConvert.ToTimeSpan(isoDuration); // Convert ISO 8601 string to TimeSpan
         }
     }
 }

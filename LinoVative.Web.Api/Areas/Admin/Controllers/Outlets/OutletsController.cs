@@ -3,7 +3,7 @@ using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
-using LinoVative.Service.Backend.CrudServices.Items.Items;
+using LinoVative.Shared.Dto.Outlets;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Outlets
 {
@@ -11,6 +11,27 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Outlets
     {
         public OutletsController(IMediator mediator, ILogger<OutletsController> logger) : base(mediator, logger)
         {
+        }
+
+        [Route("{id}")]
+        [HttpGet]
+        [ProducesResponseType(typeof(APIListResponse<OutletDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(Guid id, CancellationToken token)
+        {
+            try
+            {
+                var c = new GetOutletForUpdateCommand() { Id = id };
+                var result = await _mediator.Send(c, token);
+                return StatusCode((int)result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
         }
 
         [Route(CREATE)]
@@ -32,6 +53,8 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Outlets
                 return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
             }
         }
+
+        
 
 
         [Route(UPDATE)]

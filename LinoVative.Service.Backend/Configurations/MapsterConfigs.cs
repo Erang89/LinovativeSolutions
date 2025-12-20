@@ -87,7 +87,7 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<OutletAreaCreateDto, OutletArea>()
                 .Ignore(x => x.Tables);
             config.NewConfig<OutletArea, OutletAreaDto>();
-            config.NewConfig<OutletBankNote, OutletBankNoteDto>();
+            config.NewConfig<OutletBankNote, OutletBankNoteDto>().Ignore(x => x.BankNote!);
             config.NewConfig<OutletItemCategory, OutletItemCategoryViewDto>();
             config.NewConfig<OutletItemGroup, OutletItemGroupViewDto>();
             config.NewConfig<OutletOrderType, OutletOrderTypeViewDto>();

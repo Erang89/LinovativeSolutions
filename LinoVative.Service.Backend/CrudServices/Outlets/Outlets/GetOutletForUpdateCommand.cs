@@ -2,7 +2,7 @@
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
-using LinoVative.Service.Core.Outlets;
+using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.MasterData.Outlets;
 using LinoVative.Shared.Dto.Outlets;
 using Mapster;
@@ -11,31 +11,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices.Outlets.Outlets
 {
-    public class GetAllOutletIQueryableCommand : IRequest<IQueryable<OutletViewDto>>
+    public class GetOutletForUpdateCommand : IRequest<Result>
     {
-        public string? SearchKeyword { get; set; }
         public Guid? Id { get; set; }
     }
 
-    public class GetAllOutletQueryableHandlerService : QueryServiceBase<Outlet, GetAllOutletIQueryableCommand>, IRequestHandler<GetAllOutletIQueryableCommand, IQueryable<OutletViewDto>>
+    public class GetOutletForUpdateCommandHandlerService :  IRequestHandler<GetOutletForUpdateCommand, Result>
     {
-        public GetAllOutletQueryableHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
+        private readonly IAppDbContext _dbContext;
+        private readonly IMapper _mapper;
+        private readonly IActor _actor;
+
+        public GetOutletForUpdateCommandHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache)
         {
+            _dbContext = dbContext;
+            _mapper = mapper;
+            _actor = actor;
         }
 
-        protected override IQueryable<Outlet> OnGetAllFilter(IQueryable<Outlet> query, GetAllOutletIQueryableCommand req)
+
+        public async Task<Result> Handle(GetOutletForUpdateCommand request, CancellationToken ct)
         {
-            return base.OnGetAllFilter(query, req).Where(x => x.Name!.Contains(req.SearchKeyword??""));
-        }
-
-        public async Task<IQueryable<OutletViewDto>> Handle(GetAllOutletIQueryableCommand request, CancellationToken ct)
-        {
-            return  base.GetAll(request).ProjectToType<OutletViewDto>(_mapper.Config).AsNoTracking().AsSingleQuery();
-
-            if (request.Id is null) return base.GetAll(request).ProjectToType<OutletViewDto>(_mapper.Config).AsNoTracking().AsSingleQuery();
-
-            var outlet = await _dbContext.Outlets.ProjectToType<OutletViewDto>(_mapper.Config).FirstOrDefaultAsync(x =>  x.Id == request.Id);
-            if (outlet == null) return Enumerable.Empty<OutletViewDto>().AsQueryable();
+            var outlet = await _dbContext.Outlets.ProjectToType<OutletViewDto>(_mapper.Config).FirstOrDefaultAsync(x => x.Id == request.Id);
+            if (outlet == null) return Result.Failed($"No Data with ID: {request.Id}");
 
             await LoadShift(outlet);
             await LoadBankNotes(outlet);
@@ -45,7 +43,7 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Outlets
             await LoadItemGroup(outlet);
             await LoadItemCategory(outlet);
 
-            return (new List<OutletViewDto>() { outlet } as IQueryable<OutletViewDto>)!;
+            return Result.OK(outlet);
         }
 
         async Task LoadShift(OutletViewDto outlet) => outlet.Shifts = await _dbContext.OutletShifts.GetAll(_actor).Where(x => x.OutletId == outlet.Id).ProjectToType<OutletShiftDto>(_mapper.Config).ToListAsync();

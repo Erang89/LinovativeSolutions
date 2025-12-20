@@ -1,6 +1,8 @@
-﻿using Linovative.Frontend.Services.Converter;
-using Linovative.Frontend.Services.Models;
+﻿using Linovative.Frontend.Services.Models;
+using LinoVative.Shared.Dto.JsonConverters;
 using Newtonsoft.Json;
+using System.Xml;
+
 
 namespace Linovative.Frontend.Services.Extensions
 {
@@ -11,29 +13,43 @@ namespace Linovative.Frontend.Services.Extensions
             var isValid = message.IsSuccessStatusCode;
             var jsonString = await message.Content.ReadAsStringAsync(token);
 
-            var settings = new JsonSerializerSettings();
-            settings.Converters.Add(new Iso8601TimeSpanConverter());
+            var result = JsonConvert
+                .DeserializeObject<Response<T>>(jsonString, JsonSettingsProvider.Default)
+                ?.Result(isValid)
+                ?? Response<T>.Failed("An error occurred. Please contact your administrator.");
 
-
-            var result = JsonConvert.DeserializeObject<Response<T>>(jsonString, settings)?.Result(isValid) ?? Response<T>.Failed("An error accourred. Please contact your adminstrator.");
             return result!;
         }
-
 
         public static async Task<Response> ToAppBoolResponse(this HttpResponseMessage message, CancellationToken token)
         {
             var isValid = message.IsSuccessStatusCode;
             var jsonString = await message.Content.ReadAsStringAsync(token);
 
-            var settings = new JsonSerializerSettings();
-            settings.Converters.Add(new Iso8601TimeSpanConverter());
-
-            var result = JsonConvert.DeserializeObject<Response> (jsonString, settings);
-
-            if (result is null)
-                result = Response.Failed("An error accourred. Please contact your adminstrator.");
+            var result = JsonConvert.DeserializeObject<Response>(jsonString, JsonSettingsProvider.Default)
+                         ?? Response.Failed("An error occurred. Please contact your administrator.");
 
             return result!;
         }
+
+
     }
+
+    public static class JsonSettingsProvider
+    {
+        public static readonly JsonSerializerSettings Default = Create();
+
+        private static JsonSerializerSettings Create()
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                // other global settings you need
+            };
+            settings.Converters.Add(new Iso8601TimeSpanNewtonsoftConverter());
+            return settings;
+        }
+    }
+
+
 }

@@ -2,6 +2,7 @@
 using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
 using LinoVative.Shared.Dto.Commons;
+using System.Text.Json.Serialization;
 
 namespace LinoVative.Shared.Dto.Outlets
 {
