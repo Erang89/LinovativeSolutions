@@ -10,7 +10,9 @@ using System.Linq.Expressions;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
-    public abstract class SaveUpdateServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class, IEntityId
+    public abstract class SaveUpdateServiceBase<T, TRequest> : QueryServiceBase<T>, IRequestHandler<TRequest, Result> 
+        where T : class, IEntityId 
+        where TRequest : class, IEntityId, IRequest<Result>
     {
         protected readonly IStringLocalizer _localizer;
         protected SaveUpdateServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer stringLocalizer) : base(dbContext, actor, mapper, appCache)

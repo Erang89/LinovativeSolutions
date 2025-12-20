@@ -14,7 +14,7 @@
 @inject IOrderTypeService _OrderTypeService
 @inject IBankNoteService _bankNotesService
 @inject IApplicationStateService _state
-
+@implements IDisposable
 
 <MudToolBar>
     <MudTooltip Class="cursor-pointer" Text="@Label("Sort")">
@@ -157,75 +157,121 @@
     private CancellationTokenSource cancellationTokenSource { get; set; } = new();
     private bool moveMode = false;
     private IHasSequence? selectedObject;
+    private List<PaymentMethodViewDto> _paymentMethodSource { get; set; } = new();
+    private List<OrderTypeViewDto> _orderTypeSource { get; set; } = new();
+    private List<BankNoteDto> _bankNoteSource { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         _state.OnChange += StateHasChanged;
+        _state.OnChange += GenerateData;
         await base.OnInitializedAsync();
-        await LoadPaymentMethod();
+        await LoadData();
+        _state.NotifyStateChanged();
     }
 
 
-    async Task LoadPaymentMethod()
+    async Task LoadData()
     {
         var paymentMethodTask = _paymentMethodService.GetAll(cancellationTokenSource.Token);
         var orderTypeTasks = _OrderTypeService.GetAll(cancellationTokenSource.Token);
         var bankNoteTask = _bankNotesService.GetAll(cancellationTokenSource.Token);
 
         await Task.WhenAll(paymentMethodTask, orderTypeTasks, bankNoteTask);
+        _paymentMethodSource = (await paymentMethodTask).Data!;
+        _orderTypeSource = (await orderTypeTasks).Data!;
+        _bankNoteSource = (await bankNoteTask).Data!;
+    }
 
-        var paymentMethods = (await paymentMethodTask).Data!
-        .Select(x => new KeyValuePair<PaymentMethodViewDto, OutletPaymentMethodDto>(x, Outlet?.PaymentMethods
-            .FirstOrDefault(x => x.PaymentMethodId == x.Id) ?? CreateNewPaymentMethod())).ToList();
+    void GenerateData()
+    {
+        if (Outlet is null) return;
+
+        Func<PaymentMethodViewDto, OutletPaymentMethodDto> getPaymentMethod = (pm) =>
+        {
+            var data = Outlet?.PaymentMethods.FirstOrDefault(x => x.PaymentMethodId == pm.Id);
+            return data is null ? CreateNewPaymentMethod(pm) : data;
+        };
+
+        Func<OrderTypeViewDto, OutletOrderTypeDto> getOrderType = (ot) =>
+        {
+            var data = Outlet?.OrderTypes.FirstOrDefault(x => x.OrderTypeId == ot.Id);
+            return data is null ? CreateNewOrderType(ot) : data;
+        };
+
+        Func<BankNoteDto, OutletBankNoteDto> getBankNote = (bn) =>
+        {
+            var data = Outlet?.BankNotes.FirstOrDefault(x => x.BankNoteId == bn.Id);
+            return data is null ? CreateNewBankNote(bn) : data;
+        };
+
+        var paymentMethods = _paymentMethodSource.Select(x => new KeyValuePair<PaymentMethodViewDto, OutletPaymentMethodDto>(x, getPaymentMethod(x))).ToList();
         paymentMethods.ReAssignSequence();
         _paymentMethods = paymentMethods;
 
-        var orderTypes = (await orderTypeTasks).Data!
-        .Select(x => new KeyValuePair<OrderTypeViewDto, OutletOrderTypeDto>(x, Outlet?.OrderTypes
-        .FirstOrDefault(x => x.OrderTypeId == x.Id) ?? CreateNewOrderType())).ToList();
+        var orderTypes = _orderTypeSource
+        .Select(x => new KeyValuePair<OrderTypeViewDto, OutletOrderTypeDto>(x, getOrderType(x))).ToList();
         orderTypes.ReAssignSequence();
         _orderTypes = orderTypes;
 
-        var bankNotes = (await bankNoteTask).Data!
-        .Select(x => new KeyValuePair<BankNoteDto, OutletBankNoteDto>(x, Outlet?.BankNotes
-        .FirstOrDefault(x => x.BankNoteId == x.Id) ?? CreateNewBankNote())).ToList();
+        var bankNotes = _bankNoteSource
+        .Select(x => new KeyValuePair<BankNoteDto, OutletBankNoteDto>(x, getBankNote(x))).ToList();
         bankNotes.ReAssignSequence();
         _bankNotes = bankNotes;
     }
 
-
     int? countPaymentMethod = null;
-    OutletPaymentMethodDto CreateNewPaymentMethod()
+    OutletPaymentMethodDto CreateNewPaymentMethod(PaymentMethodViewDto pm)
     {
         countPaymentMethod ??= Outlet?.PaymentMethods.Count ?? 0;
         countPaymentMethod++;
-        var newPaymentMethod = new OutletPaymentMethodDto() { IsActive = false, Sequence = countPaymentMethod.Value };
+        var newPaymentMethod = new OutletPaymentMethodDto() { 
+            IsActive = false,
+            OutletId = Outlet!.Id,
+            PaymentMethodId = pm.Id,
+            Sequence = countPaymentMethod.Value 
+        };
         Outlet!.PaymentMethods.Add(newPaymentMethod);
         return newPaymentMethod;
     }
 
 
     int? countOrderType = null;
-    OutletOrderTypeDto CreateNewOrderType()
+    OutletOrderTypeDto CreateNewOrderType(OrderTypeViewDto ot)
     {
         countOrderType ??= Outlet?.OrderTypes.Count ?? 0;
         countOrderType++;
-        var newOrderType = new OutletOrderTypeDto() { IsActive = false, Sequence = countOrderType.Value };
+        var newOrderType = new OutletOrderTypeDto() { 
+            IsActive = false,
+            OutletId = Outlet!.Id,
+            OrderTypeId = ot.Id,
+            Sequence = countOrderType.Value 
+        };
         Outlet!.OrderTypes.Add(newOrderType);
         return newOrderType;
     }
 
 
     int? countBankNote = null;
-    OutletBankNoteDto CreateNewBankNote()
+    OutletBankNoteDto CreateNewBankNote(BankNoteDto bn)
     {
         countBankNote ??= Outlet?.BankNotes.Count ?? 0;
         countBankNote++;
-        var bankNote = new OutletBankNoteDto() { IsActive = false, Sequence = countBankNote.Value };
+        var bankNote = new OutletBankNoteDto() { 
+            IsActive = false,
+            OutletId = Outlet!.Id,
+            BankNoteId = bn.Id,
+            Sequence = countBankNote.Value 
+        };
         Outlet!.BankNotes.Add(bankNote);
         return bankNote;
     }
 
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+        _state.OnChange -= GenerateData;
+    }
 
     void Move(bool moveUp)
     {

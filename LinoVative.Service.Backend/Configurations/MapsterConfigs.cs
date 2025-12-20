@@ -61,12 +61,24 @@ namespace LinoVative.Service.Backend.Configurations
             // Mapping Outlets
             config.NewConfig<Outlet, OutletViewDto>();
             config.NewConfig<UpdateOutletCommand, Outlet>()
+                .Ignore(x => x.OutletItemExceptionals)
+                .Ignore(x => x.ItemCategories)
+                .Ignore(x => x.ItemGroups)
+                .Ignore(x => x.Tables)
+                .Ignore(x => x.Users)
+                .Ignore(x => x.Areas)
                 .Ignore(x => x.Shifts)
                 .Ignore(x => x.BankNotes)
                 .Ignore(x => x.PaymentMethods)
                 .Ignore(x => x.OrderTypes);
 
             config.NewConfig<CreateOutletCommand, Outlet>()
+                .Ignore(x => x.OutletItemExceptionals)
+                .Ignore(x => x.ItemCategories)
+                .Ignore(x => x.ItemGroups)
+                .Ignore(x => x.Tables)
+                .Ignore(x => x.Users)
+                .Ignore(x => x.Areas)
                 .Ignore(x => x.Shifts)
                 .Ignore(x => x.BankNotes)
                 .Ignore(x => x.PaymentMethods)
@@ -81,6 +93,7 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<OutletOrderType, OutletOrderTypeViewDto>();
             config.NewConfig<OutletPaymentMethod, OutletPaymentMethodViewDto>();
             config.NewConfig<OutletShift, OutletShiftViewDto>();
+            config.NewConfig<OutletShiftDto, OutletShift>();
             config.NewConfig<OutletTable, OutletTableViewDto>();
             config.NewConfig<OutletUser, OutletUserViewDto>();
             config.NewConfig<OutletTableDto, OutletTable>();

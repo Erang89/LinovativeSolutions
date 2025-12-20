@@ -1,17 +1,18 @@
-﻿using Linovative.Shared.Interface;
+﻿using Azure;
+using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
+using LinoVative.Shared.Dto;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
-using LinoVative.Shared.Dto;
-using LinoVative.Service.Backend.Extensions;
-using Microsoft.EntityFrameworkCore;
-using LinoVative.Service.Core.EntityBases;
 
 namespace LinoVative.Service.Backend.CrudServices
 {
-    public abstract class SaveNewServiceBase<T, TRequest> : QueryServiceBase<T> where T : class, IEntityId where TRequest : class
+    public abstract class SaveNewServiceBase<T, TRequest> : QueryServiceBase<T>, IRequestHandler<TRequest, Result>
+        where T : class, IEntityId where TRequest : class, IRequest<Result>
     {
         protected IStringLocalizer _localizer;
         protected SaveNewServiceBase(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) 
@@ -22,19 +23,26 @@ namespace LinoVative.Service.Backend.CrudServices
 
 
         // ============================== Maping Entity ==============================
-        protected virtual async Task<T> OnMapping(TRequest request)
+        protected virtual async Task<T> OnMapping(TRequest request, CancellationToken ct)
         {
             await Task.CompletedTask;
-            return _mapper.Map<T>(request!);
+            var entity = _mapper.Map<T>(request!);
+
+            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
+            {
+                ((IsEntityManageByCompany)entity).CompanyId = _actor.CompanyId;
+            }
+
+            return entity;
         }
 
-        public virtual async Task<Result> Handle(TRequest request, CancellationToken token)
+        public virtual async Task<Result> Handle(TRequest request, CancellationToken ct)
         {
-            var validate = await Validate(request, token);
+            var validate = await Validate(request, ct);
             if (!validate)
                 return validate;
             
-            var creatingResult = await OnCreatingEntity(request, token);
+            var creatingResult = await OnCreatingEntity(request, ct);
 
             _dbSet.AddRange(creatingResult);
 
@@ -61,7 +69,7 @@ namespace LinoVative.Service.Backend.CrudServices
                 }
             }
 
-                var result = await _dbContext.SaveAsync(_actor, token);
+                var result = await _dbContext.SaveAsync(_actor, ct);
             if(result) return Result.OK(creatingResult.Select(x => x.Id).ToList());
 
             return Result.OK(creatingResult.Select(x => x.Id).ToList());
@@ -70,13 +78,7 @@ namespace LinoVative.Service.Backend.CrudServices
 
         protected virtual async Task<List<T>> OnCreatingEntity(TRequest request, CancellationToken token = default)
         {
-            T entity = await OnMapping(request!);
-
-            if (typeof(IsEntityManageByCompany).IsAssignableFrom(typeof(T)))
-            {
-                ((IsEntityManageByCompany)entity).CompanyId = _actor.CompanyId;
-            }
-
+            T entity = await OnMapping(request!, token);
             return new() { entity };
         }
 
@@ -84,6 +86,9 @@ namespace LinoVative.Service.Backend.CrudServices
         protected virtual async Task<Result> Validate(TRequest request, CancellationToken token) => Result.OK();
 
         protected string Prop(Expression<Func<TRequest, object>> expresion) => DtoExtensions.GetPropertyName(expresion);
+
+        protected void AddError(Result result, string propertyKey, string errorMessage) =>
+            result.AddInvalidProperty(propertyKey, errorMessage);
 
         protected void AddError(Result result, Expression<Func<TRequest, object>> expresion, string message) =>
             result.AddInvalidProperty(Prop(expresion), message);

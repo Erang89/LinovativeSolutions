@@ -8,6 +8,7 @@
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.Extensions
 
+@implements IDisposable
 @inherits POSManagementPageBase
 @inject IShiftService _shiftService
 @inject IApplicationStateService _state
@@ -34,7 +35,12 @@
                     {
                         <tr>
                             <td style="min-width: 150px">
-                                <div class="d-flex"><MudSwitch @bind-Value="@shift.Value.IsActive" Label="@shift.Key.Name" Color="Color.Info" /></div>
+                                <div class="d-flex">
+                                    <MudSwitch Value="@shift.Value.IsActive"
+                                               T="bool"
+                                               ValueChanged="@((x) => ShiftActiveChange(shift.Value, x))"
+                                               Label="@shift.Key.Name" Color="Color.Info" />
+                                </div>
                             </td>
 
 
@@ -83,42 +89,73 @@
     protected override string LocalizerResource => nameof(OutletsPage);
 
     private List<KeyValuePair<ShiftViewDto, OutletShiftDto>> _shifts { get; set; } = new();
+    private List<ShiftViewDto> _shiftSources = new();
     private CancellationTokenSource cancellationTokenSource { get; set; } = new();
     private OutletShiftDto? selectedShift;
     private bool moveMode;
 
     protected override async Task OnInitializedAsync()
     {
+        _state.OnChange += StateHasChanged;
+        _state.OnChange += GetShift;
         await base.OnInitializedAsync();
-        await LoadPaymentMethod();
+        await LoadShift();
+        _state.NotifyStateChanged();
     }
 
 
 
     int lastSequence = 0;
-    async Task LoadPaymentMethod()
+    async Task LoadShift()
     {
-        lastSequence = Outlet?.Shifts.Count == 0? 0 : Outlet!.Shifts.Max(x => x.Sequence);
+        lastSequence = Outlet?.Shifts.Count == 0 ? 0 : Outlet!.Shifts.Max(x => x.Sequence);
         var shiftTask = _shiftService.GetAll(cancellationTokenSource.Token);
 
         await Task.WhenAll(shiftTask);
+        _shiftSources = (await shiftTask).Data!;
+    }
 
-        var shifts  = (await shiftTask).Data!
-        .Select(x => new KeyValuePair<ShiftViewDto, OutletShiftDto>(x, Outlet?.Shifts
-        .FirstOrDefault(x => x.ShiftId == x.Id) ?? CreateNewShift(x)))
-        .ToList();
+    void GetShift()
+    {
+        if (Outlet is null) return;
 
+        Func<ShiftViewDto, OutletShiftDto> getOutletShift = (shift) =>
+        {
+            var selectShift = Outlet?.Shifts.FirstOrDefault(x => x.ShiftId == shift.Id);
+            return selectShift is null? CreateNewShift(shift) : selectShift;
+        };
+
+        var shifts = _shiftSources.Select(x => new KeyValuePair<ShiftViewDto, OutletShiftDto>(x, getOutletShift(x))).ToList();
         shifts.ReAssignSequence();
         _shifts = shifts;
     }
 
+    void ShiftActiveChange(OutletShiftDto shift, bool isActive)
+    {
+        var outlet = Outlet;
+        shift.IsActive = isActive;
+    }
 
     OutletShiftDto CreateNewShift(ShiftViewDto shift)
     {
         lastSequence++;
-        var newShift = new OutletShiftDto() { IsActive = false, StartTime = shift.StartTime, EndTime = shift.EndTime, Sequence = lastSequence };
+        var newShift = new OutletShiftDto()
+        {
+            IsActive = false,
+            StartTime = shift.StartTime,
+            EndTime = shift.EndTime,
+            Sequence = lastSequence,
+            ShiftId = shift.Id,
+            OutletId = Outlet!.Id
+        };
         Outlet!.Shifts.Add(newShift);
         return newShift;
+    }
+
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+        _state.OnChange -= GetShift;
     }
 
     void Move(bool moveUp)
@@ -126,5 +163,6 @@
         _shifts.SortObject(moveUp, selectedShift);
     }
 
+    
 
 }

@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Items;
 using LinoVative.Shared.Dto.ItemDtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.ValidatorServices
 {
@@ -55,8 +56,10 @@ namespace LinoVative.Service.Backend.ValidatorServices
             if (dto is ItemCategoryDto categoryDto)
                 query = ((IQueryable<ItemCategory>)query).Where(x => x.GroupId == categoryDto.GroupId);
 
+            var querstring = query.ToQueryString();
+            var result = !query.AnyDynamic();
 
-            return !query.AnyDynamic();
+            return result;
         }
 
 

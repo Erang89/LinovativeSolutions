@@ -5,14 +5,15 @@
         string this[string key] { get; }
         string Format(string key, object value);
         public void EnsureLoad(string key);
-        public void EnsureLoad(Func<AvailableLanguageKeys, string> key);
+        public void EnsureLoad(AvailableLanguageKeys? key);
     }
 
-    public class AvailableLanguageKeys
+    public enum AvailableLanguageKeys
     {
-        public string BulkUploadCommand => nameof(BulkUploadCommand);
-        public string ChangeDefaultCompanyCommand => nameof(ChangeDefaultCompanyCommand);
-        public string RefreshTokenCommand => nameof(RefreshTokenCommand);
-        public string CreateOrUpdateOutletAreaCommand => nameof(CreateOrUpdateOutletAreaCommand);
+        BulkUploadCommand,
+        ChangeDefaultCompanyCommand,
+        RefreshTokenCommand,
+        CreateOrUpdateOutletAreaCommand,
+        CreateOutletCommand
     }
 }

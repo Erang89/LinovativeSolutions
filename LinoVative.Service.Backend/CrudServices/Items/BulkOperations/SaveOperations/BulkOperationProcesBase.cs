@@ -50,7 +50,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
             _bulkUploads = _dbContext.Set<TUpload>();
             _bulkUploadDetails = _dbContext.Set<TRecord>();
             _operation = operation;
-            lang.EnsureLoad(x => x.BulkUploadCommand);
+            lang.EnsureLoad(AvailableLanguageKeys.BulkUploadCommand);
         }
 
 

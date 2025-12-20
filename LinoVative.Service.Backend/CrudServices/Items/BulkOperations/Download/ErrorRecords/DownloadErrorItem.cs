@@ -16,7 +16,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperations.Download.
         {
             _bulkOperationFactory = templateFactory;
             _lang = lang;
-            _lang.EnsureLoad(x => x.BulkUploadCommand);
+            _lang.EnsureLoad(AvailableLanguageKeys.BulkUploadCommand);
         }
 
         protected override Task<List<ItemBulkUploadDetail>> GetRecords(Guid uploadId)

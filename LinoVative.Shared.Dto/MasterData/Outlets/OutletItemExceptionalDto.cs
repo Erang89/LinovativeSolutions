@@ -2,7 +2,7 @@
 
 namespace LinoVative.Shared.Dto.MasterData.Outlets
 {
-    public class OutletItemExceptional
+    public class OutletItemExceptionalDto : EntityDtoBase
     {
         public ItemExceptionTypes? Type { get; set; }
         public Guid EntityId { get; set; }

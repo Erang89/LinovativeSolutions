@@ -30,7 +30,7 @@ namespace LinoVative.Service.Backend.AuthServices
             _userPrevilege = userPri;
             _actor = actor;
             _lang = lang;
-            _lang.EnsureLoad(x => x.RefreshTokenCommand);
+            _lang.EnsureLoad(AvailableLanguageKeys.RefreshTokenCommand);
             _jwtSettings = appSettings.Value.JwtSettings;
         }
 

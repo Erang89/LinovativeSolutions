@@ -10,6 +10,8 @@
 
 @inherits POSManagementPageBase
 @inject IItemCategoryService _categoryService
+@inject IApplicationStateService _state
+@implements IDisposable
 
 
 <MudToolBar>
@@ -87,13 +89,18 @@
     private List<KeyValuePair<ItemGroupDto, OutletItemGroupDto>> _groups { get; set; } = new();
     private List<KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>> _categories { get; set; } = new();
     private CancellationTokenSource cancellationTokenSource { get; set; } = new();
+    private List<ItemCategoryViewDto> _sources { get; set; } = new();
     private bool moveMode { get; set; }
     private object? selectedObject { get; set; }
 
+
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _state.OnChange += GenerateData;
         await LoadData();
+        await base.OnInitializedAsync();
+        _state.NotifyStateChanged();
     }
 
     IEnumerable<KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>> GetCategories(Guid groupId)
@@ -103,41 +110,64 @@
 
     async Task LoadData()
     {
-        var oDataFilter = new ODataFilter()
+        var oDataFilter = new ODataFilter(){Options = $"$expand={nameof(ItemCategoryViewDto.ItemGroup)}"};
+        var categoryTask = _categoryService.GetAll(oDataFilter, cancellationTokenSource.Token);
+        await Task.WhenAll(categoryTask);
+        _sources = (await categoryTask).Data!;
+    }
+
+    void GenerateData()
+    {
+        Func<Guid, OutletItemGroupDto> getGroup = (groupId) =>
         {
-            Options = $"$expand={nameof(ItemCategoryViewDto.ItemGroup)}"
+            var data = Outlet?.ItemGroups.FirstOrDefault(x => x.ItemGroupId == groupId);
+            return data is not null ? data : CreateNewGroup(groupId);
         };
 
-        var categoryTask = _categoryService.GetAll(oDataFilter, cancellationTokenSource.Token);
+        Func<ItemCategoryDto, OutletItemCategoryDto> getCategory = (cat) =>
+        {
+            var data = Outlet?.ItemCategories.FirstOrDefault(x => x.ItemCategoryId == cat.Id    );
+            return data is not null ? data : CreateNewCategory(cat);
+        };
 
-        await Task.WhenAll(categoryTask);
-
-        var groups = (await categoryTask).Data!
+        var groups = _sources
         .OrderBy(x => x.ItemGroup!.Name)
         .GroupBy(x => new { Id = x.ItemGroup!.Id, Name = x.ItemGroup!.Name })
-        .Select(x => new KeyValuePair<ItemGroupDto, OutletItemGroupDto>(new ItemGroupDto { Id = x.Key.Id, Name = x.Key.Name }, Outlet?.ItemGroups
-        .FirstOrDefault(x => x.ItemGroupId == x.Id) ?? CreateNewGroup())).ToList();
+        .Select(x => new KeyValuePair<ItemGroupDto, OutletItemGroupDto>(new ItemGroupDto { Id = x.Key.Id, Name = x.Key.Name }, getGroup(x.Key.Id))).ToList();
         groups.ReAssignSequence();
         _groups = groups;
 
-        _categories = (await categoryTask).Data!
-        .Select(x => new KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>(x, Outlet?.ItemCategories
-        .FirstOrDefault(x => x.ItemCategoryId == x.Id) ?? CreateNewCategory())).ToList();
-
+        _categories = _sources
+        .Select(x => new KeyValuePair<ItemCategoryDto, OutletItemCategoryDto>(x, getCategory(x))).ToList();
     }
 
-    OutletItemCategoryDto CreateNewCategory()
+
+    OutletItemCategoryDto CreateNewCategory(ItemCategoryDto ct)
     {
-        var newCategory = new OutletItemCategoryDto() { OutletId = Outlet!.Id, IsActive = true };
+        var newCategory = new OutletItemCategoryDto() { 
+            OutletId = Outlet!.Id, 
+            IsActive = true,
+            ItemCategoryId = ct.Id
+        };
         Outlet.ItemCategories.Add(newCategory);
         return newCategory;
     }
 
-    OutletItemGroupDto CreateNewGroup()
+    OutletItemGroupDto CreateNewGroup(Guid groupId)
     {
-        var newGroup = new OutletItemGroupDto() { OutletId = Outlet!.Id, IsActive = true, UseAllItemCategories = true };
+        var newGroup = new OutletItemGroupDto() { 
+            OutletId = Outlet!.Id, 
+            IsActive = true,
+            ItemGroupId = groupId,
+            UseAllItemCategories = true };
         Outlet.ItemGroups.Add(newGroup);
         return newGroup;
+    }
+
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+        _state.OnChange -= GenerateData;
     }
 
     void Move(bool isMoveUp) => _groups.SortObject(isMoveUp, selectedObject);

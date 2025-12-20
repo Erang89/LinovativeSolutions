@@ -23,7 +23,7 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Areas
         ILangueageService _lang;
         public CreateOutletAreaHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, ILangueageService lang) : base(dbContext, actor, mapper, appCache, localizer)
         {
-            lang.EnsureLoad(x => x.CreateOrUpdateOutletAreaCommand);
+            lang.EnsureLoad(AvailableLanguageKeys.CreateOrUpdateOutletAreaCommand);
             _lang = lang;
         }
 

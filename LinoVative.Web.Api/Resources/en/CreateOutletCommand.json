@@ -1,0 +1,12 @@
+{
+  "DuplicateEntity.Message": "{0} must be unitquie",
+  "TaxPercentOutOfRange.Message": "Tax Percent value must be 0 to 100",
+  "ServicePercentOutOfRange.Message": "Service Percent value must be 0 to 100",
+  "SomeShiftIdNotExist.Message": "Some Shift IDs are not in the system",
+  "SomeBankNotetIdNotExist.Message": "Some Bank Note IDs are not in the system",
+  "SomePaymentMethodIdNotExist.Message": "Some Payment Method IDs are not in the system",
+  "SomeOrderTypeIdNotExist.Message": "Some Order Type IDs are not in the system",
+  "SomeItemGroupIdNotExist.Message": "Some Item Groups IDs are not in the system",
+  "SomeItemCategoryIdNotExist.Message": "Some Item Categories IDs are not in the system",
+  "SomeItemIdNotExist.Message": "Some Item IDs are not in the system"
+}

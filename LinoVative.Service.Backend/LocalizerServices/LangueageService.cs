@@ -53,7 +53,6 @@ namespace LinoVative.Service.Backend.LocalizerServices
             return string.Format(message, value);
         }
 
-        readonly AvailableLanguageKeys avaKeys = new AvailableLanguageKeys();
-        public void EnsureLoad(Func<AvailableLanguageKeys, string> key) => EnsureLoad(key(avaKeys));
+        public void EnsureLoad(AvailableLanguageKeys? key) => EnsureLoad(key!.ToString()!);
     }
 }
