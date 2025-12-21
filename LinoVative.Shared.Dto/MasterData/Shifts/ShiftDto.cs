@@ -20,7 +20,7 @@ namespace LinoVative.Shared.Dto.MasterData.Shifts
         public string? EndTimeFormatted => StartTime?.ToString(@"hh\:mm\:ss");
 
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public int Sequence { get; set; }
     }
 

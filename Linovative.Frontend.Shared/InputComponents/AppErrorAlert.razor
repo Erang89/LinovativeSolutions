@@ -2,6 +2,8 @@
 
 @if (Response is not null && !Response)
 {
+
+    <LinovativeGap />
     <MudAlert Severity="Severity.Error" ContentAlignment="HorizontalAlignment.Left" ShowCloseIcon="true" CloseIconClicked="(HideAlert)">
         
         @if(Response?.Errors is not null)
@@ -21,7 +23,6 @@
             @Response?.Title
         }
     </MudAlert>
-    <LinovativeGap />
 }
 
 @code {

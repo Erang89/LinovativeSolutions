@@ -1,0 +1,246 @@
+﻿@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
+@using LinoVative.Shared.Dto.MasterData.Shifts
+
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShiftAdd)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShiftUpdate)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IShiftService _service
+@inject IOutletService _ouletService
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+@inject IAppNavigationService _nav
+@inject IGlobalMessage _globalMessage
+@implements IDisposable
+
+<LinovativePageTitle Title="@EntityPluralName" />
+<OutletBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts) })" />
+<OutletTabs SelectedTab="OutletTabs.Tabs.WorkingShift" />
+<CrudButtons PageMode="@(Id is null ? PageModes.Create : PageModes.Update)"
+             OnSave="Save"
+             OnCancel="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts))"
+             IsFormSubmitting="isFormSubmitting" />
+<LinovativeGap />
+
+
+
+<MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="6" lg="4">
+
+        <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+        <LinovativeGap />
+
+        <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+            @if (loaded)
+            {
+                <LinovativeInputText @bind-Value="@shift.Name"
+                                     IsRequired="true"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="Name" />
+                <LinovativeGap />
+                <LinovativeTimePicker Value="@shift.StartTime"
+                                      ValueChanged="@(x => shift.StartTime = x)"
+                                      IsRequired="true"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="StartTime" />
+
+                <LinovativeGap />
+                <LinovativeTimePicker Value="@shift.EndTime"
+                                      ValueChanged="@(x => shift.EndTime = x)"
+                                      IsRequired="true"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="EndTime" />
+            }
+            else
+            {
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            }
+
+        </MudForm>
+    </MudItem>
+</MudGrid>
+
+
+<LinovativeGap />
+<LinovativeGap />
+<MudText Typo="Typo.h6">@Label("ShifttSettingsSection")</MudText>
+<LinovativeGap />
+
+@if (loaded)
+{
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Expanded="true" Text="@Label("OutletSettings")">
+            @foreach(var outlet in _outletShifts.OrderBy(x => x.Key.Name))
+            {
+                <div class="d-flex"><MudSwitch @bind-Value="@outlet.Value.IsActive" Label="@outlet.Key.Name" Color="Color.Info" /></div>
+                <LinovativeGap />
+            }
+        </MudExpansionPanel>
+@* 
+        <MudExpansionPanel Text="@Label("ItemSettings")">
+
+        </MudExpansionPanel>
+        <MudExpansionPanel Text="@Label("ShiftSettings")">
+
+        </MudExpansionPanel>
+ *@
+    </MudExpansionPanels>
+}
+else
+{
+    <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+}
+
+
+@code {
+    [Parameter]
+    public string? Id { get; set; }
+
+    protected override string LocalizerResource => nameof(ShiftsPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    private CancellationTokenSource cts { get; set; } = new();
+    private ShiftUpdateDto? shift { get; set; }
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private List<ShiftViewDto> dataSource { get; set; } = new();
+    private List<OutletViewDto> _outlets { get; set; } = new();
+    private List<KeyValuePair<OutletViewDto, OutletShiftDto>> _outletShifts { get; set; } = new();
+    private bool loaded { get; set; } = false;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        isFormSubmitting = true;
+        _state.OnChange += StateHasChanged;
+        _state.OnChange += GenerateData;
+        _topBarService.SetTitle(EntityPluralName);
+
+        if (Id is not null) await LoadData();
+        else shift = new();
+        loaded = true;
+        isFormSubmitting = false;
+
+        _state.NotifyStateChanged();
+    }
+
+
+    void OnFormKeyPress()
+    {
+        formResponse = null;
+        formErrorAlert?.HideAlert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task Reset()
+    {
+        shift = new();
+
+        formResponse = null;
+        isFormSubmitting = false;
+        await HideAllAllert();
+        _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts);
+        _state.NotifyStateChanged();
+    }
+
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        formErrorAlert?.HideAlert();
+    }
+
+    Task Save()
+    {
+        form!.Validate();
+
+        if (!isFormValid)
+            return Task.CompletedTask;
+
+        return Id is null ? SaveNew() : SaveUpdate();
+    }
+
+    async Task SaveNew()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Create(shift!, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task SaveUpdate()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Update(shift!, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts);
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task LoadData()
+    {
+        var shiftTask = _service.GetForUpdate(new Guid(Id!), cts.Token);
+        var outletTasks = _ouletService.GetAll(cts.Token);
+
+        await Task.WhenAll(shiftTask, outletTasks);
+
+        shift = (await shiftTask).Data!;
+        _outlets = (await outletTasks).Data!;
+    }
+
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+        _state.OnChange -= GenerateData;
+    }
+
+    void GenerateData()
+    {
+        Func<OutletViewDto, OutletShiftDto> getShift = (o) =>
+        {
+            var data = shift!.Outlets.FirstOrDefault(x => x.OutletId == o.Id);
+            if (data is not null) return data;
+
+            data = new OutletShiftDto() { OutletId = o.Id, ShiftId = shift.Id, IsActive = false, StartTime = shift.StartTime, EndTime = shift.EndTime };
+            shift.Outlets.Add(data);
+            return data;
+        };
+
+        _outletShifts = _outlets.Select(x => new KeyValuePair<OutletViewDto, OutletShiftDto>(x, getShift(x))).ToList();
+    }
+}

@@ -44,6 +44,7 @@
                 <LinovativeInputText @bind-Value="@item.Name"
                                      Id="item_name"
                                      IsRequired="true"
+                                     Disabled="@(!item.IsActive)"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Name)" />
@@ -51,6 +52,7 @@
                 <LinovativeInputText @bind-Value="@item.Code"
                                      Id="item_code"
                                      IsRequired="true"
+                                     Disabled="@(!item.IsActive)"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Code)" />
@@ -58,6 +60,7 @@
                 <LinovativeGap />
                 <LinovativeInputText @bind-Value="@item.Description"
                                      Id="item_description"
+                                     Disabled="@(!item.IsActive)"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Description)" />
@@ -73,6 +76,7 @@
             <ItemUnitDropdown @bind-Value="@itemUnit"
                               Id="item_unit"
                               Required="true"
+                              Disabled="@(!item.IsActive)"
                               Errors="@formResponse?.Errors"
                               LocalizerResource="@LocalizerResource"
                               LocalizerKey="@nameof(ItemDto.UnitId)" />
@@ -82,6 +86,7 @@
             <ItemCategoryDropdown @bind-Value="@itemCategory"
                                   Id="item_category"
                                   Required="true"
+                                  Disabled="@(!item.IsActive)"
                                   Errors="@formResponse?.Errors"
                                   LocalizerResource="@LocalizerResource"
                                   LocalizerKey="@nameof(ItemDto.CategoryId)" />
@@ -94,6 +99,7 @@
                                Format="N2"
                                Value="@item.SellPrice"
                                IsRequired="true"
+                               Disabled="@(!item.IsActive)"
                                Errors="@formResponse?.Errors"
                                LocalizerResource="@LocalizerResource"
                                LocalizerKey="@nameof(ItemDto.SellPrice)"
@@ -104,11 +110,11 @@
         <MudItem xs="12" sm="4" lg="4">
             <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
             <LinovativeGap />
-            <div class="d-flex"><MudSwitch @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div>
+            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div>
             <LinovativeGap />
-            <div class="d-flex"><MudSwitch @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
+            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
             <LinovativeGap />
-            <div class="d-flex"><MudSwitch @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div>
+            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div>
         </MudItem>
 
 
@@ -122,16 +128,16 @@
 
     <LinovativeGap />
     <MudExpansionPanels MultiExpansion="true">
-        <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.HasCostumePrice)">
+        <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.HasCostumePrice || !item.IsActive)">
             ....
         </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.HasSellingTaxAndService)">
+        <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.HasSellingTaxAndService || !item.IsActive)">
             ....
         </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("PurchaseSettingSection")" Disabled="@(!item.CanBePurchased)">
+        <MudExpansionPanel Text="@Label("PurchaseSettingSection")" Disabled="@(!item.CanBePurchased || !item.IsActive)">
             ....
         </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("POSSettingSection")">
+        <MudExpansionPanel Text="@Label("POSSettingSection")" Disabled="@(!item.IsActive)">
             ....
         </MudExpansionPanel>
     </MudExpansionPanels>

@@ -5,6 +5,8 @@
   "Name.Label": "Name",
   "StartTime.Label": "Start time",
   "EndTime.Label": "End time",
+  "ShifttSettingsSection.Label": "Settings",
+  "OutletSettings.Label": "Outlets",
 
   "Name.Required.ErrorMessage": "Name is required",
   "StartTime.Required.ErrorMessage": "Start time is required",

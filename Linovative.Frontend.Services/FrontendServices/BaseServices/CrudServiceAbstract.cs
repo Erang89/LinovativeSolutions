@@ -1,7 +1,9 @@
 ﻿using Linovative.Frontend.Services.Extensions;
 using Linovative.Frontend.Services.Interfaces;
 using Linovative.Frontend.Services.Models;
+using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.Commons;
+using LinoVative.Shared.Dto.MasterData.Shifts;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 
@@ -14,6 +16,24 @@ namespace Linovative.Frontend.Services.FrontendServices.BaseServices
 
         }
 
+
+        public virtual async Task<Response<T>> GetForUpdateByID<T>(Guid id, CancellationToken token) where T : class
+        {
+            try
+            {
+                var url = $"{_uriPrefix}/{id}";
+                var httpResponse = await _httpClient.GetAsync(url, token);
+                var response = await httpResponse.ToAppResponse<T>(token);
+                if (response) return response!;
+
+                return Response<T>.Failed(response.Title, response.Errors);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Response<T>.Failed(Messages.GeneralErrorMessage);
+            }
+        }
 
         // Create 
         public virtual async Task<Response> Create(object obj, CancellationToken token)

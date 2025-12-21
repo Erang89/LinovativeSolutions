@@ -32,7 +32,7 @@ namespace LinoVative.Service.Backend.CrudServices.Outlets.Outlets
 
         public async Task<Result> Handle(GetOutletForUpdateCommand request, CancellationToken ct)
         {
-            var outlet = await _dbContext.Outlets.ProjectToType<OutletViewDto>(_mapper.Config).FirstOrDefaultAsync(x => x.Id == request.Id);
+            var outlet = await _dbContext.Outlets.GetAll(_actor).ProjectToType<OutletViewDto>(_mapper.Config).FirstOrDefaultAsync(x => x.Id == request.Id);
             if (outlet == null) return Result.Failed($"No Data with ID: {request.Id}");
 
             await LoadShift(outlet);

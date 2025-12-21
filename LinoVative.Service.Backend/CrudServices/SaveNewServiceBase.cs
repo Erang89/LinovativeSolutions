@@ -7,6 +7,7 @@ using LinoVative.Shared.Dto;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Formats.Tar;
 using System.Linq.Expressions;
 
 namespace LinoVative.Service.Backend.CrudServices
@@ -44,6 +45,9 @@ namespace LinoVative.Service.Backend.CrudServices
             
             var creatingResult = await OnCreatingEntity(request, ct);
 
+            foreach (var entity in creatingResult)
+                await BeforeSave(request, entity, ct);
+
             _dbSet.AddRange(creatingResult);
 
             if (typeof(IAuditableEntity).IsAssignableFrom(typeof(T)))
@@ -74,7 +78,10 @@ namespace LinoVative.Service.Backend.CrudServices
 
             return Result.OK(creatingResult.Select(x => x.Id).ToList());
         }
-        
+
+
+        public virtual Task BeforeSave(TRequest request, T entity, CancellationToken token) => Task.CompletedTask;
+
 
         protected virtual async Task<List<T>> OnCreatingEntity(TRequest request, CancellationToken token = default)
         {

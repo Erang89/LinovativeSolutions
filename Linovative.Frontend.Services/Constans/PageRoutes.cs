@@ -29,6 +29,8 @@
                     public const string OutletListAdd = $"{IndexOutlets}/add";
                     public const string OutletListUpdate = IndexOutlets + "/{Id}";
                     public const string WorkingShifts = $"{IndexOutlets}/shifts";
+                    public const string WorkingShiftAdd = $"{IndexOutlets}/shifts/new";
+                    public const string WorkingShiftUpdate = $"{IndexOutlets}" + "/shifts/{Id}";
                     public const string OutletUsers = $"{IndexOutlets}/users";
                     public const string Table = $"{IndexOutlets}/tables";
                 }
