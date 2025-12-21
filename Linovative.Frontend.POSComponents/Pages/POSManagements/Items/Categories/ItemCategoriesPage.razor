@@ -12,123 +12,88 @@
 @inject IItemCategoryService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
+@inject IAppNavigationService _nav
+@inject IGlobalMessage _globalMessage
+@inject IOutletService _outletService
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
-<ItemsBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Categories)})" />
+<ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Categories) })" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.Category" />
-<CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
+<CrudButtons PageMode="PageModes.List" OnAddNew="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.CategoryAdd))"
+             OnDelete="Delete" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />
-
-
-
-@if (pageMode == PageModes.Create || pageMode == PageModes.Update)
-{
-    <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
-    <MudGrid>
-        <MudItem xs="12" sm="6" lg="4">
-
-            <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
-            <LinovativeGap />
-
-            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
-
-                <LinovativeInputText @bind-Value="@itemCategory.Name"
-                                     LocalizerKey="Name"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     IsRequired="true" />
-
-                <LinovativeGap />
-                <ItemGroupDropdown @bind-Value="@itemGroup"
-                                   LocalizerKey="GroupId"
-                                   Errors="@formResponse?.Errors"
-                                   LocalizerResource="@LocalizerResource"
-                                   Required="true" />
-
-            </MudForm>
-        </MudItem>
-    </MudGrid>
-}
 
 
 <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
 <AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
 
+<MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">@EntityPluralName</MudText>
+        <MudSpacer />
+        <MudTextField T="string"
+                      Immediate="true"
+                      ValueChanged="@(s=>OnSearch(s))"
+                      Placeholder="@_loc.Global("Label.Search")" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                      Class="mt-0"></MudTextField>
+    </ToolBarContent>
 
+    <HeaderContent>
+        <MudTh Style="width: 30px">
+            <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
+        </MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemCategoryViewDto.Name))" T="ItemCategoryViewDto">@Label("Name")</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@($"{nameof(ItemCategoryViewDto.ItemGroup)}/{nameof(ItemCategoryViewDto.Name)}")" T="ItemCategoryViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
+        <MudTh Style="width: 60px"></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context))" T="bool"></MudCheckBox>
+        </MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Group">@context.ItemGroup?.Name</MudTd>
+        <MudTd Style="width: 60px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+    </RowTemplate>
 
-@if (pageMode == PageModes.List)
-{
-    <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">@EntityPluralName</MudText>
-            <MudSpacer />
-            <MudTextField T="string"
-                          Immediate="true"
-                          ValueChanged="@(s=>OnSearch(s))"
-                          Placeholder="@_loc.Global("Label.Search")" Adornment="Adornment.Start"
-                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
-                          Class="mt-0"></MudTextField>
-        </ToolBarContent>
-
-        <HeaderContent>
-            <MudTh Style="width: 30px">
-                <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
-            </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemCategoryViewDto.Name))" T="ItemCategoryViewDto">@Label("Name")</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@($"{nameof(ItemCategoryViewDto.ItemGroup)}/{nameof(ItemCategoryViewDto.Name)}")" T="ItemCategoryViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
-            <MudTh Style="width: 60px"></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd>
-                <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
-            </MudTd>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Group">@context.ItemGroup?.Name</MudTd>
-            <MudTd Style="width: 60px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
-        </RowTemplate>
-
-        <NoRecordsContent>
-            <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>@_loc.Global("Label.Loading")</MudText>
-        </LoadingContent>
-        <PagerContent>
-            <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
-        </PagerContent>
-        <FooterContent>
-            <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
-        </FooterContent>
-    </MudTable>
-
-}
+    <NoRecordsContent>
+        <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>@_loc.Global("Label.Loading")</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
+    </PagerContent>
+    <FooterContent>
+        <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
+    </FooterContent>
+</MudTable>
 
 
 
 @code {
+    [Parameter] public string? Id { get; set; }
 
     protected override string LocalizerResource => nameof(ItemCategoriesPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
     private List<ItemCategoryViewDto> selectedItems { get; set; } = new();
-    private CancellationTokenSource cts = new();
+    private CancellationTokenSource cts  { get; set; } = new();
     private PageModes? pageMode { get; set; } = PageModes.List;
     private ItemCategoryViewDto itemCategory { get; set; } = new();
-    private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
-    private MudForm? form { get; set; }
     private Response? formResponse { get; set; } = null;
     private bool isFormSubmitting { get; set; }
-    private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
     private MudTable<ItemCategoryViewDto>? table;
     private bool selectedAll { get; set; }
     private List<ItemCategoryViewDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
-    private ItemGroupViewDto? itemGroup = null;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -140,7 +105,6 @@
     void OnFormKeyPress()
     {
         formResponse = null;
-        formErrorAlert?.HideAlert();
         _state.NotifyStateChanged();
     }
 
@@ -168,64 +132,18 @@
 
     async Task HideAllAllert()
     {
-        if (form is not null) await form.ResetAsync();
         successAllert?.HideAlert();
         deleteAllert?.HideAlert();
-        formErrorAlert?.HideAlert();
-    }
-
-    Task Save()
-    {
-        form!.Validate();
-
-        if (!isFormValid)
-            return Task.CompletedTask;
-
-        if (pageMode == PageModes.Create)
-            return SaveNew();
-
-        return SaveUpdate();
-    }
-
-    async Task SaveNew()
-    {
-        isFormSubmitting = true;
-        itemCategory.GroupId = itemGroup?.Id;
-        formResponse = await _service.Create(itemCategory, cts.Token);
-        if (formResponse)
-        {
-            await Reset();
-            successAllert!.ShowAlert(CreatedSuccessMessage);
-            return;
-        }
-
-        isFormSubmitting = false;
-        formErrorAlert!.ShowAlert(formResponse);
-    }
-
-    async Task SaveUpdate()
-    {
-        isFormSubmitting = true;
-        itemCategory.GroupId = itemGroup?.Id;
-        formResponse = await _service.Update(itemCategory, cts.Token);
-        if (formResponse)
-        {
-            await Reset();
-            successAllert!.ShowAlert(UpdateSuccessMessage);
-        }
-
-        isFormSubmitting = false;
-        formErrorAlert!.ShowAlert(formResponse);
     }
 
     async Task Delete()
     {
         bool? result = await _dialogService.ShowMessageBox(DELETE, DeleteConfirmation, yesText: YES, cancelText: CANCEL, options: new DialogOptions()
-            {
-                FullWidth = true,
-                CloseOnEscapeKey = true,
-                BackdropClick = false,
-            });
+        {
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+        });
 
         if (!(result ?? false)) return;
 
@@ -257,13 +175,13 @@
         _state.NotifyStateChanged();
 
         var odataFilter = new ODataFilter()
-            {
-                PageNumber = state.Page + 1,
-                PageSize = state.PageSize,
-                OrderFiled = state.SortLabel,
-                SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
-                Options = $"$expand=ItemGroup"
-            };
+        {
+            PageNumber = state.Page + 1,
+            PageSize = state.PageSize,
+            OrderFiled = state.SortLabel,
+            SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
+            Options = $"$expand=ItemGroup"
+        };
 
         if (searchString is not null)
             odataFilter.Options += $"&$filter=contains(tolower(name), tolower('{searchString}'))";
@@ -282,11 +200,7 @@
 
     async Task Update(ItemCategoryViewDto record)
     {
-        itemCategory = record;
-        itemGroup = new ItemGroupViewDto() { Id = record.ItemGroup!.Id, Name = record.ItemGroup!.Name };
-        pageMode = PageModes.Update;
-        await HideAllAllert();
-        _state.NotifyStateChanged();
+        _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.CategoryUpdate.Replace("{Id}", record.Id.ToString()));
     }
 
     void SelectRecord(bool selected, ItemCategoryViewDto data)

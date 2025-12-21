@@ -1,0 +1,210 @@
+﻿@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.GroupAdd)]
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.GroupUpdate)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IItemGroupService _groupService
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+@inject IAppNavigationService _nav
+@inject IGlobalMessage _globalMessage
+@inject IOutletService _outletService
+@implements IDisposable
+
+<LinovativePageTitle Title="@EntityPluralName" />
+<ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Groups) })" />
+<ItemTabs SelectedTab="ItemTabs.Tabs.Group" />
+<CrudButtons PageMode="(Id is null ? PageModes.Create : PageModes.Update)"
+             OnSave="Save" OnCancel="@(()=> _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Groups))" IsFormSubmitting="isFormSubmitting" />
+<LinovativeGap />
+
+
+<MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="6" lg="4">
+
+        <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+        <LinovativeGap />
+
+        <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+
+            @if (loaded)
+            {
+                <LinovativeInputText @bind-Value="@itemGroup.Name"
+                                     IsRequired="true"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="Name" />
+            }
+            else
+            {
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            }
+        </MudForm>
+    </MudItem>
+</MudGrid>
+
+
+
+
+@code {
+    [Parameter] public string? Id { get; set; }
+
+    protected override string LocalizerResource => "ItemGroupPage";
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+
+    private List<ItemGroupViewDto> selectedItems { get; set; } = new();
+    private CancellationTokenSource cts { get; set; } = new();
+    private ItemGroupInputDto itemGroup { get; set; } = new();
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private bool selectedAll { get; set; }
+    private List<ItemGroupViewDto> dataSource { get; set; } = new();
+    private bool loaded { get; set; }
+    private List<OutletViewDto> _outlets { get; set; } = new();
+    private List<KeyValuePair<OutletViewDto, OutletItemGroupDto>> _outletGroups { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        isFormSubmitting = true;
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _state.OnChange += GenerateData;
+        _topBarService.SetTitle(EntityPluralName);
+        await LoadData();
+        isFormSubmitting = false;
+        loaded = true;
+        _state.NotifyStateChanged();
+    }
+
+    void OnFormKeyPress()
+    {
+        formResponse = null;
+        formErrorAlert?.HideAlert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task Reset()
+    {
+        itemGroup = new();
+
+        formResponse = null;
+        isFormSubmitting = false;
+        selectedItems = new();
+        selectedAll = false;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        formErrorAlert?.HideAlert();
+    }
+
+    Task Save()
+    {
+        form!.Validate();
+
+        if (!isFormValid)
+            return Task.CompletedTask;
+
+        if (Id is null) return SaveNew();
+
+        return SaveUpdate();
+    }
+
+    async Task SaveNew()
+    {
+        isFormSubmitting = true;
+        formResponse = await _groupService.Create(itemGroup, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Groups);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task SaveUpdate()
+    {
+        isFormSubmitting = true;
+        formResponse = await _groupService.Update(itemGroup, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Groups);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+
+    public void Dispose()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    async Task LoadData()
+    {
+        var outletTask = _outletService.GetAll(cts.Token);
+
+        if (Id is null)
+        {
+            _outlets = (await outletTask).Data!;
+            return;
+        }
+
+
+        var groupTask = _groupService.GetForUpdate(new Guid(Id), cts.Token);
+
+        await Task.WhenAll(groupTask, outletTask);
+
+        _outlets = (await outletTask).Data!;
+        itemGroup = (await groupTask).Data!;
+
+    }
+
+    void GenerateData()
+    {
+        Func<OutletViewDto, OutletItemGroupDto> getGroup = (outlet) =>
+        {
+            var data = itemGroup.OutletGroups.FirstOrDefault(x => x.OutletId == outlet.Id);
+            if (data is not null) return data;
+
+            data = new OutletItemGroupDto()
+            {
+                ItemGroupId = itemGroup.Id,
+                OutletId = outlet.Id,
+                IsActive = false
+            };
+            itemGroup.OutletGroups.Add(data);
+
+            return data;
+        };
+
+        _outletGroups = _outlets.Select(x => new KeyValuePair<OutletViewDto, OutletItemGroupDto>(x, getGroup(x))).ToList();
+    }
+}

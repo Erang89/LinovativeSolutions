@@ -13,7 +13,11 @@
                 public const string ItemAdd = $"{IndexItems}/items/add";
                 public const string ItemUpdate = IndexItems + "/items/update/{Id}";
                 public const string Groups = $"{IndexItems}/groups";
+                public const string GroupAdd = $"{IndexItems}/groups/add";
+                public const string GroupUpdate = $"{IndexItems}" + "/group/{Id}s";
                 public const string Categories = $"{IndexItems}/categories";
+                public const string CategoryAdd = $"{IndexItems}/categories/add";
+                public const string CategoryUpdate = $"{IndexItems}" + "/categories/{Id}";
                 public const string Units = $"{IndexItems}/units";
                 public const string BulkOperations = $"{IndexItems}/bulk-operations";
             }

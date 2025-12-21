@@ -1,0 +1,223 @@
+﻿@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.CategoryAdd)]
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.CategoryUpdate)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IItemCategoryService _service
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+@inject IAppNavigationService _nav
+@inject IGlobalMessage _globalMessage
+@inject IOutletService _outletService
+@implements IDisposable
+
+
+<LinovativePageTitle Title="@EntityPluralName" />
+<ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Categories) })" />
+<ItemTabs SelectedTab="ItemTabs.Tabs.Category" />
+<CrudButtons PageMode="@(Id is null ? PageModes.Create : PageModes.Update)"
+             OnSave="Save"
+             OnCancel="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Categories))"
+             IsFormSubmitting="isFormSubmitting" />
+<LinovativeGap />
+
+
+
+<MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+<MudGrid>
+    <MudItem xs="12" sm="6" lg="4">
+
+        <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+        <LinovativeGap />
+
+        <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+            @if (loaded)
+            {
+                <LinovativeInputText @bind-Value="@itemCategory.Name"
+                                     LocalizerKey="Name"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     IsRequired="true" />
+
+                <LinovativeGap />
+                <ItemGroupDropdown @bind-Value="@itemGroup"
+                                   LocalizerKey="GroupId"
+                                   Errors="@formResponse?.Errors"
+                                   LocalizerResource="@LocalizerResource"
+                                   Required="true" />
+            }
+            else
+            {
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            }
+
+        </MudForm>
+    </MudItem>
+</MudGrid>
+
+
+
+@code {
+
+    [Parameter] public string? Id { get; set; }
+
+    protected override string LocalizerResource => nameof(ItemCategoriesPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    private List<ItemCategoryViewDto> selectedItems { get; set; } = new();
+    private CancellationTokenSource cts { get; set; } = new();
+    private ItemCategoryInputDto itemCategory { get; set; } = new();
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private bool selectedAll { get; set; }
+    private List<ItemCategoryViewDto> dataSource { get; set; } = new();
+    private ItemGroupViewDto? itemGroup = null;
+    private bool loaded { get; set; }
+    private List<OutletViewDto> _outlets { get; set; } = new();
+    private List<KeyValuePair<OutletViewDto, OutletItemCategoryDto>> _outletCategories { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        isFormSubmitting = true;
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _state.OnChange += GenerateData;
+        _topBarService.SetTitle(EntityPluralName);
+        await LoadData();
+        isFormSubmitting = false;
+        loaded = true;
+        _state.NotifyStateChanged();
+    }
+
+
+    void OnFormKeyPress()
+    {
+        formResponse = null;
+        formErrorAlert?.HideAlert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task Reset()
+    {
+        itemCategory = new();
+
+        formResponse = null;
+        isFormSubmitting = false;
+        selectedItems = new();
+        selectedAll = false;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        formErrorAlert?.HideAlert();
+    }
+
+    Task Save()
+    {
+        form!.Validate();
+
+        if (!isFormValid)
+            return Task.CompletedTask;
+
+        if (Id is null)
+            return SaveNew();
+
+        return SaveUpdate();
+    }
+
+    async Task SaveNew()
+    {
+        isFormSubmitting = true;
+        itemCategory.GroupId = itemGroup?.Id;
+        formResponse = await _service.Create(itemCategory, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Categories);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task SaveUpdate()
+    {
+        isFormSubmitting = true;
+        itemCategory.GroupId = itemGroup?.Id;
+        formResponse = await _service.Update(itemCategory, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Categories);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    public void Dispose()
+    {
+        throw new NotImplementedException();
+    }
+
+    async Task LoadData()
+    {
+        var outletTasks = _outletService.GetAll(cts.Token);
+
+        if (Id is null)
+        {
+            _outlets = (await outletTasks).Data!;
+            return;
+        }
+
+        var categoryTask = _service.GetForUpdate(new Guid(Id), cts.Token);
+
+        await Task.WhenAll(categoryTask, outletTasks);
+        _outlets = (await outletTasks).Data!;
+        itemCategory = (await categoryTask).Data!;
+        itemGroup = new() { Id = itemCategory.ItemGroup!.Id, Name = itemCategory.ItemGroup.Name };
+    }
+
+    void GenerateData()
+    {
+        Func<OutletViewDto, OutletItemCategoryDto> getCategory = (outlet) =>
+        {
+            var data = itemCategory.OutletCategories.FirstOrDefault(x => x.OutletId == outlet.Id);
+            if (data is not null) return data;
+
+            data = new OutletItemCategoryDto()
+            {
+                ItemCategoryId = itemCategory.Id,
+                OutletId = outlet.Id,
+                IsActive = false
+            };
+
+            itemCategory.OutletCategories.Add(data);
+            return data;
+        };
+
+        _outletCategories = _outlets.Select(x => new KeyValuePair<OutletViewDto, OutletItemCategoryDto>(x, getCategory(x))).ToList();
+    }
+
+}

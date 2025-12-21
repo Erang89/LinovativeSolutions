@@ -21,7 +21,7 @@ namespace LinoVative.Shared.Dto.ItemDtos
         public IdWithNameDto? ItemGroup { get; set; }
     }
 
-    public class ItemCategoryInputDto : ItemCategoryDto
+    public class ItemCategoryInputDto : ItemCategoryViewDto
     {
         public List<OutletItemCategoryDto> OutletCategories { get; set; } = new();
     }

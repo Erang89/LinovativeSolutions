@@ -1,4 +1,5 @@
 ﻿using Linovative.Dto.MasterData.People;
+using LinoVative.Service.Backend.CrudServices.Items.ItemCategories;
 using LinoVative.Service.Backend.CrudServices.Items.Items;
 using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
 using LinoVative.Service.Backend.CrudServices.Payments.BankNotes;
@@ -58,6 +59,8 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<ItemCategory, IdWithNameDto>();
             config.NewConfig<ItemCategory, ItemCategoryViewDto>()
                 .Map(x => x.ItemGroup, src => src.Group);
+            config.NewConfig<UpdateItemCategoryCommand, ItemCategory>().Ignore(x => x.Group!);
+            config.NewConfig<CreateItemCategoryCommand, ItemCategory>().Ignore(x => x.Group!);
 
             // Mapping Outlets
             config.NewConfig<Outlet, OutletViewDto>();
