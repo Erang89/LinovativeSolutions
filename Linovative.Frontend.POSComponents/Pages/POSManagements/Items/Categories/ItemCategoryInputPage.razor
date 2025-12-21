@@ -65,6 +65,31 @@
 
 
 
+<LinovativeGap />
+<LinovativeGap />
+<MudText Typo="Typo.h6">@Label("SettingSection")</MudText>
+<LinovativeGap />
+
+@if (loaded)
+{
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Expanded="true" Text="@Label("OutletSettings")">
+            @foreach (var outlet in _outletCategories.OrderBy(x => x.Key.Name))
+            {
+                <div class="d-flex"><MudSwitch @bind-Value="@outlet.Value.IsActive" Label="@outlet.Key.Name" Color="Color.Info" /></div>
+                <LinovativeGap />
+            }
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+else
+{
+    <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+}
+
+
+
+
 @code {
 
     [Parameter] public string? Id { get; set; }

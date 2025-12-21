@@ -2,5 +2,7 @@
   "Entity.Name.Single": "Group",
   "Entity.Name.Plural": "Groups",
   "Name.Label": "Name",
+  "SettingSection.Label": "Settings",
+  "OutletSettings.Label": "Outlet Settings",
   "Name.Required.ErrorMessage": "Name is required"
 }

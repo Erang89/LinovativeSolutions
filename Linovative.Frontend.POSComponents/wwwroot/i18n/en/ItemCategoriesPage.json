@@ -3,6 +3,8 @@
   "Entity.Name.Plural": "Categories",
   "Name.Label": "Name",
   "GroupId.Label": "Group",
+  "SettingSection.Label": "Settings",
+  "OutletSettings.Label": "Outlet Settings",
   "Name.Required.ErrorMessage": "Name is required",
   "GroupId.Required.ErrorMessage": "Group is required"
 }
