@@ -42,7 +42,7 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.PaymentMethods
 
                 var newOpm = _mapper.Map<OutletPaymentMethod>(dto);
                 newOpm.PaymentMethodId = entity.Id;
-                newOpm.Sequence = maxSequence.FirstOrDefault(x => x.Id == dto.OutletId)?.Max ?? 1;
+                newOpm.Sequence = (maxSequence.FirstOrDefault(x => x.Id == dto.OutletId)?.Max ?? 0) + 1;
                 _dbContext.OutletPaymentMethods.Add(newOpm);
             }
         }

@@ -25,8 +25,10 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
           
         }
 
-        public override Task BeforeSave(CreateShiftCommand request, Shift entity, CancellationToken token)
+        public override async Task BeforeSave(CreateShiftCommand request, Shift entity, CancellationToken token)
         {
+            var maxSequence = await _dbContext.OutletShifts.GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
+
             foreach (var os in request.Outlets)
             {
                 var newOs = _mapper.Map<OutletShift>(os);
@@ -34,10 +36,10 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
                 newOs.CreateBy(_actor);
                 newOs.StartTime = entity.StartTime;
                 newOs.EndTime = entity.EndTime;
+                newOs.Sequence = (maxSequence.FirstOrDefault(x => x.Id == os.OutletId)?.Max ?? 0) + 1;
                 _dbContext.OutletShifts.Add(newOs);
             }
 
-            return Task.CompletedTask;
         }
 
         protected override async Task<Result> Validate(CreateShiftCommand request, CancellationToken token)

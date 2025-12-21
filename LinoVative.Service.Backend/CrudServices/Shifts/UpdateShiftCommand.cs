@@ -43,7 +43,7 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
                 newOutletShift.ShiftId = entity.Id;
                 newOutletShift.StartTime = entity.StartTime;
                 newOutletShift.EndTime = entity.EndTime;
-                newOutletShift.Sequence = maxSequence.FirstOrDefault(x => x.Id == os.OutletId)?.Max ?? 1;
+                newOutletShift.Sequence = (maxSequence.FirstOrDefault(x => x.Id == os.OutletId)?.Max ?? 0) + 1;
                 _dbContext.OutletShifts.Add(newOutletShift);
             }
         }

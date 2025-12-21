@@ -4,6 +4,8 @@
 
   "Name.Label": "Name",
   "Behavior.Label": "Behavior",
+  "OrderTypeSettingsSection.Label": "Settings",
+  "OutletSettings.Label": "Outlet Settings",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Behavior.Required.ErrorMessage": "Behavior is required"

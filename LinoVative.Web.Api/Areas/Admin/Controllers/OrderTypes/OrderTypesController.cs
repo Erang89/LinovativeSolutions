@@ -1,9 +1,9 @@
-﻿using LinoVative.Service.Core.Interfaces;
+﻿using LinoVative.Service.Backend.CrudServices.OrderTypes;
+using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
+using LinoVative.Shared.Dto.OrderTypes;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
-using LinoVative.Service.Backend.CrudServices.OrderTypes;
-using LinoVative.Service.Backend.CrudServices.Outlets.Shifts;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.OrderTypes
 {
@@ -11,6 +11,27 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.OrderTypes
     {
         public OrderTypesController(IMediator mediator, ILogger<OrderTypesController> logger) : base(mediator, logger)
         {
+        }
+
+        [Route("{id}")]
+        [HttpGet]
+        [ProducesResponseType(typeof(APIListResponse<OrderTypeInputDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(Guid id, CancellationToken token)
+        {
+            try
+            {
+                var c = new GetOrderTypeForUpdateCommand() { Id = id };
+                var result = await _mediator.Send(c, token);
+                return StatusCode((int)result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                var routeName = ControllerContext.ActionDescriptor.DisplayName;
+                _logger.LogError(ex, LOG_ERRROR_MESSAGE, routeName);
+                var responseObject = Result.Failed(string.Format(DISPLAY_ERROR_MESSAGE, routeName));
+                responseObject.SetTraceId(HttpContext.TraceIdentifier);
+                return StatusCode((int)HttpStatusCode.InternalServerError, responseObject)!;
+            }
         }
 
         [Route(CREATE)]

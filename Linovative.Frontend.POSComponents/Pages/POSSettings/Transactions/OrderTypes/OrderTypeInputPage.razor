@@ -1,0 +1,251 @@
+﻿@using LinoVative.Shared.Dto.MasterData.Payments
+@using LinoVative.Shared.Dto.OrderTypes
+@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Pages.POSSettings.Transactions.Shared
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
+@using LinoVative.Shared.Dto.MasterData.Shifts
+@using Linovative.Shared.Interface.Enums
+
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypeAdd)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypeUpdate)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject IOrderTypeService _service
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+@inject IAppNavigationService _nav
+@inject IGlobalMessage _globalMessage
+@inject IOutletService _outletService
+@implements IDisposable
+
+
+<LinovativePageTitle Title="@EntityPluralName" />
+<PaymentBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes) })" />
+<PaymentTabs SelectedTab="PaymentTabs.Tabs.OrderType" />
+<CrudButtons PageMode="@(Id is null ? PageModes.Create : PageModes.Update)" OnSave="Save"
+             OnCancel="(()=> _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes))"
+             IsFormSubmitting="isFormSubmitting" />
+<LinovativeGap />
+
+
+<MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="6" lg="4">
+
+        <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+        <LinovativeGap />
+
+        <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+
+            @if (loaded)
+            {
+
+                <LinovativeInputText @bind-Value="@item.Name"
+                                     IsRequired="true"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="Name" />
+
+                <LinovativeGap />
+                <OrderTypeBehaviorDropdown Required="true"
+                                           Errors="@formResponse?.Errors"
+                                           LocalizerResource="@LocalizerResource"
+                                           LocalizerKey="Behavior"
+                                           Value="@item.Behavior"
+                                           ValueChanged="@(x => item.Behavior = x)" />
+            }else
+            {
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            }
+        </MudForm>
+    </MudItem>
+</MudGrid>
+
+
+<LinovativeGap />
+<LinovativeGap />
+<MudText Typo="Typo.h6">@Label("OrderTypeSettingsSection")</MudText>
+<LinovativeGap />
+
+@if (loaded)
+{
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Expanded="true" Text="@Label("OutletSettings")">
+            @foreach (var outlet in _outletOrderTypes.OrderBy(x => x.Key.Name))
+            {
+                <div class="d-flex"><MudSwitch @bind-Value="@outlet.Value.IsActive" Label="@outlet.Key.Name" Color="Color.Info" /></div>
+                <LinovativeGap />
+            }
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+else
+{
+    <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+}
+
+
+@code {
+
+    [Parameter] public string? Id { get; set; }
+
+    protected override string LocalizerResource => nameof(OrderTypesPage);
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    private List<OrderTypeViewDto> selectedItems { get; set; } = new();
+    private CancellationTokenSource cts { get; set; } = new();
+    private OrderTypeInputDto item { get; set; } = new();
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private MudTable<OrderTypeViewDto>? table;
+    private bool selectedAll { get; set; }
+    private List<OrderTypeViewDto> dataSource { get; set; } = new();
+    private List<OutletViewDto> _outlets { get; set; } = new();
+    private List<KeyValuePair<OutletViewDto, OutletOrderTypeDto>> _outletOrderTypes { get; set; } = new();
+    private bool loaded { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        isFormSubmitting = true;
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _state.OnChange += GenerateData;
+        _topBarService.SetTitle(EntityPluralName);
+        await LoadData();
+        isFormSubmitting = false;
+        loaded = true;
+        _state.NotifyStateChanged();
+    }
+
+
+    void OnFormKeyPress()
+    {
+        formResponse = null;
+        formErrorAlert?.HideAlert();
+        _state.NotifyStateChanged();
+    }
+
+
+    async Task Reset()
+    {
+        item = new();
+
+        formResponse = null;
+        isFormSubmitting = false;
+        selectedItems = new();
+        selectedAll = false;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        formErrorAlert?.HideAlert();
+    }
+
+    Task Save()
+    {
+        form!.Validate();
+
+        if (!isFormValid)
+            return Task.CompletedTask;
+
+        if (Id is null)
+            return SaveNew();
+
+        return SaveUpdate();
+    }
+
+    async Task SaveNew()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Create(item, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task SaveUpdate()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Update(item, cts.Token);
+
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes);
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+
+    public void Dispose()
+    {
+
+        _state.OnChange -= StateHasChanged;
+        _state.OnChange -= GenerateData;
+    }
+
+
+    async Task LoadData()
+    {
+        var outletTasks = _outletService.GetAll(cts.Token);
+
+        if (Id is null)
+        {
+            _outlets = (await outletTasks).Data!;
+            return;
+        }
+
+        var orderTypeTask = _service.GetForUpdate(new Guid(Id), cts.Token);
+        await Task.WhenAll(outletTasks, orderTypeTask);
+
+        item = (await orderTypeTask).Data!;
+        _outlets = (await outletTasks).Data!;
+    }
+
+    void GenerateData()
+    {
+        Func<OutletViewDto, OutletOrderTypeDto> getOrderType = (outlet) =>
+        {
+            var ot = item.OutletOrderTypes.FirstOrDefault(x => x.OutletId == outlet.Id);
+            if (ot is not null) return ot;
+
+            var newOt = new OutletOrderTypeDto()
+            {
+                OutletId = outlet.Id,
+                OrderTypeId = item.Id,
+            };
+            item.OutletOrderTypes.Add(newOt);
+
+            return newOt;
+        };
+
+        _outletOrderTypes = _outlets.Select(x => new KeyValuePair<OutletViewDto, OutletOrderTypeDto>(x, getOrderType(x))).ToList();
+    }
+}

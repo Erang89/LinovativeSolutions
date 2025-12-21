@@ -1,5 +1,6 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
+using LinoVative.Shared.Dto.Outlets;
 
 namespace LinoVative.Shared.Dto.OrderTypes
 {
@@ -12,6 +13,11 @@ namespace LinoVative.Shared.Dto.OrderTypes
 
         [LocalizedRequired]
         public OrderBehaviors? Behavior { get; set; }
+    }
+
+    public class OrderTypeInputDto : OrderTypeDto
+    {
+        public List<OutletOrderTypeDto> OutletOrderTypes { get; set; } = new();
     }
 
     public class OrderTypeViewDto : OrderTypeDto
