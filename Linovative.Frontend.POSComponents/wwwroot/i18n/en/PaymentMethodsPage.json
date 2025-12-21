@@ -5,6 +5,8 @@
   "Name.Label": "Name",
   "Type.Label": "Type",
   "PaymentMethodGroupId.Label": "Group",
+  "PaymentMethodSettingsSection.Label": "Settings",
+  "OutletSettings.Label": "Outlet Settings",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Type.Required.ErrorMessage": "Type is required",

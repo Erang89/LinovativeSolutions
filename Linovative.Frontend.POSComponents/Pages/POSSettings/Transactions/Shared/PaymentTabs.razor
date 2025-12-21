@@ -3,10 +3,10 @@
 @inject IJsonLocalizer _loc
 
 <MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethod))" Text="@_loc.PosManagement("Menu.Tab.PaymentMethod")" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethodGroup))" Text="@_loc.PosManagement("Menu.Tab.PaymentMethodGroup")" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes))" Text="@_loc.PosManagement("Menu.Tab.OrderTypes")" />
-    <MudTabPanel OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.BankNotes))" Text="@_loc.PosManagement("Menu.Tab.BankNotes")" />
+    <MudTabPanel OnClick="@(() => NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethod))" Text="@_loc.PosManagement("Menu.Tab.PaymentMethod")" />
+    <MudTabPanel OnClick="@(() => NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethodGroup))" Text="@_loc.PosManagement("Menu.Tab.PaymentMethodGroup")" />
+    <MudTabPanel OnClick="@(() => NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.OrderTypes))" Text="@_loc.PosManagement("Menu.Tab.OrderTypes")" />
+    <MudTabPanel OnClick="@(() => NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.BankNotes))" Text="@_loc.PosManagement("Menu.Tab.BankNotes")" />
 </MudTabs>
 
 <LinovativeGap />
@@ -23,6 +23,17 @@
         BankNote
     }
 
+    bool firstClick = true;
+    void NavigateTo(string url)
+    {
+        if(firstClick)
+        {
+            firstClick = false;
+            return;
+        }
+
+        _nav.NavigateTo(url);
+    }
 
     protected override async Task OnInitializedAsync()
     {

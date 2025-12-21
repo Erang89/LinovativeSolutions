@@ -27,7 +27,8 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
         protected override async Task BeforeSaveUpdate(UpdateShiftCommand request, Shift entity, CancellationToken token)
         {
             var outletShifts = await _dbContext.OutletShifts.GetAll(_actor).Where(x => x.ShiftId == entity.Id).ToListAsync();
-            foreach(var os in request.Outlets)
+            var maxSequence = await _dbContext.OutletShifts.GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
+            foreach (var os in request.Outlets)
             {
                 var existing = outletShifts.FirstOrDefault(x => x.Id == os.Id);
                 if(existing is not null)
@@ -42,6 +43,7 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
                 newOutletShift.ShiftId = entity.Id;
                 newOutletShift.StartTime = entity.StartTime;
                 newOutletShift.EndTime = entity.EndTime;
+                newOutletShift.Sequence = maxSequence.FirstOrDefault(x => x.Id == os.OutletId)?.Max ?? 1;
                 _dbContext.OutletShifts.Add(newOutletShift);
             }
         }

@@ -41,6 +41,8 @@
                     public static class Payments
                     {
                         public const string PaymentMethod = $"{Trasactions.Index}/payment-methods";
+                        public const string PaymentMethodAdd = $"{Trasactions.Index}/payment-methods/add";
+                        public const string PaymentMethodUpdate = $"{Trasactions.Index}" + "/payment-methods/{Id}";
                         public const string PaymentMethodGroup = $"{Trasactions.Index}/payment-method-groups";
                         public const string OrderTypes = $"{Trasactions.Index}/order-types";
                         public const string BankNotes = $"{Trasactions.Index}/bank-notes";

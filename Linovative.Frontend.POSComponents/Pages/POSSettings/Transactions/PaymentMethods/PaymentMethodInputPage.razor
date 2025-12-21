@@ -1,36 +1,37 @@
-﻿@using LinoVative.Shared.Dto.Outlets
+﻿@using LinoVative.Shared.Dto.MasterData.Payments
+@using LinoVative.Shared.Dto.Outlets
 @using Linovative.Frontend.POSComponents.Bases
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 @using Linovative.Frontend.POSComponents.Pages.POSSettings.Outlets.Shared
 @using LinoVative.Shared.Dto.MasterData.Shifts
+@using Linovative.Frontend.POSComponents.Pages.POSSettings.Transactions.Shared
+@using Linovative.Shared.Interface.Enums
 
-@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShiftAdd)]
-@attribute [Route(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShiftUpdate)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethodAdd)]
+@attribute [Route(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethodUpdate)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
 @inject IJsonLocalizer _loc
 @inject ITopBarService _topBarService
 @inject IApplicationStateService _state
-@inject IShiftService _service
-@inject IOutletService _ouletService
+@inject IPaymentMethodService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 @inject IAppNavigationService _nav
 @inject IGlobalMessage _globalMessage
+@inject IOutletService _outletService
 @implements IDisposable
 
+
 <LinovativePageTitle Title="@EntityPluralName" />
-<OutletBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts) })" />
-<OutletTabs SelectedTab="OutletTabs.Tabs.WorkingShift" />
-<CrudButtons PageMode="@(Id is null ? PageModes.Create : PageModes.Update)"
-             OnSave="Save"
-             OnCancel="@(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts))"
+<PaymentBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethod) })" />
+<PaymentTabs SelectedTab="PaymentTabs.Tabs.PaymentMethod" />
+<CrudButtons PageMode="@(Id is null ? PageModes.Create : PageModes.Update)" OnSave="Save" 
+             OnCancel="@(()=> _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethod))" 
              IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />
-
-
 
 <MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
 
@@ -43,26 +44,25 @@
         <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
             @if (loaded)
             {
-                <LinovativeInputText @bind-Value="@shift.Name"
+                <LinovativeInputText @bind-Value="@item.Name"
                                      IsRequired="true"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="Name" />
-                <LinovativeGap />
-                <LinovativeTimePicker Value="@shift.StartTime"
-                                      ValueChanged="@(x => shift.StartTime = x)"
-                                      IsRequired="true"
-                                      Errors="@formResponse?.Errors"
-                                      LocalizerResource="@LocalizerResource"
-                                      LocalizerKey="StartTime" />
 
                 <LinovativeGap />
-                <LinovativeTimePicker Value="@shift.EndTime"
-                                      ValueChanged="@(x => shift.EndTime = x)"
-                                      IsRequired="true"
-                                      Errors="@formResponse?.Errors"
-                                      LocalizerResource="@LocalizerResource"
-                                      LocalizerKey="EndTime" />
+                <PaymentTypeDropdown Required="true"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="Type"
+                                     @bind-Value="@item.Type" />
+
+                <LinovativeGap />
+                <PaymentMethodGroupDropdown @bind-Value="@group"
+                                            Required="true"
+                                            Errors="@formResponse?.Errors"
+                                            LocalizerResource="@LocalizerResource"
+                                            LocalizerKey="@nameof(PaymentMethodViewDto.PaymentMethodGroupId)" />
             }
             else
             {
@@ -78,27 +78,19 @@
 
 <LinovativeGap />
 <LinovativeGap />
-<MudText Typo="Typo.h6">@Label("ShifttSettingsSection")</MudText>
+<MudText Typo="Typo.h6">@Label("PaymentMethodSettingsSection")</MudText>
 <LinovativeGap />
 
 @if (loaded)
 {
     <MudExpansionPanels MultiExpansion="true">
         <MudExpansionPanel Expanded="true" Text="@Label("OutletSettings")">
-            @foreach (var outlet in _outletShifts.OrderBy(x => x.Key.Name))
+            @foreach (var pm in _outletPaymentMethods.OrderBy(x => x.Key.Name))
             {
-                <div class="d-flex"><MudSwitch @bind-Value="@outlet.Value.IsActive" Label="@outlet.Key.Name" Color="Color.Info" /></div>
+                <div class="d-flex"><MudSwitch @bind-Value="@pm.Value.IsActive" Label="@pm.Key.Name" Color="Color.Info" /></div>
                 <LinovativeGap />
             }
         </MudExpansionPanel>
-        @* 
-        <MudExpansionPanel Text="@Label("ItemSettings")">
-
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("ShiftSettings")">
-
-        </MudExpansionPanel>
- *@
     </MudExpansionPanels>
 }
 else
@@ -107,37 +99,41 @@ else
 }
 
 
+
 @code {
     [Parameter] public string? Id { get; set; }
 
-    protected override string LocalizerResource => nameof(ShiftsPage);
+    protected override string LocalizerResource => nameof(PaymentMethodsPage);
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
+    private List<PaymentMethodViewDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts { get; set; } = new();
-    private ShiftUpdateDto? shift { get; set; }
+    private PaymentMethodUpdateDto item { get; set; } = new();
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
     private Response? formResponse { get; set; } = null;
     private bool isFormSubmitting { get; set; }
     private AppErrorAlert? formErrorAlert { get; set; }
-    private List<ShiftViewDto> dataSource { get; set; } = new();
+    private bool selectedAll { get; set; }
+    private List<PaymentMethodViewDto> dataSource { get; set; } = new();
+    private PaymentMethodGroupViewDto? group = null;
     private List<OutletViewDto> _outlets { get; set; } = new();
-    private List<KeyValuePair<OutletViewDto, OutletShiftDto>> _outletShifts { get; set; } = new();
     private bool loaded { get; set; } = false;
-
+    private List<KeyValuePair<OutletViewDto, OutletPaymentMethodDto>> _outletPaymentMethods { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
-
         isFormSubmitting = true;
+
+        await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _state.OnChange += GenerateData;
         _topBarService.SetTitle(EntityPluralName);
-        shift = new();
+
         await LoadData();
+
         loaded = true;
         isFormSubmitting = false;
         _state.NotifyStateChanged();
@@ -153,12 +149,13 @@ else
 
     async Task Reset()
     {
-        shift = new();
+        item = new();
 
         formResponse = null;
         isFormSubmitting = false;
+        selectedItems = new();
+        selectedAll = false;
         await HideAllAllert();
-        _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts);
         _state.NotifyStateChanged();
     }
 
@@ -175,18 +172,22 @@ else
         if (!isFormValid)
             return Task.CompletedTask;
 
-        return Id is null ? SaveNew() : SaveUpdate();
+        if (Id is null) return SaveNew();
+
+        return SaveUpdate();
     }
 
     async Task SaveNew()
     {
         isFormSubmitting = true;
-        formResponse = await _service.Create(shift!, cts.Token);
+
+        item.PaymentMethodGroupId = group!.Id;
+        formResponse = await _service.Create(item, cts.Token);
         if (formResponse)
         {
             await Reset();
             _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
-            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts);
+            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethod);
             return;
         }
 
@@ -197,33 +198,20 @@ else
     async Task SaveUpdate()
     {
         isFormSubmitting = true;
-        formResponse = await _service.Update(shift!, cts.Token);
+        item.PaymentMethodGroupId = group!.Id;
+        formResponse = await _service.Update(item, cts.Token);
         if (formResponse)
         {
             await Reset();
             _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
-            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Outlets.WorkingShifts);
+            _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.PaymentMethod);
+            return;
         }
 
         isFormSubmitting = false;
         formErrorAlert!.ShowAlert(formResponse);
     }
 
-    async Task LoadData()
-    {
-        var outletTasks = _ouletService.GetAll(cts.Token);
-
-        if (Id is null)
-        {
-            _outlets = (await outletTasks).Data!;
-            return;
-        }
-
-        var shiftTask = _service.GetForUpdate(new Guid(Id!), cts.Token);
-        await Task.WhenAll(shiftTask, outletTasks);
-        shift = (await shiftTask).Data!;
-        _outlets = (await outletTasks).Data!;
-    }
 
     public void Dispose()
     {
@@ -231,18 +219,38 @@ else
         _state.OnChange -= GenerateData;
     }
 
+    async Task LoadData()
+    {
+        var outletsTasks = _outletService.GetAll(cts.Token);
+        if(Id is null)
+        {
+            _outlets = (await outletsTasks).Data!;
+        }
+        else
+        {
+            var paymentMethodTasks = _service.GetForUpdate(new Guid(Id!), cts.Token);
+            await Task.WhenAll(paymentMethodTasks, outletsTasks);
+
+            item = (await paymentMethodTasks).Data!;
+            group = new() { Id = item.PaymentMethodGroup!.Id, Name = item.PaymentMethodGroup.Name };
+            _outlets = (await outletsTasks).Data!;
+        }
+
+        _state.NotifyStateChanged();
+    }
+
     void GenerateData()
     {
-        Func<OutletViewDto, OutletShiftDto> getShift = (o) =>
+        Func<OutletViewDto, OutletPaymentMethodDto> getPaymentMethod = (outlet) =>
         {
-            var data = shift!.Outlets.FirstOrDefault(x => x.OutletId == o.Id);
-            if (data is not null) return data;
+            var p = item.OutletPaymentMethods.FirstOrDefault(x => x.OutletId == outlet.Id);
+            if (p is not null) return p;
 
-            data = new OutletShiftDto() { OutletId = o.Id, ShiftId = shift.Id, IsActive = false, StartTime = shift.StartTime, EndTime = shift.EndTime };
-            shift.Outlets.Add(data);
-            return data;
+            p = new() { OutletId = outlet.Id, PaymentMethodId = item.Id, IsActive = false};
+            item.OutletPaymentMethods.Add(p);
+            return p;
         };
-
-        _outletShifts = _outlets.Select(x => new KeyValuePair<OutletViewDto, OutletShiftDto>(x, getShift(x))).ToList();
+        _outletPaymentMethods = _outlets.Select(x => new KeyValuePair<OutletViewDto, OutletPaymentMethodDto>(x, getPaymentMethod(x))).ToList();
     }
+
 }
