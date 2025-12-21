@@ -1,6 +1,7 @@
 ﻿using Linovative.Dto.MasterData.People;
 using LinoVative.Service.Backend.CrudServices.Items.Items;
 using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
+using LinoVative.Service.Backend.CrudServices.Payments.BankNotes;
 using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
@@ -86,7 +87,10 @@ namespace LinoVative.Service.Backend.Configurations
 
             config.NewConfig<OutletAreaCreateDto, OutletArea>()
                 .Ignore(x => x.Tables);
+
+
             config.NewConfig<OutletArea, OutletAreaDto>();
+            config.NewConfig<OutletBankNoteDto, OutletBankNote>().Ignore(x => x.BankNote!);
             config.NewConfig<OutletBankNote, OutletBankNoteDto>().Ignore(x => x.BankNote!);
             config.NewConfig<OutletItemCategory, OutletItemCategoryViewDto>();
             config.NewConfig<OutletItemGroup, OutletItemGroupViewDto>();

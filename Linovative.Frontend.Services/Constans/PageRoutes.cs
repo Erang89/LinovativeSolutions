@@ -48,6 +48,8 @@
                         public const string OrderTypeAdd = $"{Trasactions.Index}/order-types/add";
                         public const string OrderTypeUpdate = $"{Trasactions.Index}" + "/order-types/{Id}";
                         public const string BankNotes = $"{Trasactions.Index}/bank-notes";
+                        public const string BankNoteAdd = $"{Trasactions.Index}/bank-notes/add";
+                        public const string BankNoteUpdate = $"{Trasactions.Index}" + "/bank-notes/{Id}";
                         public const string DiscountLimits = $"{Trasactions.Index}/discount-limits";
                     }
                 }

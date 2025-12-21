@@ -17,89 +17,64 @@
 @inject IBankNoteService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
+@inject IAppNavigationService _nav
 
 <LinovativePageTitle Title="@EntityPluralName" />
-<PaymentBreadcrumb Childs="@(new(){ new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.PosSettings.Trasactions.Payments.BankNotes)})" />
+<PaymentBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityPluralName, href: PageRoutes.PostManagement.PosSettings.Trasactions.Payments.BankNotes) })" />
 <PaymentTabs SelectedTab="PaymentTabs.Tabs.BankNote" />
-<CrudButtons PageMode="@pageMode" OnAddNew="AddNew" OnSave="Save" OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
+<CrudButtons PageMode="PageModes.List" OnAddNew="(() => _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.BankNoteAdd))"
+             OnDelete="Delete" SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
 <LinovativeGap />
-
-@if (pageMode == PageModes.Create || pageMode == PageModes.Update)
-{
-    <MudText Typo="Typo.h6">@(pageMode == PageModes.Create ? ADD : UPDATE) @EntityName</MudText>
-
-    <MudGrid>
-        <MudItem xs="12" sm="6" lg="4">
-
-            <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
-            <LinovativeGap />
-
-            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
-
-                <LinovativeTextBox Value="@item.Note"
-                                   ValueChanged="@(x => item.Note = x)"
-                                   T="decimal?"
-                                   IsRequired="true"
-                                   InputType="InputType.Number"
-                                   Errors="@formResponse?.Errors"
-                                   LocalizerResource="@LocalizerResource"
-                                   LocalizerKey="Note" />
-
-            </MudForm>
-        </MudItem>
-    </MudGrid>
-}
 
 
 <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
 <AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
+<GlobalMessage AutoClose="true" />
 
 
 
-@if (pageMode == PageModes.List)
-{
-    <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">@EntityPluralName</MudText>
-            <MudSpacer />
-            @* <MudTextField T="string"
+<MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">@EntityPluralName</MudText>
+        <MudSpacer />
+        @* <MudTextField T="string"
                           Immediate="true"
                           ValueChanged="@(s=>OnSearch(s))"
                           Placeholder="@_loc.Global("Label.Search")" Adornment="Adornment.Start"
                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
                           Class="mt-0"></MudTextField> *@
-        </ToolBarContent>
+    </ToolBarContent>
 
-        <HeaderContent>
-            <MudTh Style="width: 30px">
-                <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
-            </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(BankNoteDto.Note))" T="ItemGroupViewDto">@Label("Note")</MudTableSortLabel></MudTh>
-            <MudTh Style="width: 60px"></MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd>
-                <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context) )" T="bool"></MudCheckBox>
-            </MudTd>
-            <MudTd DataLabel="Note">@context.Note</MudTd>
-            <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
-        </RowTemplate>
+    <HeaderContent>
+        <MudTh Style="width: 30px">
+            <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
+        </MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(BankNoteDto.Note))" T="ItemGroupViewDto">@Label("Note")</MudTableSortLabel></MudTh>
+        <MudTh Style="width: 60px"></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>
+            <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context))" T="bool"></MudCheckBox>
+        </MudTd>
+        <MudTd DataLabel="Note">@context.Note</MudTd>
+        <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+    </RowTemplate>
 
-        <NoRecordsContent>
-            <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
-        </NoRecordsContent>
-        <LoadingContent>
-            <MudText>@_loc.Global("Label.Loading")</MudText>
-        </LoadingContent>
-        <PagerContent>
-            <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
-        </PagerContent>
-        <FooterContent>
-            <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
-        </FooterContent>
-    </MudTable>
+    <NoRecordsContent>
+        <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
+    </NoRecordsContent>
+    <LoadingContent>
+        <MudText>@_loc.Global("Label.Loading")</MudText>
+    </LoadingContent>
+    <PagerContent>
+        <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
+    </PagerContent>
+    <FooterContent>
+        <MudTd colspan="5">@_loc.Global("Label.SelectedRecord"): @selectedItems.Count</MudTd>
+    </FooterContent>
+</MudTable>
 
-}
+
 
 @code {
 
@@ -108,15 +83,11 @@
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
     private List<BankNoteDto> selectedItems { get; set; } = new();
-    private CancellationTokenSource cts = new();
-    private PageModes? pageMode { get; set; } = PageModes.List;
+    private CancellationTokenSource cts { get; set; } = new();
     private BankNoteDto item { get; set; } = new();
-    private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
-    private MudForm? form { get; set; }
     private Response? formResponse { get; set; } = null;
     private bool isFormSubmitting { get; set; }
-    private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
     private MudTable<BankNoteDto>? table;
@@ -134,24 +105,14 @@
     void OnFormKeyPress()
     {
         formResponse = null;
-        formErrorAlert?.HideAlert();
         _state.NotifyStateChanged();
     }
 
-    private Guid? TestGuid { get; set; }
-
-    async Task TestOnBlur()
-    {
-        TestGuid = Guid.NewGuid();
-        _state.NotifyStateChanged();
-        await Task.CompletedTask;
-    }
 
     async Task Reset()
     {
         item = new();
 
-        pageMode = PageModes.List;
         formResponse = null;
         isFormSubmitting = false;
         selectedItems = new();
@@ -162,62 +123,18 @@
 
     async Task HideAllAllert()
     {
-        if (form is not null) await form.ResetAsync();
         successAllert?.HideAlert();
         deleteAllert?.HideAlert();
-        formErrorAlert?.HideAlert();
-    }
-
-    Task Save()
-    {
-        form!.Validate();
-
-        if (!isFormValid)
-            return Task.CompletedTask;
-
-        if (pageMode == PageModes.Create)
-            return SaveNew();
-
-        return SaveUpdate();
-    }
-
-    async Task SaveNew()
-    {
-        isFormSubmitting = true;
-        formResponse = await _service.Create(item, cts.Token);
-        if (formResponse)
-        {
-            await Reset();
-            successAllert!.ShowAlert(CreatedSuccessMessage);
-            return;
-        }
-
-        isFormSubmitting = false;
-        formErrorAlert!.ShowAlert(formResponse);
-    }
-
-    async Task SaveUpdate()
-    {
-        isFormSubmitting = true;
-        formResponse = await _service.Update(item, cts.Token);
-        if (formResponse)
-        {
-            await Reset();
-            successAllert!.ShowAlert(UpdateSuccessMessage);
-        }
-
-        isFormSubmitting = false;
-        formErrorAlert!.ShowAlert(formResponse);
     }
 
     async Task Delete()
     {
         bool? result = await _dialogService.ShowMessageBox(DELETE, DeleteConfirmation, yesText: YES, cancelText: CANCEL, options: new DialogOptions()
-            {
-                FullWidth = true,
-                CloseOnEscapeKey = true,
-                BackdropClick = false,
-            });
+        {
+            FullWidth = true,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+        });
 
         if (!(result ?? false)) return;
 
@@ -249,14 +166,14 @@
         _state.NotifyStateChanged();
 
         var odataFilter = new ODataFilter()
-            {
-                PageNumber = state.Page + 1,
-                PageSize = state.PageSize,
-                OrderFiled = state.SortLabel,
-                SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
-                Options = $"",
-                FilterPayload = new { searchKeyword = searchString }
-            };
+        {
+            PageNumber = state.Page + 1,
+            PageSize = state.PageSize,
+            OrderFiled = state.SortLabel,
+            SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
+            Options = $"",
+            FilterPayload = new { searchKeyword = searchString }
+        };
 
         var result = await _service.Get(odataFilter, cts.Token);
         dataSource = result?.Data ?? new();
@@ -264,18 +181,10 @@
         return new TableData<BankNoteDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
-    async Task AddNew()
-    {
-        pageMode = PageModes.Create;
-        await HideAllAllert();
-    }
 
     async Task Update(BankNoteDto record)
     {
-        item = record;
-        pageMode = PageModes.Update;
-        await HideAllAllert();
-        _state.NotifyStateChanged();
+        _nav.NavigateTo(PageRoutes.PostManagement.PosSettings.Trasactions.Payments.BankNoteUpdate.Replace("{Id}", record.Id.ToString()));
     }
 
     void SelectRecord(bool selected, BankNoteDto data)

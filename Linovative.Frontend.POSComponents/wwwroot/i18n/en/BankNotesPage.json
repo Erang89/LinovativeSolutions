@@ -3,6 +3,8 @@
   "Entity.Name.Plural": "Bank Notes",
 
   "Note.Label": "Note",
+  "OutletSettings.Label": "Outlet Settings",
+  "OutletSettingsSection.Label": "Settings",
 
   "Note.Required.ErrorMessage": "Name is required"
 }
