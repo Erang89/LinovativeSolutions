@@ -1,4 +1,5 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Outlets;
@@ -27,7 +28,11 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.PaymentMethods
 
         public override async Task BeforeSave(CreatePaymenMethoCommand request, PaymentMethod entity, CancellationToken token)
         {
-            var maxSequence = await _dbContext.OutletPaymentMethods.GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
+            var maxSequence = await _dbContext.OutletPaymentMethods
+                .GetAll(_actor)
+                .Where(x => x.Outlet!.CompanyId == _actor.CompanyId)
+                .GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) })
+                .ToListAsync();
 
             foreach (var dto in request.OutletPaymentMethods)
             {

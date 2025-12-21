@@ -16,7 +16,7 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
     {
     }
 
-    public class UpdateShiftHandlerService : SaveUpdateServiceBase<Shift, UpdateShiftCommand>, IRequestHandler<UpdateShiftCommand, Result>
+    public class UpdateShiftHandlerService : SaveUpdateServiceBase<Shift, UpdateShiftCommand>
     {
         public UpdateShiftHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : 
             base(dbContext, actor, mapper, appCache, localizer)
@@ -27,7 +27,10 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
         protected override async Task BeforeSaveUpdate(UpdateShiftCommand request, Shift entity, CancellationToken token)
         {
             var outletShifts = await _dbContext.OutletShifts.GetAll(_actor).Where(x => x.ShiftId == entity.Id).ToListAsync();
-            var maxSequence = await _dbContext.OutletShifts.GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
+            var maxSequence = await _dbContext.OutletShifts.GetAll(_actor)
+                .Where(x => x.Outlet!.CompanyId == _actor.CompanyId)
+                .GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) })
+                .ToListAsync();
             foreach (var os in request.Outlets)
             {
                 var existing = outletShifts.FirstOrDefault(x => x.Id == os.Id);

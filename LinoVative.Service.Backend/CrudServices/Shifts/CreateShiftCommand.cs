@@ -1,4 +1,5 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Outlets;
@@ -17,7 +18,7 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
         public List<OutletShiftDto> Outlets { get; set; } = new();
     }
 
-    public class CreateShiftHandlerService : SaveNewServiceBase<Shift, CreateShiftCommand>, IRequestHandler<CreateShiftCommand, Result>
+    public class CreateShiftHandlerService : SaveNewServiceBase<Shift, CreateShiftCommand>
     {
         
         public CreateShiftHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, localizer)
@@ -27,7 +28,11 @@ namespace LinoVative.Service.Backend.CrudServices.Shifts
 
         public override async Task BeforeSave(CreateShiftCommand request, Shift entity, CancellationToken token)
         {
-            var maxSequence = await _dbContext.OutletShifts.GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
+            var maxSequence = await _dbContext.OutletShifts
+                .GetAll(_actor)
+                .Where(x => x.Outlet!.CompanyId == _actor.CompanyId)
+                .GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) })
+                .ToListAsync();
 
             foreach (var os in request.Outlets)
             {

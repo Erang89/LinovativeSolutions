@@ -1,4 +1,5 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.OrderTypes;
@@ -15,7 +16,7 @@ namespace LinoVative.Service.Backend.CrudServices.OrderTypes
     {
     }
 
-    public class CreateOrderTypeHandlerService : SaveNewServiceBase<OrderType, CreateOrderTypeCommand>, IRequestHandler<CreateOrderTypeCommand, Result>
+    public class CreateOrderTypeHandlerService : SaveNewServiceBase<OrderType, CreateOrderTypeCommand>
     {
         
         public CreateOrderTypeHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, localizer)
@@ -25,7 +26,10 @@ namespace LinoVative.Service.Backend.CrudServices.OrderTypes
 
         public override async Task BeforeSave(CreateOrderTypeCommand request, OrderType entity, CancellationToken token)
         {
-            var maxSequence = await _dbContext.OutletOrderTypes.GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
+            var maxSequence = await _dbContext.OutletOrderTypes
+                .GetAll(_actor)
+                .Where(x => x.Outlet!.CompanyId == _actor.CompanyId)
+                .GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
 
             foreach (var dto in request.OutletOrderTypes)
             {

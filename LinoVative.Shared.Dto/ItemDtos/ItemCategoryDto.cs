@@ -1,6 +1,7 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
 using LinoVative.Shared.Dto.Commons;
+using LinoVative.Shared.Dto.Outlets;
 
 namespace LinoVative.Shared.Dto.ItemDtos
 {
@@ -18,5 +19,10 @@ namespace LinoVative.Shared.Dto.ItemDtos
 
     public class ItemCategoryViewDto : ItemCategoryDto {
         public IdWithNameDto? ItemGroup { get; set; }
+    }
+
+    public class ItemCategoryInputDto : ItemCategoryDto
+    {
+        public List<OutletItemCategoryDto> OutletCategories { get; set; } = new();
     }
 }

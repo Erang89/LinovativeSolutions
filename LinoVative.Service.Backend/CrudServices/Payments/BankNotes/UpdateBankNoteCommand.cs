@@ -16,7 +16,7 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.BankNotes
     {
     }
 
-    public class UpdateBankNoteHandlerService : SaveUpdateServiceBase<BankNote, UpdateBankNoteCommand>, IRequestHandler<UpdateBankNoteCommand, Result>
+    public class UpdateBankNoteHandlerService : SaveUpdateServiceBase<BankNote, UpdateBankNoteCommand>
     {
         public UpdateBankNoteHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : 
             base(dbContext, actor, mapper, appCache, localizer)
@@ -27,7 +27,11 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.BankNotes
         protected override async Task BeforeSaveUpdate(UpdateBankNoteCommand request, BankNote entity, CancellationToken token)
         {
             var opm = await _dbContext.OutletBankNotes.GetAll(_actor).Where(x => x.BankNoteId == entity.Id).ToListAsync();
-            var maxSequence = await _dbContext.OutletBankNotes.GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
+            var maxSequence = await _dbContext.OutletBankNotes
+                .GetAll(_actor)
+                .Where(x => x.Outlet!.CompanyId == _actor.CompanyId)
+                .GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) })
+                .ToListAsync();
 
             foreach (var dto in request.OutletBankNotes)
             {

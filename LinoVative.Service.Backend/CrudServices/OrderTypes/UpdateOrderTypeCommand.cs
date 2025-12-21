@@ -16,7 +16,7 @@ namespace LinoVative.Service.Backend.CrudServices.OrderTypes
     {
     }
 
-    public class UpdateOrderTypeHandlerService : SaveUpdateServiceBase<OrderType, UpdateOrderTypeCommand>, IRequestHandler<UpdateOrderTypeCommand, Result>
+    public class UpdateOrderTypeHandlerService : SaveUpdateServiceBase<OrderType, UpdateOrderTypeCommand>
     {
         public UpdateOrderTypeHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : 
             base(dbContext, actor, mapper, appCache, localizer)
@@ -28,7 +28,11 @@ namespace LinoVative.Service.Backend.CrudServices.OrderTypes
         protected override async Task BeforeSaveUpdate(UpdateOrderTypeCommand request, OrderType entity, CancellationToken token)
         {
             var opm = await _dbContext.OutletOrderTypes.GetAll(_actor).Where(x => x.OrderTypeId == entity.Id).ToListAsync();
-            var maxSequence = await _dbContext.OutletPaymentMethods.GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) }).ToListAsync();
+            var maxSequence = await _dbContext.OutletPaymentMethods
+                .GetAll(_actor)
+                .Where(x => x.Outlet!.CompanyId == _actor.CompanyId)
+                .GroupBy(x => x.OutletId).Select(x => new { Id = x.Key, Max = x.Max(s => s.Sequence) })
+                .ToListAsync();
 
             foreach (var dto in request.OutletOrderTypes)
             {

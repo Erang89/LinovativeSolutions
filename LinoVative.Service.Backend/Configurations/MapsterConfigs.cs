@@ -92,7 +92,9 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<OutletArea, OutletAreaDto>();
             config.NewConfig<OutletBankNoteDto, OutletBankNote>().Ignore(x => x.BankNote!);
             config.NewConfig<OutletBankNote, OutletBankNoteDto>().Ignore(x => x.BankNote!);
+            config.NewConfig<OutletItemCategoryDto, OutletItemCategory>().Ignore(x => x.Outlet!).Ignore(x => x.ItemCategory!);
             config.NewConfig<OutletItemCategory, OutletItemCategoryViewDto>();
+            config.NewConfig<OutletItemGroupDto, OutletItemGroup>().Ignore(x => x.Outlet!).Ignore(x => x.ItemGroup!);
             config.NewConfig<OutletItemGroup, OutletItemGroupViewDto>();
             config.NewConfig<OutletOrderType, OutletOrderTypeViewDto>();
             config.NewConfig<OutletPaymentMethod, OutletPaymentMethodViewDto>();

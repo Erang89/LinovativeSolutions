@@ -16,7 +16,7 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.PaymentMethods
     {
     }
 
-    public class UpdatePaymentMethodHandlerService : SaveUpdateServiceBase<PaymentMethod, UpdatePaymentMethodCommand>, IRequestHandler<UpdatePaymentMethodCommand, Result>
+    public class UpdatePaymentMethodHandlerService : SaveUpdateServiceBase<PaymentMethod, UpdatePaymentMethodCommand>
     {
         public UpdatePaymentMethodHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : 
             base(dbContext, actor, mapper, appCache, localizer)
@@ -27,7 +27,11 @@ namespace LinoVative.Service.Backend.CrudServices.Payments.PaymentMethods
         protected override async Task BeforeSaveUpdate(UpdatePaymentMethodCommand request, PaymentMethod entity, CancellationToken token)
         {
             var opm = await _dbContext.OutletPaymentMethods.GetAll(_actor).Where(x => x.PaymentMethodId == entity.Id).ToListAsync();
-            var maxSequence = await _dbContext.OutletPaymentMethods.GroupBy(x => x.OutletId).Select(x => new {Id = x.Key, Max = x.Max(s => s.Sequence)}).ToListAsync();
+            var maxSequence = await _dbContext.OutletPaymentMethods
+                .GetAll(_actor)
+                .Where(x => x.Outlet!.CompanyId == _actor.CompanyId)
+                .GroupBy(x => x.OutletId).Select(x => new {Id = x.Key, Max = x.Max(s => s.Sequence)})
+                .ToListAsync();
 
             foreach (var dto in request.OutletPaymentMethods)
             {
