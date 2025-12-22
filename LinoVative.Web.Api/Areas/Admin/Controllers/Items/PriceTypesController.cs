@@ -1,4 +1,4 @@
-﻿using LinoVative.Service.Backend.CrudServices.Items.ItemPriceTags;
+﻿using LinoVative.Service.Backend.CrudServices.Items.PriceTypes;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using Microsoft.AspNetCore.Mvc;
@@ -6,16 +6,16 @@ using System.Net;
 
 namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
 {
-    public class CostumePriceTagsController : PrivateAPIBaseController
+    public class PriceTypesController : PrivateAPIBaseController
     {
-        public CostumePriceTagsController(IMediator mediator, ILogger<CostumePriceTagsController> logger) : base(mediator, logger)
+        public PriceTypesController(IMediator mediator, ILogger<PriceTypesController> logger) : base(mediator, logger)
         {
         }
 
         [Route(CREATE)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] CreateCostumePriceTagCommand c, CancellationToken token)
+        public async Task<IActionResult> Create([FromBody] CreatePriceTypeCommand c, CancellationToken token)
         {
             try
             {
@@ -36,7 +36,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
         [Route(UPDATE)]
         [HttpPut]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Update([FromBody] UpdateCostumePriceTagCommand c, CancellationToken token)
+        public async Task<IActionResult> Update([FromBody] UpdatePriceTypeCommand c, CancellationToken token)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
         {
             try
             {
-                var result = await _mediator.Send(new DeleteCostumePriceTagCommand() { Id = id}, token);
+                var result = await _mediator.Send(new DeletePriceTypeCommand() { Id = id}, token);
                 return StatusCode((int)result.Status, result);
             }
             catch (Exception ex)
@@ -78,7 +78,7 @@ namespace LinoVative.Web.Api.Areas.Admin.Controllers.Items
         [Route(BULKDELETE)]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteAll([FromBody] BulkDeleteCostumePriceTagCommand cmd, CancellationToken token)
+        public async Task<IActionResult> DeleteAll([FromBody] BulkDeletePriceTypeCommand cmd, CancellationToken token)
         {
             try
             {

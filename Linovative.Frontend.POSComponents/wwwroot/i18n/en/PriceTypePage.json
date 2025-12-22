@@ -2,6 +2,7 @@
   "Entity.Name.Single": "Price Type",
   "Entity.Name.Plural": "Price Types",
   "Name.Label": "Name",
+  "Description.Label": "Description",
   "SettingSection.Label": "Settings",
   "OutletSettings.Label": "Outlet Settings",
   "Name.Required.ErrorMessage": "Name is required"

@@ -5,7 +5,7 @@ namespace LinoVative.Shared.Dto.ItemDtos
 {
 
     [LocalizerKey(nameof(ItemUnitDto))]
-    public class CostumePriceTagDto : EntityDtoBase
+    public class PriceTypeDto : EntityDtoBase
     {
         [LocalizedRequired, UniqueField(EntityTypes.ItemUnit)]
         public string? Name { get; set; }

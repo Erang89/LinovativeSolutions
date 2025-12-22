@@ -8,6 +8,6 @@ namespace LinoVative.Service.Core.Items
         public Item? Item { get; set; }
         public decimal Price { get; set; }
         public Guid? CostumePriceTagId { get; set; }
-        public CostumePriceTag? CostumePriceTag { get; set; }
+        public PriceType? CostumePriceTag { get; set; }
     }
 }

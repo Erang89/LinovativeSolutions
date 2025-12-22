@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.DatabaseService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251222025207_AddTagTable")]
+    partial class AddTagTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -679,6 +682,41 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.ToTable("Customers", (string)null);
                 });
 
+            modelBuilder.Entity("LinoVative.Service.Core.Items.CostumePriceTag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CreatedAtUtcTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedAtUtcTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("LastModifiedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ItemPriceTags", (string)null);
+                });
+
             modelBuilder.Entity("LinoVative.Service.Core.Items.Item", b =>
                 {
                     b.Property<Guid>("Id")
@@ -897,41 +935,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.HasKey("Id");
 
                     b.ToTable("ItemUnits", (string)null);
-                });
-
-            modelBuilder.Entity("LinoVative.Service.Core.Items.PriceType", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CompanyId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedAtUtcTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime?>("LastModifiedAtUtcTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PriceTypes", (string)null);
                 });
 
             modelBuilder.Entity("LinoVative.Service.Core.Items.Tag", b =>
@@ -2016,7 +2019,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 
             modelBuilder.Entity("LinoVative.Service.Core.Items.ItemCostumePrice", b =>
                 {
-                    b.HasOne("LinoVative.Service.Core.Items.PriceType", "CostumePriceTag")
+                    b.HasOne("LinoVative.Service.Core.Items.CostumePriceTag", "CostumePriceTag")
                         .WithMany()
                         .HasForeignKey("CostumePriceTagId")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -7,22 +7,22 @@ using LinoVative.Shared.Dto.ItemDtos;
 using MapsterMapper;
 using Microsoft.Extensions.Localization;
 
-namespace LinoVative.Service.Backend.CrudServices.Items.ItemPriceTags
+namespace LinoVative.Service.Backend.CrudServices.Items.PriceTypes
 {
-    public class CreateCostumePriceTagCommand : CostumePriceTagDto, IRequest<Result>
+    public class CreatePriceTypeCommand : PriceTypeDto, IRequest<Result>
     {
     }
 
-    public class CreateCostumePriceTagHandlerService : SaveNewServiceBase<CostumePriceTag, CreateCostumePriceTagCommand>
+    public class CreatePriceTypeHandlerService : SaveNewServiceBase<PriceType, CreatePriceTypeCommand>
     {
         
-        public CreateCostumePriceTagHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, localizer)
+        public CreatePriceTypeHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, localizer)
         {
           
         }
 
 
-        protected override async Task<Result> Validate(CreateCostumePriceTagCommand request, CancellationToken token)
+        protected override async Task<Result> Validate(CreatePriceTypeCommand request, CancellationToken token)
         {
             var result = await base.Validate(request, token);
             if (!result) return result;

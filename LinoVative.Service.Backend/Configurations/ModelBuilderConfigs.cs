@@ -50,7 +50,11 @@ namespace LinoVative.Service.Backend.Configurations
             // Maping Items
             modelBuilder.Entity<ItemUnit>().ToTable("ItemUnits");
             modelBuilder.Entity<ItemGroup>().ToTable("ItemGroups");
-            modelBuilder.Entity<CostumePriceTag>().ToTable("ItemPriceTags");
+            modelBuilder.Entity<PriceType>().ToTable("PriceTypes");
+            modelBuilder.Entity<Tag>(x =>
+            {
+                x.ToTable("Tags");
+            });
 
             modelBuilder.Entity<ItemCategory>(x =>
             {

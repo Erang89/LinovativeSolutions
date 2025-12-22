@@ -1,4 +1,4 @@
-﻿using LinoVative.Service.Backend.CrudServices.Items.ItemPriceTags;
+﻿using LinoVative.Service.Backend.CrudServices.Items.PriceTypes;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.ItemDtos;
 using Microsoft.AspNetCore.Mvc;
@@ -8,20 +8,20 @@ using System.Net;
 namespace LinoVative.Web.Api.Areas.Admin.ODataControllers
 {
 
-    public class CostumePriceTagsController : PrivateODataBaseController
+    public class PriceTypesController : PrivateODataBaseController
     {
         private readonly ILogger _logger;
-        public CostumePriceTagsController(ILogger<CostumePriceTagsController> log) => _logger = log;
+        public PriceTypesController(ILogger<PriceTypesController> log) => _logger = log;
 
 
 
         [EnableQuery]
-        [ProducesResponseType(typeof(APIListResponse<CostumePriceTagDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> Post([FromBody] GetAllCostumePriceTagIQueryableCommand c, CancellationToken token)
+        [ProducesResponseType(typeof(APIListResponse<PriceTypeDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> Post([FromBody] GetAllPriceTypeIQueryableCommand c, CancellationToken token)
         {
             try
             {
-                IQueryable<CostumePriceTagDto> result = await _mediator.Send(c, token);
+                IQueryable<PriceTypeDto> result = await _mediator.Send(c, token);
                 return Ok(result);
             }
             catch (Exception ex)
