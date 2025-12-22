@@ -9,13 +9,13 @@
 
 .mud-table-row .item-show-on-hover,
 .show-on-hover .item-show-on-hover {
-    display: none;
+    display: none-die;
 }
 
 
 .mud-table-row:hover .item-show-on-hover,
 .show-on-hover:hover .item-show-on-hover {
-    display: block !important;
+    display: inherit !important;
     cursor: pointer;
 }
 

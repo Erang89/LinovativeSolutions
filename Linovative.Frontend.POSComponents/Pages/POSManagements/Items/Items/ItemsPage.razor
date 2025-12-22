@@ -15,18 +15,30 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 @inject IAppNavigationService _nav
+@inject ILanguageProvider _lang
 
 
 
 <LinovativePageTitle Title="@EntityPluralName" />
 <ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Item) })" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.Item" />
-<CrudButtons PageMode="PageModes.List" OnAddNew="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.ItemAdd))" 
-    OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count">
-    <MudBadge Class="ms-1" Content="@(filterFalues.Count())" Origin="Origin.BottomRight" Overlap="true">
-        <MudButton Variant="Variant.Outlined" StartIcon="@(showFilter? Icons.Material.Filled.RemoveRedEye : Icons.Material.Outlined.RemoveRedEye)" OnClick="@TogleFilter">@(showFilter? @Label("HideFilter") : Label("ShowFilter"))</MudButton>
-    </MudBadge>
-</CrudButtons>
+<div class="d-flex">
+    <CrudButtons PageMode="PageModes.List" OnAddNew="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.ItemAdd))"
+                 OnDelete="Delete" OnCancel="Reset" SelectedItemCount="@selectedItems.Count">
+        <MudBadge Class="ms-1" Content="@(filterFalues.Count)" Origin="Origin.BottomRight" Overlap="true">
+            <MudButton Variant="Variant.Outlined" StartIcon="@(showFilter? Icons.Material.Filled.RemoveRedEye : Icons.Material.Outlined.RemoveRedEye)" OnClick="@TogleFilter">@(showFilter? @Label("HideFilter") : Label("ShowFilter"))</MudButton>
+        </MudBadge>
+    </CrudButtons>
+    <MudSpacer />
+    <div>
+        <MudMenu Label="@Label("Settings")" EndIcon="@Icons.Material.Filled.Settings" Size="Size.Medium" Variant="Variant.Text">
+            <MudMenuItem Label="@Label("PriceType")" />
+            <MudMenuItem Label="@Label("ItemTagging")" />
+        </MudMenu>
+        <MudButton Size="Size.Medium" EndIcon="@Icons.Material.Filled.History" Variant="Variant.Text">@Label("Histories")</MudButton>
+
+    </div>
+</div>
 <LinovativeGap />
 
 
@@ -66,7 +78,7 @@
         <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.ItemGroup.Name))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.Category.Name))" T="ItemViewDto">@Label(nameof(ItemViewDto.CategoryId))</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemViewDto.SellPrice))" T="ItemViewDto">@Label(nameof(ItemViewDto.SellPrice))</MudTableSortLabel></MudTh>
-        <MudTh Style="width: 60px"></MudTh>
+        <MudTh Style="width: 70px"></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>
@@ -78,7 +90,19 @@
         <MudTd DataLabel="Group">@context.Category?.ItemGroup?.Name</MudTd>
         <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
         <MudTd DataLabel="Category">@context.SellPrice?.ToString("N2")</MudTd>
-        <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
+        <MudTd>
+            <div class="d-flex">
+                <MudIcon Class="item-show-on-hover" @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" />
+                <div class="item-show-on-hover ms-3">
+                    <MudMenu Size="Size.Small" AnchorOrigin="Origin.TopRight" Icon="@Icons.Material.Filled.MoreVert" Variant="Variant.Text">
+                        <MudMenuItem OnClick="@(() => Update(context))" Label="@Label("Update")" />
+                        <MudMenuItem Label="@Label("Duplicate")" />
+                        <MudMenuItem Label="@Label("ActiveDeactive")" />
+                        <MudMenuItem Label="@Label("ViewHistory")" />
+                    </MudMenu>
+                </div>
+            </div>
+        </MudTd>
     </RowTemplate>
 
     <NoRecordsContent>
