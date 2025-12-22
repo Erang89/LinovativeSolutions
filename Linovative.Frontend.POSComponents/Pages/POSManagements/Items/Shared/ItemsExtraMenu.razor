@@ -1,0 +1,26 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Items
+
+@inject IAppNavigationService _nav
+@inject ILanguageProvider _lang
+@inject IApplicationStateService _state
+@inherits POSManagementPageBase
+
+<div>
+    <MudMenu Label="@Label("Settings")" EndIcon="@Icons.Material.Filled.Settings" Size="Size.Medium" Variant="Variant.Text">
+        <MudMenuItem OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.PriceType))" Label="@Label("PriceType")" />
+        <MudMenuItem OnClick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Tags))" Label="@Label("ItemTagging")" />
+    </MudMenu>
+    <MudButton Size="Size.Medium" EndIcon="@Icons.Material.Filled.History" Variant="Variant.Text">@Label("Histories")</MudButton>
+</div>
+
+@code{
+    protected override string LocalizerResource => nameof(ItemsPage);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+    }
+
+}

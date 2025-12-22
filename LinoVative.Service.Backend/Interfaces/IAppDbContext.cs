@@ -40,7 +40,8 @@ namespace LinoVative.Service.Backend.Interfaces
         public DbSet<ItemUnit> ItemUnits { get; set; }
         public DbSet<ItemGroup> ItemGroups { get; set; }
         public DbSet<ItemCategory> ItemCategories { get; set; }
-        public DbSet<PriceType> ItemPriceTags { get; set; }
+        public DbSet<PriceType> PriceTypes { get; set; }
+        public DbSet<Tag> Tags { get; set; }
         public DbSet<ItemCostumePrice> ItemCostumePrices { get; set; }
 
 

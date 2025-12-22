@@ -20,6 +20,7 @@
                 public const string CategoryUpdate = $"{IndexItems}" + "/categories/{Id}";
                 public const string Units = $"{IndexItems}/units";
                 public const string PriceType = $"{IndexItems}/price-types";
+                public const string Tags = $"{IndexItems}/tags";
                 public const string BulkOperations = $"{IndexItems}/bulk-operations";
             }
 

@@ -4,6 +4,7 @@
     {
         Item,
         ItemUnit,
+        Tag,
         ItemGroup,
         ItemCategory,
         Company,

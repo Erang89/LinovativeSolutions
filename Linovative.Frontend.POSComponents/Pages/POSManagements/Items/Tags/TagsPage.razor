@@ -2,14 +2,14 @@
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 
-@attribute [Route(PageRoutes.PostManagement.ItemMaster.PriceType)]
+@attribute [Route(PageRoutes.PostManagement.ItemMaster.Tags)]
 @inherits POSManagementPageBase
 @layout PosLayout
 
 @inject IJsonLocalizer _loc
 @inject ITopBarService _topBarService
 @inject IApplicationStateService _state
-@inject IPriceTypeService _service
+@inject ITagService _service
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 
@@ -42,12 +42,6 @@
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="Name" />
 
-
-                <LinovativeGap />
-                <LinovativeInputText @bind-Value="@item.Description"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="Description" />
             </MudForm>
         </MudItem>
     </MudGrid>
@@ -77,8 +71,7 @@
             <MudTh Style="width: 30px">
                 <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
             </MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemUnitDto.Name))" T="PriceTypeDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
-            <MudTh><MudTableSortLabel SortLabel="@(nameof(ItemUnitDto.Description))" T="PriceTypeDto">@_loc[$"{LocalizerResource}.Description.Label"]</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortLabel="@(nameof(TagDto.Name))" T="TagDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
             <MudTh Style="width: 60px"></MudTh>
         </HeaderContent>
         <RowTemplate>
@@ -86,7 +79,6 @@
                 <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context))" T="bool"></MudCheckBox>
             </MudTd>
             <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Description">@context.Description</MudTd>
             <MudTd><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
         </RowTemplate>
 
@@ -110,14 +102,14 @@
 
 @code {
 
-    protected override string LocalizerResource => "PriceTypePage";
+    protected override string LocalizerResource => "TagPage";
     protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
-    private List<PriceTypeDto> selectedItems { get; set; } = new();
+    private List<TagDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts { get; set; } = new();
     private PageModes? pageMode { get; set; } = PageModes.List;
-    private PriceTypeDto item { get; set; } = new();
+    private TagDto item { get; set; } = new();
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -126,9 +118,9 @@
     private AppErrorAlert? formErrorAlert { get; set; }
     private AppSuccessAllert? successAllert { get; set; }
     private string? searchString = null;
-    private MudTable<PriceTypeDto>? table;
+    private MudTable<TagDto>? table;
     private bool selectedAll { get; set; }
-    private List<PriceTypeDto> dataSource { get; set; } = new();
+    private List<TagDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
     protected override async Task OnInitializedAsync()
     {
@@ -248,7 +240,7 @@
         table?.ReloadServerData();
     }
 
-    private async Task<TableData<PriceTypeDto>> ServerReload(TableState state, CancellationToken token)
+    private async Task<TableData<TagDto>> ServerReload(TableState state, CancellationToken token)
     {
         selectedItems = new();
         selectedAll = false;
@@ -269,7 +261,7 @@
         var result = await _service.Get(odataFilter, cts.Token);
         dataSource = result?.Data ?? new();
 
-        return new TableData<PriceTypeDto>() { TotalItems = result!.Count, Items = result.Data };
+        return new TableData<TagDto>() { TotalItems = result!.Count, Items = result.Data };
     }
 
     async Task AddNew()
@@ -278,7 +270,7 @@
         await HideAllAllert();
     }
 
-    async Task Update(PriceTypeDto record)
+    async Task Update(TagDto record)
     {
         item = record;
         pageMode = PageModes.Update;
@@ -286,7 +278,7 @@
         _state.NotifyStateChanged();
     }
 
-    void SelectRecord(bool selected, PriceTypeDto data)
+    void SelectRecord(bool selected, TagDto data)
     {
         if (!selected)
         {
@@ -315,8 +307,8 @@
     void UpdateSelectedAll()
     {
         var selectedIds = selectedItems.Select(x => x.Id);
-        selectedAll = !dataSource.Where(x => !selectedIds.Contains(x.Id)).Any();
+        selectedAll = !dataSource.Any(x => !selectedIds.Contains(x.Id));
     }
-    bool IsSelected(PriceTypeDto data) => selectedItems.Any(x => x.Id == data.Id);
+    bool IsSelected(TagDto data) => selectedItems.Any(x => x.Id == data.Id);
 
 }

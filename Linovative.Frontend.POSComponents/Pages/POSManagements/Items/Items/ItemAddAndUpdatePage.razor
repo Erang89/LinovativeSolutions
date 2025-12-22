@@ -22,11 +22,15 @@
 <LinovativePageTitle Title="@EntityPluralName" />
 <ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Item) })" />
 <ItemTabs SelectedTab="ItemTabs.Tabs.Item" />
-<CrudButtons PageMode="@(Id is null ? PageModes.Create : PageModes.Update)"
-             OnSave="Save"
-             OnCancel="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Item))"
-             IsFormSubmitting="isFormSubmitting">
-</CrudButtons>
+<div class="d-flex">
+    <CrudButtons PageMode="@(Id is null ? PageModes.Create : PageModes.Update)"
+                 OnSave="Save"
+                 OnCancel="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Item))"
+                 IsFormSubmitting="isFormSubmitting">
+    </CrudButtons>
+    <MudSpacer />
+    <ItemsExtraMenu />
+</div>
 <LinovativeGap />
 
 <MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
