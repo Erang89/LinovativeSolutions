@@ -1,6 +1,15 @@
 ﻿@inject IJsonLocalizer _loc
-
+@inject IAppNavigationService _nav
 <div>
+
+    @if (BackUrl is not null)
+    {
+        <MudButton @onclick="@(() => _nav.NavigateTo(BackUrl))"
+                   Variant="Variant.Text"
+                   StartIcon="@Icons.Material.Filled.ArrowBack"
+                   Class="me-2"
+                   Color="Color.Primary">@_loc.Global("Button.Back")</MudButton>
+    }
 
     @if (PageMode == PageModes.List)
     {
@@ -42,6 +51,7 @@
 </div>
 
 @code {
+    [Parameter] public string? BackUrl { get; set; }
     [Parameter] public PageModes? PageMode { get; set; } = PageModes.List;
     [Parameter] public EventCallback OnAddNew { get; set; }
     [Parameter] public EventCallback OnDelete { get; set; }

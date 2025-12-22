@@ -32,7 +32,7 @@
     <MudSpacer />
     <div>
         <MudMenu Label="@Label("Settings")" EndIcon="@Icons.Material.Filled.Settings" Size="Size.Medium" Variant="Variant.Text">
-            <MudMenuItem Label="@Label("PriceType")" />
+            <MudMenuItem onclick="@(() => _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.PriceType))" Label="@Label("PriceType")" />
             <MudMenuItem Label="@Label("ItemTagging")" />
         </MudMenu>
         <MudButton Size="Size.Medium" EndIcon="@Icons.Material.Filled.History" Variant="Variant.Text">@Label("Histories")</MudButton>

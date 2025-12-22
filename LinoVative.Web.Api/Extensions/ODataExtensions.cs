@@ -44,6 +44,7 @@ namespace LinoVative.Web.Api.Extensions
 
             // Master Datas
             modelBuilder.EntitySet<ItemUnitDto>("ItemUnits");
+            modelBuilder.EntitySet<CostumePriceTagDto>("CostumePriceTags");
             modelBuilder.EntitySet<ItemGroupDto>("ItemGroups");
             modelBuilder.EntitySet<ItemCategoryViewDto>("ItemCategories");
             modelBuilder.EntitySet<ItemViewDto>("Items");
