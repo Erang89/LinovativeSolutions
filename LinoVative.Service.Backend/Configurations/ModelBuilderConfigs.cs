@@ -1,4 +1,5 @@
-﻿using LinoVative.Service.Core.Accountings;
+﻿using Linovative.Shared.Interface.Enums;
+using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Companies;
@@ -10,6 +11,7 @@ using LinoVative.Service.Core.Payments;
 using LinoVative.Service.Core.People;
 using LinoVative.Service.Core.Shifts;
 using LinoVative.Service.Core.Sources;
+using LinoVative.Service.Core.Suppliers;
 using LinoVative.Service.Core.Warehoses;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +24,7 @@ namespace LinoVative.Service.Backend.Configurations
         {
 
             modelBuilder.ConfigureTempDataRelationship();
+            modelBuilder.ConfigureSuppliers();
 
             // Mapping Auth
             modelBuilder.Entity<AppUser>(x =>
@@ -365,5 +368,30 @@ namespace LinoVative.Service.Backend.Configurations
             });
 
         }
+    
+        public static void ConfigureSuppliers(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Supplier>(x =>
+            {
+                x.ToTable("Suppliers");
+                x.Property(x => x.SupplierType).HasColumnType("Varchar(30)");
+            });
+
+
+            modelBuilder.Entity<SupplierAddress>(x =>
+            {
+                x.ToTable("SupplierAddress");
+                x.Property(x => x.AddressType).HasColumnType("Varchar(30)");
+                x.HasOne(x => x.Supplier).WithMany(x => x.Addresses).HasForeignKey(x => x.SupplierId).IsRequired();
+            });
+
+
+            modelBuilder.Entity<SupplierContact>(x =>
+            {
+                x.ToTable("SupplierContacts");
+                x.HasOne(x => x.Supplier).WithMany(x => x.Contacts).HasForeignKey(x => x.SupplierId).IsRequired();
+            });
+        }
+    
     }
 }

@@ -47,7 +47,7 @@ namespace LinoVative.Service.Core.EntityBases
     }
 
 
-    public abstract class AuditableEntityUnderCompany : AuditableEntity, IsEntityManageByCompany, IEntityId
+    public abstract class AuditableEntityUnderCompany : AuditableEntity, IsEntityManageByCompany
     {
         public Guid? CompanyId { get; set; }
     }
