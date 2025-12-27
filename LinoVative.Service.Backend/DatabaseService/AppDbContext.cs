@@ -14,6 +14,7 @@ using LinoVative.Service.Core.Payments;
 using LinoVative.Service.Core.People;
 using LinoVative.Service.Core.Shifts;
 using LinoVative.Service.Core.Sources;
+using LinoVative.Service.Core.Suppliers;
 using LinoVative.Service.Core.Warehoses;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.CompanyDtos;
@@ -111,6 +112,13 @@ namespace LinoVative.Service.Backend.DatabaseService
         public DbSet<ItemUnitBulkUploadDetail> ItemUnitBulkUploadDetails { get; set; }
         public DbSet<ItemBulkUpload> ItemBulkUploads { get; set; }
         public DbSet<ItemBulkUploadDetail> ItemBulkUploadDetails { get; set; }
+
+
+        // Supplier
+        public DbSet<Supplier> Suppliers { get; set; }
+        public DbSet<SupplierAddress> SupplierAddress { get; set; }
+        public DbSet<SupplierContact> SupplierContact { get; set; }
+
 
         // Companies DbSet
         public DbSet<Company> Companies { get; set; }

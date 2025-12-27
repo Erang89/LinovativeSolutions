@@ -1,14 +1,21 @@
 ﻿using Linovative.Shared.Interface.Enums;
+using LinoVative.Shared.Dto.Attributes;
 
-namespace LinoVative.Shared.Dto.Suppliers
+namespace LinoVative.Shared.Dto.MasterData.Suppliers
 {
+
+    [LocalizerKey(nameof(SupplierDto))]
     public class SupplierDto : EntityDtoBase
     {
+        [LocalizedRequired]
         public string Code { get; set; } = null!;
+
+        [LocalizedRequired]
         public string Name { get; set; } = null!;
         public string? LegalName { get; set; }
 
-        public SupplierType SupplierType { get; set; }
+        [LocalizedRequired]
+        public SupplierType? SupplierType { get; set; }
 
         public string? TaxNumber { get; set; }
         public string? PaymentTerm { get; set; }

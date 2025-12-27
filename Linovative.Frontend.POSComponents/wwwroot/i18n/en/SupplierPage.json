@@ -1,0 +1,22 @@
+{
+  "Entity.Name.Single": "Supplier",
+  "Entity.Name.Plural": "Suppliers",
+
+  "Tab.Supplier.Lable" :  "Supplier",
+
+  "Name.Label": "Name",
+  "Code.Label": "Code",
+  "Type.Label": "Type",
+  "IsActive.Label": "Is Active",
+  "LegalName.Label": "Legal Name",
+  "SupplierType.Label": "Supplier Type",
+  "TaxNumber.Label": "Tax Number",
+  "PaymentTerm.Label": "Payment Term",
+  "Currency.Label": "Currency",
+  "Notes.Label": "Notes",
+
+  "Name.Required.ErrorMessage": "Name is required",
+  "Code.Required.ErrorMessage": "Code is required",
+  "Type.Required.ErrorMessage": "Type is required",
+  "SupplierType.Required.ErrorMessage": "Supplier type is required"
+}

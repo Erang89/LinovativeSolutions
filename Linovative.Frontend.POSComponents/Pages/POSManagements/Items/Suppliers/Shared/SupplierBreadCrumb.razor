@@ -1,0 +1,32 @@
+﻿@inject IJsonLocalizer _loc
+<MudBreadcrumbs Class="ps-0 pe-0 pt-2" Items="@Items()" MaxItems="10"></MudBreadcrumbs>
+
+@code {
+    [Parameter]
+    public List<BreadcrumbItem> Childs { get; set; } = new();
+
+    List<BreadcrumbItem> Items()
+    {
+        var items = _parents.ToList();
+        items.AddRange(Childs);
+        return items;
+    }
+
+    private static List<BreadcrumbItem> _parents = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var supplier = _loc.PosManagement("Menu.Tab.Supplier");
+        var home = _loc.Global("Home");
+
+        _parents = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem(home, href: "/"),
+            new BreadcrumbItem(supplier, href: PageRoutes.PostManagement.Suppliers.Index)
+        };
+
+    }
+}

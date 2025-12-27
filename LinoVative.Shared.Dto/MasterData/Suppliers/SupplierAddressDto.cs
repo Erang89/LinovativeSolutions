@@ -1,6 +1,6 @@
 ﻿using Linovative.Shared.Interface.Enums;
 
-namespace LinoVative.Shared.Dto.Suppliers
+namespace LinoVative.Shared.Dto.MasterData.Suppliers
 {
     public class SupplierAddressDto : EntityDtoBase
     {

@@ -11,7 +11,7 @@
                 public const string IndexItems = $"{PostManagement.IndexMaster}/item-master";
                 public const string Item = $"{IndexItems}/items";
                 public const string ItemAdd = $"{IndexItems}/items/add";
-                public const string ItemUpdate = IndexItems + "/items/update/{Id}";
+                public const string ItemUpdate = IndexItems + "/items/update/{Id}";                
                 public const string Groups = $"{IndexItems}/groups";
                 public const string GroupAdd = $"{IndexItems}/groups/add";
                 public const string GroupUpdate = $"{IndexItems}" + "/group/{Id}s";
@@ -22,6 +22,13 @@
                 public const string PriceType = $"{IndexItems}/price-types";
                 public const string Tags = $"{IndexItems}/tags";
                 public const string BulkOperations = $"{IndexItems}/bulk-operations";
+            }
+
+            public static class Suppliers
+            {
+                public const string Index = $"{IndexMaster}/suppliers";
+                public const string SupplierAdd = $"{Index}/add";
+                public const string SupplierUpdate = $"{Index}" + "/update/{Id}";
             }
 
 

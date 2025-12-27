@@ -1,0 +1,53 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@inject IAppNavigationService _nav;
+@inject IApplicationStateService _state;
+@inject IJsonLocalizer _loc
+
+<MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.Suppliers.Index))" Text="@supplier" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.Suppliers.Index))" Text="@supplier2" />
+</MudTabs>
+
+<LinovativeGap />
+
+@code {
+    [Parameter]
+    public Tabs? SelectedTab { get; set; }
+    int activeIndex { get; set; }
+    public enum Tabs
+    {
+        Supplier,
+        Supplier2,
+    }
+
+    string? supplier { get; set; }
+    string? supplier2 { get; set; }
+
+    private bool _isInitialized = false;
+    async Task Navigate(string navigateTo)
+    {
+        if (!_isInitialized)
+        {
+            _isInitialized = true;
+            return;
+        }
+        _nav.NavigateTo(navigateTo);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        activeIndex = SelectedTab switch
+        {
+            Tabs.Supplier => 0,
+            Tabs.Supplier2 => 1,
+            _ => 4
+        };
+        _state.OnChange += StateHasChanged;
+
+        await base.OnInitializedAsync();
+        supplier = _loc.PosManagement("Menu.Tab.Supplier");
+        supplier2 = _loc.PosManagement("Menu.Tab.Supplier");
+
+    }
+
+}

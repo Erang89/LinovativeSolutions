@@ -3,6 +3,7 @@ using LinoVative.Service.Backend.CrudServices.Items.ItemCategories;
 using LinoVative.Service.Backend.CrudServices.Items.Items;
 using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
 using LinoVative.Service.Backend.CrudServices.Payments.BankNotes;
+using LinoVative.Service.Backend.CrudServices.Suppliers;
 using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
@@ -13,6 +14,7 @@ using LinoVative.Service.Core.Payments;
 using LinoVative.Service.Core.People;
 using LinoVative.Service.Core.Shifts;
 using LinoVative.Service.Core.Sources;
+using LinoVative.Service.Core.Suppliers;
 using LinoVative.Service.Core.Warehoses;
 using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.CompanyDtos;
@@ -45,7 +47,11 @@ namespace LinoVative.Service.Backend.Configurations
 
 
             // Items
-            config.NewConfig<CreateItemCommand, Item>();
+            config.NewConfig<CreateItemCommand, Item>()
+                .Ignore(x => x.Unit!)
+                .Ignore(x => x.Category!)
+                .Ignore(x => x.ItemPriceTypes);
+
             config.NewConfig<UpdateItemCommand, Item>()
                 .Ignore(x => x.Unit!)
                 .Ignore(x => x.Category!)
@@ -140,6 +146,11 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<COAGroup, COAGroupDto>();
 
 
+
+            // Suppliers
+            config.NewConfig<CreateSupplierCommand, Supplier>()
+                .Ignore(x => x.Contacts)
+                .Ignore(x => x.Addresses);
         }
     }
 }

@@ -34,6 +34,9 @@
   "PaymentMethodTypes.CreditCard": "Credit Card",
   "PaymentMethodTypes.Credit": "Credit",
 
+  "SupplierType.Individual": "Individual",
+  "SupplierType.Company": "Company",
+
   "FilterOperator.Equals": "Equals",
   "FilterOperator.NotEquals": "Not Equals",
   "FilterOperator.Contains": "Contains",
