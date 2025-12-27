@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LinoVative.Shared.Dto.Attributes
 {
-    public class LocalizeMinDecimalValueAttribute : ValidationAttribute
+    public class LocalizeMaxDecimalValueAttribute : ValidationAttribute
     {
-        private decimal MinValue { get; set; }
-        public  LocalizeMinDecimalValueAttribute(double minValue)
+        private decimal MaxValue { get; set; }
+        public LocalizeMaxDecimalValueAttribute(double minValue)
         {
-            MinValue = (decimal)minValue;
+            MaxValue = (decimal)minValue;
         }
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
@@ -16,11 +16,11 @@ namespace LinoVative.Shared.Dto.Attributes
             if(value == null) return ValidationResult.Success;
 
             var val = (decimal)value!;
-            if (val < MinValue)
+            if (val > MaxValue)
             {
                 var localizer = (IStringLocalizer)validationContext.GetService(typeof(IStringLocalizer))!;
 
-                return new ValidationResult(string.Format(localizer["Validate.MinDecimalValue"], MinValue));
+                return new ValidationResult(string.Format(localizer["Validate.MaxDecimalValue"], MaxValue));
             }
 
             return ValidationResult.Success;

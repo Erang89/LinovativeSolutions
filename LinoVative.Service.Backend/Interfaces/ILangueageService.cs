@@ -14,6 +14,7 @@
         ChangeDefaultCompanyCommand,
         RefreshTokenCommand,
         CreateOrUpdateOutletAreaCommand,
-        CreateOutletCommand
+        CreateOutletCommand,
+        InputItems
     }
 }

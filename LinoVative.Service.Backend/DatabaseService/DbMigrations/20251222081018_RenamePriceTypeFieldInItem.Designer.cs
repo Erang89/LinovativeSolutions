@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.DatabaseService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251222081018_RenamePriceTypeFieldInItem")]
+    partial class RenamePriceTypeFieldInItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -703,10 +706,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("DefaltPurchaseQty")
-                        .HasPrecision(8, 4)
-                        .HasColumnType("decimal(8,4)");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -737,21 +736,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 
                     b.Property<bool>("SellPriceIncludeTaxService")
                         .HasColumnType("bit");
-
-                    b.Property<decimal?>("ServicePercent")
-                        .HasPrecision(8, 4)
-                        .HasColumnType("decimal(8,4)");
-
-                    b.Property<decimal?>("ShouldPurchaseWhenStockLessOrEqualsTo")
-                        .HasPrecision(8, 4)
-                        .HasColumnType("decimal(8,4)");
-
-                    b.Property<bool>("TaxAndServicePercentFromOutletOrderType")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal?>("TaxPercent")
-                        .HasPrecision(8, 4)
-                        .HasColumnType("decimal(8,4)");
 
                     b.Property<Guid?>("UnitId")
                         .HasColumnType("uniqueidentifier");
@@ -852,9 +836,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -2039,7 +2020,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
             modelBuilder.Entity("LinoVative.Service.Core.Items.ItemPriceType", b =>
                 {
                     b.HasOne("LinoVative.Service.Core.Items.Item", "Item")
-                        .WithMany("ItemPriceTypes")
+                        .WithMany("CostumePrices")
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2270,7 +2251,7 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 
             modelBuilder.Entity("LinoVative.Service.Core.Items.Item", b =>
                 {
-                    b.Navigation("ItemPriceTypes");
+                    b.Navigation("CostumePrices");
                 });
 
             modelBuilder.Entity("LinoVative.Service.Core.Items.ItemGroup", b =>

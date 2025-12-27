@@ -1,0 +1,4 @@
+{
+  "PriceMustNotLowerThanZero.Message": "Price must not lower than zero",
+  "Price.Required.Message": "Price is required"
+}

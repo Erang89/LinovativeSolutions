@@ -1,4 +1,5 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.CrudServices.Items.Items.Helpers;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Items;
@@ -9,15 +10,18 @@ using Microsoft.Extensions.Localization;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.Items
 {
-    public class CreateItemCommand : ItemDto, IRequest<Result>
+    public class CreateItemCommand : ItemInputDto, IRequest<Result>
     {
 
     }
 
-    public class CreateItemHandlerService : SaveNewServiceBase<Item, CreateItemCommand>, IRequestHandler<CreateItemCommand, Result>
+    public class CreateItemHandlerService : SaveNewServiceBase<Item, CreateItemCommand>
     {
-        public CreateItemHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) : base(dbContext, actor, mapper, appCache, localizer)
+
+        private readonly IItemValidator _validator;
+        public CreateItemHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, IItemValidator validator) : base(dbContext, actor, mapper, appCache, localizer)
         {
+            _validator = validator;
         }
 
 
@@ -28,7 +32,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
             var isNameExist = GetAll().Where(x => x.Name!.Contains(request.Name!)).Any();
             if (isNameExist) AddError(result, x => x.Name!, _localizer["Property.AreadyExist", request.Name!]);
 
-            return result;
+            return await _validator.Validate(request, token);
         }
     }
 }

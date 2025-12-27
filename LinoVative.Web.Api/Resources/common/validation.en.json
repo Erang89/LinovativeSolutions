@@ -1,6 +1,7 @@
 {
   "Validate.PhoneInvalid": "Invalid Phone Number",
   "Validate.MinDecimalValue": "The value can't be less than '{0}'",
+  "Validate.MaxDecimalValue": "The value can't be greater than '{0}'",
   "Operation.UnAuthorized.Title": "Unauthorized Operation",
   "Operation.UnAuthorized.Message": "You don't have permission for operation",
   "Entity.IdNotFound": "{0} with ID '{1}' was not found in the system",
@@ -58,6 +59,10 @@
 
   "ItemGroupDto.Unique.Name.ErrorMessage": "Group name must be unique. '{0}' already exist",
   "ItemGroupDto.Required.Name.ErrorMessage": "Group name is required",
+
+  "ItemPriceTypeDto.Required.Price.ErrorMessage": "Price is required",
+  "ItemPriceTypeDto.Required.ItemId.ErrorMessage": "Item ID is required",
+  "ItemPriceTypeDto.Required.PriceTypeId.ErrorMessage": "Price Type ID is required",
 
   "ItemCategoryDto.Unique.Name.ErrorMessage": "Category name must be unique. '{0}' already exist",
   "ItemCategoryDto.Required.Name.ErrorMessage": "Category name is required",

@@ -1,0 +1,93 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@inherits POSManagementPageBase
+@inject IPriceTypeService _priceTypeService
+@inject IApplicationStateService _state
+@implements IDisposable
+
+
+<MudSimpleTable Style="overflow-x: auto;">
+    <tbody>
+        @foreach (var ot in _itemPriceTypes.OrderBy(x => x.Key.Name))
+        {
+            <tr>
+
+                <td style="min-width: 200px">
+                    <div class="d-flex"><MudSwitch Disabled="@(!Item!.IsActive ||  !Item!.HasCostumePrice)" @bind-Value="@ot.Value.IsActive" Label="@ot.Key.Name" Color="Color.Info" /></div>
+                </td>
+
+
+                <td style="width: 300px">
+                    <LinovativeInputGeneric Disabled="@(!Item.IsActive || !Item.HasCostumePrice || !ot.Value.IsActive)"
+                                            T="decimal?"
+                                            Value="@ot.Value.Price"
+                                            ValueChanged="@(x => ot.Value.Price = x)"
+                                            IsRequired="true"
+                                            Errors="@Result?.Errors"
+                                            Style="width: 200px"
+                                            LocalizerResource="@LocalizerResource"
+                                            LocalizerKey="Price" />
+                    
+                </td>
+
+
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
+
+
+@code {
+
+
+    [Parameter] public ItemInputDto? Item { get; set; } = new();
+    [Parameter] public Response? Result { get; set; }
+
+    protected override string LocalizerResource => nameof(ItemsPage);
+
+    private List<KeyValuePair<PriceTypeDto, ItemPriceTypeDto>> _itemPriceTypes { get; set; } = new();
+    private CancellationTokenSource cts { get; set; } = new();
+    private List<PriceTypeDto> _priceTypes { get; set; } = new();
+    private object? selectedObject { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        _state.OnChange += GenerateData;
+        await LoadData();
+        await base.OnInitializedAsync();
+        _state.NotifyStateChanged();
+    }
+
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+        _state.OnChange -= GenerateData;
+    }
+
+    async Task LoadData()
+    {
+        _priceTypes = (await _priceTypeService.GetAll(cts.Token)).Data!;
+    }
+
+    void GenerateData()
+    {
+        Func<PriceTypeDto, ItemPriceTypeDto> getPriceType = (priceType) =>
+        {
+            var data = Item!.ItemPriceTypes.FirstOrDefault(x => x.PriceTypeId == priceType.Id);
+            if (data is not null) return data;
+
+            data = new()
+            {
+                ItemId = Item.Id,
+                PriceTypeId = priceType.Id,
+            };
+
+            Item.ItemPriceTypes.Add(data);
+            return data;
+        };
+        _itemPriceTypes = _priceTypes.Select(x => new KeyValuePair<PriceTypeDto, ItemPriceTypeDto>(x, getPriceType(x))).ToList();
+    }
+
+}

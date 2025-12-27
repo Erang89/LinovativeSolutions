@@ -1,0 +1,56 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@inherits POSManagementPageBase
+@inject IPriceTypeService _priceTypeService
+@inject IApplicationStateService _state
+
+
+
+<div class="d-flex">
+    <MudSwitch Disabled="@(!Item!.IsActive)" @bind-Value="@Item!.SellPriceIncludeTaxService" Label="@Label("SellTaxAndServiceIncluded")" Color="Color.Info" />
+</div>
+
+<LinovativeGap />
+<div class="d-flex">
+    <MudSwitch Disabled="@(!Item!.IsActive)" @bind-Value="@Item!.TaxAndServicePercentFromOutletOrderType" Label="@Label("TaxAndServicePercentFromOutletOrderType")" Color="Color.Info" />
+</div>
+
+
+<LinovativeGap />
+<LinovativeInputGeneric Disabled="@(Item!.TaxAndServicePercentFromOutletOrderType || !Item.IsActive)"
+                        T="decimal?"
+                        Value="@Item.TaxPercent"
+                        ValueChanged="@(x => Item.TaxPercent = x)"
+                        IsRequired="@(!Item.TaxAndServicePercentFromOutletOrderType)"
+                        Errors="@Result?.Errors"
+                        Style="width: 250px"
+                        LocalizerResource="@LocalizerResource"
+                        LocalizerKey="TaxPercent" />
+
+
+<LinovativeGap />
+<LinovativeInputGeneric Disabled="@(Item!.TaxAndServicePercentFromOutletOrderType || !Item.IsActive)"
+                        T="decimal?"
+                        Value="@Item.ServicePercent"
+                        ValueChanged="@(x => Item.ServicePercent = x)"
+                        IsRequired="@(!Item.TaxAndServicePercentFromOutletOrderType)"
+                        Errors="@Result?.Errors"
+                        Style="width: 250px"
+                        LocalizerResource="@LocalizerResource"
+                        LocalizerKey="ServicePercent" />
+
+@code {
+
+    [Parameter] public ItemInputDto? Item { get; set; } = new();
+    [Parameter] public Response? Result { get; set; }
+
+    protected override string LocalizerResource => nameof(ItemsPage);
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+}

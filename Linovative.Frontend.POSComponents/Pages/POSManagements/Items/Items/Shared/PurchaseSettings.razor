@@ -1,0 +1,45 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@inherits POSManagementPageBase
+@inject IPriceTypeService _priceTypeService
+@inject IApplicationStateService _state
+
+
+<LinovativeInputGeneric T="decimal?"
+                        Disabled="@(!Item!.IsActive || !Item!.CanBePurchased)"
+                        Value="@Item!.DefaltPurchaseQty"
+                        ValueChanged="@(x => Item.DefaltPurchaseQty = x)"
+                        IsRequired="false"
+                        Errors="@Result?.Errors"
+                        Style="width: 350px"
+                        LocalizerResource="@LocalizerResource"
+                        LocalizerKey="DefaltPurchaseQty" />
+
+
+<LinovativeGap />
+<LinovativeInputGeneric T="decimal?"
+                        Disabled="@(!Item.IsActive || !Item!.CanBePurchased)"
+                        Value="@Item.ShouldPurchaseWhenStockLessOrEqualsTo"
+                        ValueChanged="@(x => Item.ShouldPurchaseWhenStockLessOrEqualsTo = x)"
+                        IsRequired="false"
+                        Errors="@Result?.Errors"
+                        Style="width: 350px"
+                        LocalizerResource="@LocalizerResource"
+                        LocalizerKey="ShouldPurchaseWhenStockLessOrEqualsTo" />
+
+
+@code {
+
+    [Parameter] public ItemInputDto? Item { get; set; } = new();
+    [Parameter] public Response? Result { get; set; }
+
+    protected override string LocalizerResource => nameof(ItemsPage);
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+    }
+
+}

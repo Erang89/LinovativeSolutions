@@ -1,4 +1,5 @@
 ﻿@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Items.Shared
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 @using Linovative.Frontend.Shared.InputComponents.FilterComponents
@@ -16,8 +17,7 @@
 @inject IDialogService _dialogService
 @inject IMapper _mapper
 @inject IAppNavigationService _nav
-
-
+@inject IGlobalMessage _globalMessage
 
 <LinovativePageTitle Title="@EntityPluralName" />
 <ItemsBreadcrumb Childs="@(new() { new BreadcrumbItem(EntityName, href: PageRoutes.PostManagement.ItemMaster.Item) })" />
@@ -37,14 +37,14 @@
 
 <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
 <LinovativeGap />
-@if (loaded)
-{
-    <MudGrid>
 
-        <MudItem xs="12" sm="4" lg="4" Class="">
+<MudGrid>
 
-            <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+    <MudItem xs="12" sm="4" lg="4" Class="">
 
+        <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+            @if (loaded)
+            {
                 <LinovativeInputText @bind-Value="@item.Name"
                                      Id="item_name"
                                      IsRequired="true"
@@ -70,12 +70,22 @@
                                      LocalizerKey="@nameof(ItemDto.Description)" />
 
                 <LinovativeGap />
+            }
+            else
+            {
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            }
 
-            </MudForm>
-        </MudItem>
+        </MudForm>
+    </MudItem>
 
 
-        <MudItem xs="12" sm="4" lg="4">
+    <MudItem xs="12" sm="4" lg="4">
+        @if (loaded)
+        {
+
 
             <ItemUnitDropdown @bind-Value="@itemUnit"
                               Id="item_unit"
@@ -108,10 +118,19 @@
                                LocalizerResource="@LocalizerResource"
                                LocalizerKey="@nameof(ItemDto.SellPrice)"
                                Clearable="true" />
-        </MudItem>
+        }
+        else
+        {
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+        }
+    </MudItem>
 
 
-        <MudItem xs="12" sm="4" lg="4">
+    <MudItem xs="12" sm="4" lg="4">
+        @if (loaded)
+        {
             <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
             <LinovativeGap />
             <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div>
@@ -119,33 +138,61 @@
             <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
             <LinovativeGap />
             <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div>
-        </MudItem>
+        }
+        else
+        {
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+        }
+    </MudItem>
+
+</MudGrid>
 
 
-    </MudGrid>
+<LinovativeGap />
+<LinovativeGap />
+<MudText Typo="Typo.h6">@Label("ItemSettingsSection")</MudText>
 
 
-    <LinovativeGap />
-    <LinovativeGap />
-    <MudText Typo="Typo.h6">@Label("ItemSettingsSection")</MudText>
-
-
-    <LinovativeGap />
+<LinovativeGap />
+@if (loaded)
+{
     <MudExpansionPanels MultiExpansion="true">
         <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.HasCostumePrice || !item.IsActive)">
-            ....
+            <MudGrid>
+                <MudItem xs="12" sm="8" lg="6">
+                    <ItemPriceSettings Item="@item" Result="@formResponse" />
+                </MudItem>
+            </MudGrid>
         </MudExpansionPanel>
         <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.HasSellingTaxAndService || !item.IsActive)">
-            ....
+            <MudGrid>
+                <MudItem xs="12" sm="6" lg="4">
+                    <ServiceAndTax Item="@item" Result="@formResponse" />
+                </MudItem>
+            </MudGrid>
         </MudExpansionPanel>
         <MudExpansionPanel Text="@Label("PurchaseSettingSection")" Disabled="@(!item.CanBePurchased || !item.IsActive)">
-            ....
+            <MudGrid>
+                <MudItem xs="12" sm="6" lg="4">
+                    <PurchaseSettings Item="@item" Result="@formResponse" />
+                </MudItem>
+            </MudGrid>
         </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("POSSettingSection")" Disabled="@(!item.IsActive)">
+        @* <MudExpansionPanel Text="@Label("POSSettingSection")" Disabled="@(!item.IsActive)">
             ....
-        </MudExpansionPanel>
+        </MudExpansionPanel> *@
     </MudExpansionPanels>
 }
+else
+{
+    <MudSkeleton Width="100%" Height="56px;" Class="border-b-1 mb-1" Style="transform: scale(1, 1)" />
+    <MudSkeleton Width="100%" Height="56px;" Class="border-b-1 mb-1" Style="transform: scale(1, 1)" />
+    <MudSkeleton Width="100%" Height="56px;" Class="border-b-1 mb-1" Style="transform: scale(1, 1)" />
+}
+
 
 
 @code {
@@ -158,7 +205,7 @@
 
     private List<ItemViewDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts { get; set; } = new();
-    private ItemDto item { get; set; } = new();
+    private ItemInputDto item { get; set; } = new();
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -170,16 +217,16 @@
     private ItemUnitDto? itemUnit = null;
     private ItemCategoryDto? itemCategory = null;
     private bool showFilter;
-    private bool loaded;
+    private bool loaded { get; set; } = false;
 
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _topBarService.SetTitle(EntityPluralName);
         if (Id is not null) await LoadData();
         loaded = true;
-        await base.OnInitializedAsync();
         _state.NotifyStateChanged();
     }
 
@@ -227,6 +274,8 @@
         if (formResponse)
         {
             await Reset();
+            _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Item);
             return;
         }
 
@@ -245,6 +294,9 @@
         if (formResponse)
         {
             await Reset();
+            _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.Item);
+            return;
         }
 
         isFormSubmitting = false;
@@ -255,7 +307,7 @@
 
     async Task LoadData()
     {
-        var itemRequest = await _service.Get(new Guid(Id!), cts.Token, $"$expand={nameof(ItemViewDto.Unit)},{nameof(ItemViewDto.Category)}");
+        var itemRequest = await _service.GetForUpdate(new Guid(Id!), cts.Token);
         var itemView = itemRequest.Data!;
         item = itemView;
         itemUnit = new ItemUnitDto() { Id = itemView.Unit!.Id, Name = itemView.Unit.Name };

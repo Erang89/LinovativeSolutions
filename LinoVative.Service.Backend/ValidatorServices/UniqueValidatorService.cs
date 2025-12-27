@@ -16,15 +16,13 @@ namespace LinoVative.Service.Backend.ValidatorServices
             _appDbContext = dbContext;
         }
 
-        Dictionary<EntityTypes, IQueryable>? _queryDic { get; set; } = null;
 
         public bool IsValid(EntityTypes? entityType, Guid id, string fieldName, object fieldValue, IActor actor, object dto)
         {
             if (entityType == null)
-                throw new ArgumentNullException($"{nameof(entityType)} is null");
+                throw new ArgumentNullException($"{0} is null",  nameof(entityType));
 
-            if (_queryDic is null)
-                _queryDic = new Dictionary<EntityTypes, IQueryable>()
+            var queryDic = new Dictionary<EntityTypes, IQueryable>()
                 {
                     {EntityTypes.ItemUnit, _appDbContext.ItemUnits.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                     {EntityTypes.ItemCategory, _appDbContext.ItemCategories.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
@@ -47,16 +45,16 @@ namespace LinoVative.Service.Backend.ValidatorServices
                     {EntityTypes.Shift, _appDbContext.Shifts.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                 };
 
-            if (!_queryDic.ContainsKey(entityType.Value))
+            if (!queryDic.ContainsKey(entityType.Value))
                 throw new NotImplementedException($"{entityType} is not in the dictionary yet");
 
-            var query = _queryDic[entityType.Value]!.WhereEquals(fieldName, fieldValue);
+            var query = queryDic[entityType.Value]!;
+            query = query.WhereEquals(fieldName, fieldValue);
 
-            
+
             if (dto is ItemCategoryDto categoryDto)
                 query = ((IQueryable<ItemCategory>)query).Where(x => x.GroupId == categoryDto.GroupId);
 
-            var querstring = query.ToQueryString();
             var result = !query.AnyDynamic();
 
             return result;

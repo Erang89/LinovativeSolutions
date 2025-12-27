@@ -3,6 +3,7 @@
     public enum EntityTypes
     {
         Item,
+        PriceType,
         ItemUnit,
         Tag,
         ItemGroup,

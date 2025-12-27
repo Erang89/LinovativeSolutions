@@ -4,6 +4,7 @@ using LinoVative.Service.Backend.DatabaseService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251222085355_AddActiveFieldInItemPriceType")]
+    partial class AddActiveFieldInItemPriceType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -703,10 +706,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
                     b.Property<Guid?>("CreatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<decimal?>("DefaltPurchaseQty")
-                        .HasPrecision(8, 4)
-                        .HasColumnType("decimal(8,4)");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -737,21 +736,6 @@ namespace LinoVative.Service.Backend.DatabaseService.DbMigrations
 
                     b.Property<bool>("SellPriceIncludeTaxService")
                         .HasColumnType("bit");
-
-                    b.Property<decimal?>("ServicePercent")
-                        .HasPrecision(8, 4)
-                        .HasColumnType("decimal(8,4)");
-
-                    b.Property<decimal?>("ShouldPurchaseWhenStockLessOrEqualsTo")
-                        .HasPrecision(8, 4)
-                        .HasColumnType("decimal(8,4)");
-
-                    b.Property<bool>("TaxAndServicePercentFromOutletOrderType")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal?>("TaxPercent")
-                        .HasPrecision(8, 4)
-                        .HasColumnType("decimal(8,4)");
 
                     b.Property<Guid?>("UnitId")
                         .HasColumnType("uniqueidentifier");

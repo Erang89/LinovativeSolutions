@@ -19,14 +19,24 @@ namespace LinoVative.Service.Core.Items
 
         public bool IsActive { get; set; } = true;
         public decimal SellPrice { get; set; }
+
+
         public bool HasSellingTaxAndService { get; set; }
+        public bool TaxAndServicePercentFromOutletOrderType { get; set; }
+        public decimal? ServicePercent { get; set; }
+        public decimal? TaxPercent { get; set; }
+
+
 
         public bool SellPriceIncludeTaxService { get; set; }
-
         public bool HasCostumePrice { get; set; }
-        public List<ItemCostumePrice> CostumePrices { get; set; } = new();
+        public List<ItemPriceType> ItemPriceTypes { get; set; } = new();
 
 
+
+        // Purchasing Settings
         public bool CanBePurchased { get; set; }
+        public decimal? DefaltPurchaseQty { get; set; }
+        public decimal? ShouldPurchaseWhenStockLessOrEqualsTo { get; set; }
     }
 }

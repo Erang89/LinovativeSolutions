@@ -1,28 +1,55 @@
 ﻿@typeparam T
 @inherits LinovativeInputComponentBase<T>
 
-<MudTextField Value="@Value"
-              ValueChanged="@(x => ValueChanged.InvokeAsync(x))"
-              Required="IsRequired"
-              ReadOnly="ReadOnly"
-              Label="@_label"
-              Immediate="true"
-              id="@Id"
-              @onclick="@(async () => await OnClick.InvokeAsync())"
-              T="T"
-              Disabled="@Disabled"
-              InputType="InputType"
-              Placeholder="@Placeholder"
-              Error="@_isError"
-              ErrorText="@_errorMessage"
-              RequiredError="@_requiredMessage"
-              Style="@Style"
-              Clearable="@Clearable"
-              Variant="@variant"
-              ClearIcon="@ClearIcon"
-              IconSize="@IconSize"
-              Adornment="@Adornment"
-              OnClearButtonClick="@OnClearButtonClick"></MudTextField>
+@if (!Disabled)
+{
+    <MudTextField Value="@Value"
+                  ValueChanged="@(x => ValueChanged.InvokeAsync(x))"
+                  Required="IsRequired"
+                  ReadOnly="ReadOnly"
+                  Label="@_label"
+                  Immediate="true"
+                  id="@Id"
+                  @onclick="@(async () => await OnClick.InvokeAsync())"
+                  T="T"
+                  Disabled="@Disabled"
+                  InputType="InputType"
+                  Placeholder="@Placeholder"
+                  Error="@_isError"
+                  ErrorText="@_errorMessage"
+                  RequiredError="@_requiredMessage"
+                  Style="@Style"
+                  Clearable="@Clearable"
+                  Variant="@variant"
+                  ClearIcon="@ClearIcon"
+                  IconSize="@IconSize"
+                  Adornment="@Adornment"
+                  OnClearButtonClick="@OnClearButtonClick"></MudTextField>
+}
+else
+{
+
+    <MudTextField Value="@Value"
+                  ValueChanged="@(x => ValueChanged.InvokeAsync(x))"
+                  Required="false"
+                  ReadOnly="ReadOnly"
+                  Label="@_label"
+                  Immediate="true"
+                  id="@Id"
+                  @onclick="@(async () => await OnClick.InvokeAsync())"
+                  T="T"
+                  Disabled="@Disabled"
+                  InputType="InputType"
+                  Placeholder="@Placeholder"
+                  Style="@Style"
+                  Clearable="@Clearable"
+                  Variant="@variant"
+                  ClearIcon="@ClearIcon"
+                  IconSize="@IconSize"
+                  Adornment="@Adornment"
+                  OnClearButtonClick="@OnClearButtonClick"></MudTextField>
+}
+
 
 @code {
     MudBlazor.Variant variant => Variant.ToMudBlazorVariant();
