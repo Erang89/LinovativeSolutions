@@ -1,19 +1,18 @@
 ﻿using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace LinoVative.Shared.Dto.Attributes
 {
-    public class LocalizedPhoneAttribute : ValidationAttribute
+    public class LocalizedEmailAttribute : ValidationAttribute
     {
-        private readonly PhoneAttribute _phone = new PhoneAttribute();
-        
+        private readonly EmailAddressAttribute _validator = new EmailAddressAttribute();
+
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is not null && !_phone.IsValid(value))
+            if (value is not null && !_validator.IsValid(value))
             {
                 var localizer = (IStringLocalizer)validationContext.GetService(typeof(IStringLocalizer))!;
-                var msg = localizer?["Validate.PhoneInvalid", value!] ?? "Invalid phone number format";
+                var msg = localizer?["Validate.EmailInvalid", value!] ?? "Invalid email format";
                 return new ValidationResult(msg);
             }
 

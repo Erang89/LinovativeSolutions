@@ -33,10 +33,12 @@
   "Email.Label": "Email",
   "Phone.Label": "Phone",
   "Position.Label": "Position",
+  "Whatsapp.Label": "Whatsapp",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",
   "Type.Required.ErrorMessage": "Type is required",
   "SupplierType.Required.ErrorMessage": "Supplier type is required",
-  "AddressType.Required.ErrorMessage": "Address type is required"
+  "AddressType.Required.ErrorMessage": "Address type is required",
+  "ContactName.Required.ErrorMessage": "Contact name is required"
 }

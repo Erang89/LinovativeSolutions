@@ -1,5 +1,6 @@
 {
-  "Validate.PhoneInvalid": "Invalid Phone Number",
+  "Validate.PhoneInvalid": "'{0}'. Invalid Phone Number",
+  "Validate.EmailInvalid": "'{0}'. Invalid Email Format",
   "Validate.MinDecimalValue": "The value can't be less than '{0}'",
   "Validate.MaxDecimalValue": "The value can't be greater than '{0}'",
   "Operation.UnAuthorized.Title": "Unauthorized Operation",
@@ -34,6 +35,7 @@
   "Entity.Name.Person": "Person",
   "Entity.Name.Shift": "Shift",
   "Entity.Name.Warehouse": "Warehouse",
+  "Entity.Name.Supplier": "Supplier",
 
   "Property.IdMustBeUnique": "The same ID already exist. ID must be unique",
   "Property.Required": "{0} is required.",
@@ -78,6 +80,16 @@
 
   "BankNoteDto.Required.Note.ErrorMessage": "Banknote is required",
   "BankNoteDto.Unique.Note.ErrorMessage": "'{0}' already exist. Banknote must be unique.",
+
+  "SupplierDto.Required.Code.ErrorMessage": "Code is required",
+  "SupplierDto.Unique.Code.ErrorMessage": "'{0}' already exist. Code must be unique.",
+  "SupplierDto.Required.Name.ErrorMessage": "Name is required",
+  "SupplierDto.Required.AddressType.ErrorMessage": "Address type is required",
+  "SupplierDto.Required.City.ErrorMessage": "City is required",
+  "SupplierDto.Required.Province.ErrorMessage": "Province is required",
+  "SupplierDto.Required.Country.ErrorMessage": "Country is required",
+  "SupplierDto.Required.ContactName.ErrorMessage": "Contact name is required",
+  "SupplierDto.Unique.Name.ErrorMessage": "Supplier name is already exist",
 
   "PaymentMethodDto.Required.PaymentMethodGroupId.ErrorMessage": "Payment method group is required",
   "PaymentMethodDto.Required.Name.ErrorMessage": "Name is required",

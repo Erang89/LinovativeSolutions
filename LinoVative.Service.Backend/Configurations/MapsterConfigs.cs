@@ -148,6 +148,10 @@ namespace LinoVative.Service.Backend.Configurations
 
 
             // Suppliers
+            config.NewConfig<UpdateSupplierCommand, Supplier>()
+                .Ignore(x => x.Contacts)
+                .Ignore(x => x.Addresses);
+
             config.NewConfig<CreateSupplierCommand, Supplier>()
                 .Ignore(x => x.Contacts)
                 .Ignore(x => x.Addresses);

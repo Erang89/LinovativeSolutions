@@ -12,13 +12,16 @@
     <tbody>
         @foreach (var contact in Data?.Contacts ?? new())
         {
+            var index = Data!.Contacts.IndexOf(contact);
+
             <tr>
 
-                
+
                 <td>
                     <div>
                         <LinovativeInputText @bind-Value="@contact.ContactName"
                                              Disabled="@(!Data!.IsActive)"
+                                             IsRequired="true"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="ContactName" />
@@ -27,7 +30,12 @@
 
                 <td>
                     <div class="d-flex">
-                        <MudSwitch Disabled="@(!Data!.IsActive)" T="bool" ValueChanged="@((x) => PrimaryChange(x, contact))" Value="@contact.IsPrimary" Label="@Label("IsPrimary")" Color="Color.Info" />
+                        <MudSwitch Disabled="@(!Data!.IsActive)"
+                                   Error="@((FormResponse?.Errors.Keys.Contains($"{nameof(Data.Contacts)}[all].{nameof(SupplierContactDto.IsPrimary)}")?? false) && !Data.Contacts.Any(x => x.IsPrimary))"
+                                   T="bool" ValueChanged="@((x) => PrimaryChange(x, contact))"
+                                   Value="@contact.IsPrimary"
+                                   Label="@Label("IsPrimary")"
+                                   Color="Color.Info" />
                     </div>
                 </td>
 
@@ -35,6 +43,7 @@
                     <div>
                         <LinovativeInputText @bind-Value="@contact.Email"
                                              Disabled="@(!Data.IsActive)"
+                                             ErrorKey="@($"{nameof(Data.Contacts)}[{index}].{nameof(SupplierContactDto.Email)}")"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="Email" />
@@ -45,9 +54,21 @@
                     <div>
                         <LinovativeInputText @bind-Value="@contact.Phone"
                                              Disabled="@(!Data.IsActive)"
+                                             ErrorKey="@($"{nameof(Data.Contacts)}[{index}].{nameof(SupplierContactDto.Phone)}")"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="Phone" />
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        <LinovativeInputText @bind-Value="@contact.Whatsapp"
+                                             Disabled="@(!Data.IsActive)"
+                                             Errors="@FormResponse?.Errors"
+                                             ErrorKey="@($"{nameof(Data.Contacts)}[{index}].{nameof(SupplierContactDto.Whatsapp)}")"
+                                             LocalizerResource="@LocalizerResource"
+                                             LocalizerKey="Whatsapp" />
                     </div>
                 </td>
 
@@ -92,7 +113,7 @@
 
         if (!value) return;
 
-        foreach(var dto in Data!.Contacts.Where(x => x != contact))
+        foreach (var dto in Data!.Contacts.Where(x => x != contact))
         {
             dto.IsPrimary = false;
         }

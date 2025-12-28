@@ -32,6 +32,7 @@
                     <div>
                         <LinovativeInputText @bind-Value="@address.AddressLine"
                                              Disabled="@(!Data.IsActive)"
+                                             IsRequired="true"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="AddressLine" />
@@ -42,6 +43,7 @@
                     <div>
                         <LinovativeInputText @bind-Value="@address.City"
                                              Disabled="@(!Data.IsActive)"
+                                             IsRequired="true"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="City" />
@@ -52,6 +54,7 @@
                     <div>
                         <LinovativeInputText @bind-Value="@address.Province"
                                              Disabled="@(!Data.IsActive)"
+                                             IsRequired="true"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="Province" />
@@ -62,6 +65,7 @@
                     <div>
                         <LinovativeInputText @bind-Value="@address.Country"
                                              Disabled="@(!Data.IsActive)"
+                                             IsRequired="true"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="Country" />

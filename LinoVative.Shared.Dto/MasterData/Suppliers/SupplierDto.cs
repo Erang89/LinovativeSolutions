@@ -7,11 +7,12 @@ namespace LinoVative.Shared.Dto.MasterData.Suppliers
     [LocalizerKey(nameof(SupplierDto))]
     public class SupplierDto : EntityDtoBase
     {
-        [LocalizedRequired]
+        [LocalizedRequired, UniqueField(EntityTypes.Supplier)]
         public string Code { get; set; } = null!;
-
-        [LocalizedRequired]
+            
+        [LocalizedRequired, UniqueField(EntityTypes.Supplier)]
         public string Name { get; set; } = null!;
+
         public string? LegalName { get; set; }
 
         [LocalizedRequired]
@@ -26,7 +27,7 @@ namespace LinoVative.Shared.Dto.MasterData.Suppliers
         public string? Notes { get; set; }
     }
 
-
+    [LocalizerKey(nameof(SupplierDto))]
     public class SupplierInputDto : SupplierDto
     {
         public List<SupplierContactDto> Contacts { get; set; } = new List<SupplierContactDto>();

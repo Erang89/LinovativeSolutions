@@ -33,6 +33,7 @@
         Person,
         SalesCOAMapping,
 
-        Warehouse
+        Warehouse,
+        Supplier
     }
 }

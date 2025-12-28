@@ -1,4 +1,5 @@
 ﻿using Linovative.Shared.Interface;
+using LinoVative.Service.Backend.CrudServices.Suppliers.Shared;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Service.Core.Suppliers;
@@ -16,9 +17,12 @@ namespace LinoVative.Service.Backend.CrudServices.Suppliers
 
     public class UpdateSupplierService : SaveUpdateServiceBase<Supplier, UpdateSupplierCommand>
     {
-        public UpdateSupplierService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer) :
+        private readonly ISupplierValidatorService _validator;
+
+        public UpdateSupplierService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, ISupplierValidatorService validator) :
             base(dbContext, actor, mapper, appCache, localizer)
         {
+            _validator = validator;
         }
 
         protected override async Task BeforeSaveUpdate(UpdateSupplierCommand request, Supplier entity, CancellationToken token)
@@ -56,6 +60,15 @@ namespace LinoVative.Service.Backend.CrudServices.Suppliers
             }
 
             await Task.CompletedTask;
+        }
+
+
+        protected override async Task<Result> ValidateSaveUpdate(UpdateSupplierCommand request, CancellationToken token)
+        {
+            var validate = await base.ValidateSaveUpdate(request, token);
+            if (!validate) return validate;
+
+            return await _validator.Validate(request);
         }
     }
 }

@@ -1,0 +1,4 @@
+{
+  "NoPrimaryContact.Message": "Supplier should have one primary contact",
+  "ContactNameDuplicated.Message": "Contact name is duplicated. It should be unique"
+}

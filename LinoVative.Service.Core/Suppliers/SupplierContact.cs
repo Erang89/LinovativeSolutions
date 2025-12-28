@@ -10,6 +10,7 @@ namespace LinoVative.Service.Core.Suppliers
         public string ContactName { get; set; } = null!;
         public string? Email { get; set; }
         public string? Phone { get; set; }
+        public string? Whatsapp { get; set; }
         public string? Position { get; set; }
 
         public bool IsPrimary { get; set; }

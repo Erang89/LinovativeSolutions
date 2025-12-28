@@ -35,10 +35,14 @@
 <MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
 
 <MudGrid>
-    <MudItem xs="12" sm="6" lg="4">
 
+    <MudItem xs="12">
         <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
         <LinovativeGap />
+    </MudItem>
+
+    <MudItem xs="12" sm="6" lg="4">
+
 
         <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
 
@@ -97,7 +101,7 @@
 
     <MudItem xs="12" sm="6" lg="4">
 
-        <LinovativeGap Height="59" />
+        <LinovativeGap Height="38" />
         <LinovativeGap />
 
         @if (loaded)
