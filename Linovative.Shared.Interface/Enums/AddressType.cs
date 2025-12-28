@@ -4,6 +4,7 @@
     {
         Office = 1,
         Warehouse = 2,
-        Billing = 3
+        Billing = 3,
+        Outlet = 4
     }
 }

@@ -29,6 +29,7 @@
                 public const string Index = $"{IndexMaster}/suppliers";
                 public const string SupplierAdd = $"{Index}/add";
                 public const string SupplierUpdate = $"{Index}" + "/update/{Id}";
+                public const string BulkOperation = $"{Index}/bulk-operation";
             }
 
 

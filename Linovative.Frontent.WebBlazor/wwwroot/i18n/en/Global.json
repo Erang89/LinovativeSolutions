@@ -35,6 +35,8 @@
   "Label.FieldName": "Field Name",
   "Label.FilterOperator": "Operator",
   "Label.BrowseFile": "Browse File",
+  "Label.Status.Active": "Active",
+  "Label.Status.NotActive": "Not Active",
 
 
   "Dialog.Yes": "Yes",

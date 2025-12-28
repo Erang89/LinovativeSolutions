@@ -6,7 +6,7 @@ namespace LinoVative.Shared.Dto.MasterData.Suppliers
     {
         public Guid SupplierId { get; set; }
 
-        public AddressType AddressType { get; set; }
+        public AddressType? AddressType { get; set; }
 
         public string AddressLine { get; set; } = null!;
         public string City { get; set; } = null!;

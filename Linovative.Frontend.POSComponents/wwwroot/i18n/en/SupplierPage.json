@@ -2,7 +2,8 @@
   "Entity.Name.Single": "Supplier",
   "Entity.Name.Plural": "Suppliers",
 
-  "Tab.Supplier.Lable" :  "Supplier",
+  "Tab.Supplier.Lable": "Supplier",
+  "Tab.BulkOperation.Lable": "Bulk Operation",
 
   "Name.Label": "Name",
   "Code.Label": "Code",
@@ -14,9 +15,28 @@
   "PaymentTerm.Label": "Payment Term",
   "Currency.Label": "Currency",
   "Notes.Label": "Notes",
+  "IsActiveColumnHeader.Label": "Status",
+  "SettingSection.Label": "Settings",
+  "AddressSection.Label": "Address",
+  "ContactSection.Label": "Contacts",
+  "AddNewAddress.Label": "Add new address",
+  "AddNewContact.Label": "Add new Contact",
+  "AddressType.Label": "Address Type",
+  "AddressLine.Label": "Address Line",
+  "City.Label": "City",
+  "Province.Label": "Province",
+  "Country.Label": "Country",
+  "PostalCode.Label": "Postal Code",
+  "Remove.Label": "Remove",
+  "IsPrimary.Label": "Is Primary",
+  "ContactName.Label": "Contact Name",
+  "Email.Label": "Email",
+  "Phone.Label": "Phone",
+  "Position.Label": "Position",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",
   "Type.Required.ErrorMessage": "Type is required",
-  "SupplierType.Required.ErrorMessage": "Supplier type is required"
+  "SupplierType.Required.ErrorMessage": "Supplier type is required",
+  "AddressType.Required.ErrorMessage": "Address type is required"
 }

@@ -2,6 +2,7 @@
 @using Linovative.Frontend.POSComponents.Bases
 @using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Suppliers.Shared
 @using Linovative.Frontend.Services.Models
+@using Linovative.Shared.Interface.Enums
 
 @attribute [Route(PageRoutes.PostManagement.Suppliers.Index)]
 @inherits POSManagementPageBase
@@ -49,7 +50,7 @@
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SupplierDto.Code))" T="SupplierDto">@_loc[$"{LocalizerResource}.Code.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SupplierDto.Name))" T="SupplierDto">@_loc[$"{LocalizerResource}.Name.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SupplierDto.SupplierType))" T="SupplierDto">@_loc[$"{LocalizerResource}.Type.Label"]</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="@(nameof(SupplierDto.IsActive))" T="SupplierDto">@_loc[$"{LocalizerResource}.IsActive.Label"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(SupplierDto.IsActive))" T="SupplierDto">@_loc[$"{LocalizerResource}.IsActiveColumnHeader.Label"]</MudTableSortLabel></MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -58,8 +59,8 @@
         </MudTd>
         <MudTd DataLabel="Code">@context.Code</MudTd>
         <MudTd DataLabel="Name">@context.Name</MudTd>
-        <MudTd DataLabel="SupplierType">@context.SupplierType</MudTd>
-        <MudTd DataLabel="IsActive">@context.IsActive</MudTd>
+        <MudTd DataLabel="SupplierType">@_loc.Enum($"{nameof(SupplierType)}.{context.SupplierType}")</MudTd>
+        <MudTd DataLabel="IsActive">@(context.IsActive? _loc.Global("Label.Status.Active") : _loc.Global("Label.Status.NotActive"))</MudTd>
         <MudTd Style="width: 30px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>
     </RowTemplate>
 

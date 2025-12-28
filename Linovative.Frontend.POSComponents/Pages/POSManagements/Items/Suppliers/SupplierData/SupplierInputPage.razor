@@ -2,6 +2,7 @@
 @using LinoVative.Shared.Dto.Outlets
 @using Linovative.Frontend.POSComponents.Bases
 @using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Suppliers.Shared
+@using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Suppliers.SupplierData.Shared
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 
@@ -50,7 +51,7 @@
 
                 <LinovativeGap />
                 <LinovativeInputText @bind-Value="@data.Code"
-                Disabled="@(!data.IsActive)"
+                                     Disabled="@(!data.IsActive)"
                                      IsRequired="true"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
@@ -82,33 +83,6 @@
                                       Value="@data.SupplierType"
                                       ValueChanged="@(x => data.SupplierType = x)" />
 
-                <LinovativeGap />
-                <LinovativeInputText @bind-Value="@data.TaxNumber"
-                                     Disabled="@(!data.IsActive)"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="TaxNumber" />
-
-                <LinovativeGap />
-                <LinovativeInputText @bind-Value="@data.PaymentTerm"
-                                     Errors="@formResponse?.Errors"
-                                     Disabled="@(!data.IsActive)"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="PaymentTerm" />
-
-                <LinovativeGap />
-                <LinovativeInputText @bind-Value="@data.Currency"
-                                     Disabled="@(!data.IsActive)"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="Currency" />
-
-                <LinovativeGap />
-                <LinovativeInputText @bind-Value="@data.Notes"
-                                     Disabled="@(!data.IsActive)"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="Notes" />
             }
             else
             {
@@ -117,14 +91,81 @@
                 <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
                 <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
                 <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
             }
         </MudForm>
     </MudItem>
+
+    <MudItem xs="12" sm="6" lg="4">
+
+        <LinovativeGap Height="59" />
+        <LinovativeGap />
+
+        @if (loaded)
+        {
+            <LinovativeInputText @bind-Value="@data.TaxNumber"
+                                 Disabled="@(!data.IsActive)"
+                                 Errors="@formResponse?.Errors"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="TaxNumber" />
+
+            <LinovativeGap />
+            <LinovativeInputText @bind-Value="@data.PaymentTerm"
+                                 Errors="@formResponse?.Errors"
+                                 Disabled="@(!data.IsActive)"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="PaymentTerm" />
+
+            <LinovativeGap />
+            <LinovativeInputText @bind-Value="@data.Currency"
+                                 Disabled="@(!data.IsActive)"
+                                 Errors="@formResponse?.Errors"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="Currency" />
+
+            <LinovativeGap />
+            <LinovativeInputText @bind-Value="@data.Notes"
+                                 Disabled="@(!data.IsActive)"
+                                 Errors="@formResponse?.Errors"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="Notes" />
+        }
+        else
+        {
+
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+        }
+    </MudItem>
 </MudGrid>
+
+
+
+
+<LinovativeGap />
+<LinovativeGap />
+
+@if (loaded)
+{
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Expanded="true" Text="@Label("AddressSection")">
+            <SupplierAddressComponent Data="@data" FormResponse="@formResponse" />
+        </MudExpansionPanel>
+
+        <MudExpansionPanel Expanded="true" Text="@Label("ContactSection")">
+            <SupplierContactComponent Data="@data" FormResponse="@formResponse" />
+        </MudExpansionPanel>
+
+    </MudExpansionPanels>
+}
+else
+{
+    <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+    <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+}
+
+
 
 @code {
     [Parameter] public string? Id { get; set; }
@@ -134,9 +175,9 @@
     protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
 
 
-    private List<SupplierDto> selectedItems { get; set; } = new();
+    private List<SupplierInputDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts { get; set; } = new();
-    private SupplierDto data { get; set; } = new() { IsActive = true};
+    private SupplierInputDto data { get; set; } = new() { IsActive = true };
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -144,7 +185,7 @@
     private bool isFormSubmitting { get; set; }
     private AppErrorAlert? formErrorAlert { get; set; }
     private bool selectedAll { get; set; }
-    private List<SupplierDto> dataSource { get; set; } = new();
+    private List<SupplierInputDto> dataSource { get; set; } = new();
     private bool loaded { get; set; }
 
     protected override async Task OnInitializedAsync()

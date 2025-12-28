@@ -5,7 +5,7 @@
 
 <MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
     <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.Suppliers.Index))" Text="@supplier" />
-    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.Suppliers.Index))" Text="@supplier2" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.Suppliers.BulkOperation))" Text="@bulkOperation" />
 </MudTabs>
 
 <LinovativeGap />
@@ -21,7 +21,7 @@
     }
 
     string? supplier { get; set; }
-    string? supplier2 { get; set; }
+    string? bulkOperation { get; set; }
 
     private bool _isInitialized = false;
     async Task Navigate(string navigateTo)
@@ -46,7 +46,7 @@
 
         await base.OnInitializedAsync();
         supplier = _loc.PosManagement("Menu.Tab.Supplier");
-        supplier2 = _loc.PosManagement("Menu.Tab.Supplier");
+        bulkOperation = _loc.PosManagement("Menu.Tab.BulkOperation");
 
     }
 

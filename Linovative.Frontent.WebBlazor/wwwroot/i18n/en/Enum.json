@@ -37,6 +37,11 @@
   "SupplierType.Individual": "Individual",
   "SupplierType.Company": "Company",
 
+  "AddressType.Office": "Office",
+  "AddressType.Warehouse": "Warehouse",
+  "AddressType.Billing": "Billing",
+  "AddressType.Outlet": "Outlet",
+
   "FilterOperator.Equals": "Equals",
   "FilterOperator.NotEquals": "Not Equals",
   "FilterOperator.Contains": "Contains",
