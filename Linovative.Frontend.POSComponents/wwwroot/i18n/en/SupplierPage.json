@@ -34,6 +34,9 @@
   "Phone.Label": "Phone",
   "Position.Label": "Position",
   "Whatsapp.Label": "Whatsapp",
+  "HideFilter.Label": "Hide Filter",
+  "ShowFilter.Label": "Show Filter",
+  "FilterSupplier.Label": "Filter Supplier",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",

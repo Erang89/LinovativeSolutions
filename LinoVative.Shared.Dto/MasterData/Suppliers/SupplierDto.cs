@@ -34,4 +34,9 @@ namespace LinoVative.Shared.Dto.MasterData.Suppliers
         public List<SupplierAddressDto> Addresses { get; set; } = new List<SupplierAddressDto>();
     }
 
+
+    public class SupplierViewDto : SupplierDto
+    {
+
+    }
 }

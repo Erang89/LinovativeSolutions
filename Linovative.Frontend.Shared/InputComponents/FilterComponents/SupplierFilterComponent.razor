@@ -1,0 +1,107 @@
+﻿@using System.Linq.Expressions
+@using LinoVative.Shared.Dto.ItemDtos
+@using LinoVative.Shared.Dto.MasterData.Suppliers
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.MultiSelect
+
+@inject IApplicationStateService _state
+@inject IJsonLocalizer _loc
+
+<FilterComponent Title="@Label"
+                 @ref=@filterComponent
+                 ValueInputNameBased="@GenerateInputUi"
+                 FieldValues="@FieldValues"
+                 FieldSources="@selectedTypes"
+                 OnClearFilter="@OnClearFilter"
+                 OnFilterButtonClick="@OnFilterButtonClick"
+                 FieldValuesChanged="@OnFieldValuesChanged"
+                 AdditionalButton="@AdditionalButton"
+                 HideFilterButton="@HideFilterButton" />
+
+
+@code {
+
+    [Parameter] public List<DataGridFilterModel> FieldValues { get; set; } = new();
+    [Parameter] public EventCallback<List<DataGridFilterModel>> FieldValuesChanged { get; set; }
+    [Parameter] public bool HideFilterButton { get; set; }
+    [Parameter] public List<string> HideColumns { get; set; } = new();
+    [Parameter] public List<string> OnlyShowColumns { get; set; } = new();
+    [Parameter] public EventCallback OnFilterButtonClick { get; set; }
+    [Parameter] public string? Label { get; set; }
+    [Parameter] public EventCallback OnClearFilter { get; set; }
+    [Parameter] public RenderFragment? AdditionalButton { get; set; }
+
+    FilterComponent? filterComponent { get; set; }
+    public void AddNew() => filterComponent?.AddFieldValue();
+
+
+    static Func<string, string> GetLable = (x) => "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _loc.EnsureLoadedAsync($"{nameof(SupplierFilterComponent)}", "Linovative.Frontend.Shared");
+        GetLable = (string key) => _loc[$"{nameof(SupplierFilterComponent)}.{key}.Label"];
+        Label ??= GetLable("Title");
+        _state.OnChange += StateHasChanged;
+
+        types = new List<FilterComponent.FieldType>()
+                    {
+                        new(Columns.Code, DataGridFilterModel.PropertyType.String, GetLable(nameof(SupplierViewDto.Code)), GetLable(nameof(SupplierViewDto.Code))),
+                        new(Columns.Name, DataGridFilterModel.PropertyType.String, GetLable(nameof(SupplierViewDto.Name)), GetLable(nameof(SupplierViewDto.Name))),
+                        new(Columns.LegalName, DataGridFilterModel.PropertyType.String, GetLable(nameof(SupplierViewDto.LegalName)), GetLable(nameof(SupplierViewDto.LegalName))),
+                        new(Columns.TaxNumber, DataGridFilterModel.PropertyType.String, GetLable(nameof(SupplierViewDto.TaxNumber)), GetLable(nameof(SupplierViewDto.TaxNumber))),
+
+                        // new(Columns.ItemCategoryName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category)), GetLable(nameof(ItemViewDto.Category))),
+                        // new(Columns.ItemGroupName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category.ItemGroup)), GetLable(nameof(ItemViewDto.Category.ItemGroup))),
+                        // new(Columns.ItemUnitName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Unit)), GetLable(nameof(ItemViewDto.Unit))),
+                        // new(Columns.ItemCategoryNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Categories"), GetLable("Categories")),
+                        // new(Columns.ItemGroupNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Groups"), GetLable("Groups")),
+                        // new(Columns.ItemUnitNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Units"), GetLable("Units")),
+                    };
+
+        selectedTypes = types
+        .Where(x => !HideColumns.Contains(x.FieldName))
+        .Where(x => OnlyShowColumns.Count == 0 ? true : OnlyShowColumns.Contains(x.FieldName))
+        .ToList();
+
+        await base.OnInitializedAsync();
+
+        _state.NotifyStateChanged();
+    }
+
+    private async Task OnFieldValuesChanged(List<DataGridFilterModel> values)
+    {
+        FieldValues = values;
+        await FieldValuesChanged.InvokeAsync(FieldValues);
+    }
+
+
+    public static class Columns
+    {
+        public const string Code = nameof(SupplierViewDto.Code);
+        public const string Name = nameof(SupplierViewDto.Name);
+        public const string LegalName = nameof(SupplierViewDto.LegalName);
+        public const string TaxNumber = nameof(SupplierViewDto.TaxNumber);
+
+        // public const string ItemCategoryName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.Name)}";
+        // public const string ItemGroupName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.ItemGroup)}.{nameof(ItemGroupViewDto.Name)}";
+        // public const string ItemUnitName = $"{nameof(ItemViewDto.Unit)}.{nameof(ItemViewDto.Name)}";
+        // public const string ItemCategoryNames = $"{nameof(ItemViewDto.CategoryId)}";
+        // public const string ItemGroupNames = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.GroupId)}";
+        // public const string ItemUnitNames = $"{nameof(ItemViewDto.UnitId)}";
+    }
+
+
+    List<FilterComponent.FieldType> types { get; set; } = new();
+    List<FilterComponent.FieldType> selectedTypes { get; set; } = new();
+
+    RenderFragment? GenerateInputUi(DataGridFilterModel model)
+    {
+        return model.Column switch
+        {
+            //Columns.ItemGroupNames => @<ItemGroupMultiSelect Label="@GetLable("Groups")" Placeholder="@GetLable("Groups")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            //Columns.ItemCategoryNames => @<ItemCategoryMultiSelect Label="@GetLable("Categories")" Placeholder="@GetLable("Categories")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            //Columns.ItemUnitNames => @<ItemUnitMultiSelect Label="@GetLable("Units")" Placeholder="@GetLable("Units")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            _ => null
+        };
+    }
+}

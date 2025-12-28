@@ -2,6 +2,8 @@
 @using Linovative.Frontend.POSComponents.Bases
 @using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Suppliers.Shared
 @using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.Extensions
+@using Linovative.Frontend.Shared.InputComponents.FilterComponents
 @using Linovative.Shared.Interface.Enums
 
 @attribute [Route(PageRoutes.PostManagement.Suppliers.Index)]
@@ -24,12 +26,25 @@
 <SupplierTabs SelectedTab="SupplierTabs.Tabs.Supplier" />
 <CrudButtons PageMode="PageModes.List" OnAddNew="@(() => _nav.NavigateTo(PageRoutes.PostManagement.Suppliers.SupplierAdd))"
              OnDelete="Delete"
-             SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting" />
+             SelectedItemCount="@selectedItems.Count" IsFormSubmitting="isFormSubmitting">
+    <MudBadge Class="ms-1" Content="@(filterFalues.Count)" Origin="Origin.BottomRight" Overlap="true">
+        <MudButton Variant="Variant.Outlined" StartIcon="@(showFilter? Icons.Material.Filled.RemoveRedEye : Icons.Material.Outlined.RemoveRedEye)" OnClick="@TogleFilter">@(showFilter? @Label("HideFilter") : Label("ShowFilter"))</MudButton>
+    </MudBadge>
+</CrudButtons>
 <LinovativeGap />
 
 <AppSuccessAllert @ref="@successAllert" AutoClose="true" />
 <AppErrorAlert @ref="@deleteAllert" AutoClose="true" />
 <GlobalMessage AutoClose="true" />
+
+
+<MudPaper class="@(showFilter ? "rounded-0 rounded-t" : "d-none")">
+    <SupplierFilterComponent OnClearFilter="@ClearFilter" OnFilterButtonClick="@(() => table!.ReloadServerData())" FieldValues="@filterFalues" FieldValuesChanged="@(x => filterFalues = x)" @ref=@supplierFilterComponent Label="@Label("FilterSupplier")">
+        <AdditionalButton>
+            <MudButton Class="ms-2" Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.Close" OnClick="@(() => showFilter = !showFilter)" Color="Color.Primary">@_loc.Global("Button.Close")</MudButton>
+        </AdditionalButton>
+    </SupplierFilterComponent>
+</MudPaper>
 
 <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
     <ToolBarContent>
@@ -104,11 +119,29 @@
     private bool selectedAll { get; set; }
     private List<SupplierDto> dataSource { get; set; } = new();
     private AppErrorAlert? deleteAllert { get; set; }
+    private bool showFilter { get; set; }
+    private List<DataGridFilterModel> filterFalues = new();
+    private SupplierFilterComponent? supplierFilterComponent { get; set; }
 
     void OnFormKeyPress()
     {
         formResponse = null;
         _state.NotifyStateChanged();
+    }
+
+    void TogleFilter()
+    {
+        showFilter = !showFilter;
+        if (showFilter && filterFalues.Count() == 0)
+        {
+            supplierFilterComponent?.AddNew();
+        }
+    }
+
+    private void ClearFilter()
+    {
+        filterFalues = new();
+        table?.ReloadServerData();
     }
 
     async Task Reset()
@@ -173,7 +206,7 @@
             PageSize = state.PageSize,
             OrderFiled = state.SortLabel,
             SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
-            Options = searchString is null ? null : $"$filter=contains(tolower(name), tolower('{searchString}'))"
+            FilterPayload = new { SearchKeyword = searchString, filter = filterFalues.ToFilterCondition() }
         };
 
         var result = await _service.Get(odataFilter, cts.Token);
