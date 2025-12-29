@@ -1,5 +1,4 @@
-﻿using Linovative.Shared.Interface.Enums;
-using LinoVative.Service.Core.Accountings;
+﻿using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.BulkUploads;
 using LinoVative.Service.Core.Companies;
@@ -93,7 +92,13 @@ namespace LinoVative.Service.Backend.Configurations
             modelBuilder.Entity<CountryRegion>().ToTable("CountryRegions");
             modelBuilder.Entity<Currency>().ToTable("Currencies");
             modelBuilder.Entity<AppTimeZone>().ToTable("TimeZones");
-
+            modelBuilder.Entity<Province>(x =>
+            {
+                x.ToTable("Provinces");
+                x.HasOne<Country>().WithMany().HasForeignKey(x => x.CountryId).IsRequired();
+                x.Property(x => x.Name).HasColumnType("Varchar(225)");
+                x.Property(x => x.Code).HasColumnType("Varchar(25)");
+            });
 
             // Person
             modelBuilder.Entity<Person>(x =>

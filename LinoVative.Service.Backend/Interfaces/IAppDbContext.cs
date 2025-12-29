@@ -32,6 +32,7 @@ namespace LinoVative.Service.Backend.Interfaces
         // Source DbSets
         public DbSet<CountryRegion> CountryRegions { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Province> Provinces { get; set; }
         public DbSet<AppTimeZone> TimeZones { get; set; }
         public DbSet<Currency> Currencies { get; set; }
 

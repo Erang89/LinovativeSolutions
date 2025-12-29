@@ -107,6 +107,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<CurrencyDto>("Currencies");
             modelBuilder.EntitySet<CountryDto>("Countries");
             modelBuilder.EntitySet<TimezoneDto>("Timezones");
+            modelBuilder.EntitySet<ProvinceDto>("Provinces");
 
             return modelBuilder.GetEdmModel();
         }
