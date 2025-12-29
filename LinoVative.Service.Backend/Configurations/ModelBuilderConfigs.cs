@@ -273,7 +273,17 @@ namespace LinoVative.Service.Backend.Configurations
             {
                 x.ToTable("Customers");
                 x.HasOne(x => x.Person).WithOne().HasForeignKey<Customer>(x => x.PersonId);
+                x.Property(x => x.CustomerType).HasColumnType("Varchar(50)");
             });
+
+            modelBuilder.Entity<CustomerAddress>(x =>
+            {
+                x.ToTable("CustomerAddress");
+                x.HasOne(x => x.Country).WithMany().HasForeignKey(x => x.CountryId).IsRequired();
+                x.HasOne(x => x.Province).WithMany().HasForeignKey(x => x.ProvinceId).IsRequired(false);
+                x.Property(x => x.AddressType).HasColumnType("Varchar(50)");
+            });
+
         }
 
         static void ConfigureAccountingEntities(this ModelBuilder modelBuilder)
