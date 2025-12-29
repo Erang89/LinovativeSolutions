@@ -1,0 +1,60 @@
+﻿@using LinoVative.Shared.Dto.Sources
+@using Linovative.Frontend.Services.FrontendServices
+@inherits SearchableDropdownBase<ProvinceDto>
+
+@inject IProvinceService _service
+@inject IApplicationStateService _state
+
+<SearchableDropdown Required=@Required
+                    RequiredMessage=@RequiredMessage
+                    Immediate=true
+                    Label=@_label
+                    Value=@Value
+                    Text=@Text
+                    TextChanged="@(x => Text = x)"
+                    ValueChanged=@ValueChanged
+                    StringConvert="@((x) => $"{x.Name}")"
+                    PageSize=@PageSize
+                    Clearable="@Clearable"
+                    TItem="ProvinceDto"
+                    ErrorKey="@ErrorKey"
+                    LocalizerResource="@LocalizerResource"
+                    LocalizerKey="@LocalizerKey"
+                    Error="@Error"
+                    Errors="@Errors"
+                    ErrorMessage="@ErrorMessage"
+                    SearchFunction="LoadData" />
+
+@code {
+    private CancellationTokenSource cts { get; set; } = new();
+    [Parameter] public Guid? CountryId { get; set; }
+
+    protected override Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        PageSize = PageSize == 0 ? 10 : PageSize;
+        return base.OnInitializedAsync();
+    }
+
+    string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
+
+    public Task<Response<List<ProvinceDto>>> ReLoadData(string? keyword, int page) => LoadData(keyword, page);
+    
+    async Task<Response<List<ProvinceDto>>> LoadData(string? keyword, int page)
+    {
+        var odataFilter = new ODataFilter()
+        {
+            PageNumber = page,
+            PageSize = PageSize,
+            SortDirection = ShortDirections.Asc,
+            OrderFiled = nameof(CountryDto.Name),
+            FilterPayload = new { searchkeyword = keyword, CountryId = CountryId }
+        };
+
+        var result = await _service.Get(odataFilter, cts.Token);
+        if (!result) return new();
+
+        return result;
+    }
+
+}
