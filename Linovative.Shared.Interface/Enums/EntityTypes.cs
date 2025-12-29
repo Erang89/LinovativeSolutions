@@ -16,6 +16,8 @@
         AppUserCompanyRole,
         CostumePriceTag,
         Country, 
+        Province,
+        Regency,
         CountryRegion,
         Currency,
         AppTimeZone,

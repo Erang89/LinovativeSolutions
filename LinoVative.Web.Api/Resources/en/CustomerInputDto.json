@@ -1,3 +1,7 @@
 {
-  "Required.ProvinceId.Message": "Province is required"
+  "Required.ProvinceId.Message": "Province is required",
+  "Required.ProvinceName.Message": "Province name is required",
+  "Required.City.Message": "City is required",
+  "Required.PostalCode.Message": "Postal Code is required",
+  "Required.RegencyId.Message": "Regency is required"
 }

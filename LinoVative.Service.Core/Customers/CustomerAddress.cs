@@ -20,6 +20,7 @@ namespace LinoVative.Service.Core.Customers
         public string? PostalCode { get; set; }
 
         public Guid? ProvinceId { get; set; }
-        public Province? Province { get; set; }
+        public Guid? RegencyId { get; set; }
+        public Regency? Regency { get; set; }
     }
 }

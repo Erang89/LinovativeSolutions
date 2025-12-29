@@ -2,7 +2,6 @@
 using Linovative.Shared.Interface.Enums;
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
-using LinoVative.Service.Core.Shifts;
 
 namespace LinoVative.Service.Backend.ValidatorServices
 {
@@ -46,6 +45,8 @@ namespace LinoVative.Service.Backend.ValidatorServices
                 {EntityTypes.Account, _appDbContext.Accounts.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
                 {EntityTypes.COAGroup, _appDbContext.CoaGroups.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
                 {EntityTypes.SalesCOAMapping, _appDbContext.SalesCOAMappings.Where(x => !x.IsDeleted && x.Id == id && x.CompanyId == actor.CompanyId) },
+                {EntityTypes.Province, _appDbContext.Provinces.Where(x => x.Id == id) },
+                {EntityTypes.Regency, _appDbContext.Regencies.Where(x => x.Id == id) },
             };
 
             if (!queryDictionary.ContainsKey(entityType.Value))

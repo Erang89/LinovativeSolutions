@@ -16,6 +16,9 @@ namespace LinoVative.Shared.Dto.Attributes
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
+            if(value is null) return ValidationResult.Success;
+
+
             var classType = validationContext.ObjectType;
             var ignoreAttribute = classType.GetCustomAttribute<IgnoreEntityIDValidationAttribute>(inherit: true);
             var classProperties = ignoreAttribute?.IgnoreList;

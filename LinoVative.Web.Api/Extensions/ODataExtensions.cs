@@ -2,6 +2,7 @@
 using LinoVative.Shared.Dto.BulkUploads;
 using LinoVative.Shared.Dto.ItemDtos;
 using LinoVative.Shared.Dto.MasterData.Accountings;
+using LinoVative.Shared.Dto.MasterData.Customers;
 using LinoVative.Shared.Dto.MasterData.Payments;
 using LinoVative.Shared.Dto.MasterData.Shifts;
 using LinoVative.Shared.Dto.MasterData.Suppliers;
@@ -63,6 +64,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<AccountViewDto>("Accounts");
             modelBuilder.EntitySet<SalesCOAMappingViewDto>("SalesCOAMappings");
             modelBuilder.EntitySet<SupplierDto>("Suppliers");
+            modelBuilder.EntitySet<CustomerDto>("Customers");
 
             // Bulk Uploads Data
             modelBuilder.EntitySet<BulkUploadItemGroupDto>("BulkOperationItemGroups");

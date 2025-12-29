@@ -4,6 +4,8 @@ using LinoVative.Shared.Dto.Attributes;
 
 namespace LinoVative.Shared.Dto.MasterData.Customers
 {
+
+    [LocalizerKey(nameof(CustomerDto))]
     public class CustomerDto : EntityDtoBase
     {
         [EntityID(EntityTypes.Person)]

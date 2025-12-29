@@ -91,6 +91,9 @@
   "SupplierDto.Required.ContactName.ErrorMessage": "Contact name is required",
   "SupplierDto.Unique.Name.ErrorMessage": "Supplier name is already exist",
 
+  "CustomerDto.Required.AddressLine.ErrorMessage": "Address line is required",
+
+
   "PaymentMethodDto.Required.PaymentMethodGroupId.ErrorMessage": "Payment method group is required",
   "PaymentMethodDto.Required.Name.ErrorMessage": "Name is required",
   "PaymentMethodDto.Required.Type.ErrorMessage": "Payment method type is required",

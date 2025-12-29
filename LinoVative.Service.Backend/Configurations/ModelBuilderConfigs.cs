@@ -12,7 +12,6 @@ using LinoVative.Service.Core.Shifts;
 using LinoVative.Service.Core.Sources;
 using LinoVative.Service.Core.Suppliers;
 using LinoVative.Service.Core.Warehoses;
-using LinoVative.Shared.Dto.Sources;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.Configurations
@@ -48,6 +47,12 @@ namespace LinoVative.Service.Backend.Configurations
                 x.HasOne<AppTimeZone>().WithMany().HasForeignKey(x => x.TimeZoneId).IsRequired();
                 x.HasOne(x => x.Country).WithMany().HasForeignKey(x => x.CountryId).IsRequired();
                 x.HasOne(x => x.Currency).WithMany().HasForeignKey(x => x.CurrencyId).IsRequired();
+            });
+
+            modelBuilder.Entity<CompanySetting>(x =>
+            {
+                x.ToTable("CompanySettings");
+                x.HasOne<Company>().WithOne().HasForeignKey<CompanySetting>(x => x.CompanyId);
             });
 
             // Maping Items
@@ -289,7 +294,7 @@ namespace LinoVative.Service.Backend.Configurations
             {
                 x.ToTable("CustomerAddress");
                 x.HasOne(x => x.Country).WithMany().HasForeignKey(x => x.CountryId).IsRequired();
-                x.HasOne(x => x.Province).WithMany().HasForeignKey(x => x.ProvinceId).IsRequired(false);
+                x.HasOne(x => x.Regency).WithMany().HasForeignKey(x => x.RegencyId).IsRequired(false);
                 x.Property(x => x.AddressType).HasColumnType("Varchar(50)");
             });
 
@@ -392,7 +397,7 @@ namespace LinoVative.Service.Backend.Configurations
             });
 
         }
-    
+
         public static void ConfigureSuppliers(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Supplier>(x =>
@@ -416,6 +421,6 @@ namespace LinoVative.Service.Backend.Configurations
                 x.HasOne(x => x.Supplier).WithMany(x => x.Contacts).HasForeignKey(x => x.SupplierId).IsRequired();
             });
         }
-    
+
     }
 }

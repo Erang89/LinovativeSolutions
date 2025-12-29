@@ -4,24 +4,32 @@ using LinoVative.Shared.Dto.Commons;
 
 namespace LinoVative.Shared.Dto.MasterData.Customers
 {
+
+    [LocalizerKey(nameof(CustomerDto))]
     public class CustomerAddressDto : EntityDtoBase
     {
-        public CustomerAddressType AddressType { get; set; }
+        public CustomerAddressType? AddressType { get; set; }
 
-        [EntityID(EntityTypes.Country)]
+        [EntityID(EntityTypes.Country), LocalizedRequired]
         public Guid? CountryId { get; set; }
 
+        [LocalizedRequired]
         public string AddressLine { get; set; } = null!;
         public string? City { get; set; } = null!;
         public string? ProvinceName { get; set; } = null!;
         public string? PostalCode { get; set; }
 
+        [EntityID(EntityTypes.Province)]
         public Guid? ProvinceId { get; set; }
+
+        [EntityID(EntityTypes.Regency)]
+        public Guid? RegencyId { get; set; }
     }
 
 
     public class CustomerAddressInputDto : CustomerAddressDto
     {
         public IdWithNameDto? Province { get; set; }
+        public IdWithNameDto? Regency { get; set; }
     }
 }

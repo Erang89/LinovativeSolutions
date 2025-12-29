@@ -1,6 +1,6 @@
 ﻿using Linovative.Shared.Interface;
 
-namespace LinoVative.Shared.Dto.Sources
+namespace LinoVative.Service.Core.Sources
 {
     public class Regency : IEntityId
     {
