@@ -14,6 +14,7 @@ using LinoVative.Service.Core.Sources;
 using LinoVative.Service.Core.Suppliers;
 using LinoVative.Service.Core.Warehoses;
 using LinoVative.Shared.Dto;
+using LinoVative.Shared.Dto.Sources;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.Interfaces
@@ -33,6 +34,7 @@ namespace LinoVative.Service.Backend.Interfaces
         public DbSet<CountryRegion> CountryRegions { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<Province> Provinces { get; set; }
+        public DbSet<Regency> Regencies { get; set; }
         public DbSet<AppTimeZone> TimeZones { get; set; }
         public DbSet<Currency> Currencies { get; set; }
 

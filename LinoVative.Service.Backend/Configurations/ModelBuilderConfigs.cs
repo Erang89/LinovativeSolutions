@@ -12,6 +12,7 @@ using LinoVative.Service.Core.Shifts;
 using LinoVative.Service.Core.Sources;
 using LinoVative.Service.Core.Suppliers;
 using LinoVative.Service.Core.Warehoses;
+using LinoVative.Shared.Dto.Sources;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.Configurations
@@ -98,6 +99,14 @@ namespace LinoVative.Service.Backend.Configurations
                 x.HasOne<Country>().WithMany().HasForeignKey(x => x.CountryId).IsRequired();
                 x.Property(x => x.Name).HasColumnType("Varchar(225)");
                 x.Property(x => x.Code).HasColumnType("Varchar(25)");
+            });
+
+            modelBuilder.Entity<Regency>(x =>
+            {
+                x.ToTable("Regencies");
+                x.Property(x => x.Name).HasColumnType("Varchar(225)");
+                x.Property(x => x.Code).HasColumnType("Varchar(25)");
+                x.HasOne<Province>().WithMany().HasForeignKey(x => x.ProvinceId).IsRequired();
             });
 
             // Person
