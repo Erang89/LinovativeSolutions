@@ -1,0 +1,292 @@
+﻿@using LinoVative.Shared.Dto.MasterData.Customers
+@using LinoVative.Shared.Dto.MasterData.Suppliers
+@using LinoVative.Shared.Dto.Outlets
+@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Customers.Shared
+@using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Suppliers.Shared
+@using Linovative.Frontend.POSComponents.Pages.POSManagements.Items.Suppliers.SupplierData.Shared
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+
+@attribute [Route(PageRoutes.PostManagement.Customers.CustomerAdd)]
+@attribute [Route(PageRoutes.PostManagement.Customers.SupplierUpdate)]
+@inherits POSManagementPageBase
+@layout PosLayout
+
+@inject IJsonLocalizer _loc
+@inject ITopBarService _topBarService
+@inject IApplicationStateService _state
+@inject ICustomerService _service
+@inject IDialogService _dialogService
+@inject IMapper _mapper
+@inject IAppNavigationService _nav
+@inject IGlobalMessage _globalMessage
+@inject IOutletService _outletService
+@implements IDisposable
+
+<LinovativePageTitle Title="@EntityPluralName" />
+<CustomerBreadCrumb Childs="@(new() { })" />
+<CustomerTabs SelectedTab="CustomerTabs.Tabs.Customer" />
+<CrudButtons PageMode="(Id is null ? PageModes.Create : PageModes.Update)"
+             OnSave="Save"
+             OnCancel="@(()=> _nav.NavigateTo(PageRoutes.PostManagement.Customers.Index))"
+             IsFormSubmitting="isFormSubmitting" />
+<LinovativeGap />
+
+
+<MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+
+<MudGrid>
+
+    <MudItem xs="12">
+        <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
+        <LinovativeGap />
+    </MudItem>
+
+    <MudItem xs="12" sm="6" lg="4">
+
+
+        <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+
+            @if (loaded)
+            {
+
+                <div class="d-flex">
+                    <MudSwitch @bind-Value="@data.IsActive" Label="@Label("IsActive")" Color="Color.Info" />
+                </div>
+
+                <LinovativeGap />
+                <LinovativeInputText @bind-Value="@data.CustomerCode"
+                                     Disabled="@(!data.IsActive)"
+                                     IsRequired="true"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="CustomerCode" />
+
+
+                <LinovativeGap />
+                <LinovativeInputText @bind-Value="@data!.Person!.FirstName"
+                                     IsRequired="true"
+                                     Disabled="@(!data.IsActive)"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="FirstName" />
+
+                <LinovativeGap />
+                <LinovativeInputText @bind-Value="@data!.Person!.LastName"
+                                     Disabled="@(!data.IsActive)"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="LastName" />
+
+
+                <LinovativeGap />
+                <LinovativeInputText @bind-Value="@data.LegalName"
+                                     Errors="@formResponse?.Errors"
+                                     Disabled="@(!data.IsActive)"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="LegalName" />
+
+                <LinovativeGap />
+                <CustomerTypeDropdown Required="true"
+                                      Disabled="@(!data.IsActive)"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="CustomerType"
+                                      Value="@data.CustomerType"
+                                      ValueChanged="@(x => data.CustomerType = x)" />
+
+            }
+            else
+            {
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            }
+        </MudForm>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" lg="4">
+
+        <LinovativeGap Height="38" />
+        <LinovativeGap />
+
+        @if (loaded)
+        {
+            @* <LinovativeInputText @bind-Value="@data.TaxNumber"
+                                 Disabled="@(!data.IsActive)"
+                                 Errors="@formResponse?.Errors"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="TaxNumber" />
+
+            <LinovativeGap />
+            <LinovativeInputText @bind-Value="@data.PaymentTerm"
+                                 Errors="@formResponse?.Errors"
+                                 Disabled="@(!data.IsActive)"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="PaymentTerm" />
+
+            <LinovativeGap />
+            <LinovativeInputText @bind-Value="@data.Currency"
+                                 Disabled="@(!data.IsActive)"
+                                 Errors="@formResponse?.Errors"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="Currency" />
+
+            <LinovativeGap />
+            <LinovativeInputText @bind-Value="@data.Notes"
+                                 Disabled="@(!data.IsActive)"
+                                 Errors="@formResponse?.Errors"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="Notes" /> *@
+        }
+        else
+        {
+
+            @* <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" /> *@
+        }
+    </MudItem>
+</MudGrid>
+
+
+
+
+<LinovativeGap />
+<LinovativeGap />
+
+@if (loaded)
+{
+    <MudExpansionPanels MultiExpansion="true">
+        <MudExpansionPanel Expanded="true" Text="@Label("AddressSection")">
+            <CustomerAddressComponent Data="@data" FormResponse="@formResponse" />
+        </MudExpansionPanel>
+    </MudExpansionPanels>
+}
+else
+{
+    <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+}
+
+
+
+@code {
+    [Parameter] public string? Id { get; set; }
+
+    protected override string LocalizerResource => "CustomerPage";
+    protected override string EntityName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Single"];
+    protected override string EntityPluralName => JsonLocalizer[$"{LocalizerResource}.Entity.Name.Plural"];
+
+    private List<CustomerInputDto> selectedItems { get; set; } = new();
+    private CancellationTokenSource cts { get; set; } = new();
+    private CustomerInputDto data { get; set; } = new() { IsActive = true, Person = new()};
+    private bool isFormValid { get; set; }
+    private string[] formErrors { get; set; } = { };
+    private MudForm? form { get; set; }
+    private Response? formResponse { get; set; } = null;
+    private bool isFormSubmitting { get; set; }
+    private AppErrorAlert? formErrorAlert { get; set; }
+    private bool selectedAll { get; set; }
+    private List<CustomerInputDto> dataSource { get; set; } = new();
+    private bool loaded { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        isFormSubmitting = true;
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _topBarService.SetTitle(EntityPluralName);
+        await LoadData();
+        isFormSubmitting = false;
+        loaded = true;
+        _state.NotifyStateChanged();
+    }
+
+    void OnFormKeyPress()
+    {
+        formResponse = null;
+        formErrorAlert?.HideAlert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task Reset()
+    {
+        data = new();
+
+        formResponse = null;
+        isFormSubmitting = false;
+        selectedItems = new();
+        selectedAll = false;
+        await HideAllAllert();
+        _state.NotifyStateChanged();
+    }
+
+    async Task HideAllAllert()
+    {
+        if (form is not null) await form.ResetAsync();
+        formErrorAlert?.HideAlert();
+    }
+
+    Task Save()
+    {
+        form!.Validate();
+
+        if (!isFormValid)
+            return Task.CompletedTask;
+
+        if (Id is null) return SaveNew();
+
+        return SaveUpdate();
+    }
+
+    async Task SaveNew()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Create(data, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.Suppliers.Index);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+    async Task SaveUpdate()
+    {
+        isFormSubmitting = true;
+        formResponse = await _service.Update(data, cts.Token);
+        if (formResponse)
+        {
+            await Reset();
+            _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
+            _nav.NavigateTo(PageRoutes.PostManagement.Suppliers.Index);
+            return;
+        }
+
+        isFormSubmitting = false;
+        formErrorAlert!.ShowAlert(formResponse);
+    }
+
+
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+    }
+
+
+    async Task LoadData()
+    {
+        if (Id is null) return;
+
+        var supplier = await _service.GetForUpdate(new Guid(Id), cts.Token);
+        data = (supplier).Data!;
+    }
+}

@@ -8,6 +8,7 @@
   "Menu.WorkingShifts": "Working Shifts",
   "Menu.Tables": "Tables",
   "Menu.Supplier": "Suppliers Data",
+  "Menu.Customer": "Customer Data",
 
   "Menu.ItemGroup.Single": "Item Group",
   "Menu.ItemGroup.Plural": "Item Groups",
@@ -26,5 +27,6 @@
   "Menu.Tab.OrderTypes": "Order Types",
   "Menu.Tab.BankNotes": "Bank Notes",
   "Menu.Tab.Transactions": "Transactions",
-  "Menu.Tab.Supplier": "Suppliers"
+  "Menu.Tab.Supplier": "Suppliers",
+  "Menu.Tab.Customer": "Customer"
 }

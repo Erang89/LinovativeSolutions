@@ -64,7 +64,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<AccountViewDto>("Accounts");
             modelBuilder.EntitySet<SalesCOAMappingViewDto>("SalesCOAMappings");
             modelBuilder.EntitySet<SupplierDto>("Suppliers");
-            modelBuilder.EntitySet<CustomerDto>("Customers");
+            modelBuilder.EntitySet<CustomerViewDto>("Customers");
 
             // Bulk Uploads Data
             modelBuilder.EntitySet<BulkUploadItemGroupDto>("BulkOperationItemGroups");

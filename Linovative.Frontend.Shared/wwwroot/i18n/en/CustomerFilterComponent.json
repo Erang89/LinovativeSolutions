@@ -1,0 +1,10 @@
+{
+  "Title.Label": "Customer Filter",
+  "CustomerCode.Label": "Code",
+  "FirstName.Label": "First name",
+  "LastName.Label": "Last name",
+  "LegalName.Label": "Legal name",
+  "Phone.Label": "Phone",
+  "Email.Label": "Email",
+  "IsMember.Label": "Is Member"
+}

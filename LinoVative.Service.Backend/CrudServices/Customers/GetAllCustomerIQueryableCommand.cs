@@ -10,13 +10,13 @@ using MapsterMapper;
 
 namespace LinoVative.Service.Backend.CrudServices.Customers
 {
-    public class GetAllCustomerIQueryableCommand : IRequest<IQueryable<CustomerDto>>
+    public class GetAllCustomerIQueryableCommand : IRequest<IQueryable<CustomerViewDto>>
     {
         public string? SearchKeyword { get; set; }
         public List<FilterCondition> Filter { get; set; } = new();
     }
 
-    public class GetAllCustomerQueryableHandlerService : QueryServiceBase<Customer, GetAllCustomerIQueryableCommand>, IRequestHandler<GetAllCustomerIQueryableCommand, IQueryable<CustomerDto>>
+    public class GetAllCustomerQueryableHandlerService : QueryServiceBase<Customer, GetAllCustomerIQueryableCommand>, IRequestHandler<GetAllCustomerIQueryableCommand, IQueryable<CustomerViewDto>>
     {
         public GetAllCustomerQueryableHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) : base(dbContext, actor, mapper, appCache)
         {
@@ -37,7 +37,7 @@ namespace LinoVative.Service.Backend.CrudServices.Customers
 
 
 
-        public Task<IQueryable<CustomerDto>> Handle(GetAllCustomerIQueryableCommand request, CancellationToken ct) 
-            => Task.FromResult(base.GetAll(request).ProjectToType<CustomerDto>(_mapper.Config).ApplyFilters(request.Filter));
+        public Task<IQueryable<CustomerViewDto>> Handle(GetAllCustomerIQueryableCommand request, CancellationToken ct) 
+            => Task.FromResult(base.GetAll(request).ProjectToType<CustomerViewDto>(_mapper.Config).ApplyFilters(request.Filter));
     }
 }

@@ -7,6 +7,7 @@ using LinoVative.Service.Backend.CrudServices.Suppliers;
 using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
 using LinoVative.Service.Core.Companies;
+using LinoVative.Service.Core.Customers;
 using LinoVative.Service.Core.Items;
 using LinoVative.Service.Core.OrderTypes;
 using LinoVative.Service.Core.Outlets;
@@ -20,6 +21,7 @@ using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.CompanyDtos;
 using LinoVative.Shared.Dto.ItemDtos;
 using LinoVative.Shared.Dto.MasterData.Accountings;
+using LinoVative.Shared.Dto.MasterData.Customers;
 using LinoVative.Shared.Dto.MasterData.Payments;
 using LinoVative.Shared.Dto.MasterData.Shifts;
 using LinoVative.Shared.Dto.MasterData.Users;
@@ -151,6 +153,11 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<UpdateSupplierCommand, Supplier>()
                 .Ignore(x => x.Contacts)
                 .Ignore(x => x.Addresses);
+
+            // Customer Configs
+            config.NewConfig<Customer, CustomerViewDto>()
+                .Map(x => x.FirstName, src => src.Person!.Firstname)
+                .Map(x => x.LastName, src => src.Person!.Lastname);
 
             config.NewConfig<CreateSupplierCommand, Supplier>()
                 .Ignore(x => x.Contacts)

@@ -1,0 +1,40 @@
+{
+  "Entity.Name.Single": "Customer",
+  "Entity.Name.Plural": "Customers",
+
+  "Tab.Supplier.Lable": "Customer",
+  "Tab.BulkOperation.Lable": "Bulk Operation",
+
+  "CustomerCode.Label": "Code",
+  "FirstName.Label": "First Name",
+  "LastName.Label": "Last Name",
+  "CustomerType.Label": "Type",
+  "LegalName.Label": "Legal Name",
+  "Phone.Label": "Phone",
+  "Email.Label": "Email",
+  "IsMember.Label": "Is Member",
+  "Points.Label": "Points",
+  "IsActive.Label": "Is Active",
+  "AddressSection.Label": "Address",
+  "CountryId.Label": "Country",
+  "AddressType.Label": "Address type",
+  "AddressLine.Label": "Line",
+  "City.Label": "City",
+  "ProvinceName.Label": "Province",
+  "PostalCode.Label": "Postal Code",
+  "AddNewAddress.Label": "Add new address",
+
+  "HideFilter.Label": "Hide Filter",
+  "ShowFilter.Label": "Show Filter",
+  "FilterCustomer.Label": "Filter Customer",
+
+  "CustomerCode.Required.ErrorMessage": "Code is required",
+  "FirstName.Required.ErrorMessage": "First name is required",
+  "AddressType.Required.ErrorMessage": "Address Type is required",
+  "AddressLine.Required.ErrorMessage": "Address Line is required",
+  "City.Required.ErrorMessage": "City is required",
+  "ProvinceName.Required.ErrorMessage": "Province Name is required",
+  "PostalCode.Required.ErrorMessage": "Postal Code is required",
+  "ProvinceId.Required.ErrorMessage": "Province is required",
+  "CountryId.Required.ErrorMessage": "Country is required"
+}

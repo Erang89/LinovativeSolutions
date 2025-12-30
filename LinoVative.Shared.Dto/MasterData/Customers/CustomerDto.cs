@@ -27,6 +27,8 @@ namespace LinoVative.Shared.Dto.MasterData.Customers
         public decimal? CreditLimit { get; set; }
         public bool AllowCredit { get; set; }
         public string? PaymentTerm { get; set; }
+
+        public bool IsActive { get; set; } = true;
     }
 
 
@@ -34,5 +36,12 @@ namespace LinoVative.Shared.Dto.MasterData.Customers
     {
         public List<CustomerAddressInputDto> Address { get; set; } = new();
         public PersonDto? Person { get; set; }
+    }
+
+
+    public class CustomerViewDto : CustomerDto
+    {
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 }

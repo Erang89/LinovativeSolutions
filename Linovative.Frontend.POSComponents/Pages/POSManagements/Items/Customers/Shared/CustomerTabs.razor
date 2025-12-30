@@ -1,0 +1,53 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@inject IAppNavigationService _nav;
+@inject IApplicationStateService _state;
+@inject IJsonLocalizer _loc
+
+<MudTabs Outlined="true" @bind-ActivePanelIndex="@activeIndex">
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.Customers.Index))" Text="@supplier" />
+    <MudTabPanel OnClick="@(() => Navigate(PageRoutes.PostManagement.Customers.BulkOperation))" Text="@bulkOperation" />
+</MudTabs>
+
+<LinovativeGap />
+
+@code {
+    [Parameter]
+    public Tabs? SelectedTab { get; set; }
+    int activeIndex { get; set; }
+    public enum Tabs
+    {
+        Customer,
+        BulkOperation,
+    }
+
+    string? supplier { get; set; }
+    string? bulkOperation { get; set; }
+
+    private bool _isInitialized = false;
+    async Task Navigate(string navigateTo)
+    {
+        if (!_isInitialized)
+        {
+            _isInitialized = true;
+            return;
+        }
+        _nav.NavigateTo(navigateTo);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        activeIndex = SelectedTab switch
+        {
+            Tabs.Customer => 0,
+            Tabs.BulkOperation => 1,
+            _ => 4
+        };
+        _state.OnChange += StateHasChanged;
+
+        await base.OnInitializedAsync();
+        supplier = _loc.PosManagement("Menu.Tab.Customer");
+        bulkOperation = _loc.PosManagement("Menu.Tab.BulkOperation");
+
+    }
+
+}

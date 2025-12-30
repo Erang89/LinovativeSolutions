@@ -42,6 +42,13 @@
   "AddressType.Billing": "Billing",
   "AddressType.Outlet": "Outlet",
 
+  "CustomerType.Individual": "Individual",
+  "CustomerType.Company": "Company",
+
+  "CustomerAddressType.Billing": "Billing",
+  "CustomerAddressType.Shipping": "Shipping",
+  "CustomerAddressType.Project": "Project",
+
   "FilterOperator.Equals": "Equals",
   "FilterOperator.NotEquals": "Not Equals",
   "FilterOperator.Contains": "Contains",

@@ -32,6 +32,13 @@
                 public const string BulkOperation = $"{Index}/bulk-operation";
             }
 
+            public static class Customers
+            {
+                public const string Index = $"{IndexMaster}/customers";
+                public const string CustomerAdd = $"{Index}/add";
+                public const string SupplierUpdate = $"{Index}" + "/update/{Id}";
+                public const string BulkOperation = $"{Index}/bulk-operation";
+            }
 
             public static class PosSettings
             {
@@ -71,11 +78,11 @@
             }
 
 
-            public static class Customers
-            {
-                public const string IndexCustomers = "Customers";
-                public const string Groups = $"{IndexCustomers}/groups";
-            }
+            //public static class Customers
+            //{
+            //    public const string IndexCustomers = "Customers";
+            //    public const string Groups = $"{IndexCustomers}/groups";
+            //}
 
         }
 

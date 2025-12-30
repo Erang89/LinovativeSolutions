@@ -8,8 +8,8 @@ namespace Linovative.Dto.MasterData.People
     public class PersonDto : EntityDtoBase
     {
         [LocalizedRequired]
-        public string? Firstname { get; set; }
-        public string? Lastname { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
         [LocalizedRequired]
         public PersonTitles? Title { get; set; }
         public string? Nikname { get; set; }
@@ -19,7 +19,7 @@ namespace Linovative.Dto.MasterData.People
 
     public class PersonViewDto : PersonDto
     {
-        public string? Name => $"{Firstname} {Lastname}";
+        public string? Name => $"{FirstName} {LastName}";
     }
 
 }
