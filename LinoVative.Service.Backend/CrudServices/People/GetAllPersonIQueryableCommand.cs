@@ -21,7 +21,7 @@ namespace LinoVative.Service.Backend.CrudServices.People
 
         protected override IQueryable<Person> OnGetAllFilter(IQueryable<Person> query, GetAllPersonIQueryableCommand req)
         {
-            return base.OnGetAllFilter(query, req).Where(x => string.Concat(x.Firstname, x.Lastname)!.Contains(req.SearchKeyword??""));
+            return base.OnGetAllFilter(query, req).Where(x => string.Concat(x.FirstName, x.LastName)!.Contains(req.SearchKeyword??""));
         }
 
         public Task<IQueryable<PersonViewDto>> Handle(GetAllPersonIQueryableCommand request, CancellationToken ct) 

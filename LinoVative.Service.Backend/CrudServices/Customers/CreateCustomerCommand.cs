@@ -24,6 +24,13 @@ namespace LinoVative.Service.Backend.CrudServices.Customers
           _validator = validator;
         }
 
+        public override Task BeforeSave(CreateCustomerCommand request, Customer entity, CancellationToken token)
+        {
+            var person = _mapper.Map<Core.People.Person>(request.Person!);
+            _dbContext.People.Add(person);
+            entity.PersonId = person.Id;
+            return Task.CompletedTask;
+        }
 
         protected override async Task<Result> Validate(CreateCustomerCommand request, CancellationToken token)
         {

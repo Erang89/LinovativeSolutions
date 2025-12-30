@@ -30,7 +30,7 @@ namespace LinoVative.Service.Backend.CrudServices.Customers
             var q = base.OnGetAllFilter(query, req);
 
             if(!string.IsNullOrWhiteSpace(req.SearchKeyword))
-                q = q.Where(x => string.Concat(x.Person!.Firstname, x.Person!.Lastname, x.Person.Nikname).Contains(req.SearchKeyword ?? ""));
+                q = q.Where(x => string.Concat(x.Person!.FirstName, x.Person!.LastName, x.Person.Nikname).Contains(req.SearchKeyword ?? ""));
 
             return q;
         }

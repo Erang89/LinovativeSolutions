@@ -1,6 +1,7 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
 using LinoVative.Shared.Dto.Commons;
+using LinoVative.Shared.Dto.Sources;
 
 namespace LinoVative.Shared.Dto.MasterData.Customers
 {
@@ -31,5 +32,6 @@ namespace LinoVative.Shared.Dto.MasterData.Customers
     {
         public IdWithNameDto? Province { get; set; }
         public IdWithNameDto? Regency { get; set; }
+        public CountryDto? Country { get; set; }
     }
 }

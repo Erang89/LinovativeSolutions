@@ -87,19 +87,10 @@
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="LegalName" />
 
-                <LinovativeGap />
-                <CustomerTypeDropdown Required="true"
-                                      Disabled="@(!data.IsActive)"
-                                      Errors="@formResponse?.Errors"
-                                      LocalizerResource="@LocalizerResource"
-                                      LocalizerKey="CustomerType"
-                                      Value="@data.CustomerType"
-                                      ValueChanged="@(x => data.CustomerType = x)" />
 
             }
             else
             {
-                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
                 <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
                 <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
                 <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
@@ -115,40 +106,42 @@
 
         @if (loaded)
         {
-            @* <LinovativeInputText @bind-Value="@data.TaxNumber"
-                                 Disabled="@(!data.IsActive)"
-                                 Errors="@formResponse?.Errors"
-                                 LocalizerResource="@LocalizerResource"
-                                 LocalizerKey="TaxNumber" />
+            <CustomerTypeDropdown Required="true"
+                                  Disabled="@(!data.IsActive)"
+                                  Errors="@formResponse?.Errors"
+                                  LocalizerResource="@LocalizerResource"
+                                  LocalizerKey="CustomerType"
+                                  Value="@data.CustomerType"
+                                  ValueChanged="@(x => data.CustomerType = x)" />
+
 
             <LinovativeGap />
-            <LinovativeInputText @bind-Value="@data.PaymentTerm"
+            <LinovativeInputText @bind-Value="@data.Phone"
                                  Errors="@formResponse?.Errors"
                                  Disabled="@(!data.IsActive)"
                                  LocalizerResource="@LocalizerResource"
-                                 LocalizerKey="PaymentTerm" />
+                                 LocalizerKey="Phone" />
 
             <LinovativeGap />
-            <LinovativeInputText @bind-Value="@data.Currency"
-                                 Disabled="@(!data.IsActive)"
+            <LinovativeInputText @bind-Value="@data.Email"
                                  Errors="@formResponse?.Errors"
+                                 Disabled="@(!data.IsActive)"
                                  LocalizerResource="@LocalizerResource"
-                                 LocalizerKey="Currency" />
+                                 LocalizerKey="Email" />
 
             <LinovativeGap />
-            <LinovativeInputText @bind-Value="@data.Notes"
-                                 Disabled="@(!data.IsActive)"
-                                 Errors="@formResponse?.Errors"
-                                 LocalizerResource="@LocalizerResource"
-                                 LocalizerKey="Notes" /> *@
+            <div class="d-flex">
+                <MudSwitch @bind-Value="@data.IsMember" Label="@Label("IsMember")" Color="Color.Info" />
+            </div>
+
         }
         else
         {
 
-            @* <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
             <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
             <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" /> *@
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
         }
     </MudItem>
 </MudGrid>
@@ -183,7 +176,7 @@ else
 
     private List<CustomerInputDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts { get; set; } = new();
-    private CustomerInputDto data { get; set; } = new() { IsActive = true, Person = new()};
+    private CustomerInputDto data { get; set; } = new() { IsActive = true, Person = new() };
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -249,9 +242,8 @@ else
         formResponse = await _service.Create(data, cts.Token);
         if (formResponse)
         {
-            await Reset();
             _globalMessage.SetSuccessMessage(CreatedSuccessMessage);
-            _nav.NavigateTo(PageRoutes.PostManagement.Suppliers.Index);
+            _nav.NavigateTo(PageRoutes.PostManagement.Customers.Index);
             return;
         }
 
@@ -265,9 +257,8 @@ else
         formResponse = await _service.Update(data, cts.Token);
         if (formResponse)
         {
-            await Reset();
             _globalMessage.SetSuccessMessage(UpdateSuccessMessage);
-            _nav.NavigateTo(PageRoutes.PostManagement.Suppliers.Index);
+            _nav.NavigateTo(PageRoutes.PostManagement.Customers.Index);
             return;
         }
 

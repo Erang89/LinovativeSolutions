@@ -118,8 +118,8 @@ namespace LinoVative.Service.Backend.Configurations
             modelBuilder.Entity<Person>(x =>
             {
                 x.ToTable("People");
-                x.Property(x => x.Firstname).IsRequired();
-                x.Property(x => x.Title).HasColumnType("varchar(10)").IsRequired();
+                x.Property(x => x.FirstName).IsRequired();
+                x.Property(x => x.Title).HasColumnType("varchar(10)").IsRequired(false);
             });
 
 

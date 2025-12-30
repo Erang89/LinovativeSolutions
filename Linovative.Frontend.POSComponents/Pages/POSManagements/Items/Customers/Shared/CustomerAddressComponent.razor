@@ -18,9 +18,9 @@
 
                 <td>
                     <div>
-                        <CountryDropdown Value="@country"
+                        <CountryDropdown Value="@address.Country"
                                          Required="true"
-                                         ValueChanged="@((x) => country = x)"
+                                         ValueChanged="@((x) => {address.Country = x; address.CountryId = x.Id;})"
                                          Disabled="@(!Data!.IsActive)"
                                          Errors="@FormResponse?.Errors"
                                          LocalizerResource="@LocalizerResource"
@@ -39,7 +39,6 @@
                                                      Value="@address.AddressType"
                                                      ValueChanged="@(x => address.AddressType = x)" />
                     </div>
-
                 </td>
 
 
@@ -58,7 +57,6 @@
                     <div>
                         <LinovativeInputText @bind-Value="@address.City"
                                              Disabled="@(!Data.IsActive)"
-                                             IsRequired="true"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="City" />
@@ -69,7 +67,6 @@
                     <div>
                         <LinovativeInputText @bind-Value="@address.ProvinceName"
                                              Disabled="@(!Data.IsActive)"
-                                             IsRequired="true"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
                                              LocalizerKey="ProvinceName" />
@@ -103,11 +100,10 @@
 
     [Parameter] public Response? FormResponse { get; set; } = null;
     [Parameter] public CustomerInputDto? Data { get; set; } = new();
-    CountryDto? country { get; set; }
 
     void Remove(CustomerAddressInputDto address)
     {
-        Data.Address.Remove(address);
+        Data!.Address.Remove(address);
     }
 
     void AddNew()

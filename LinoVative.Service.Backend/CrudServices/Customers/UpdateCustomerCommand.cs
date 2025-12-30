@@ -6,6 +6,7 @@ using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.MasterData.Customers;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace LinoVative.Service.Backend.CrudServices.Customers
@@ -24,6 +25,12 @@ namespace LinoVative.Service.Backend.CrudServices.Customers
             _validator = validator;
         }
 
+
+        protected override async Task BeforeSaveUpdate(UpdateCustomerCommand request, Customer entity, CancellationToken token)
+        {
+            var person = await _dbContext.People.FirstOrDefaultAsync(x => x.Id == entity.PersonId);
+            _mapper.Map(request.Person, person);
+        }
 
         protected override async Task<Result> ValidateSaveUpdate(UpdateCustomerCommand request, CancellationToken token)
         {

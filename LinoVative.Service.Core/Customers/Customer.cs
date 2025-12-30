@@ -26,5 +26,7 @@ namespace LinoVative.Service.Core.Customers
         public decimal? CreditLimit { get; set; }
         public bool AllowCredit { get; set; }
         public string? PaymentTerm { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

@@ -16,7 +16,10 @@ namespace LinoVative.Shared.Dto.MasterData.Customers
 
         public CustomerType? CustomerType { get; set; }
 
+        [LocalizedPhone]
         public string? Phone { get; set; }
+
+        [LocalizedEmail]
         public string? Email { get; set; }
 
         public bool IsMember { get; set; }

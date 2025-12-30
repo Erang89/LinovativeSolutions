@@ -10,10 +10,9 @@ namespace Linovative.Dto.MasterData.People
         [LocalizedRequired]
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        [LocalizedRequired]
         public PersonTitles? Title { get; set; }
         public string? Nikname { get; set; }
-        [LocalizedRequired, LocalizedPhone, UniqueField(EntityTypes.Person, fieldName: nameof(PhoneNumber))]
+        [LocalizedPhone]
         public string? PhoneNumber { get; set; }
     }
 

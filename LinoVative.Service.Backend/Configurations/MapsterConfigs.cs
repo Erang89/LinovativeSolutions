@@ -1,4 +1,5 @@
 ﻿using Linovative.Dto.MasterData.People;
+using LinoVative.Service.Backend.CrudServices.Customers;
 using LinoVative.Service.Backend.CrudServices.Items.ItemCategories;
 using LinoVative.Service.Backend.CrudServices.Items.Items;
 using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
@@ -130,6 +131,13 @@ namespace LinoVative.Service.Backend.Configurations
             
             // Mapping People
             config.NewConfig<Person, PersonViewDto>();
+            config.NewConfig<PersonDto, Person>()
+                .Map(x => x.FirstName, src => src.FirstName)
+                .Map(x => x.LastName, src => src.LastName)
+                .Map(x => x.Title, src => src.Title);
+            config.NewConfig<Person, PersonDto>()
+                .Map(x => x.FirstName, src => src.FirstName)
+                .Map(x => x.LastName, src => src.LastName);
             
             // Mapping shift
             config.NewConfig<Shift, ShiftViewDto>();
@@ -156,8 +164,11 @@ namespace LinoVative.Service.Backend.Configurations
 
             // Customer Configs
             config.NewConfig<Customer, CustomerViewDto>()
-                .Map(x => x.FirstName, src => src.Person!.Firstname)
-                .Map(x => x.LastName, src => src.Person!.Lastname);
+                .Map(x => x.FirstName, src => src.Person!.FirstName)
+                .Map(x => x.LastName, src => src.Person!.LastName);
+
+            config.NewConfig<CreateCustomerCommand, Customer>()
+                .Ignore(x => x.Person!);
 
             config.NewConfig<CreateSupplierCommand, Supplier>()
                 .Ignore(x => x.Contacts)

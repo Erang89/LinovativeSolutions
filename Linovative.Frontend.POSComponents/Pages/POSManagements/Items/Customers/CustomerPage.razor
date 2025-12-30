@@ -218,7 +218,6 @@
             PageNumber = state.Page + 1,
             PageSize = state.PageSize,
             OrderFiled = state.SortLabel,
-            Options = $"$expand=person",
             SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
             FilterPayload = new { SearchKeyword = searchString, filter = filterFalues.ToFilterCondition() }
         };
