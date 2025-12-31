@@ -27,10 +27,16 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             var unit2 = new ItemUnit() { Name = "Unit 2", CompanyId = _actor.CompanyId };
             dbContext.ItemUnits.AddRange(unit, unit2);
 
-            var item1 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 1", UnitId = unit.Id, CategoryId = category.Id, Code = "Code1", SellPrice = 10000 };
-            var item2 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 2", UnitId = unit.Id, CategoryId = category.Id, Code = "Code2", SellPrice = 10000 };
-            var item3 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 3", UnitId = unit.Id, CategoryId = category.Id, Code = "Code3", SellPrice = 10000 };
-            var item4 = new Item() { CompanyId = Guid.NewGuid(), Name = "Item 4", UnitId = unit.Id, CategoryId = category.Id, Code = "Code4", SellPrice = 10000 };
+            //var item1 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 1", UnitId = unit.Id, CategoryId = category.Id, Code = "Code1", SellPrice = 10000 };
+            //var item2 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 2", UnitId = unit.Id, CategoryId = category.Id, Code = "Code2", SellPrice = 10000 };
+            //var item3 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 3", UnitId = unit.Id, CategoryId = category.Id, Code = "Code3", SellPrice = 10000 };
+            //var item4 = new Item() { CompanyId = Guid.NewGuid(), Name = "Item 4", UnitId = unit.Id, CategoryId = category.Id, Code = "Code4", SellPrice = 10000 };
+
+            var item1 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 1", Code = "Code1" };
+            var item2 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 2",  Code = "Code2"};
+            var item3 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 3", Code = "Code3" };
+            var item4 = new Item() { CompanyId = Guid.NewGuid(), Name = "Item 4", Code = "Code4"};
+
             dbContext.Items.Add(item1);
             dbContext.Items.Add(item2);
             dbContext.Items.Add(item3);
@@ -94,10 +100,10 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             var unit2 = new ItemUnit() { Name = "Unit 2", CompanyId = _actor.CompanyId };
             dbContext.ItemUnits.AddRange(unit, unit2);
 
-            var item1 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 1", UnitId = unit.Id, CategoryId = category.Id, Code = "Code1", SellPrice = 10000 };
-            var item2 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 2", UnitId = unit.Id, CategoryId = category.Id, Code = "Code2", SellPrice = 10000 };
-            var item3 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 3", UnitId = unit.Id, CategoryId = category.Id, Code = "Code3", SellPrice = 10000 };
-            var item4 = new Item() { CompanyId = Guid.NewGuid(), Name = "Item 4", UnitId = unit.Id, CategoryId = category.Id, Code = "Code4", SellPrice = 10000 };
+            var item1 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 1", Code = "Code1"};
+            var item2 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 2", Code = "Code2"};
+            var item3 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 3", Code = "Code3"};
+            var item4 = new Item() { CompanyId = Guid.NewGuid(), Name = "Item 4",  Code = "Code4"};
             dbContext.Items.Add(item1);
             dbContext.Items.Add(item2);
             dbContext.Items.Add(item3);

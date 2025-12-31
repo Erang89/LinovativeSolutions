@@ -50,15 +50,9 @@ namespace LinoVative.Service.Backend.Configurations
 
 
             // Items
-            config.NewConfig<CreateItemCommand, Item>()
-                .Ignore(x => x.Unit!)
-                .Ignore(x => x.Category!)
-                .Ignore(x => x.ItemPriceTypes);
+            config.NewConfig<CreateItemCommand, Item>();
 
-            config.NewConfig<UpdateItemCommand, Item>()
-                .Ignore(x => x.Unit!)
-                .Ignore(x => x.Category!)
-                .Ignore(x => x.ItemPriceTypes);
+            config.NewConfig<UpdateItemCommand, Item>();
             config.NewConfig<Item, ItemViewDto>();
 
             config.NewConfig<ItemUnit, ItemUnitDto>();

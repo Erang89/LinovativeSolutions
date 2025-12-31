@@ -29,11 +29,11 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
         {
             var category = _mapper.Map<ItemCategory>(request.Category!);
             _dbContext.ItemCategories.Add(category);
-            entity.CategoryId = category.Id;
+            //entity.CategoryId = category.Id;
 
             var unit = _mapper.Map<ItemUnit>(request.Unit!);
             _dbContext.ItemUnits.Add(unit);
-            entity.UnitId = unit.Id;
+            //entity.UnitId = unit.Id;
 
             foreach (var dto in request.ItemPriceTypes)
             {

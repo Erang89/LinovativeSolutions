@@ -45,10 +45,10 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.U
                     x.Id,
                     x.Code,
                     x.Name,
-                    UnitName = x.Unit!.Name,
-                    GroupName = x.Category!.Group!.Name,
-                    CategoryName = x.Category.Name,
-                    x.SellPrice,
+                    //UnitName = x.Unit!.Name,
+                    //GroupName = x.Category!.Group!.Name,
+                    //CategoryName = x.Category.Name,
+                    //x.SellPrice,
                 }).ToList();
 
 
@@ -59,10 +59,10 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.U
                 row.Cell("A").Value = g.Id.ToString();
                 row.Cell("B").Value = g.Code;
                 row.Cell("C").Value = g.Name;
-                row.Cell("D").Value = g.UnitName;
-                row.Cell("E").Value = g.GroupName;
-                row.Cell("F").Value = g.CategoryName;
-                row.Cell("G").Value = g.SellPrice;
+                //row.Cell("D").Value = g.UnitName;
+                //row.Cell("E").Value = g.GroupName;
+                //row.Cell("F").Value = g.CategoryName;
+                //row.Cell("G").Value = g.SellPrice;
                 rowNumber++;
             }
 

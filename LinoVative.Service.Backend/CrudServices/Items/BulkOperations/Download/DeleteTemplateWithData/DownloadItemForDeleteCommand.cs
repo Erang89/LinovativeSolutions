@@ -41,10 +41,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.D
                     x.Id,
                     x.Code,
                     x.Name,
-                    UnitName = x.Unit!.Name,
-                    GroupName = x.Category!.Group!.Name,
-                    CategoryName = x.Category.Name,
-                    x.SellPrice,
                 }).ToList();
 
 

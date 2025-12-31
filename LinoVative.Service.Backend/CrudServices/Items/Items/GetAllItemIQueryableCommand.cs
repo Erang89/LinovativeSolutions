@@ -24,7 +24,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
 
         protected override IQueryable<Item> OnGetAllFilter(IQueryable<Item> query, GetAllItemIQueryableCommand req)
         {
-            return base.OnGetAllFilter(query, req).Where(x => string.Concat(x.Name, x.Code, x.Description).Contains(req.SearchKeyword??""));
+            return base.OnGetAllFilter(query, req).Where(x => string.Concat(x.Name, x.Code, x.Notes).Contains(req.SearchKeyword??""));
         }
 
         public Task<IQueryable<ItemViewDto>> Handle(GetAllItemIQueryableCommand request, CancellationToken ct) 

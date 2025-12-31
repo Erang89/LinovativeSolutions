@@ -56,7 +56,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
         private void MappingSellPrice(ItemBulkUploadDetail detail, ItemMaster item)
         {
             var (cell, converter) = GetGetterAndConverter(Keys.SellPrice);
-            item.SellPrice = (decimal)converter(cell(detail)!)!;
+            //item.SellPrice = (decimal)converter(cell(detail)!)!;
         }
 
         private void MappingActive(ItemBulkUploadDetail detail, ItemMaster item)
@@ -79,7 +79,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
             var category = _categories.FirstOrDefault(x => x.Name!.Equals(cell(detail), StringComparison.CurrentCultureIgnoreCase));
             if (category == null) return;
 
-            item.CategoryId = category.Id;
+            //item.CategoryId = category.Id;
         }
 
         List<ItemUnit>? _units = null;
@@ -93,13 +93,13 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
             var unit = _units.FirstOrDefault(x => x.Name!.Equals(cell(detail), StringComparison.CurrentCultureIgnoreCase));
             if (unit == null) return;
 
-            item.UnitId = unit.Id;
+            //item.UnitId = unit.Id;
         }
 
         private void MappingDescription(ItemBulkUploadDetail detail, ItemMaster item)
         {
             var (cell, converter) = GetGetterAndConverter(Keys.Description);
-            item.Description = (string)converter(cell(detail)!)!;
+            item.Notes = (string)converter(cell(detail)!)!;
         }
 
         private void MappingName(ItemBulkUploadDetail  row, ItemMaster item)
