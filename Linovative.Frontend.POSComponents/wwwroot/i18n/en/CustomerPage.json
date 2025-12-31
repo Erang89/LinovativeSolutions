@@ -16,6 +16,7 @@
   "Points.Label": "Points",
   "IsActive.Label": "Is Active",
   "AddressSection.Label": "Address",
+  "ContactSection.Label": "Contacts",
   "CountryId.Label": "Country",
   "AddressType.Label": "Address type",
   "AddressLine.Label": "Line",

@@ -49,8 +49,6 @@
                         new(Columns.FirstName, DataGridFilterModel.PropertyType.String, GetLable(nameof(CustomerViewDto.FirstName)), GetLable(nameof(CustomerViewDto.FirstName))),
                         new(Columns.LastName, DataGridFilterModel.PropertyType.String, GetLable(nameof(CustomerViewDto.LastName)), GetLable(nameof(CustomerViewDto.LastName))),
                         new(Columns.LegalName, DataGridFilterModel.PropertyType.String, GetLable(nameof(CustomerViewDto.LegalName)), GetLable(nameof(CustomerViewDto.LegalName))),
-                        new(Columns.PhoneNumber, DataGridFilterModel.PropertyType.String, GetLable(nameof(CustomerViewDto.Phone)), GetLable(nameof(CustomerViewDto.Phone))),
-                        new(Columns.Email, DataGridFilterModel.PropertyType.String, GetLable(nameof(CustomerViewDto.Email)), GetLable(nameof(CustomerViewDto.Email))),
                         new(Columns.IsMember, DataGridFilterModel.PropertyType.Boolean, GetLable(nameof(CustomerViewDto.IsMember)), GetLable(nameof(CustomerViewDto.IsMember))),
 
                         // new(Columns.ItemCategoryName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category)), GetLable(nameof(ItemViewDto.Category))),
@@ -63,7 +61,7 @@
 
         selectedTypes = types
         .Where(x => !HideColumns.Contains(x.FieldName))
-        .Where(x => OnlyShowColumns.Count == 0 ? true : OnlyShowColumns.Contains(x.FieldName))
+        .Where(x => OnlyShowColumns.Count == 0 || OnlyShowColumns.Contains(x.FieldName))
         .ToList();
 
         await base.OnInitializedAsync();
@@ -84,8 +82,6 @@
         public const string FirstName = nameof(CustomerViewDto.FirstName);
         public const string LastName = nameof(CustomerViewDto.LastName);
         public const string LegalName = nameof(CustomerViewDto.LegalName);
-        public const string PhoneNumber = nameof(CustomerViewDto.Phone);
-        public const string Email = nameof(CustomerViewDto.Email);
         public const string IsMember = nameof(CustomerViewDto.IsMember);
 
         // public const string ItemCategoryName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.Name)}";

@@ -3,5 +3,11 @@
   "Required.ProvinceName.Message": "Province name is required",
   "Required.City.Message": "City is required",
   "Required.PostalCode.Message": "Postal Code is required",
-  "Required.RegencyId.Message": "Regency is required"
+  "Required.RegencyId.Message": "Regency is required",
+  "Required.Phone.Message": "Phone is required",
+  "Required.Whatsapp.Message": "Whatsapp is required",
+  "Required.Email.Message": "Email is required",
+  "NoPrimaryContact.Message": "Supplier should have one primary contact",
+  "ContactNameDuplicated.Message": "Contact name is duplicated. It should be unique",
+  "EmailPhoneWA.Message": "At least one contact detail (email, phone, or WhatsApp) is required"
 }

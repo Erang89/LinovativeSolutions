@@ -36,11 +36,14 @@ namespace LinoVative.Service.Backend.CrudServices.Customers
         }
 
 
+
+
         public async Task<Result> Handle(GetCustomerForUpdateCommand request, CancellationToken ct)
         {
             var data = await _dbContext.Customers.GetAll(_actor).ProjectToType<CustomerInputDto>(_mapper.Config).FirstOrDefaultAsync(x => x.Id == request.Id);
             if (data == null) return Result.Failed($"No Data with ID: {request.Id}");
 
+            data.Contacts = await _dbContext.CustomerContacts.Where(x => x.CustomerId == data.Id).ProjectToType<CustomerContactDto>(_mapper.Config).ToListAsync();
             data.Address = await _dbContext.CustomerAddress.Where(x => x.CustomerId == data.Id).ProjectToType<CustomerAddressInputDto>(_mapper.Config).ToListAsync();
             data.Person = await _dbContext.People.Where(x => x.Id == data.PersonId).ProjectToType<PersonDto>(_mapper.Config).FirstOrDefaultAsync();
 

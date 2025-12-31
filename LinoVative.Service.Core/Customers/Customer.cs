@@ -15,9 +15,6 @@ namespace LinoVative.Service.Core.Customers
 
         public CustomerType CustomerType { get; set; }
 
-        public string? Phone { get; set; }
-        public string? Email { get; set; }
-
         public bool IsMember { get; set; }
         public string? MemberNumber { get; set; }
         public int Points { get; set; }

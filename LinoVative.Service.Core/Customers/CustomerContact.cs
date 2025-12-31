@@ -1,12 +1,11 @@
 ﻿using LinoVative.Service.Core.EntityBases;
 
-namespace LinoVative.Service.Core.Suppliers
+namespace LinoVative.Service.Core.Customers
 {
-    public class SupplierContact : AuditableEntity
+    public class CustomerContact : AuditableEntity
     {
-        public Guid SupplierId { get; set; }
-        public Supplier Supplier { get; set; } = null!;
-
+        public Guid CustomerId { get; set; }
+        public Customer Customer { get; set; } = null!;
         public string ContactName { get; set; } = null!;
         public string? Email { get; set; }
         public string? Phone { get; set; }

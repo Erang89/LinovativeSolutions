@@ -56,16 +56,18 @@
         await autoComplete.OpenMenuAsync();
         await autoComplete.FocusAsync();
     }
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
+
+        await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+
         ErrorKey = ErrorKey ?? LocalizerKey;
         if (Text is null && Value is not null && StringConvert is not null)
         {
             Text = StringConvert(Value);
         }
-
-        _state.OnChange += StateHasChanged;
-        return base.OnInitializedAsync();
+        _state.NotifyStateChanged();
     }
 
 

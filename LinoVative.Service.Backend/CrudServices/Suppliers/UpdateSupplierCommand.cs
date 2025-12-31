@@ -27,23 +27,41 @@ namespace LinoVative.Service.Backend.CrudServices.Suppliers
 
         protected override async Task BeforeSaveUpdate(UpdateSupplierCommand request, Supplier entity, CancellationToken token)
         {
+            await MappingAddress(request, entity);
+            await MappingContact(request, entity);
+        }
+
+
+        async Task MappingAddress(UpdateSupplierCommand request, Supplier entity)
+        {
             var address = await _dbContext.SupplierAddress.Where(x => x.SupplierId == request.Id).ToListAsync();
-            var contacts = await _dbContext.SupplierContact.Where(x => x.SupplierId == request.Id).ToListAsync();
+            var addressIds = request.Addresses.Select(x => x.Id).ToList();
+            foreach (var ad in address.Where(x => !addressIds.Contains(x.Id)))
+                ad.Delete(_actor);
 
             foreach (var dto in request.Addresses)
             {
-                var exisiting = address.FirstOrDefault(x => x.Id ==  dto.Id);
-                if(exisiting is not null)
+                var exisiting = address.FirstOrDefault(x => x.Id == dto.Id);
+                if (exisiting is not null)
                 {
                     _mapper.Map(dto, exisiting);
+                    exisiting.SupplierId = entity.Id;
                     continue;
                 }
 
                 var newAddress = _mapper.Map<SupplierAddress>(dto);
-                newAddress.SupplierId = dto.SupplierId;
+                newAddress.SupplierId = entity.Id;
                 _dbContext.SupplierAddress.Add(newAddress);
             }
 
+        }
+
+        async Task MappingContact(UpdateSupplierCommand request, Supplier entity)
+        {
+            var contacts = await _dbContext.SupplierContact.Where(x => x.SupplierId == request.Id).ToListAsync();
+            var contactIds = request.Contacts.Select(x => x.Id).ToList();
+            foreach (var contact in contacts.Where(x => !contactIds.Contains(x.Id)))
+                contact.Delete(_actor);
 
             foreach (var dto in request.Contacts)
             {
@@ -51,17 +69,16 @@ namespace LinoVative.Service.Backend.CrudServices.Suppliers
                 if (exisiting is not null)
                 {
                     _mapper.Map(dto, exisiting);
+                    exisiting.SupplierId = entity.Id;
                     continue;
                 }
 
                 var newContact = _mapper.Map<SupplierContact>(dto);
-                newContact.SupplierId = dto.SupplierId;
+                newContact.SupplierId = entity.Id;
                 _dbContext.SupplierContact.Add(newContact);
             }
 
-            await Task.CompletedTask;
         }
-
 
         protected override async Task<Result> ValidateSaveUpdate(UpdateSupplierCommand request, CancellationToken token)
         {

@@ -9,7 +9,9 @@ namespace LinoVative.Shared.Dto.Attributes
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is not null && !_validator.IsValid(value))
+            var email = (string?)value;
+
+            if (!string.IsNullOrWhiteSpace(email) && !_validator.IsValid(value))
             {
                 var localizer = (IStringLocalizer)validationContext.GetService(typeof(IStringLocalizer))!;
                 var msg = localizer?["Validate.EmailInvalid", value!] ?? "Invalid email format";

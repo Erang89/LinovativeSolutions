@@ -157,11 +157,6 @@ namespace LinoVative.Service.Backend.Configurations
 
 
 
-            // Suppliers
-            config.NewConfig<UpdateSupplierCommand, Supplier>()
-                .Ignore(x => x.Contacts)
-                .Ignore(x => x.Addresses);
-
             // Customer Configs
             config.NewConfig<Customer, CustomerViewDto>()
                 .Map(x => x.FirstName, src => src.Person!.FirstName)
@@ -170,7 +165,19 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<CreateCustomerCommand, Customer>()
                 .Ignore(x => x.Person!);
 
+            config.NewConfig<UpdateCustomerCommand, Customer>()
+                .Ignore(x => x.Person!);
+
+            config.NewConfig<CustomerAddressInputDto, CustomerAddress>()
+                .Ignore(x => x.Regency!)
+                .Ignore(x => x.Country);
+
+            // Supplier Mappings
             config.NewConfig<CreateSupplierCommand, Supplier>()
+                .Ignore(x => x.Contacts)
+                .Ignore(x => x.Addresses);
+
+            config.NewConfig<UpdateSupplierCommand, Supplier>()
                 .Ignore(x => x.Contacts)
                 .Ignore(x => x.Addresses);
         }

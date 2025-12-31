@@ -1,0 +1,133 @@
+﻿@using LinoVative.Shared.Dto.MasterData.Customers
+@using LinoVative.Shared.Dto.MasterData.Suppliers
+@using Linovative.Frontend.POSComponents.Bases
+@using Linovative.Frontend.Services.Models
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
+@inherits POSManagementPageBase
+
+<MudToolBar>
+    <MudButton Disabled="@(!Data!.IsActive)" Size="Size.Small" OnClick="AddNew" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Add" Class="mr-5">@Label("AddNewContact")</MudButton>
+</MudToolBar>
+
+<MudSimpleTable Style="overflow-x: auto;">
+    <tbody>
+        @foreach (var contact in Data?.Contacts ?? new())
+        {
+            var index = Data!.Contacts.IndexOf(contact);
+
+            <tr>
+
+
+                <td>
+                    <div>
+                        <LinovativeInputText @bind-Value="@contact.ContactName"
+                                             Disabled="@(!Data!.IsActive)"
+                                             IsRequired="true"
+                                             Errors="@FormResponse?.Errors"
+                                             ErrorKey="@($"{nameof(Data.Contacts)}[{index}].{nameof(CustomerContactDto.ContactName)}")"
+                                             LocalizerResource="@LocalizerResource"
+                                             LocalizerKey="ContactName" />
+                    </div>
+                </td>
+
+                <td>
+                    <div class="d-flex">
+                        <MudSwitch Disabled="@(!Data!.IsActive)"
+                                   Error="@((FormResponse?.Errors.Keys.Contains($"{nameof(Data.Contacts)}[all].{nameof(CustomerContactDto.IsPrimary)}")?? false) && !Data.Contacts.Any(x => x.IsPrimary))"
+                                   T="bool" ValueChanged="@((x) => PrimaryChange(x, contact))"
+                                   Value="@contact.IsPrimary"
+                                   Label="@Label("IsPrimary")"
+                                   Color="Color.Info" />
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        <LinovativeInputText @bind-Value="@contact.Email"
+                                             Disabled="@(!Data.IsActive)"
+                                             ErrorKey="@($"{nameof(Data.Contacts)}[{index}].{nameof(CustomerContactDto.Email)}")"
+                                             Errors="@FormResponse?.Errors"
+                                             LocalizerResource="@LocalizerResource"
+                                             LocalizerKey="Email" />
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        <LinovativeInputText @bind-Value="@contact.Phone"
+                                             Disabled="@(!Data.IsActive)"
+                                             ErrorKey="@($"{nameof(Data.Contacts)}[{index}].{nameof(CustomerContactDto.Phone)}")"
+                                             Errors="@FormResponse?.Errors"
+                                             LocalizerResource="@LocalizerResource"
+                                             LocalizerKey="Phone" />
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        <LinovativeInputText @bind-Value="@contact.Whatsapp"
+                                             Disabled="@(!Data.IsActive)"
+                                             Errors="@FormResponse?.Errors"
+                                             ErrorKey="@($"{nameof(Data.Contacts)}[{index}].{nameof(CustomerContactDto.Whatsapp)}")"
+                                             LocalizerResource="@LocalizerResource"
+                                             LocalizerKey="Whatsapp" />
+                    </div>
+                </td>
+
+                <td>
+                    <div>
+                        <LinovativeInputText @bind-Value="@contact.Position"
+                                             Disabled="@(!Data.IsActive)"
+                                             Errors="@FormResponse?.Errors"
+                                             LocalizerResource="@LocalizerResource"
+                                             LocalizerKey="Position" />
+                    </div>
+                </td>
+
+
+                <td style="width: 30px">
+                    <div>
+                        <MudIconButton Disabled="@(!Data!.IsActive)" OnClick="@(() => Remove(contact))" Icon="@Icons.Material.Filled.Delete" Class="mr-5" />
+                    </div>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
+@code {
+
+    protected override string LocalizerResource => "SupplierPage";
+    string paddingClass => "p-2";
+
+    [Parameter] public Response? FormResponse { get; set; } = null;
+    [Parameter] public CustomerInputDto? Data { get; set; } = new();
+
+
+    void Remove(CustomerContactDto address)
+    {
+        Data!.Contacts.Remove(address);
+    }
+
+    void PrimaryChange(bool value, CustomerContactDto contact)
+    {
+        contact.IsPrimary = value;
+
+        if (!value) return;
+
+        foreach (var dto in Data!.Contacts.Where(x => x != contact))
+        {
+            dto.IsPrimary = false;
+        }
+    }
+
+    void AddNew()
+    {
+        var newContact = new CustomerContactDto()
+        {
+            CustomerId = Data!.Id,
+        };
+
+        Data.Contacts.Add(newContact);
+    }
+}

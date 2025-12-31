@@ -70,8 +70,6 @@
         <MudTh><MudTableSortLabel SortLabel="@(nameof(CustomerViewDto.LastName))" T="CustomerViewDto">@_loc[$"{LocalizerResource}.LastName.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(CustomerViewDto.CustomerType))" T="CustomerViewDto">@_loc[$"{LocalizerResource}.CustomerType.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(CustomerViewDto.LegalName))" T="CustomerViewDto">@_loc[$"{LocalizerResource}.LegalName.Label"]</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="@(nameof(CustomerViewDto.Phone))" T="CustomerViewDto">@_loc[$"{LocalizerResource}.Phone.Label"]</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="@(nameof(CustomerViewDto.Email))" T="CustomerViewDto">@_loc[$"{LocalizerResource}.Email.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(CustomerViewDto.IsMember))" T="CustomerViewDto">@_loc[$"{LocalizerResource}.IsMember.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(CustomerViewDto.Points))" T="CustomerViewDto">@_loc[$"{LocalizerResource}.Points.Label"]</MudTableSortLabel></MudTh>
         <MudTh></MudTh>
@@ -85,8 +83,6 @@
         <MudTd DataLabel="Name">@context.LastName</MudTd>
         <MudTd DataLabel="Name">@_loc.Enum($"{nameof(CustomerType)}.{context.CustomerType}")</MudTd>
         <MudTd DataLabel="Name">@context.LegalName</MudTd>
-        <MudTd DataLabel="Name">@context.Phone</MudTd>
-        <MudTd DataLabel="Name">@context.Email</MudTd>
         <MudTd DataLabel="Name">@context.IsMember</MudTd>
         <MudTd DataLabel="Name">@context.Points</MudTd>
         <MudTd Style="width: 30px"><MudIcon @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Class="item-show-on-hover" Size="Size.Small" /></MudTd>

@@ -29,11 +29,12 @@
 @code {
     private CancellationTokenSource cts { get; set; } = new();
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;        
         PageSize = PageSize == 0 ? 10 : PageSize;
-        return base.OnInitializedAsync();
+        _state.NotifyStateChanged();
     }
 
     string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];

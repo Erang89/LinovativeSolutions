@@ -29,6 +29,21 @@ namespace LinoVative.Service.Backend.CrudServices.Customers
             var person = _mapper.Map<Core.People.Person>(request.Person!);
             _dbContext.People.Add(person);
             entity.PersonId = person.Id;
+
+            foreach(var dto in request.Contacts)
+            {
+                var contact = _mapper.Map<CustomerContact>(dto);
+                contact.CustomerId = entity.Id;
+                _dbContext.CustomerContacts.Add(contact);
+            }
+
+            foreach(var dto in request.Address)
+            {
+                var address = _mapper.Map<CustomerAddress>(dto);
+                address.CustomerId = entity.Id;
+                _dbContext.CustomerAddress.Add(address);
+            }
+
             return Task.CompletedTask;
         }
 

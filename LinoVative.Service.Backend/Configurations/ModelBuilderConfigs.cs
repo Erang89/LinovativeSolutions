@@ -298,6 +298,17 @@ namespace LinoVative.Service.Backend.Configurations
                 x.Property(x => x.AddressType).HasColumnType("Varchar(50)");
             });
 
+            modelBuilder.Entity<CustomerContact>(x =>
+            {
+                x.ToTable("CustomerContacts");
+                x.HasOne(x => x.Customer).WithMany().HasForeignKey(x => x.CustomerId).IsRequired();
+                x.Property(x => x.ContactName).HasColumnType("Varchar(225)");
+                x.Property(x => x.Email).HasColumnType("Varchar(225)");
+                x.Property(x => x.Phone).HasColumnType("Varchar(225)");
+                x.Property(x => x.Whatsapp).HasColumnType("Varchar(225)");
+                x.Property(x => x.Position).HasColumnType("Varchar(225)");
+            });
+
         }
 
         static void ConfigureAccountingEntities(this ModelBuilder modelBuilder)

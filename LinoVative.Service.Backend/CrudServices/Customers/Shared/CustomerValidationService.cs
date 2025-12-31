@@ -1,8 +1,11 @@
 ﻿using Linovative.Shared.Interface;
 using LinoVative.Service.Backend.CrudServices.Companies.Shared;
 using LinoVative.Service.Backend.Interfaces;
+using LinoVative.Service.Core.Suppliers;
 using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.MasterData.Customers;
+using LinoVative.Shared.Dto.MasterData.Suppliers;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices.Customers.Shared
@@ -81,6 +84,45 @@ namespace LinoVative.Service.Backend.CrudServices.Customers.Shared
                 }
 
                 index++;    
+            }
+
+            return await ValidateContacts(request);
+        }
+
+
+        async Task<Result> ValidateContacts(CustomerInputDto request)
+        {
+            var result = Result.OK();
+
+            if(request.Contacts.Count > 0 && request.Contacts.Count(x => x.IsPrimary) != 1)
+            {
+                result.AddInvalidProperty($"{nameof(request.Contacts)}[all].{nameof(SupplierContactDto.IsPrimary)}", _lang[$"{ResourceKey}.NoPrimaryContact.Message"]);
+            }
+
+            var index = 0;
+            var flagContact = false;
+            foreach(var dto in request.Contacts)
+            {
+                if(string.IsNullOrWhiteSpace(dto.Phone) && string.IsNullOrWhiteSpace(dto.Whatsapp) && string.IsNullOrWhiteSpace(dto.Email))
+                {
+                    if(!flagContact)
+                    {
+                        flagContact = true;
+                        result.AddInvalidProperty($"{nameof(CustomerInputDto)}[{index}].{nameof(dto.Email)}", _lang[$"{ResourceKey}.EmailPhoneWA.Message"]);
+                    }
+                    result.AddInvalidProperty($"{nameof(request.Contacts)}[{index}].{nameof(dto.Phone)}", _lang[$"{ResourceKey}.Required.Phone.Message"]);
+                    result.AddInvalidProperty($"{nameof(request.Contacts)}[{index}].{nameof(dto.Whatsapp)}", _lang[$"{ResourceKey}.Required.Whatsapp.Message"]);
+                    result.AddInvalidProperty($"{nameof(request.Contacts)}[{index}].{nameof(dto.Email)}", _lang[$"{ResourceKey}.Required.Email.Message"]);                    
+                }
+
+                index++;
+            }
+
+            var groupingContacts = request.Contacts.GroupBy(x => x.ContactName.ToLower()).Select(x => new { Name = x.Key, Contacts = x }).Where(x => x.Contacts.Count() > 1).ToList();
+            foreach(var contact in groupingContacts.SelectMany(x => x.Contacts))
+            {
+                var indexContact = request.Contacts.IndexOf(contact);
+                result.AddInvalidProperty($"{nameof(request.Contacts)}[{indexContact}].{nameof(contact.ContactName)}", _lang[$"{ResourceKey}.ContactNameDuplicated.Message"]);
             }
 
             return result;

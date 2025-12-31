@@ -10,7 +10,9 @@ namespace LinoVative.Shared.Dto.Attributes
         
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            if (value is not null && !_phone.IsValid(value))
+            var phone = (string?)value;
+            
+            if (!string.IsNullOrWhiteSpace(phone) && !_phone.IsValid(value))
             {
                 var localizer = (IStringLocalizer)validationContext.GetService(typeof(IStringLocalizer))!;
                 var msg = localizer?["Validate.PhoneInvalid", value!] ?? "Invalid phone number format";

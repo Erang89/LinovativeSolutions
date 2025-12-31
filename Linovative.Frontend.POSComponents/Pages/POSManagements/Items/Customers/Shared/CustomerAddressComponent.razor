@@ -5,6 +5,7 @@
 @using Linovative.Frontend.Services.Models
 @using Linovative.Frontend.Shared.InputComponents.Dropdowns.SingleDropdown
 @inherits POSManagementPageBase
+@inject IApplicationStateService _state
 
 <MudToolBar>
     <MudButton Disabled="@(!Data!.IsActive)" Size="Size.Small" OnClick="AddNew" Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Add" Class="mr-5">@Label("AddNewAddress")</MudButton>
@@ -12,84 +13,87 @@
 
 <MudSimpleTable Style="overflow-x: auto;">
     <tbody>
-        @foreach (var address in Data?.Address ?? new())
+        @if (Loaded)
         {
-            <tr>
+            @foreach (var address in Data?.Address ?? new())
+            {
+                <tr>
 
-                <td>
-                    <div>
-                        <CountryDropdown Value="@address.Country"
-                                         Required="true"
-                                         ValueChanged="@((x) => {address.Country = x; address.CountryId = x.Id;})"
-                                         Disabled="@(!Data!.IsActive)"
-                                         Errors="@FormResponse?.Errors"
-                                         LocalizerResource="@LocalizerResource"
-                                         LocalizerKey="CountryId" />
-                    </div>
-                </td>
-
-
-                <td>
-                    <div>
-                        <CustomerAddressTypeDropdown Required="true"
-                                                     Disabled="@(!Data!.IsActive)"
-                                                     Errors="@FormResponse?.Errors"
-                                                     LocalizerResource="@LocalizerResource"
-                                                     LocalizerKey="AddressType"
-                                                     Value="@address.AddressType"
-                                                     ValueChanged="@(x => address.AddressType = x)" />
-                    </div>
-                </td>
-
-
-                <td>
-                    <div>
-                        <LinovativeInputText @bind-Value="@address.AddressLine"
-                                             Disabled="@(!Data.IsActive)"
-                                             IsRequired="true"
+                    <td>
+                        <div>
+                            <CountryDropdown Value="@address.Country"
+                                             ValueChanged="((x) => ChangeCountry(x, address))"
+                                             Required="true"
+                                             Disabled="@(!Data!.IsActive)"
                                              Errors="@FormResponse?.Errors"
                                              LocalizerResource="@LocalizerResource"
-                                             LocalizerKey="AddressLine" />
-                    </div>
-                </td>
+                                             LocalizerKey="CountryId" />
+                        </div>
+                    </td>
 
-                <td>
-                    <div>
-                        <LinovativeInputText @bind-Value="@address.City"
-                                             Disabled="@(!Data.IsActive)"
-                                             Errors="@FormResponse?.Errors"
-                                             LocalizerResource="@LocalizerResource"
-                                             LocalizerKey="City" />
-                    </div>
-                </td>
 
-                <td>
-                    <div>
-                        <LinovativeInputText @bind-Value="@address.ProvinceName"
-                                             Disabled="@(!Data.IsActive)"
-                                             Errors="@FormResponse?.Errors"
-                                             LocalizerResource="@LocalizerResource"
-                                             LocalizerKey="ProvinceName" />
-                    </div>
-                </td>
+                    <td>
+                        <div>
+                            <CustomerAddressTypeDropdown Required="true"
+                                                         Disabled="@(!Data!.IsActive)"
+                                                         Errors="@FormResponse?.Errors"
+                                                         LocalizerResource="@LocalizerResource"
+                                                         LocalizerKey="AddressType"
+                                                         Value="@address.AddressType"
+                                                         ValueChanged="@(x => address.AddressType = x)" />
+                        </div>
+                    </td>
 
-                <td>
-                    <div>
-                        <LinovativeInputText @bind-Value="@address.PostalCode"
-                                             Disabled="@(!Data.IsActive)"
-                                             Errors="@FormResponse?.Errors"
-                                             LocalizerResource="@LocalizerResource"
-                                             LocalizerKey="PostalCode" />
-                    </div>
-                </td>
 
-                <td style="width: 30px">
-                    <div>
-                        <MudIconButton Disabled="@(!Data!.IsActive)" OnClick="@(() => Remove(address))" Icon="@Icons.Material.Filled.Delete" Class="mr-5" />
-                    </div>
-                </td>
+                    <td>
+                        <div>
+                            <LinovativeInputText @bind-Value="@address.AddressLine"
+                                                 Disabled="@(!Data.IsActive)"
+                                                 IsRequired="true"
+                                                 Errors="@FormResponse?.Errors"
+                                                 LocalizerResource="@LocalizerResource"
+                                                 LocalizerKey="AddressLine" />
+                        </div>
+                    </td>
 
-            </tr>
+                    <td>
+                        <div>
+                            <LinovativeInputText @bind-Value="@address.City"
+                                                 Disabled="@(!Data.IsActive)"
+                                                 Errors="@FormResponse?.Errors"
+                                                 LocalizerResource="@LocalizerResource"
+                                                 LocalizerKey="City" />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            <LinovativeInputText @bind-Value="@address.ProvinceName"
+                                                 Disabled="@(!Data.IsActive)"
+                                                 Errors="@FormResponse?.Errors"
+                                                 LocalizerResource="@LocalizerResource"
+                                                 LocalizerKey="ProvinceName" />
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            <LinovativeInputText @bind-Value="@address.PostalCode"
+                                                 Disabled="@(!Data.IsActive)"
+                                                 Errors="@FormResponse?.Errors"
+                                                 LocalizerResource="@LocalizerResource"
+                                                 LocalizerKey="PostalCode" />
+                        </div>
+                    </td>
+
+                    <td style="width: 30px">
+                        <div>
+                            <MudIconButton Disabled="@(!Data!.IsActive)" OnClick="@(() => Remove(address))" Icon="@Icons.Material.Filled.Delete" Class="mr-5" />
+                        </div>
+                    </td>
+
+                </tr>
+            }
         }
     </tbody>
 </MudSimpleTable>
@@ -100,6 +104,16 @@
 
     [Parameter] public Response? FormResponse { get; set; } = null;
     [Parameter] public CustomerInputDto? Data { get; set; } = new();
+    public bool Loaded { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+        Loaded = true;
+        _state.NotifyStateChanged();
+    }
+
 
     void Remove(CustomerAddressInputDto address)
     {
@@ -113,6 +127,13 @@
 
         };
 
-        Data.Address.Add(newAddress);
+        Data!.Address.Add(newAddress);
+    }
+
+    void ChangeCountry(CountryDto? value, CustomerAddressInputDto address)
+    {
+        address.Country = value;
+        address.CountryId = value?.Id;
+        _state.NotifyStateChanged();
     }
 }

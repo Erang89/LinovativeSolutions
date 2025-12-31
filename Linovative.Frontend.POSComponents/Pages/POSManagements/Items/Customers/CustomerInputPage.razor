@@ -114,21 +114,6 @@
                                   Value="@data.CustomerType"
                                   ValueChanged="@(x => data.CustomerType = x)" />
 
-
-            <LinovativeGap />
-            <LinovativeInputText @bind-Value="@data.Phone"
-                                 Errors="@formResponse?.Errors"
-                                 Disabled="@(!data.IsActive)"
-                                 LocalizerResource="@LocalizerResource"
-                                 LocalizerKey="Phone" />
-
-            <LinovativeGap />
-            <LinovativeInputText @bind-Value="@data.Email"
-                                 Errors="@formResponse?.Errors"
-                                 Disabled="@(!data.IsActive)"
-                                 LocalizerResource="@LocalizerResource"
-                                 LocalizerKey="Email" />
-
             <LinovativeGap />
             <div class="d-flex">
                 <MudSwitch @bind-Value="@data.IsMember" Label="@Label("IsMember")" Color="Color.Info" />
@@ -138,8 +123,6 @@
         else
         {
 
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
             <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
             <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
         }
@@ -158,10 +141,16 @@
         <MudExpansionPanel Expanded="true" Text="@Label("AddressSection")">
             <CustomerAddressComponent Data="@data" FormResponse="@formResponse" />
         </MudExpansionPanel>
+
+        <MudExpansionPanel Expanded="true" Text="@Label("ContactSection")">
+            <CustomerContactsComponent Data="@data" FormResponse="@formResponse" />
+        </MudExpansionPanel>
+
     </MudExpansionPanels>
 }
 else
 {
+    <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
     <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
 }
 
@@ -190,13 +179,13 @@ else
     protected override async Task OnInitializedAsync()
     {
         isFormSubmitting = true;
-        await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _topBarService.SetTitle(EntityPluralName);
         await LoadData();
         isFormSubmitting = false;
         loaded = true;
         _state.NotifyStateChanged();
+        await base.OnInitializedAsync();
     }
 
     void OnFormKeyPress()

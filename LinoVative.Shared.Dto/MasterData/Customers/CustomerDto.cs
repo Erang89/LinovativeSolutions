@@ -11,16 +11,10 @@ namespace LinoVative.Shared.Dto.MasterData.Customers
         [EntityID(EntityTypes.Person)]
         public Guid? PersonId { get; set; }
         public string? CustomerCode { get; set; }
-
+        public string? Name { get; set; }
         public string? LegalName { get; set; }
 
         public CustomerType? CustomerType { get; set; }
-
-        [LocalizedPhone]
-        public string? Phone { get; set; }
-
-        [LocalizedEmail]
-        public string? Email { get; set; }
 
         public bool IsMember { get; set; }
         public string? MemberNumber { get; set; }
@@ -38,6 +32,7 @@ namespace LinoVative.Shared.Dto.MasterData.Customers
     public class CustomerInputDto : CustomerDto
     {
         public List<CustomerAddressInputDto> Address { get; set; } = new();
+        public List<CustomerContactDto> Contacts { get; set; } = new();
         public PersonDto? Person { get; set; }
     }
 

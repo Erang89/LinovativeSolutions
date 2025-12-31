@@ -52,6 +52,7 @@ namespace LinoVative.Service.Backend.Interfaces
         // Customers DbSets
         public DbSet<Customer> Customers { get; set; }
         public DbSet<CustomerAddress> CustomerAddress { get; set; }
+        public DbSet<CustomerContact> CustomerContacts { get; set; }
 
         // Order Type DbSets
         public DbSet<OrderType> OrderTypes { get; set; }
