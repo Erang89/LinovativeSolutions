@@ -38,9 +38,9 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
             
             if (item == null) return Result.Failed($"No Data with ID: {request.Id}");
 
-            item.Category = await _dbContext.ItemCategories.GetAll(_actor).Where(x => x.Id == item.CategoryId).ProjectToType<ItemCategoryViewDto>(_mapper.Config).FirstOrDefaultAsync();
-            item.Unit = await _dbContext.ItemUnits.GetAll(_actor).Where(x => x.Id == item.UnitId).ProjectToType<IdWithNameDto>(_mapper.Config).FirstOrDefaultAsync();
-            item.ItemPriceTypes = await _dbContext.ItemPriceTypes.GetAll(_actor).Where(x => x.ItemId == request.Id).ProjectToType<ItemPriceTypeDto>(_mapper.Config).ToListAsync();
+            //item.Category = await _dbContext.ItemCategories.GetAll(_actor).Where(x => x.Id == item.CategoryId).ProjectToType<ItemCategoryViewDto>(_mapper.Config).FirstOrDefaultAsync();
+            //item.Unit = await _dbContext.ItemUnits.GetAll(_actor).Where(x => x.Id == item.UnitId).ProjectToType<IdWithNameDto>(_mapper.Config).FirstOrDefaultAsync();
+            //item.ItemPriceTypes = await _dbContext.ItemPriceTypes.GetAll(_actor).Where(x => x.ItemId == request.Id).ProjectToType<ItemPriceTypeDto>(_mapper.Config).ToListAsync();
 
             return Result.OK(item);
         }

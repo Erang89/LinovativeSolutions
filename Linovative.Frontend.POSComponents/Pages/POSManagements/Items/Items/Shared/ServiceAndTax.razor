@@ -5,7 +5,7 @@
 @inject IApplicationStateService _state
 
 
-
+@* 
 <div class="d-flex">
     <MudSwitch Disabled="@(!Item!.IsActive)" @bind-Value="@Item!.SellPriceIncludeTaxService" Label="@Label("SellTaxAndServiceIncluded")" Color="Color.Info" />
 </div>
@@ -37,7 +37,7 @@
                         Errors="@Result?.Errors"
                         Style="width: 250px"
                         LocalizerResource="@LocalizerResource"
-                        LocalizerKey="ServicePercent" />
+                        LocalizerKey="ServicePercent" /> *@
 
 @code {
 

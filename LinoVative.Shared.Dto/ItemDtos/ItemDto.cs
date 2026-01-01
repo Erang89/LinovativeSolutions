@@ -14,46 +14,24 @@ namespace LinoVative.Shared.Dto.ItemDtos
         
         [LocalizedRequired, UniqueField(EntityTypes.Item)]
         public string? Name { get; set; }
-
-        public string? Description { get; set; }
-
-
-
-
-        [LocalizedRequired, EntityID(EntityTypes.ItemUnit)]
-        public Guid? UnitId { get; set; }
-        
-        [LocalizedRequired, EntityID(EntityTypes.ItemCategory)]
-        public Guid? CategoryId { get; set; }
-       
-
-
+        public string? Notes { get; set; }
         public bool IsActive { get; set; } = true;
-        
 
-        // Tax and Service
-        public bool HasSellingTaxAndService { get; set; }
-        public bool SellPriceIncludeTaxService { get; set; }
-        public bool TaxAndServicePercentFromOutletOrderType { get; set; }
+
+        // Selling Settings
+        public bool CanBeSell { get; set; }
         [LocalizeMinDecimalValue(0), LocalizeMaxDecimalValue(100)]
-        public decimal? ServicePercent { get; set; }
+        public decimal? DefaultSellServicePercent { get; set; }
         [LocalizeMinDecimalValue(0), LocalizeMaxDecimalValue(100)]
-        public decimal? TaxPercent { get; set; }
+        public decimal? DefaultSellTaxPercent { get; set; }
 
-
-        // Prices
-
-        [LocalizedRequired, LocalizeMinDecimalValue(0)]
-        public decimal? SellPrice { get; set; }
-        public bool HasCostumePrice { get; set; }
-
-
-        // Purchase
+        // Purchasing Settings
         public bool CanBePurchased { get; set; }
-        [LocalizeMinDecimalValue(0)]
+
+        [LocalizeMinDecimalValue(0), LocalizeMaxDecimalValue(100)]
         public decimal? DefaltPurchaseQty { get; set; }
-        [LocalizeMinDecimalValue(0)]
-        public decimal? ShouldPurchaseWhenStockLessOrEqualsTo { get; set; }
+        [LocalizeMinDecimalValue(0), LocalizeMaxDecimalValue(100)]
+        public decimal? DefaultMinimumStock { get; set; }
 
     }
 
@@ -63,8 +41,7 @@ namespace LinoVative.Shared.Dto.ItemDtos
 
     public class ItemViewDto : ItemDto
     {
-        public IdWithNameDto? Unit { get; set; }
-        public ItemCategoryViewDto? Category { get; set; }
+        
 
     }
 
@@ -73,6 +50,6 @@ namespace LinoVative.Shared.Dto.ItemDtos
 
     public class ItemInputDto : ItemViewDto
     {
-        public List<ItemPriceTypeDto> ItemPriceTypes { get; set; } = new();
+       
     }
 }

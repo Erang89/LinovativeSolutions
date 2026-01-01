@@ -37,9 +37,9 @@
         <tr>
                 <th>@ColumHeaderText("ItemCode")</th>
                 <th>@ColumHeaderText("ItemName")</th>
-                <th>@ColumHeaderText("Unit")</th>
+               @*  <th>@ColumHeaderText("Unit")</th>
                 <th>@ColumHeaderText("Group")</th>
-                <th>@ColumHeaderText("Category")</th>
+                <th>@ColumHeaderText("Category")</th> *@
         </tr>
     </thead>
     <tbody>
@@ -48,9 +48,9 @@
             <tr>
                <td>@row.Code</td>
                <td>@row.Name</td>
-               <td>@row.Unit?.Name</td>
+               @* <td>@row.Unit?.Name</td>
                <td>@row.Category?.ItemGroup?.Name</td>
-               <td>@row.Category?.Name</td>
+               <td>@row.Category?.Name</td> *@
             </tr>
         }
         <tr>
@@ -110,7 +110,7 @@
             PageSize = pageSize,
             OrderFiled = null,
             SortDirection = SortDirection.Ascending.ToString(),
-            Options = $"$expand=unit,category($expand=itemGroup)",
+            //Options = $"$expand=unit,category($expand=itemGroup)",
             FilterPayload = new { filter = FilterModels.ToFilterCondition() }
         };
         itemFilterCount = FilterModels.Count;

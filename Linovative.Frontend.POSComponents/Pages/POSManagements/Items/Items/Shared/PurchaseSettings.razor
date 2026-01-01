@@ -19,8 +19,8 @@
 <LinovativeGap />
 <LinovativeInputGeneric T="decimal?"
                         Disabled="@(!Item.IsActive || !Item!.CanBePurchased)"
-                        Value="@Item.ShouldPurchaseWhenStockLessOrEqualsTo"
-                        ValueChanged="@(x => Item.ShouldPurchaseWhenStockLessOrEqualsTo = x)"
+                        Value="@Item.DefaultMinimumStock"
+                        ValueChanged="@(x => Item.DefaultMinimumStock = x)"
                         IsRequired="false"
                         Errors="@Result?.Errors"
                         Style="width: 350px"

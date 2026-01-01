@@ -27,20 +27,20 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
 
         public override async Task BeforeSave(CreateItemCommand request, Item entity, CancellationToken token)
         {
-            var category = _mapper.Map<ItemCategory>(request.Category!);
-            _dbContext.ItemCategories.Add(category);
+            //var category = _mapper.Map<ItemCategory>(request.Category!);
+            //_dbContext.ItemCategories.Add(category);
             //entity.CategoryId = category.Id;
 
-            var unit = _mapper.Map<ItemUnit>(request.Unit!);
-            _dbContext.ItemUnits.Add(unit);
+            //var unit = _mapper.Map<ItemUnit>(request.Unit!);
+            //_dbContext.ItemUnits.Add(unit);
             //entity.UnitId = unit.Id;
 
-            foreach (var dto in request.ItemPriceTypes)
-            {
-                var newPrice = _mapper.Map<ItemPriceType>(dto);
-                newPrice.CreateBy(_actor);
-                _dbContext.ItemPriceTypes.Add(newPrice);
-            }
+            //foreach (var dto in request.ItemPriceTypes)
+            //{
+            //    var newPrice = _mapper.Map<ItemPriceType>(dto);
+            //    newPrice.CreateBy(_actor);
+            //    _dbContext.ItemPriceTypes.Add(newPrice);
+            //}
 
             await Task.CompletedTask;
         }

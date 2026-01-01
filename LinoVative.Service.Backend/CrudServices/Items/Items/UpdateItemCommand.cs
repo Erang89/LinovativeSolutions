@@ -32,19 +32,19 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
 
             var priceTypes = await _dbContext.ItemPriceTypes.Where(x => !x.IsDeleted && x.ItemId == entity.Id).ToListAsync(token);
 
-            foreach(var dto in request.ItemPriceTypes)
-            {
-                var exisiting = priceTypes.FirstOrDefault(x => x.PriceTypeId == dto.PriceTypeId);
-                if(exisiting is not null)
-                {
-                    _mapper.Map(dto, exisiting);
-                    continue;
-                }
+            //foreach(var dto in request.ItemPriceTypes)
+            //{
+            //    var exisiting = priceTypes.FirstOrDefault(x => x.PriceTypeId == dto.PriceTypeId);
+            //    if(exisiting is not null)
+            //    {
+            //        _mapper.Map(dto, exisiting);
+            //        continue;
+            //    }
 
-                var newPrice = _mapper.Map<ItemPriceType>(dto);
-                newPrice.CreateBy(_actor);
-                _dbContext.ItemPriceTypes.Add(newPrice);
-            }
+            //    var newPrice = _mapper.Map<ItemPriceType>(dto);
+            //    newPrice.CreateBy(_actor);
+            //    _dbContext.ItemPriceTypes.Add(newPrice);
+            //}
         }
 
         protected override async Task<Result> ValidateSaveUpdate(UpdateItemCommand request, CancellationToken token)

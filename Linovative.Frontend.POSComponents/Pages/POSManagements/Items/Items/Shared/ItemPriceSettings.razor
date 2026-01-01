@@ -10,7 +10,7 @@
     <tbody>
         @foreach (var ot in _itemPriceTypes.OrderBy(x => x.Key.Name))
         {
-            <tr>
+            @* <tr>
 
                 <td style="min-width: 200px">
                     <div class="d-flex"><MudSwitch Disabled="@(!Item!.IsActive ||  !Item!.HasCostumePrice)" @bind-Value="@ot.Value.IsActive" Label="@ot.Key.Name" Color="Color.Info" /></div>
@@ -31,7 +31,7 @@
                 </td>
 
 
-            </tr>
+            </tr> *@
         }
     </tbody>
 </MudSimpleTable>
@@ -73,21 +73,21 @@
 
     void GenerateData()
     {
-        Func<PriceTypeDto, ItemPriceTypeDto> getPriceType = (priceType) =>
-        {
-            var data = Item!.ItemPriceTypes.FirstOrDefault(x => x.PriceTypeId == priceType.Id);
-            if (data is not null) return data;
+        // Func<PriceTypeDto, ItemPriceTypeDto> getPriceType = (priceType) =>
+        // {
+        //     var data = Item!.ItemPriceTypes.FirstOrDefault(x => x.PriceTypeId == priceType.Id);
+        //     if (data is not null) return data;
 
-            data = new()
-            {
-                ItemId = Item.Id,
-                PriceTypeId = priceType.Id,
-            };
+        //     data = new()
+        //     {
+        //         ItemId = Item.Id,
+        //         PriceTypeId = priceType.Id,
+        //     };
 
-            Item.ItemPriceTypes.Add(data);
-            return data;
-        };
-        _itemPriceTypes = _priceTypes.Select(x => new KeyValuePair<PriceTypeDto, ItemPriceTypeDto>(x, getPriceType(x))).ToList();
+        //     Item.ItemPriceTypes.Add(data);
+        //     return data;
+        // };
+        // _itemPriceTypes = _priceTypes.Select(x => new KeyValuePair<PriceTypeDto, ItemPriceTypeDto>(x, getPriceType(x))).ToList();
     }
 
 }

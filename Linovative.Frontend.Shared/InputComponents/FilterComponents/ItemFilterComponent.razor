@@ -46,9 +46,9 @@
                     {
                         new(Columns.ItemCode, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Code)), GetLable(nameof(ItemViewDto.Code))),
                         new(Columns.ItemName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Name)), GetLable(nameof(ItemViewDto.Name))),
-                        new(Columns.ItemCategoryName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category)), GetLable(nameof(ItemViewDto.Category))),
-                        new(Columns.ItemGroupName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category.ItemGroup)), GetLable(nameof(ItemViewDto.Category.ItemGroup))),
-                        new(Columns.ItemUnitName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Unit)), GetLable(nameof(ItemViewDto.Unit))),
+                        //new(Columns.ItemCategoryName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category)), GetLable(nameof(ItemViewDto.Category))),
+                        //new(Columns.ItemGroupName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category.ItemGroup)), GetLable(nameof(ItemViewDto.Category.ItemGroup))),
+                        //new(Columns.ItemUnitName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Unit)), GetLable(nameof(ItemViewDto.Unit))),
 
                         // new(Columns.CanSell, DataGridFilterModel.PropertyType.Boolean, "Sell Item", "Sell Item"),
                         // new(Columns.CanPurchase, DataGridFilterModel.PropertyType.Boolean, "Purchase Item", "Purchase Item"),
@@ -61,9 +61,9 @@
                         // new(Columns.OrderLeadDays, DataGridFilterModel.PropertyType.Integer, "Order Lead Days", "Order Lead Days"),
                         // new(Columns.LastPurchasePrice, DataGridFilterModel.PropertyType.Decimal, "Last Purchase Price", "Last Purchase Price"),
 
-                        new(Columns.ItemCategoryNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Categories"), GetLable("Categories")),
-                        new(Columns.ItemGroupNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Groups"), GetLable("Groups")),
-                        new(Columns.ItemUnitNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Units"), GetLable("Units")),
+                        //new(Columns.ItemCategoryNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Categories"), GetLable("Categories")),
+                        //new(Columns.ItemGroupNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Groups"), GetLable("Groups")),
+                        //new(Columns.ItemUnitNames, DataGridFilterModel.PropertyType.ListOfGuid, GetLable("Units"), GetLable("Units")),
                     };
 
         selectedTypes = types
@@ -87,9 +87,9 @@
     {
         public const string ItemCode = nameof(ItemViewDto.Code);
         public const string ItemName = nameof(ItemViewDto.Name);
-        public const string ItemCategoryName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.Name)}";
-        public const string ItemGroupName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.ItemGroup)}.{nameof(ItemGroupViewDto.Name)}";
-        public const string ItemUnitName = $"{nameof(ItemViewDto.Unit)}.{nameof(ItemViewDto.Name)}";
+        //public const string ItemCategoryName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.Name)}";
+        //public const string ItemGroupName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.ItemGroup)}.{nameof(ItemGroupViewDto.Name)}";
+        //public const string ItemUnitName = $"{nameof(ItemViewDto.Unit)}.{nameof(ItemViewDto.Name)}";
 
         // public const string CanSell = $"{nameof(ItemViewDto.CanSell)}";
         // public const string CanPurchase = $"{nameof(ItemViewDto.CanPurchase)}";
@@ -102,9 +102,9 @@
         // public const string OrderLeadDays = $"{nameof(ItemViewDto.OrderLeadDays)}";
         // public const string LastPurchasePrice = $"{nameof(ItemViewDto.LastPurchasePrice)}";
 
-        public const string ItemCategoryNames = $"{nameof(ItemViewDto.CategoryId)}";
-        public const string ItemGroupNames = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.GroupId)}";
-        public const string ItemUnitNames = $"{nameof(ItemViewDto.UnitId)}";
+        //public const string ItemCategoryNames = $"{nameof(ItemViewDto.CategoryId)}";
+        //public const string ItemGroupNames = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.GroupId)}";
+        //public const string ItemUnitNames = $"{nameof(ItemViewDto.UnitId)}";
     }
 
 
@@ -115,9 +115,9 @@
     {
         return model.Column switch
         {
-            Columns.ItemGroupNames => @<ItemGroupMultiSelect Label="@GetLable("Groups")" Placeholder="@GetLable("Groups")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
-            Columns.ItemCategoryNames => @<ItemCategoryMultiSelect Label="@GetLable("Categories")" Placeholder="@GetLable("Categories")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
-            Columns.ItemUnitNames => @<ItemUnitMultiSelect Label="@GetLable("Units")" Placeholder="@GetLable("Units")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            //Columns.ItemGroupNames => @<ItemGroupMultiSelect Label="@GetLable("Groups")" Placeholder="@GetLable("Groups")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            //Columns.ItemCategoryNames => @<ItemCategoryMultiSelect Label="@GetLable("Categories")" Placeholder="@GetLable("Categories")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
+            //Columns.ItemUnitNames => @<ItemUnitMultiSelect Label="@GetLable("Units")" Placeholder="@GetLable("Units")" OnChanged="@((x) => model.Value = x.Select(x => x.Id).ToList())" />,
             _ => null
         };
     }

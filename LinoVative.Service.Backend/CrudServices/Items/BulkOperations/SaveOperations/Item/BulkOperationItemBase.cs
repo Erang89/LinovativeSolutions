@@ -19,11 +19,11 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
         {
             public const string Id = nameof(ItemViewDto.Id);
             public const string Name = nameof(ItemViewDto.Name);
-            public const string Unit = nameof(ItemViewDto.Unit);
-            public const string Category = nameof(ItemViewDto.Category);
-            public const string Description = nameof(ItemViewDto.Description);
+            public const string Unit = "Unit";
+            public const string Category = "Category";
+            public const string Description = nameof(ItemViewDto.Notes);
             public const string IsActive = nameof(ItemViewDto.IsActive);
-            public const string SellPrice = nameof(ItemViewDto.SellPrice);
+            public const string SellPrice = "SellPrice";
             public const string Code = nameof(ItemViewDto.Code);
         }
 

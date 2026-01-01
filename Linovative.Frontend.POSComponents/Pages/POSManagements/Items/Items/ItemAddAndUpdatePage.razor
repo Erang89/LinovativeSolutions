@@ -62,12 +62,12 @@
                                      LocalizerKey="@nameof(ItemDto.Code)" />
 
                 <LinovativeGap />
-                <LinovativeInputText @bind-Value="@item.Description"
+                <LinovativeInputText @bind-Value="@item.Notes"
                                      Id="item_description"
                                      Disabled="@(!item.IsActive)"
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="@nameof(ItemDto.Description)" />
+                                     LocalizerKey="@nameof(ItemDto.Notes)" />
 
                 <LinovativeGap />
             }
@@ -86,7 +86,7 @@
         @if (loaded)
         {
 
-
+@* 
             <ItemUnitDropdown @bind-Value="@itemUnit"
                               Id="item_unit"
                               Required="true"
@@ -117,7 +117,7 @@
                                Errors="@formResponse?.Errors"
                                LocalizerResource="@LocalizerResource"
                                LocalizerKey="@nameof(ItemDto.SellPrice)"
-                               Clearable="true" />
+                               Clearable="true" /> *@
         }
         else
         {
@@ -132,12 +132,12 @@
         @if (loaded)
         {
             <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
-            <LinovativeGap />
-            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div>
+            @* <LinovativeGap />
+            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div> *@
             <LinovativeGap />
             <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
-            <LinovativeGap />
-            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div>
+            @* <LinovativeGap />
+            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div> *@
         }
         else
         {
@@ -160,14 +160,14 @@
 @if (loaded)
 {
     <MudExpansionPanels MultiExpansion="true">
-        <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.HasCostumePrice || !item.IsActive)">
+        <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.IsActive)">
             <MudGrid>
                 <MudItem xs="12" sm="8" lg="6">
                     <ItemPriceSettings Item="@item" Result="@formResponse" />
                 </MudItem>
             </MudGrid>
         </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.HasSellingTaxAndService || !item.IsActive)">
+        <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.IsActive)">
             <MudGrid>
                 <MudItem xs="12" sm="6" lg="4">
                     <ServiceAndTax Item="@item" Result="@formResponse" />
@@ -268,8 +268,8 @@ else
     {
         isFormSubmitting = true;
 
-        item.UnitId = itemUnit!.Id;
-        item.CategoryId = itemCategory!.Id;
+        //item.UnitId = itemUnit!.Id;
+        //item.CategoryId = itemCategory!.Id;
         formResponse = await _service.Create(item, cts.Token);
         if (formResponse)
         {
@@ -288,8 +288,8 @@ else
     {
         isFormSubmitting = true;
 
-        item.UnitId = itemUnit!.Id;
-        item.CategoryId = itemCategory!.Id;
+        //item.UnitId = itemUnit!.Id;
+        //item.CategoryId = itemCategory!.Id;
         formResponse = await _service.Update(item, cts.Token);
         if (formResponse)
         {
@@ -310,8 +310,8 @@ else
         var itemRequest = await _service.GetForUpdate(new Guid(Id!), cts.Token);
         var itemView = itemRequest.Data!;
         item = itemView;
-        itemUnit = new ItemUnitDto() { Id = itemView.Unit!.Id, Name = itemView.Unit.Name };
-        itemCategory = new ItemCategoryDto() { Id = item.CategoryId!.Value, Name = itemView.Category!.Name };
+        // itemUnit = new ItemUnitDto() { Id = itemView.Unit!.Id, Name = itemView.Unit.Name };
+        // itemCategory = new ItemCategoryDto() { Id = item.CategoryId!.Value, Name = itemView.Category!.Name };
     }
 
 
