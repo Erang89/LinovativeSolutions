@@ -30,7 +30,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
             await base.BeforeSaveUpdate(request, entity, token);
             entity.UpdateItemNameInOtherTable(_dbContext);
 
-            var priceTypes = await _dbContext.ItemPriceTypes.Where(x => !x.IsDeleted && x.ItemId == entity.Id).ToListAsync(token);
+            //var priceTypes = await _dbContext.ItemPriceTypes.Where(x => !x.IsDeleted && x.ItemId == entity.Id).ToListAsync(token);
 
             //foreach(var dto in request.ItemPriceTypes)
             //{

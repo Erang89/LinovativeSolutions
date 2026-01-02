@@ -79,10 +79,23 @@ namespace LinoVative.Service.Backend.Configurations
                 x.Property(x => x.DefaultMinimumStock).HasPrecision(8, 4);
             });
 
+
+            modelBuilder.Entity<SKUItem>(x =>
+            {
+                x.ToTable("SKUItems");
+                x.HasOne(x => x.Item).WithMany().HasForeignKey(x => x.ItemId);
+                x.HasOne(x => x.Unit).WithMany().HasForeignKey(x => x.UnitId);
+                x.HasOne(x => x.Category).WithMany().HasForeignKey(x => x.CategoryId);
+                x.Property(x => x.SalePrice).HasPrecision(18, 4);
+                x.Property(x => x.DefaultPurchaseQty).HasPrecision(18, 4);
+                x.Property(x => x.MinimumStockQty).HasPrecision(18, 4);
+            });
+
             modelBuilder.Entity<ItemPriceType>(x =>
             {
                 x.ToTable("ItemCustomePrices");
                 x.HasOne(x => x.PriceType).WithMany().HasForeignKey(x => x.PriceTypeId).IsRequired();
+                x.HasOne(x => x.SKUItem).WithMany(x => x.PriceTypes).HasForeignKey(x => x.SKUItemId).IsRequired();
                 x.Property(x => x.Price).HasPrecision(18, 4);
             });
 

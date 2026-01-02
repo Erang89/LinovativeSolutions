@@ -18,5 +18,6 @@ namespace LinoVative.Service.Core.Items
         public bool CanBePurchased { get; set; }
         public decimal? DefaltPurchaseQty { get; set; }
         public decimal? DefaultMinimumStock { get; set; }
+
     }
 }
