@@ -1,6 +1,5 @@
 ﻿using LinoVative.Shared.Dto.Attributes;
 using Linovative.Shared.Interface.Enums;
-using LinoVative.Shared.Dto.Commons;
 
 namespace LinoVative.Shared.Dto.ItemDtos
 {
@@ -42,14 +41,11 @@ namespace LinoVative.Shared.Dto.ItemDtos
     public class ItemViewDto : ItemDto
     {
         
-
     }
-
-
 
 
     public class ItemInputDto : ItemViewDto
     {
-       
+        public List<SKUItemInputDto> SKUItems { get; set; } = new();
     }
 }

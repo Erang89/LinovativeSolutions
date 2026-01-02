@@ -62,6 +62,7 @@ namespace LinoVative.Service.Backend.DatabaseService
         public DbSet<PriceType> PriceTypes { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<ItemPriceType> ItemPriceTypes { get; set; }
+        public DbSet<SKUItem> SKUItems { get; set; }
 
 
         // Customers DbSets

@@ -9,7 +9,7 @@ namespace LinoVative.Shared.Dto.ItemDtos
     {
 
         [EntityID(EntityTypes.Item)]
-        public Guid? ItemId { get; set; }
+        public Guid? SKUItemId { get; set; }
 
         [LocalizeMinDecimalValue(0)]
         public decimal? Price { get; set; }

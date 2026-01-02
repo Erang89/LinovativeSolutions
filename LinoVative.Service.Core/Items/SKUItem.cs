@@ -8,6 +8,7 @@ namespace LinoVative.Service.Core.Items
         public Item Item { get; set; } = null!;
 
         public string SKU { get; set; } = null!;
+        public string VarianName { get; set; } = null!;
 
         public Guid UnitId { get; set; }
         public ItemUnit Unit { get; set; } = null!;

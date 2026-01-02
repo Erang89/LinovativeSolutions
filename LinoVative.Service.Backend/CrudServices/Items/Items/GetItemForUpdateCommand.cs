@@ -3,7 +3,6 @@ using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
-using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.ItemDtos;
 using Mapster;
 using MapsterMapper;
@@ -38,9 +37,20 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
             
             if (item == null) return Result.Failed($"No Data with ID: {request.Id}");
 
-            //item.Category = await _dbContext.ItemCategories.GetAll(_actor).Where(x => x.Id == item.CategoryId).ProjectToType<ItemCategoryViewDto>(_mapper.Config).FirstOrDefaultAsync();
-            //item.Unit = await _dbContext.ItemUnits.GetAll(_actor).Where(x => x.Id == item.UnitId).ProjectToType<IdWithNameDto>(_mapper.Config).FirstOrDefaultAsync();
-            //item.ItemPriceTypes = await _dbContext.ItemPriceTypes.GetAll(_actor).Where(x => x.ItemId == request.Id).ProjectToType<ItemPriceTypeDto>(_mapper.Config).ToListAsync();
+            item.SKUItems = await _dbContext.SKUItems.GetAll(_actor).Where(x => x.ItemId == item.Id)
+                .Include(x => x.Category).ThenInclude(x => x.Group)
+                .Include(x => x.Unit)
+                .ProjectToType<SKUItemInputDto>(_mapper.Config).ToListAsync();
+
+            var skuIds = item.SKUItems.Select(x => x.Id).ToList();
+            var costumePrices = await _dbContext.ItemPriceTypes.Where(x => skuIds.Contains(x.Id)).ProjectToType<ItemPriceTypeDto>(_mapper.Config).ToListAsync();
+
+            item.SKUItems = item.SKUItems.Select(x =>
+            {
+                x.CostumePrices = costumePrices.Where(x => x.SKUItemId == x.Id).ToList();
+                return x;
+
+            }).ToList();
 
             return Result.OK(item);
         }

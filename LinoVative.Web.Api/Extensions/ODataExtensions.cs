@@ -51,6 +51,7 @@ namespace LinoVative.Web.Api.Extensions
             modelBuilder.EntitySet<ItemGroupDto>("ItemGroups");
             modelBuilder.EntitySet<ItemCategoryViewDto>("ItemCategories");
             modelBuilder.EntitySet<ItemViewDto>("Items");
+            modelBuilder.EntitySet<SKUItemViewDto>("SKUItems");
             modelBuilder.EntitySet<OutletViewDto>("Outlets");
             modelBuilder.EntitySet<OutletAreaViewDto>("OutletAreas");
             modelBuilder.EntitySet<ShiftViewDto>("Shifts");

@@ -3,6 +3,7 @@
     public enum EntityTypes
     {
         Item,
+        SKUItem,
         PriceType,
         ItemUnit,
         Tag,

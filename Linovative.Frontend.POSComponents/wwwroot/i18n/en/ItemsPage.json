@@ -4,11 +4,14 @@
 
   "Name.Label": "Name",
   "Code.Label": "Code",
+  "ItemName.Label": "Item Name",
+  "ItemCode.Label": "Item Code",
   "Description.Label": "Description",
   "UnitId.Label": "Unit",
   "CategoryId.Label": "Category",
   "GroupId.Label": "Group",
   "SellPrice.Label": "Sell Price",
+  "SalePrice.Label": "Sale Price",
   "FilterItem.Label": "Filter Items",
   "ShowFilter.Label": "Show Filter",
   "HideFilter.Label": "Hide Filter",
@@ -37,6 +40,7 @@
   "ServicePercent.Label": "Service Percent",
   "DefaltPurchaseQty.Label": "Default Purchase Qty",
   "ShouldPurchaseWhenStockLessOrEqualsTo.Label": "Should Purchase when Qty less than or equals",
+  "Notes.Label": "Notes",
 
   "Name.Required.ErrorMessage": "Name is required",
   "Code.Required.ErrorMessage": "Code is required",
