@@ -1,4 +1,5 @@
 ﻿@using Linovative.Frontend.POSComponents.Bases
+@using System.Threading.Tasks
 @inherits POSManagementPageBase
 @inject IApplicationStateService _state
 
@@ -23,16 +24,19 @@
     {
         <MudExpansionPanel Text="@($"{skuItem.SKU ?? "SKU"} - {skuItem.VarianName ?? "New Model"}")">
             <TitleContent>
-                <div class="d-flex">
+                <div class="d-flex align-center">
                     <div>@($"{skuItem.SKU ?? "SKU"} - {skuItem.VarianName ?? "New Model"}")</div>
                     <MudSpacer />
-                    <MudButton Size="Size.Small" OnClick="@(() => Remove(skuItem))">
-                        <MudIcon Size="Size.Small" @onclick:preventDefault Icon="@Icons.Material.Filled.Delete" Class="me-3" />
-                    </MudButton>
+                    @if (Item!.SKUItems.Count > 1)
+                    {
+                        <MudButton Color="Color.Error" Size="Size.Small" OnClick="@(() => Remove(skuItem))">
+                            <MudIcon Size="Size.Small" @onclick:preventDefault Icon="@Icons.Material.Filled.Delete" Class="me-3" />
+                        </MudButton>
+                    }
                 </div>
             </TitleContent>
             <ChildContent>
-                <SKUItemVariantDetailComponent OnRemove="Remove" Item="@skuItem" />
+                <SKUItemVariantDetailComponent SKUCount="@Item!.SKUItems.Count" OnRemove="Remove" Item="@skuItem" />
             </ChildContent>
         </MudExpansionPanel>
     }
@@ -40,7 +44,7 @@
 
 
 @code
-{
+    {
     [Parameter] public ItemInputDto Item { get; set; } = new();
     [Parameter] public SKUItemInputDto? SelectedSKUitem { get; set; } = null;
     [Parameter] public EventCallback<SKUItemInputDto?> SelectedItemChange { get; set; }
@@ -52,9 +56,23 @@
     protected override async Task OnInitializedAsync()
     {
         _state.OnChange += StateHasChanged;
+        _state.OnChange += RefreshUI;
         await base.OnInitializedAsync();
         _state.NotifyStateChanged();
 
+    }
+
+    void RefreshUI()
+    {
+        if(Item.SKUItems.Count == 1)
+        {
+            Task.Run(async () =>
+            {
+                await Task.Delay(500);
+                var panel = expandPanel?.Panels.LastOrDefault();
+                panel!.ExpandAsync().Start();
+            }).Start();
+        }
     }
 
     async Task Delete(SKUItemInputDto item)
