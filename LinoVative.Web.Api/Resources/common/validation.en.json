@@ -78,6 +78,10 @@
   "ItemDto.Required.UnitId.ErrorMessage": "Unit is required",
 
 
+  "SKUItemDto.Required.UnitId.ErrorMessage": "Unit is required",
+  "SalePrice.Required.UnitId.ErrorMessage": "Sale price is required",
+
+
   "BankNoteDto.Required.Note.ErrorMessage": "Banknote is required",
   "BankNoteDto.Unique.Note.ErrorMessage": "'{0}' already exist. Banknote must be unique.",
 

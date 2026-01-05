@@ -33,10 +33,25 @@
 </div>
 <LinovativeGap />
 
-<MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="4" lg="4" Class="">
+        <div class="d-flex">
+            <MudText Typo="Typo.h6">@(Id is null ? ADD : UPDATE) @EntityName</MudText>
+            <MudSpacer />
+            <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
+        </div>
+    </MudItem>
+</MudGrid>
+
+
+
+
+
 
 <AppErrorAlert AutoClose="false" @ref="@formErrorAlert" />
 <LinovativeGap />
+
 
 <MudGrid>
 
@@ -45,6 +60,16 @@
         <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
             @if (loaded)
             {
+                <LinovativeInputText @bind-Value="@item.Code"
+                                     Id="item_code"
+                                     IsRequired="true"
+                                     Disabled="@(!item.IsActive)"
+                                     Errors="@formResponse?.Errors"
+                                     LocalizerResource="@LocalizerResource"
+                                     LocalizerKey="@(nameof(ItemDto.Code))" />
+
+
+                <LinovativeGap />
                 <LinovativeInputText @bind-Value="@item.Name"
                                      Id="item_name"
                                      IsRequired="true"
@@ -52,14 +77,32 @@
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Name)" />
-                <LinovativeGap />
-                <LinovativeInputText @bind-Value="@item.Code"
-                                     Id="item_code"
-                                     IsRequired="true"
-                                     Disabled="@(!item.IsActive)"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="@nameof(ItemDto.Code)" />
+
+            }
+            else
+            {
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            }
+
+        </MudForm>
+
+    </MudItem>
+
+
+
+    <MudItem xs="12" sm="4" lg="4" Class="">
+
+        <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
+            @if (loaded)
+            {
+                <ItemCategoryDropdown @bind-Value="@itemCategory"
+                                      Id="item_category"
+                                      Required="true"
+                                      Disabled="@(!item.IsActive)"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="@nameof(ItemDto.CategoryId)" />
 
                 <LinovativeGap />
                 <LinovativeInputText @bind-Value="@item.Notes"
@@ -68,112 +111,40 @@
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Notes)" />
-
-                <LinovativeGap />
             }
             else
             {
                 <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
                 <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-                <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
             }
 
         </MudForm>
+
     </MudItem>
 
 
-    <MudItem xs="12" sm="4" lg="4">
+    <MudItem xs="12" sm="12" lg="12">
         @if (loaded)
         {
-
-@* 
-            <ItemUnitDropdown @bind-Value="@itemUnit"
-                              Id="item_unit"
-                              Required="true"
-                              Disabled="@(!item.IsActive)"
-                              Errors="@formResponse?.Errors"
-                              LocalizerResource="@LocalizerResource"
-                              LocalizerKey="@nameof(ItemDto.UnitId)" />
-
-
-            <LinovativeGap />
-            <ItemCategoryDropdown @bind-Value="@itemCategory"
-                                  Id="item_category"
-                                  Required="true"
-                                  Disabled="@(!item.IsActive)"
-                                  Errors="@formResponse?.Errors"
-                                  LocalizerResource="@LocalizerResource"
-                                  LocalizerKey="@nameof(ItemDto.CategoryId)" />
-
-
-            <LinovativeGap />
-            <LinovativeTextBox T="decimal?"
-                               Id="item_sell_price"
-                               ValueChanged="@(x => item.SellPrice = x)"
-                               Format="N2"
-                               Value="@item.SellPrice"
-                               IsRequired="true"
-                               Disabled="@(!item.IsActive)"
-                               Errors="@formResponse?.Errors"
-                               LocalizerResource="@LocalizerResource"
-                               LocalizerKey="@nameof(ItemDto.SellPrice)"
-                               Clearable="true" /> *@
-        }
-        else
-        {
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+            <div class="d-flex">
+                <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
+                <LinovativeGap />
+                <div class="d-flex ms-3"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasVariant" Label="@Label("HasVariant")" Color="Color.Info" /></div>
+            </div>
         }
     </MudItem>
-
-
-    <MudItem xs="12" sm="4" lg="4">
-        @if (loaded)
-        {
-            <div class="d-flex"><MudSwitch @bind-Value="@item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
-            @* <LinovativeGap />
-            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasSellingTaxAndService" Label="@Label("HasSellingTaxAndService")" Color="Color.Info" /></div> *@
-            <LinovativeGap />
-            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
-            @* <LinovativeGap />
-            <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasCostumePrice" Label="@Label("CustomePrice")" Color="Color.Info" /></div> *@
-        }
-        else
-        {
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-            <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
-        }
-    </MudItem>
-
 </MudGrid>
 
 
-<LinovativeGap />
-<LinovativeGap />
+
+<SKUItemVariantComponent @ref="@SKUItemVariantComponent" Item="@item" />
+
+<LinovativeGap Height="50" />
 <MudText Typo="Typo.h6">@Label("ItemSettingsSection")</MudText>
-
-
-<LinovativeGap />
+<LinovativeGap  />
 @if (loaded)
 {
     <MudExpansionPanels MultiExpansion="true">
-        <MudExpansionPanel Text="@Label("CustomePriceSettingSection")" Disabled="@(!item.IsActive)">
-            <MudGrid>
-                <MudItem xs="12" sm="8" lg="6">
-                    <ItemPriceSettings Item="@item" Result="@formResponse" />
-                </MudItem>
-            </MudGrid>
-        </MudExpansionPanel>
-        <MudExpansionPanel Text="@Label("ServiceAndTaxSettingSection")" Disabled="@(!item.IsActive)">
-            <MudGrid>
-                <MudItem xs="12" sm="6" lg="4">
-                    <ServiceAndTax Item="@item" Result="@formResponse" />
-                </MudItem>
-            </MudGrid>
-        </MudExpansionPanel>
         <MudExpansionPanel Text="@Label("PurchaseSettingSection")" Disabled="@(!item.CanBePurchased || !item.IsActive)">
             <MudGrid>
                 <MudItem xs="12" sm="6" lg="4">
@@ -181,9 +152,6 @@
                 </MudItem>
             </MudGrid>
         </MudExpansionPanel>
-        @* <MudExpansionPanel Text="@Label("POSSettingSection")" Disabled="@(!item.IsActive)">
-            ....
-        </MudExpansionPanel> *@
     </MudExpansionPanels>
 }
 else
@@ -218,10 +186,12 @@ else
     private ItemCategoryDto? itemCategory = null;
     private bool showFilter;
     private bool loaded { get; set; } = false;
-
+    private SKUItemInputDto? defaltSKUItem;
+    private SKUItemVariantComponent? SKUItemVariantComponent { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        item.SKUItems.Add(new() { ItemId = item.Id, Id = item.Id});
         await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _topBarService.SetTitle(EntityPluralName);

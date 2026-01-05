@@ -38,7 +38,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
             if (item == null) return Result.Failed($"No Data with ID: {request.Id}");
 
             item.SKUItems = await _dbContext.SKUItems.GetAll(_actor).Where(x => x.ItemId == item.Id)
-                .Include(x => x.Category).ThenInclude(x => x.Group)
                 .Include(x => x.Unit)
                 .ProjectToType<SKUItemInputDto>(_mapper.Config).ToListAsync();
 

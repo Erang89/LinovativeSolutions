@@ -4,6 +4,7 @@ using LinoVative.Shared.Dto.Commons;
 
 namespace LinoVative.Shared.Dto.ItemDtos
 {
+    [LocalizerKey(nameof(SKUItemDto))]
     public class SKUItemDto : EntityDtoBase
     {
 
@@ -13,14 +14,14 @@ namespace LinoVative.Shared.Dto.ItemDtos
 
         public string SKU { get; set; } = null!;
 
-        [EntityID(EntityTypes.ItemUnit)]
-        public Guid UnitId { get; set; }
+        public string VarianName { get; set; } = null!;
+        public bool IsActive { get; set; } = true;
 
-        [EntityID(EntityTypes.ItemCategory)]
-        public Guid CategoryId { get; set; }
+        [EntityID(EntityTypes.ItemUnit), LocalizedRequired]
+        public Guid? UnitId { get; set; }
 
-        [LocalizeMinDecimalValue(0)]
-        public decimal SalePrice { get; set; }
+        [LocalizeMinDecimalValue(0), LocalizedRequired]
+        public decimal? SalePrice { get; set; }
 
         // Sale Tax and service
         public bool HasSaleTaxAndService { get; set; }
@@ -37,7 +38,6 @@ namespace LinoVative.Shared.Dto.ItemDtos
         public bool HasCostumePrice { get; set; }
 
         public IdWithNameDto? Unit { get; set; } 
-        public ItemCategoryViewDto? Category { get; set; }
 
     }
 
@@ -45,6 +45,8 @@ namespace LinoVative.Shared.Dto.ItemDtos
     {
         public string ItemCode { get; set; } = null!;
         public string ItemName { get; set; } = null!;
+        public string CategoryName { get; set; } = null!;
+        public string GroupName { get; set; } = null!;
     }
 
     public class SKUItemInputDto : SKUItemDto

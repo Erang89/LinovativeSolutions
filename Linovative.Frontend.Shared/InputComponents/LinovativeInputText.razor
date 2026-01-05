@@ -5,7 +5,7 @@
               Required="IsRequired"
               ReadOnly="ReadOnly"
               Label="@_label"
-              Immediate="true"
+              Immediate="@Immediate"
               id="@Id"
               @onclick="@(async () => await OnClick.InvokeAsync())"
               T="string"

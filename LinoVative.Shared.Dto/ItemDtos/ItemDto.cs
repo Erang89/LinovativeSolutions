@@ -1,5 +1,6 @@
 ﻿using LinoVative.Shared.Dto.Attributes;
 using Linovative.Shared.Interface.Enums;
+using LinoVative.Shared.Dto.Commons;
 
 namespace LinoVative.Shared.Dto.ItemDtos
 {
@@ -15,7 +16,8 @@ namespace LinoVative.Shared.Dto.ItemDtos
         public string? Name { get; set; }
         public string? Notes { get; set; }
         public bool IsActive { get; set; } = true;
-
+        [LocalizedRequired, EntityID(EntityTypes.ItemGroup)]
+        public Guid? CategoryId { get; set; }
 
         // Selling Settings
         public bool CanBeSell { get; set; }
@@ -32,6 +34,9 @@ namespace LinoVative.Shared.Dto.ItemDtos
         [LocalizeMinDecimalValue(0), LocalizeMaxDecimalValue(100)]
         public decimal? DefaultMinimumStock { get; set; }
 
+
+        // SKU Settings
+        public bool HasVariant { get; set; }
     }
 
 
@@ -47,5 +52,6 @@ namespace LinoVative.Shared.Dto.ItemDtos
     public class ItemInputDto : ItemViewDto
     {
         public List<SKUItemInputDto> SKUItems { get; set; } = new();
+        public IdWithNameDto Category { get; set; } = null!;
     }
 }

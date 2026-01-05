@@ -1,0 +1,95 @@
+﻿@using Linovative.Frontend.POSComponents.Bases
+@inherits POSManagementPageBase
+@inject IApplicationStateService _state
+
+@if (Item?.HasVariant ?? false)
+{
+
+    <LinovativeGap Height="50" />
+    <div class="d-flex">
+        <MudText Typo="Typo.h6">@Label("ItemVariantSection")</MudText>
+        <MudSpacer />
+        <MudButton OnClick="@(() => AddNew())"
+                   IconSize="Size.Small"
+                   EndIcon="@Icons.Material.Filled.Add"
+                   Variant="Variant.Outlined">@Label("AddNewSKU")</MudButton>
+    </div>
+}
+
+
+<LinovativeGap />
+<MudExpansionPanels @ref="@expandPanel" MultiExpansion="false">
+    @foreach (var skuItem in Item?.SKUItems ?? new())
+    {
+        <MudExpansionPanel Text="@($"{skuItem.SKU ?? "SKU"} - {skuItem.VarianName ?? "New Model"}")">
+            <TitleContent>
+                <div class="d-flex">
+                    <div>@($"{skuItem.SKU ?? "SKU"} - {skuItem.VarianName ?? "New Model"}")</div>
+                    <MudSpacer />
+                    <MudButton Size="Size.Small" OnClick="@(() => Remove(skuItem))">
+                        <MudIcon Size="Size.Small" @onclick:preventDefault Icon="@Icons.Material.Filled.Delete" Class="me-3" />
+                    </MudButton>
+                </div>
+            </TitleContent>
+            <ChildContent>
+                <SKUItemVariantDetailComponent OnRemove="Remove" Item="@skuItem" />
+            </ChildContent>
+        </MudExpansionPanel>
+    }
+</MudExpansionPanels>
+
+
+@code
+{
+    [Parameter] public ItemInputDto Item { get; set; } = new();
+    [Parameter] public SKUItemInputDto? SelectedSKUitem { get; set; } = null;
+    [Parameter] public EventCallback<SKUItemInputDto?> SelectedItemChange { get; set; }
+
+    private MudExpansionPanels? expandPanel { get; set; }
+
+    protected override string LocalizerResource => nameof(ItemsPage);
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
+        _state.NotifyStateChanged();
+
+    }
+
+    async Task Delete(SKUItemInputDto item)
+    {
+        Item.SKUItems.Remove(item);
+        SelectedSKUitem = Item.SKUItems.FirstOrDefault();
+        await SelectedItemChange.InvokeAsync(SelectedSKUitem);
+        _state.NotifyStateChanged();
+    }
+
+    async Task SelectedChange(SKUItemInputDto item)
+    {
+        SelectedSKUitem = item;
+        await SelectedItemChange.InvokeAsync(SelectedSKUitem);
+        _state.NotifyStateChanged();
+    }
+
+    public async Task AddNew()
+    {
+        await expandPanel!.CollapseAllAsync();
+        var newSku = new SKUItemInputDto() { ItemId = Item.Id };
+        SelectedSKUitem = newSku;
+        await SelectedItemChange.InvokeAsync(SelectedSKUitem);
+        Item.SKUItems.Add(newSku);
+        _state.NotifyStateChanged();
+
+        await Task.Delay(500);
+        var panel = expandPanel?.Panels.LastOrDefault();
+        await panel!.ExpandAsync();
+    }
+
+    async Task Remove(SKUItemInputDto item)
+    {
+        await expandPanel!.CollapseAllAsync();
+        Item.SKUItems.Remove(item);
+        _state.NotifyStateChanged();
+    }
+}

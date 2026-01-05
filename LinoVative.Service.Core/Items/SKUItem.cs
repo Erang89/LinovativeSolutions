@@ -9,12 +9,10 @@ namespace LinoVative.Service.Core.Items
 
         public string SKU { get; set; } = null!;
         public string VarianName { get; set; } = null!;
+        public bool IsActive { get; set; } = true;
 
         public Guid UnitId { get; set; }
         public ItemUnit Unit { get; set; } = null!;
-
-        public Guid CategoryId { get; set; }
-        public ItemCategory Category { get; set; } = null!;
 
         public decimal SalePrice { get; set; }
 

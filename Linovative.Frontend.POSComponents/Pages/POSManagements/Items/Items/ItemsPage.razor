@@ -68,8 +68,8 @@
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.ItemCode))" T="ItemViewDto">@_loc[$"{LocalizerResource}.ItemCode.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.ItemName))" T="ItemViewDto">@_loc[$"{LocalizerResource}.ItemName.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.Unit.Name))" T="ItemViewDto">@Label(nameof(SKUItemViewDto.UnitId))</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.Category.ItemGroup.Name))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.Category.Name))" T="ItemViewDto">@Label(nameof(SKUItemViewDto.CategoryId))</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.GroupName))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.CategoryName))" T="ItemViewDto">@Label("CategoryId")</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.SalePrice))" T="ItemViewDto">@Label(nameof(SKUItemViewDto.SalePrice))</MudTableSortLabel></MudTh>
         <MudTh Style="width: 70px"></MudTh>
     </HeaderContent>
@@ -80,9 +80,9 @@
         <MudTd DataLabel="ItemCode">@context.ItemCode</MudTd>
         <MudTd DataLabel="ItemName">@context.ItemName</MudTd>
         <MudTd DataLabel="Unit">@context.Unit?.Name</MudTd>
-        <MudTd DataLabel="Group">@context.Category?.ItemGroup?.Name</MudTd>
-        <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
-        <MudTd DataLabel="Category">@context.SalePrice.ToString("N2")</MudTd>
+        <MudTd DataLabel="Group">@context.GroupName</MudTd>
+        <MudTd DataLabel="Category">@context.CategoryName</MudTd>
+        <MudTd DataLabel="Category">@context.SalePrice?.ToString("N2")</MudTd>
         <MudTd>
             <div class="d-flex">
                 <MudIcon Class="item-show-on-hover" @onclick="@(() => Update(context))" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" />
@@ -228,7 +228,7 @@
 
     async Task Update(SKUItemViewDto record)
     {
-        _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.ItemUpdate.Replace("{Id}", record.Id.ToString()));
+        _nav.NavigateTo(PageRoutes.PostManagement.ItemMaster.ItemUpdate.Replace("{Id}", record.ItemId.ToString()));
     }
 
     void SelectRecord(bool selected, SKUItemViewDto data)

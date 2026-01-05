@@ -7,7 +7,10 @@ namespace LinoVative.Service.Core.Items
         public string? Code { get; set; }
         public string? Name { get; set; }
         public string? Notes { get; set; }
+        public Guid CategoryId { get; set; }
+        public ItemCategory Category { get; set; } = null!;
         public bool IsActive { get; set; } = true;
+        public bool HasVariant { get; set; }
 
         // Selling Settings
         public bool CanBeSell { get; set; }
