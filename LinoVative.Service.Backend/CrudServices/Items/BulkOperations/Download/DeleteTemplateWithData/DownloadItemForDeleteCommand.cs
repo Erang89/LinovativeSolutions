@@ -39,7 +39,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.D
             var groups = base.GetAll().ApplyFilters(request.Filter).Select(x =>
                 new {
                     x.Id,
-                    x.Code,
                     x.Name,
                 }).ToList();
 
@@ -49,7 +48,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.D
             {
                 var row = ws.Row(rowNumber);
                 row.Cell("A").Value = g.Id.ToString();
-                row.Cell("B").Value = g.Code;
                 row.Cell("C").Value = g.Name;
                 rowNumber++;
             }

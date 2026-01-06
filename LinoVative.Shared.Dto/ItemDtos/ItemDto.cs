@@ -10,9 +10,6 @@ namespace LinoVative.Shared.Dto.ItemDtos
     {
 
         [LocalizedRequired, UniqueField(EntityTypes.Item)]
-        public string? Code { get; set; }
-        
-        [LocalizedRequired, UniqueField(EntityTypes.Item)]
         public string? Name { get; set; }
         public string? Notes { get; set; }
         public bool IsActive { get; set; } = true;

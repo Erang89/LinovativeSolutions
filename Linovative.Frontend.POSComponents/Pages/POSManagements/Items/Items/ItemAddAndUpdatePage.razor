@@ -60,16 +60,7 @@
         <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
             @if (loaded)
             {
-                <LinovativeInputText @bind-Value="@item.Code"
-                                     Id="item_code"
-                                     IsRequired="true"
-                                     Disabled="@(!item.IsActive)"
-                                     Errors="@formResponse?.Errors"
-                                     LocalizerResource="@LocalizerResource"
-                                     LocalizerKey="@(nameof(ItemDto.Code))" />
-
-
-                <LinovativeGap />
+                
                 <LinovativeInputText @bind-Value="@item.Name"
                                      Id="item_name"
                                      IsRequired="true"
@@ -77,6 +68,15 @@
                                      Errors="@formResponse?.Errors"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Name)" />
+
+                <LinovativeGap />
+                <ItemCategoryDropdown @bind-Value="@itemCategory"
+                                      Id="item_category"
+                                      Required="true"
+                                      Disabled="@(!item.IsActive)"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="@nameof(ItemDto.CategoryId)" />
 
             }
             else
@@ -86,31 +86,23 @@
             }
 
         </MudForm>
-
     </MudItem>
 
 
 
     <MudItem xs="12" sm="4" lg="4" Class="">
-
         <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
             @if (loaded)
             {
-                <ItemCategoryDropdown @bind-Value="@itemCategory"
-                                      Id="item_category"
-                                      Required="true"
-                                      Disabled="@(!item.IsActive)"
-                                      Errors="@formResponse?.Errors"
-                                      LocalizerResource="@LocalizerResource"
-                                      LocalizerKey="@nameof(ItemDto.CategoryId)" />
-
-                <LinovativeGap />
                 <LinovativeInputText @bind-Value="@item.Notes"
                                      Id="item_description"
                                      Disabled="@(!item.IsActive)"
                                      Errors="@formResponse?.Errors"
+                                     Lines="5"
                                      LocalizerResource="@LocalizerResource"
                                      LocalizerKey="@nameof(ItemDto.Notes)" />
+
+
             }
             else
             {
@@ -173,7 +165,7 @@ else
 
     private List<ItemViewDto> selectedItems { get; set; } = new();
     private CancellationTokenSource cts { get; set; } = new();
-    private ItemInputDto item { get; set; } = new();
+    private ItemInputDto item { get; set; } = new() { SKUItems = new() { new() { IsActive = true, VarianName = "-" } } };
     private bool isFormValid { get; set; }
     private string[] formErrors { get; set; } = { };
     private MudForm? form { get; set; }
@@ -191,7 +183,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        item.SKUItems.Add(new() { ItemId = item.Id, Id = item.Id});
         await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _topBarService.SetTitle(EntityPluralName);

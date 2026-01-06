@@ -10,7 +10,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
 {
     public class BulkCreateItemService(IAppDbContext dbContext, IActor actor, ILangueageService lang) : BulkOperationItemBase(dbContext, actor, lang, CrudOperations.Create)
     {
-        protected override List<string> RequieredFieldWhenCreated => [Keys.Name, Keys.Code, Keys.Unit, Keys.Category, Keys.SellPrice];
+        protected override List<string> RequieredFieldWhenCreated => [Keys.Name,  Keys.Unit, Keys.Category, Keys.SellPrice];
 
         protected override async Task BulkOperationHandler(CancellationToken token)
         {
@@ -34,7 +34,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
                     Keys.Category => MappingCategory,
                     Keys.IsActive => MappingActive,
                     Keys.SellPrice => MappingSellPrice,
-                    Keys.Code => MappingCode,
+                    //Keys.Code => MappingCode,
                     _ => null
                 };
                 
@@ -47,11 +47,11 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
             _dbContext.Items.Add(unit);
         }
 
-        private void MappingCode(ItemBulkUploadDetail detail, ItemMaster item)
-        {
-            var (cell, converter) = GetGetterAndConverter(Keys.Code);
-            item.Code = (string)converter(cell(detail)!)!;
-        }
+        //private void MappingCode(ItemBulkUploadDetail detail, ItemMaster item)
+        //{
+        //    var (cell, converter) = GetGetterAndConverter(Keys.Code);
+        //    item.Code = (string)converter(cell(detail)!)!;
+        //}
 
         private void MappingSellPrice(ItemBulkUploadDetail detail, ItemMaster item)
         {

@@ -4,7 +4,6 @@ namespace LinoVative.Service.Core.Items
 {
     public class Item : AuditableEntityUnderCompany
     {
-        public string? Code { get; set; }
         public string? Name { get; set; }
         public string? Notes { get; set; }
         public Guid CategoryId { get; set; }

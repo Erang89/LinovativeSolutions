@@ -36,7 +36,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
                 Action<ItemBulkUploadDetail, ItemMaster>? mapper = key switch
                 {
                     Keys.Name => MapingName,
-                    Keys.Code => MappingCode,
+                    //Keys.Code => MappingCode,
                     Keys.Description => MappingDescription,
                     Keys.Unit => MappingUnit,
                     Keys.Category => MappingCategory,
@@ -53,11 +53,11 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
 
         }
 
-        private void MappingCode(ItemBulkUploadDetail detail, ItemMaster item)
-        {
-            var (cell, converter) = GetGetterAndConverter(Keys.Code);
-            item.Code = (string)converter(cell(detail)!)!;
-        }
+        //private void MappingCode(ItemBulkUploadDetail detail, ItemMaster item)
+        //{
+        //    var (cell, converter) = GetGetterAndConverter(Keys.Code);
+        //    item.Code = (string)converter(cell(detail)!)!;
+        //}
 
         private void MappingSellPrice(ItemBulkUploadDetail detail, ItemMaster item)
         {

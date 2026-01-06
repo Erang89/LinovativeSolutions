@@ -44,7 +44,7 @@
 
         types = new List<FilterComponent.FieldType>()
                     {
-                        new(Columns.ItemCode, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Code)), GetLable(nameof(ItemViewDto.Code))),
+                        //new(Columns.ItemCode, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Code)), GetLable(nameof(ItemViewDto.Code))),
                         new(Columns.ItemName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Name)), GetLable(nameof(ItemViewDto.Name))),
                         //new(Columns.ItemCategoryName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category)), GetLable(nameof(ItemViewDto.Category))),
                         //new(Columns.ItemGroupName, DataGridFilterModel.PropertyType.String, GetLable(nameof(ItemViewDto.Category.ItemGroup)), GetLable(nameof(ItemViewDto.Category.ItemGroup))),
@@ -85,7 +85,7 @@
 
     public static class Columns
     {
-        public const string ItemCode = nameof(ItemViewDto.Code);
+        //public const string ItemCode = nameof(ItemViewDto.Code);
         public const string ItemName = nameof(ItemViewDto.Name);
         //public const string ItemCategoryName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.Name)}";
         //public const string ItemGroupName = $"{nameof(ItemViewDto.Category)}.{nameof(ItemCategoryViewDto.ItemGroup)}.{nameof(ItemGroupViewDto.Name)}";

@@ -26,10 +26,10 @@ namespace Linovative.BackendTest.Test.Service.Backend.CrudService.Items.BulkOper
             var unit = new ItemUnit() { Name = "Unit", CompanyId = _actor.CompanyId };
             dbContext.ItemUnits.Add(unit);
 
-            var item1 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 1",  Code = "Code1"};
-            var item2 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 2", Code = "Code2",  };
-            var item3 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 3", Code = "Code3",  };
-            var item4 = new Item() { CompanyId = Guid.NewGuid(), Name = "Item 4",  Code = "Code4",  };
+            var item1 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 1"};
+            var item2 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 2"};
+            var item3 = new Item() { CompanyId = _actor.CompanyId, Name = "Item 3"};
+            var item4 = new Item() { CompanyId = Guid.NewGuid(), Name = "Item 4"};
             dbContext.Items.Add(item1);
             dbContext.Items.Add(item2);
             dbContext.Items.Add(item3);

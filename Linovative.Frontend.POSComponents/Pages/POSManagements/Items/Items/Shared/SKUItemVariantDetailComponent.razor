@@ -4,52 +4,52 @@
 @inherits POSManagementPageBase
 @inject IApplicationStateService _state
 
-@if (Item is not null)
+@if (SKUItem is not null && Item is not null)
 {
     <MudGrid>
-        <MudItem md="6">
+        <MudItem md="6" xl="3" xxl="2">
 
-            @if (SKUCount > 1)
-            {
-                <div class="d-flex" style="min-width: 150px"><MudSwitch @bind-Value="@Item.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
-                <LinovativeGap />
-            }
-
-            <LinovativeInputText Value="@Item.VarianName"
-                                 ValueChanged="@((x) => SetValue(()=> Item.VarianName = x))"
-                                 Id="item_code"
-                                 IsRequired="true"
-                                 Immediate=true
-                                 Disabled="@(!Item.IsActive)"
-                                 Errors="@FormResponse?.Errors"
-                                 LocalizerResource="@LocalizerResource"
-                                 LocalizerKey="@(nameof(SKUItemInputDto.VarianName))" />
-
+            <div class="d-flex" style="min-width: 150px"><MudSwitch Disabled="@(!Item.IsActive)" @bind-Value="@SKUItem.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
             <LinovativeGap />
-            <LinovativeInputText Value="@Item.SKU"
-                                 ValueChanged="@((x) => SetValue(()=> Item.SKU = x))"
+
+            <LinovativeInputText Value="@SKUItem.SKU"
+                                 ValueChanged="@((x) => SetValue(()=> SKUItem.SKU = x))"
                                  Id="item_code"
                                  Immediate=true
                                  IsRequired="true"
-                                 Disabled="@(!Item.IsActive)"
+                                 Disabled="@(!SKUItem.IsActive || !Item.IsActive)"
                                  Errors="@FormResponse?.Errors"
                                  LocalizerResource="@LocalizerResource"
                                  LocalizerKey="@(nameof(SKUItemInputDto.SKU))" />
-
             <LinovativeGap />
+
+
+            <LinovativeInputText Value="@SKUItem.VarianName"
+                                 ValueChanged="@((x) => SetValue(()=> SKUItem.VarianName = x))"
+                                 Id="item_code"
+                                 IsRequired="@(SKUCount > 1)"
+                                 Immediate=true
+                                 Disabled="@(!SKUItem.IsActive || !Item!.IsActive)"
+                                 Errors="@FormResponse?.Errors"
+                                 LocalizerResource="@LocalizerResource"
+                                 LocalizerKey="@(nameof(SKUItemInputDto.VarianName))" />
+            <LinovativeGap />
+
+
             <ItemUnitDropdown @bind-Value="@unitDto"
                               Id="unit"
                               Required="true"
-                              Disabled="@(!Item.IsActive)"
+                              Disabled="@(!SKUItem.IsActive || !Item.IsActive)"
                               Errors="@FormResponse?.Errors"
                               LocalizerResource="@LocalizerResource"
                               LocalizerKey="@nameof(SKUItemInputDto.UnitId)" />
-
             <LinovativeGap />
+
+
             <LinovativeInputGeneric T="decimal?"
-                                    Disabled="@(!Item.IsActive)"
-                                    Value="@Item.SalePrice"
-                                    ValueChanged="@(x => Item.SalePrice = x)"
+                                    Disabled="@(!SKUItem.IsActive || !Item.IsActive)"
+                                    Value="@SKUItem.SalePrice"
+                                    ValueChanged="@(x => SKUItem.SalePrice = x)"
                                     IsRequired="true"
                                     Errors="@FormResponse?.Errors"
                                     Style="width: 350px"
@@ -58,7 +58,7 @@
 
         </MudItem>
 
-       @*  @if (SKUCount > 1)
+        @*  @if (SKUCount > 1)
         {
             <MudItem md="12">
                 <MudButton OnClick="@(() => Remove())"
@@ -74,7 +74,8 @@
 
 @code {
 
-    [Parameter] public SKUItemInputDto? Item { get; set; }
+    [Parameter] public ItemInputDto? Item { get; set; }
+    [Parameter] public SKUItemInputDto? SKUItem { get; set; }
     [Parameter] public Response? FormResponse { get; set; } = null;
     [Parameter] public EventCallback<SKUItemInputDto> OnRemove { get; set; }
     [Parameter] public int SKUCount { get; set; }
@@ -91,13 +92,13 @@
 
     void GenerateData()
     {
-        if (Item?.Unit is null)
+        if (SKUItem?.Unit is null)
         {
             unitDto = null;
             return;
         }
 
-        unitDto = new ItemUnitDto() { Id = Item.UnitId!.Value, Name = Item.Unit.Name };
+        unitDto = new ItemUnitDto() { Id = SKUItem.UnitId!.Value, Name = SKUItem.Unit.Name };
     }
 
     void SetValue(Action setValueActoin)
@@ -109,6 +110,6 @@
 
     async Task Remove()
     {
-        await OnRemove.InvokeAsync(Item);
+        await OnRemove.InvokeAsync(SKUItem);
     }
 }

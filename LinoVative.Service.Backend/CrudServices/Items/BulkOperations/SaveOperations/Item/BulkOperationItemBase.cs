@@ -24,7 +24,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
             public const string Description = nameof(ItemViewDto.Notes);
             public const string IsActive = nameof(ItemViewDto.IsActive);
             public const string SellPrice = "SellPrice";
-            public const string Code = nameof(ItemViewDto.Code);
+            //public const string Code = "Code";
         }
 
         private static class Columns
@@ -49,7 +49,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
             {Keys.Description, static (x) => x},
             {Keys.IsActive, static (x) => bool.TryParse(x, out bool result)? result : null},
             {Keys.SellPrice, static (x) => decimal.TryParse(x, out decimal result)? result : null},
-            {Keys.Code, static (x) => x},
+            //{Keys.Code, static (x) => x},
         };
 
         protected override IDictionary<string, Func<ItemBulkUploadDetail, string?>> Getters => new Dictionary<string, Func<ItemBulkUploadDetail, string?>>()
@@ -93,7 +93,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
                 Func<bool> func = key switch
                 {
                     Keys.Name => ValidateName,
-                    Keys.Code => ValidateCode,
+                    //Keys.Code => ValidateCode,
                     Keys.Unit => ValidateUnit,
                     Keys.Category => ValidateCategory,
                     Keys.IsActive => ValidateIsActive,
@@ -263,51 +263,52 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.SaveOperat
 
 
         // Validate Code
-        private bool ValidateCode()
-        {
-            if (_operation == CrudOperations.Delete) return true;
+        //private bool ValidateCode()
+        //{
+        //    if (_operation == CrudOperations.Delete) return true;
 
-            var validEmptyCheck = CheckEmptyCode();
-            var validDuplicateCheck = CheckDulicateCode();
-            return validEmptyCheck && validDuplicateCheck;
+        //    //var validEmptyCheck = CheckEmptyCode();
+        //    var validDuplicateCheck = CheckDulicateCode();
+        //    //return validEmptyCheck && validDuplicateCheck;
+        //    return validDuplicateCheck;
 
-        }
-
-
-        bool CheckEmptyCode()
-        {
-            var (cell, _) = GetGetterAndConverter(Keys.Code);
-            var isAnyError = false;
-            var rows = GetRecords();
-            var columnKey = _fieldMapping[Keys.Code];
-            var headerName = GetExcelHeader(columnKey);
-
-            foreach (var row in rows.Where(x => string.IsNullOrWhiteSpace(cell(x))))
-            {
-                row.AddError(GetError(RequiredMessageResourceKey, headerName));
-                isAnyError = true;
-            }
-
-            return !isAnyError;
-        }
+        //}
 
 
-        bool CheckDulicateCode()
-        {
-            var (idCell, idConverter) = GetGetterAndConverter(Keys.Id);
-            var (nameCell, _) = GetGetterAndConverter(Keys.Code);
-            var rows = GetRecords();
-            var rowMapping = rows.Select(x => new { Id = idConverter(idCell(x) ?? Guid.NewGuid().ToString()), Code = nameCell(x), Row = x }).Where(x => !string.IsNullOrWhiteSpace(x.Code)).ToList();
-            var ids = rowMapping.Select(x => x.Id).ToList();
-            var codes = rowMapping.Select(x => x.Code).ToList();
-            var predicateDuplicateCode = _dbContext.Items.GetAll(_actor).Where(x => !ids.Contains(x.Id) && codes.Contains(x.Code)).Select(x => x.Code!.ToLower()).ToList();
-            var invalidRows = rowMapping.Where(x => predicateDuplicateCode.Contains(x.Code!.ToLower()));
-            foreach (var row in invalidRows)
-            {
-                row.Row.AddError(GetError(AlreadyExistMessageResourceKey, row.Code));
-            }
-            return !invalidRows.Any();
-        }
+        //bool CheckEmptyCode()
+        //{
+        //    var (cell, _) = GetGetterAndConverter(Keys.Code);
+        //    var isAnyError = false;
+        //    var rows = GetRecords();
+        //    var columnKey = _fieldMapping[Keys.Code];
+        //    var headerName = GetExcelHeader(columnKey);
+
+        //    foreach (var row in rows.Where(x => string.IsNullOrWhiteSpace(cell(x))))
+        //    {
+        //        row.AddError(GetError(RequiredMessageResourceKey, headerName));
+        //        isAnyError = true;
+        //    }
+
+        //    return !isAnyError;
+        //}
+
+
+        //bool CheckDulicateCode()
+        //{
+        //    var (idCell, idConverter) = GetGetterAndConverter(Keys.Id);
+        //    var (nameCell, _) = GetGetterAndConverter(Keys.Code);
+        //    var rows = GetRecords();
+        //    var rowMapping = rows.Select(x => new { Id = idConverter(idCell(x) ?? Guid.NewGuid().ToString()), Code = nameCell(x), Row = x }).Where(x => !string.IsNullOrWhiteSpace(x.Code)).ToList();
+        //    var ids = rowMapping.Select(x => x.Id).ToList();
+        //    var codes = rowMapping.Select(x => x.Code).ToList();
+        //    var predicateDuplicateCode = _dbContext.Items.GetAll(_actor).Where(x => !ids.Contains(x.Id) && codes.Contains(x.Code)).Select(x => x.Code!.ToLower()).ToList();
+        //    var invalidRows = rowMapping.Where(x => predicateDuplicateCode.Contains(x.Code!.ToLower()));
+        //    foreach (var row in invalidRows)
+        //    {
+        //        row.Row.AddError(GetError(AlreadyExistMessageResourceKey, row.Code));
+        //    }
+        //    return !invalidRows.Any();
+        //}
 
 
         // Validate Name

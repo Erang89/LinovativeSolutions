@@ -10,7 +10,7 @@
     <div class="d-flex">
         <MudText Typo="Typo.h6">@Label("ItemVariantSection")</MudText>
         <MudSpacer />
-        <MudButton OnClick="@(() => AddNew())"
+        <MudButton Disabled="@(!Item.IsActive)" OnClick="@(() => AddNew())"
                    IconSize="Size.Small"
                    EndIcon="@Icons.Material.Filled.Add"
                    Variant="Variant.Outlined">@Label("AddNewSKU")</MudButton>
@@ -25,7 +25,7 @@
         <MudExpansionPanel Text="@($"{skuItem.SKU ?? "SKU"} - {skuItem.VarianName ?? "New Model"}")">
             <TitleContent>
                 <div class="d-flex align-center">
-                    <div>@($"{skuItem.SKU ?? "SKU"} - {skuItem.VarianName ?? "New Model"}")</div>
+                    <div>@GetExpandTitle(skuItem)</div>
                     <MudSpacer />
                     @if (Item!.SKUItems.Count > 1)
                     {
@@ -36,7 +36,7 @@
                 </div>
             </TitleContent>
             <ChildContent>
-                <SKUItemVariantDetailComponent SKUCount="@Item!.SKUItems.Count" OnRemove="Remove" Item="@skuItem" />
+                <SKUItemVariantDetailComponent Item="Item" SKUCount="@Item!.SKUItems.Count" OnRemove="Remove" SKUItem="@skuItem" />
             </ChildContent>
         </MudExpansionPanel>
     }
@@ -48,6 +48,19 @@
     [Parameter] public ItemInputDto Item { get; set; } = new();
     [Parameter] public SKUItemInputDto? SelectedSKUitem { get; set; } = null;
     [Parameter] public EventCallback<SKUItemInputDto?> SelectedItemChange { get; set; }
+
+    string GetExpandTitle(SKUItemDto skuItem)
+    {
+        var displayText = string.IsNullOrWhiteSpace(skuItem.SKU) ? "SKU" : skuItem.SKU;
+
+        var variantName = skuItem.VarianName ?? "New Variant";
+        variantName = variantName == "-" ? "New Variant" : variantName;
+
+        if (!(Item.SKUItems.Count == 1 && (string.IsNullOrWhiteSpace(skuItem.VarianName) || skuItem.VarianName == "-")))
+            return $"{displayText} - {(variantName)}"; 
+
+        return displayText;
+    }
 
     private MudExpansionPanels? expandPanel { get; set; }
 
@@ -64,7 +77,7 @@
 
     void RefreshUI()
     {
-        if(Item.SKUItems.Count == 1)
+        if (Item.SKUItems.Count == 1)
         {
             Task.Run(async () =>
             {

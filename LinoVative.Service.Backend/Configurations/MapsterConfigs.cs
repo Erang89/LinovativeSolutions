@@ -71,7 +71,6 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<SKUItem, SKUItemViewDto>()
                 .Map(x => x.CategoryName, src => src.Item.Category.Name)
                 .Map(x => x.GroupName, src => src.Item.Category.Group!.Name)
-                .Map(x => x.ItemCode, src => src.Item.Code)
                 .Map(x => x.ItemName, src => src.Item.Name);
 
             // Mapping Outlets
