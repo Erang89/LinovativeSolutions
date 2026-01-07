@@ -3,7 +3,6 @@ using LinoVative.Service.Backend.CrudServices.Customers;
 using LinoVative.Service.Backend.CrudServices.Items.ItemCategories;
 using LinoVative.Service.Backend.CrudServices.Items.Items;
 using LinoVative.Service.Backend.CrudServices.Outlets.Outlets;
-using LinoVative.Service.Backend.CrudServices.Payments.BankNotes;
 using LinoVative.Service.Backend.CrudServices.Suppliers;
 using LinoVative.Service.Core.Accountings;
 using LinoVative.Service.Core.Auth;
@@ -81,6 +80,9 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<SKUItemInputDto, SKUItem>()
                 .Ignore(x => x.Unit)
                 .Ignore(x => x.PriceTypes);
+
+            config.NewConfig<ItemPriceTypeDto, ItemPriceType>()
+                .Ignore(x => x.PriceType!);
 
             // Mapping Outlets
             config.NewConfig<Outlet, OutletViewDto>();

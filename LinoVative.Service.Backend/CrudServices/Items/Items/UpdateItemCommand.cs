@@ -18,10 +18,14 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
     public class UpdateItemHandlerService : SaveUpdateServiceBase<Item, UpdateItemCommand>
     {
         private readonly IItemValidator _validator;
-        public UpdateItemHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, IItemValidator validator) : 
+        private readonly IItemHelperService _itemHelper;
+
+
+        public UpdateItemHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, IItemValidator validator, IItemHelperService helper) :
             base(dbContext, actor, mapper, appCache, localizer)
         {
             _validator = validator;
+            _itemHelper = helper;
         }
 
 
@@ -29,23 +33,9 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
         {
             await base.BeforeSaveUpdate(request, entity, token);
             entity.UpdateItemNameInOtherTable(_dbContext);
-
-            //var priceTypes = await _dbContext.ItemPriceTypes.Where(x => !x.IsDeleted && x.ItemId == entity.Id).ToListAsync(token);
-
-            //foreach(var dto in request.ItemPriceTypes)
-            //{
-            //    var exisiting = priceTypes.FirstOrDefault(x => x.PriceTypeId == dto.PriceTypeId);
-            //    if(exisiting is not null)
-            //    {
-            //        _mapper.Map(dto, exisiting);
-            //        continue;
-            //    }
-
-            //    var newPrice = _mapper.Map<ItemPriceType>(dto);
-            //    newPrice.CreateBy(_actor);
-            //    _dbContext.ItemPriceTypes.Add(newPrice);
-            //}
+            await _itemHelper.SaveItemData(request, entity, token);
         }
+
 
         protected override async Task<Result> ValidateSaveUpdate(UpdateItemCommand request, CancellationToken token)
         {
@@ -56,5 +46,6 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
 
             return await _validator.Validate(request, token);
         }
+
     }
 }

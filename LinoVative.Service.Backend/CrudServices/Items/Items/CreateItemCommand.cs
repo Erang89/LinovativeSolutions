@@ -19,29 +19,18 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
     {
 
         private readonly IItemValidator _validator;
-        public CreateItemHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, IItemValidator validator) : base(dbContext, actor, mapper, appCache, localizer)
+        private readonly IItemHelperService _itemHelper;
+
+        public CreateItemHandlerService(IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache, IStringLocalizer localizer, IItemValidator validator, IItemHelperService itemHelper) : base(dbContext, actor, mapper, appCache, localizer)
         {
             _validator = validator;
+            _itemHelper = itemHelper;
         }
 
 
         public override async Task BeforeSave(CreateItemCommand request, Item entity, CancellationToken token)
         {
-            //var category = _mapper.Map<ItemCategory>(request.Category!);
-            //_dbContext.ItemCategories.Add(category);
-            //entity.CategoryId = category.Id;
-
-            //var unit = _mapper.Map<ItemUnit>(request.Unit!);
-            //_dbContext.ItemUnits.Add(unit);
-            //entity.UnitId = unit.Id;
-
-            //foreach (var dto in request.ItemPriceTypes)
-            //{
-            //    var newPrice = _mapper.Map<ItemPriceType>(dto);
-            //    newPrice.CreateBy(_actor);
-            //    _dbContext.ItemPriceTypes.Add(newPrice);
-            //}
-
+            await _itemHelper.SaveItemData(request, entity, token);
             await Task.CompletedTask;
         }
 

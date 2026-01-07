@@ -2,63 +2,35 @@
 using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Items;
-using LinoVative.Shared.Dto;
 using LinoVative.Shared.Dto.ItemDtos;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.Items.Helpers
 {
-    public interface IItemValidator
+    public interface IItemHelperService
     {
-        public Task<Result> Validate(ItemInputDto request, CancellationToken token);
-        public Task SaveItemData(ItemInputDto request, Item entity, CancellationToken token);
+        Task SaveItemData(ItemInputDto request, Item entity, CancellationToken token);
     }
 
-    public class ItemValidatorService : IItemValidator
+
+    public class ItemHelperService : IItemHelperService
     {
         private readonly IAppDbContext _dbContext;
         private readonly IActor _actor;
-        private readonly ILangueageService _lang;
         private readonly IMapper _mapper;
 
-        public ItemValidatorService(IAppDbContext dbContext, IActor actor, ILangueageService lang, IMapper mapper)
+        public ItemHelperService(IAppDbContext dbContext, IActor actor, ILangueageService lang, IMapper mapper)
         {
             _dbContext = dbContext;
             _actor = actor;
-            _lang = lang;
             lang.EnsureLoad(AvailableLanguageKeys.InputItems);
             _mapper = mapper;
         }
 
-
-        public async Task<Result> Validate(ItemInputDto request, CancellationToken token)
-        {
-            // Validate Custome Price
-            //var anyDuplicate = request.ItemPriceTypes.GroupBy(x => x.PriceTypeId).Any(x => x.Count() > 1);
-            //if (anyDuplicate)
-            //    Result.Failed("Type ID must not duplicated");
-
-            //var priceTypeIds = request.ItemPriceTypes.Select(x => x.PriceTypeId).Distinct().ToList();
-            //var priceTypeCount = await _dbContext.PriceTypes.GetAll(_actor).Where(x => priceTypeIds.Contains(x.Id)).CountAsync();
-            //if (priceTypeIds.Count != priceTypeCount)
-            //    return Result.Failed("Some Price Type IDS not in the system");
-
-            var result = Result.OK();
-            //var i = 0;
-            //foreach(var pt in request.ItemPriceTypes)
-            //{
-            //    if (pt.Price is null && request.HasSellingTaxAndService && pt.IsActive)
-            //        result.AddInvalidProperty($"{nameof(request.ItemPriceTypes)}[{i}].{nameof(ItemPriceTypeDto.Price)}", _lang["InputItems.Price.Required.Message"]);
-            //}
-
-            return result;
-        }
-
-
         public async Task SaveItemData(ItemInputDto request, Item entity, CancellationToken token)
         {
-            
+
             var skuIds = request.SKUItems.Select(x => x.Id).ToList();
             var skuItems = await _dbContext.SKUItems.GetAll(_actor).Where(x => skuIds.Contains(x.Id)).ToListAsync();
             var customePrices = await _dbContext.ItemPriceTypes.GetAll(_actor).Where(x => skuIds.Contains(x.SKUItemId!.Value)).ToListAsync();
