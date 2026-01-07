@@ -9,7 +9,7 @@
 
 <SearchableDropdown Required=@Required
                     RequiredMessage=@RequiredMessage
-                    Immediate=true
+                    Immediate=false
                     Label=@_label
                     Value=@Value
                     Text=@Text
@@ -30,11 +30,12 @@
 
 @code {
     private CancellationTokenSource cts { get; set; } = new();
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
         PageSize = PageSize == 0 ? 10 : PageSize;
-        return base.OnInitializedAsync();
+        
     }
 
     string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];

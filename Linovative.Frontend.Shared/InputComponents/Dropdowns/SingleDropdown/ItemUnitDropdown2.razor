@@ -1,0 +1,171 @@
+﻿@using LinoVative.Shared.Dto.Commons
+@using LinoVative.Shared.Dto.ItemDtos
+@using LinoVative.Shared.Dto.MasterData.Accountings
+@using LinoVative.Shared.Dto.Sources
+@using Linovative.Frontend.Services.FrontendServices
+@using Linovative.Frontend.Services.FrontendServices.AccountingServices
+@using Linovative.Frontend.Shared.InputComponents.Dropdowns.MultiSelect
+@using MapsterMapper
+@using System.Threading.Tasks
+
+@inherits SearchableDropdownBase<IdWithNameDto?>
+
+@inject IItemUnitService _service
+@inject IApplicationStateService _state
+@inject IMapper _mapper
+@inject IDialogService _dialogService
+@inject IJsonLocalizer _loc
+
+<MultiSelectContainer Open="@open" OnLayerClick="@(() => Toggle())">
+    <LinovativeInputText Immediate="true"
+                         @bind-Value="@DisplayValue"
+                         OnClick="@(() => Toggle())"
+                         Placeholder="@Placeholder"
+                         Id="@Id"
+                         Clearable=true
+                         @ref="@inputText"
+                         ReadOnly="false"
+                         Label="@Label"
+                         Variant="@Variant"
+                         IsRequired="@Required"
+                         LocalizerResource="@LocalizerResource"
+                         ErrorKey="@ErrorKey"
+                         LocalizerKey="@LocalizerKey"
+                         ClearIcon="@Icons.Material.Filled.Close"
+                         IconSize="@Size.Medium"
+                         OnClearButtonClick="@(() => ClearSelect())"
+                         Class="mt-0"></LinovativeInputText>
+
+    @if (open)
+    {
+        <MudPaper Elevation="0" Class="@(open ? "" : "d-none")" Style="position: absolute; width: 100%; left: 0px; top: 0px; border: none; margin-top: 63px">
+
+            <MudTable ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
+
+                <ToolBarContent>
+                    <MudTextField T="string"
+                                  @ref=@searchBox
+                                  Immediate="true"
+                                  Value="@searchString"
+                                  ValueChanged="@(s=>OnSearch(s))"
+                                  Placeholder="Search" Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                                  Class="mt-0"></MudTextField>
+                </ToolBarContent>
+
+                <RowTemplate>
+                    <MudTd Class="cursor-pointer" DataLabel="@(nameof(ItemUnitDto.Name))">
+                        <div @onclick="@(() => SelectRecord(context))">@context.Name</div>
+                    </MudTd>
+                </RowTemplate>
+
+
+                <NoRecordsContent>
+                    <MudText>@_loc.Global("Message.NoMatchingRecordsFound")</MudText>
+                </NoRecordsContent>
+
+                <LoadingContent>
+                    <MudText>@_loc.Global("Label.Loading")</MudText>
+                </LoadingContent>
+
+                <PagerContent>
+                    <MudTablePager @onchange="@Reset" RowsPerPageString="@_loc.Global($"Label.RowsPerPage")" />
+                </PagerContent>
+
+            </MudTable>
+        </MudPaper>
+    }
+</MultiSelectContainer>
+<div class="@(open ? "" : "d-none")" @onclick="@(() => Toggle())" style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1000"></div>
+
+<div style="position: relative; z-index: 1001">
+</div>
+
+    @code {
+    private CancellationTokenSource cts { get; set; } = new();
+    private string? searchString { get; set; }
+    private MudTable<ItemUnitDto>? table;
+    private List<ItemUnitDto> dataSource { get; set; } = new();
+    private bool open { get; set; }
+    private MudTextField<string> searchBox { get; set; } = default!;
+    private bool HasFirstLoad { get; set; }
+    LinovativeInputText inputText { get; set; } = null!;
+    string? DisplayValue { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _state.OnChange += StateHasChanged;
+        _state.OnChange += SetValue;
+        await base.OnInitializedAsync();
+    }
+
+    void SetValue()
+    {
+        DisplayValue = Value?.Name;
+    }
+
+    async Task Toggle()
+    {
+        if (!open && !HasFirstLoad)
+        {
+            HasFirstLoad = true;
+            OnSearch(searchString ?? "");
+        }
+
+        open = !open;
+
+        await inputText.Validate();
+
+    }
+
+    async Task ClearSelect()
+    {
+        DisplayValue = null;
+        Value = null;
+        open = !open;
+        OnSearch(searchString ?? "");
+    }
+
+    void Reset()
+    {
+        OnSearch(searchString ?? "");
+    }
+
+
+    private void OnSearch(string text)
+    {
+        searchString = text;
+        table?.ReloadServerData();
+    }
+
+    private async Task<TableData<ItemUnitDto>> ServerReload(TableState state, CancellationToken token)
+    {
+        var odataFilter = new ODataFilter()
+        {
+            PageNumber = state.Page + 1,
+            PageSize = state.PageSize,
+            OrderFiled = state.SortLabel,
+            SortDirection = state.SortDirection == SortDirection.None ? null : state.SortDirection.ToString(),
+            Options = searchString is null ? null : $"$filter=contains(tolower(name), tolower('{searchString}'))&$orderby=Name asc"
+        };
+
+        var result = await _service.Get(odataFilter, cts.Token);
+        dataSource = result?.Data ?? new();
+        var datasourceIds = dataSource.Select(x => x.Id).ToList();
+        return new TableData<ItemUnitDto>() { TotalItems = result!.Count, Items = result.Data };
+    }
+
+
+    async Task SelectRecord(ItemUnitDto? data)
+    {
+        DisplayValue = data?.Name;
+        Value = data;
+        open = false;
+        await ValueChanged.InvokeAsync(Value);
+        await Task.Delay(100);
+        await inputText.Focus();
+        await inputText.Blur();
+    }
+
+
+}

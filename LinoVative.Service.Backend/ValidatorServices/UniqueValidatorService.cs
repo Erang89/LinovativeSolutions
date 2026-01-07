@@ -25,6 +25,7 @@ namespace LinoVative.Service.Backend.ValidatorServices
             var queryDic = new Dictionary<EntityTypes, IQueryable>()
                 {
                     {EntityTypes.ItemUnit, _appDbContext.ItemUnits.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
+                    {EntityTypes.SKUItem, _appDbContext.SKUItems.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                     {EntityTypes.ItemCategory, _appDbContext.ItemCategories.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                     {EntityTypes.ItemGroup, _appDbContext.ItemGroups.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },
                     {EntityTypes.Item, _appDbContext.Items.Where(x => x.Id != id && !x.IsDeleted && x.CompanyId == actor.CompanyId) },

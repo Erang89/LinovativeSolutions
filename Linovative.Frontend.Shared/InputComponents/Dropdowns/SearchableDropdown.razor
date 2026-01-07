@@ -67,7 +67,6 @@
         {
             Text = StringConvert(Value);
         }
-        _state.NotifyStateChanged();
     }
 
 
@@ -77,27 +76,24 @@
         return data.Data ?? new();
     }
 
-    async Task Select(TItem item)
+    async Task Select(TItem? item)
     {
         Value = item;
         await ValueChanged.InvokeAsync(item);
         await OnDropdownClose.InvokeAsync();
-        _state.NotifyStateChanged();
     }
-
+    
     async Task Clear()
     {
-        Value = default(TItem);
+        Value = default!;
         await SetPage(1);
         await ValueChanged.InvokeAsync(default!);
-        _state.NotifyStateChanged();
     }
 
     bool pageChanging = false;
     async Task PageChanges(int page)
     {
         await SetPage(page);
-        _state.NotifyStateChanged();
     }
 
     async Task SetPage(int page)

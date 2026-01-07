@@ -1,7 +1,8 @@
 ﻿@inherits LinovativeInputComponentBase<string?>
+@inject IApplicationStateService _state;
 
 <MudTextField Value="@Value"
-              ValueChanged="@(x => ValueChanged.InvokeAsync(x))"
+              ValueChanged="@ValueChange"
               Required="IsRequired"
               ReadOnly="ReadOnly"
               Label="@_label"
@@ -22,6 +23,7 @@
               IconSize="@IconSize"
               Adornment="@Adornment"
               Lines="@Lines"
+              @ref="@input"
               OnClearButtonClick="@OnClearButtonClick"></MudTextField>
 
 @code {
@@ -31,13 +33,34 @@
     string? _errorMessage => Error ? ErrorMessage : _containErrors ? string.Join(" ", getError()) : (IsRequired && string.IsNullOrEmpty(Value)) ? _requiredMessage : "";
     string? _label => !string.IsNullOrEmpty(Label) ? Label : string.IsNullOrWhiteSpace(LocalizerKey)? "" : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
     string? _requiredMessage => !string.IsNullOrWhiteSpace(RequiredMessage) ? RequiredMessage : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Required.ErrorMessage"];
-
+    MudTextField<string?> input { get; set; } = null!;
     List<string> getError() => Errors is not null && !string.IsNullOrEmpty(ErrorKey) && Errors.ContainsKey(ErrorKey) ? Errors[ErrorKey] : new List<string>();
 
     protected override async Task OnInitializedAsync()
     {
-        ErrorKey = ErrorKey ?? LocalizerKey;
         await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        ErrorKey = ErrorKey ?? LocalizerKey;
     }
 
+    public async Task Validate()
+    {
+        await input.Validate();
+    }
+
+    async Task ValueChange(string? value)
+    {
+        Value = value;
+        await ValueChanged.InvokeAsync(value);
+    }
+
+    public async Task Focus()
+    {
+        await input.FocusAsync();
+    }
+
+    public async Task Blur()
+    {
+        await input.BlurAsync();
+    }
 }

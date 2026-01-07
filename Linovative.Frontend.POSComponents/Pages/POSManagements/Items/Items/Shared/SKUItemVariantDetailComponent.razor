@@ -13,7 +13,7 @@
             <LinovativeGap />
 
             <LinovativeInputText Value="@SKUItem.SKU"
-                                 ValueChanged="@((x) => SetValue(()=> SKUItem.SKU = x))"
+                                 ValueChanged="@((x) => SKUItem.SKU = x)"
                                  Id="item_code"
                                  Immediate=true
                                  IsRequired="true"
@@ -25,7 +25,7 @@
 
 
             <LinovativeInputText Value="@SKUItem.VarianName"
-                                 ValueChanged="@((x) => SetValue(()=> SKUItem.VarianName = x))"
+                                 ValueChanged="@((x) => SKUItem.VarianName = x)"
                                  Id="item_code"
                                  IsRequired="@(SKUCount > 1)"
                                  Immediate=true
@@ -36,7 +36,8 @@
             <LinovativeGap />
 
 
-            <ItemUnitDropdown @bind-Value="@unitDto"
+            <ItemUnitDropdown Value="@SKUItem.Unit"
+                              ValueChanged="@(x => { SKUItem.Unit = x; SKUItem.UnitId = x?.Id; })"
                               Id="unit"
                               Required="true"
                               Disabled="@(!SKUItem.IsActive || !Item.IsActive)"
@@ -51,6 +52,7 @@
                                     Value="@SKUItem.SalePrice"
                                     ValueChanged="@(x => SKUItem.SalePrice = x)"
                                     IsRequired="true"
+                                    FullWidth="true"
                                     Errors="@FormResponse?.Errors"
                                     Style="width: 350px"
                                     LocalizerResource="@LocalizerResource"
@@ -101,11 +103,6 @@
         unitDto = new ItemUnitDto() { Id = SKUItem.UnitId!.Value, Name = SKUItem.Unit.Name };
     }
 
-    void SetValue(Action setValueActoin)
-    {
-        setValueActoin();
-        _state.NotifyStateChanged();
-    }
 
 
     async Task Remove()

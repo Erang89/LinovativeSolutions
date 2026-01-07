@@ -1,5 +1,6 @@
 ﻿using Linovative.Frontend.Services.Interfaces;
 using Linovative.Frontend.Services.Models;
+using Linovative.Frontend.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 
 namespace Linovative.Frontend.Shared.InputComponents.Dropdowns
@@ -29,5 +30,6 @@ namespace Linovative.Frontend.Shared.InputComponents.Dropdowns
         [Parameter] public IDictionary<string, List<string>> Errors { get; set; } = new Dictionary<string, List<string>>();
         [Inject] public IJsonLocalizer JsonLocalizer { get; set; }
         [Parameter] public string? ErrorKey { get; set; }
+        [Parameter] public LinovativeInputComponentVariant Variant { get; set; }
     }
 }

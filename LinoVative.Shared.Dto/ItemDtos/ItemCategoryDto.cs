@@ -7,10 +7,10 @@ namespace LinoVative.Shared.Dto.ItemDtos
 {
 
     [LocalizerKey(nameof(ItemCategoryDto))]
-    public class ItemCategoryDto : EntityDtoBase
+    public class ItemCategoryDto : IdWithNameDto
     {
         [LocalizedRequired, UniqueField(EntityTypes.ItemCategory)]
-        public string? Name { get; set; }
+        public override string? Name { get; set; }
         public string? Description { get; set; }
 
         [LocalizedRequired, EntityID(EntityTypes.ItemGroup)]

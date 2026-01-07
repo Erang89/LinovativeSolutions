@@ -9,6 +9,8 @@ namespace Linovative.Frontend.Shared.Pages
         [Inject]
         public IJsonLocalizer JsonLocalizer { get; set; }
 
+        [Inject] IApplicationStateService StateService { get; set; }
+
         protected virtual string? LocalizerResource { get; }
         protected virtual string? LibraryName { get; }
         protected string Lang(string key, params object[] args) 
@@ -42,6 +44,12 @@ namespace Linovative.Frontend.Shared.Pages
         protected string UpdateSuccessMessage => string.Format(JsonLocalizer.Global("Dialog.UpdateSuccessMessage"), EntityName);
         protected string DeleteConfirmation => JsonLocalizer.Global("Dialog.DeleteConfirmation");
         protected string DeleteSuccessMessage => JsonLocalizer.Global("Dialog.DeleteSuccessMessage");
+
+        protected void SetValue(Action setValueAction)
+        {
+            setValueAction();
+            StateService.NotifyStateChanged();
+        }
 
     }
 }

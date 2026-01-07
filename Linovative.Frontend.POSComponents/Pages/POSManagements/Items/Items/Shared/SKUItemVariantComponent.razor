@@ -72,7 +72,6 @@
         _state.OnChange += RefreshUI;
         await base.OnInitializedAsync();
         _state.NotifyStateChanged();
-
     }
 
     void RefreshUI()
@@ -83,8 +82,8 @@
             {
                 await Task.Delay(500);
                 var panel = expandPanel?.Panels.LastOrDefault();
-                panel!.ExpandAsync().Start();
-            }).Start();
+                await panel!.ExpandAsync();
+            });
         }
     }
 
@@ -93,14 +92,12 @@
         Item.SKUItems.Remove(item);
         SelectedSKUitem = Item.SKUItems.FirstOrDefault();
         await SelectedItemChange.InvokeAsync(SelectedSKUitem);
-        _state.NotifyStateChanged();
     }
 
     async Task SelectedChange(SKUItemInputDto item)
     {
         SelectedSKUitem = item;
         await SelectedItemChange.InvokeAsync(SelectedSKUitem);
-        _state.NotifyStateChanged();
     }
 
     public async Task AddNew()
@@ -110,7 +107,6 @@
         SelectedSKUitem = newSku;
         await SelectedItemChange.InvokeAsync(SelectedSKUitem);
         Item.SKUItems.Add(newSku);
-        _state.NotifyStateChanged();
 
         await Task.Delay(500);
         var panel = expandPanel?.Panels.LastOrDefault();
@@ -121,6 +117,5 @@
     {
         await expandPanel!.CollapseAllAsync();
         Item.SKUItems.Remove(item);
-        _state.NotifyStateChanged();
     }
 }

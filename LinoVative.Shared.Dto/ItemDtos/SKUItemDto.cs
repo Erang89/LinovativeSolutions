@@ -1,17 +1,16 @@
 ﻿using Linovative.Shared.Interface.Enums;
 using LinoVative.Shared.Dto.Attributes;
 using LinoVative.Shared.Dto.Commons;
+using System.ComponentModel.DataAnnotations;
 
 namespace LinoVative.Shared.Dto.ItemDtos
 {
     [LocalizerKey(nameof(SKUItemDto))]
     public class SKUItemDto : EntityDtoBase
     {
-
-        [EntityID(EntityTypes.Item)]
-
         public Guid ItemId { get; set; }
 
+        [LocalizedRequired, UniqueField(EntityTypes.SKUItem)]
         public string SKU { get; set; } = null!;
 
         public string VarianName { get; set; } = null!;
@@ -37,20 +36,19 @@ namespace LinoVative.Shared.Dto.ItemDtos
         // Costume Price
         public bool HasCostumePrice { get; set; }
 
-        public IdWithNameDto? Unit { get; set; } 
-
     }
 
     public class SKUItemViewDto : SKUItemDto
     {
-        public string ItemCode { get; set; } = null!;
         public string ItemName { get; set; } = null!;
         public string CategoryName { get; set; } = null!;
         public string GroupName { get; set; } = null!;
+        public string UnitName { get; set; } = null!;
     }
 
     public class SKUItemInputDto : SKUItemDto
     {
+        public ItemUnitDto? Unit { get; set; }
         public List<ItemPriceTypeDto> CostumePrices { get; set; } = new();
     }
 }

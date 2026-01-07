@@ -81,8 +81,10 @@ namespace Linovative.Frontend.Shared.InputComponents
 
         [Parameter] public string? ClearIcon { get; set; }
         [Parameter] public MudBlazor.Size IconSize { get; set; }
-        [Parameter] public MudBlazor.Adornment Adornment { get; set; }
+        [Parameter] public MudBlazor.Adornment Adornment { get; set; } = Adornment.None;
         [Parameter] public int? Width { get; set; }
         [Parameter] public int Lines { get; set; } = 1;
+        [Parameter] public EventCallback OnBlur { get; set; }
+        [Parameter] public bool FullWidth { get; set; }
     }
 }

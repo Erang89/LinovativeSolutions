@@ -60,7 +60,7 @@
         <MudForm @ref="form" @bind-IsValid="@isFormValid" @bind-Errors="@formErrors" @onkeypress="@OnFormKeyPress">
             @if (loaded)
             {
-                
+
                 <LinovativeInputText @bind-Value="@item.Name"
                                      Id="item_name"
                                      IsRequired="true"
@@ -70,13 +70,14 @@
                                      LocalizerKey="@nameof(ItemDto.Name)" />
 
                 <LinovativeGap />
-                <ItemCategoryDropdown @bind-Value="@itemCategory"
-                                      Id="item_category"
-                                      Required="true"
-                                      Disabled="@(!item.IsActive)"
-                                      Errors="@formResponse?.Errors"
-                                      LocalizerResource="@LocalizerResource"
-                                      LocalizerKey="@nameof(ItemDto.CategoryId)" />
+                <ItemCategoryDropdown Value="@itemCategory"
+                                      ValueChanged="@(x => {itemCategory = x; item.Category = x; item.CategoryId = x?.Id; })"
+                                       Id="item_category"
+                                       Required="true"
+                                       Disabled="@(!item.IsActive)"
+                                       Errors="@formResponse?.Errors"
+                                       LocalizerResource="@LocalizerResource"
+                                       LocalizerKey="@nameof(ItemDto.CategoryId)" />
 
             }
             else
@@ -133,7 +134,7 @@
 
 <LinovativeGap Height="50" />
 <MudText Typo="Typo.h6">@Label("ItemSettingsSection")</MudText>
-<LinovativeGap  />
+<LinovativeGap />
 @if (loaded)
 {
     <MudExpansionPanels MultiExpansion="true">
@@ -174,13 +175,11 @@ else
     private AppErrorAlert? formErrorAlert { get; set; }
     private bool selectedAll { get; set; }
     private List<ItemViewDto> dataSource { get; set; } = new();
-    private ItemUnitDto? itemUnit = null;
-    private ItemCategoryDto? itemCategory = null;
     private bool showFilter;
     private bool loaded { get; set; } = false;
     private SKUItemInputDto? defaltSKUItem;
     private SKUItemVariantComponent? SKUItemVariantComponent { get; set; }
-
+    private ItemCategoryDto? itemCategory { get; set; }
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

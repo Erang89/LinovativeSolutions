@@ -65,9 +65,9 @@
         <MudTh Style="width: 30px">
             <MudCheckBox Value="@selectedAll" ValueChanged="SelectAll" T="bool"></MudCheckBox>
         </MudTh>
-        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.ItemCode))" T="ItemViewDto">@_loc[$"{LocalizerResource}.ItemCode.Label"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.SKU))" T="ItemViewDto">@_loc[$"{LocalizerResource}.ItemCode.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.ItemName))" T="ItemViewDto">@_loc[$"{LocalizerResource}.ItemName.Label"]</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.Unit.Name))" T="ItemViewDto">@Label(nameof(SKUItemViewDto.UnitId))</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.UnitName))" T="ItemViewDto">@Label(nameof(SKUItemViewDto.UnitId))</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.GroupName))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.CategoryName))" T="ItemViewDto">@Label("CategoryId")</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.SalePrice))" T="ItemViewDto">@Label(nameof(SKUItemViewDto.SalePrice))</MudTableSortLabel></MudTh>
@@ -77,9 +77,9 @@
         <MudTd>
             <MudCheckBox Value="@(IsSelected(context))" ValueChanged="@((e) => SelectRecord(e, context))" T="bool"></MudCheckBox>
         </MudTd>
-        <MudTd DataLabel="ItemCode">@context.ItemCode</MudTd>
+        <MudTd DataLabel="ItemCode">@context.SKU</MudTd>
         <MudTd DataLabel="ItemName">@context.ItemName</MudTd>
-        <MudTd DataLabel="Unit">@context.Unit?.Name</MudTd>
+        <MudTd DataLabel="Unit">@context.UnitName</MudTd>
         <MudTd DataLabel="Group">@context.GroupName</MudTd>
         <MudTd DataLabel="Category">@context.CategoryName</MudTd>
         <MudTd DataLabel="Category">@context.SalePrice?.ToString("N2")</MudTd>

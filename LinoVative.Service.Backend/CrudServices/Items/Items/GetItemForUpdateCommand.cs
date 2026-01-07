@@ -3,6 +3,7 @@ using LinoVative.Service.Backend.Extensions;
 using LinoVative.Service.Backend.Interfaces;
 using LinoVative.Service.Core.Interfaces;
 using LinoVative.Shared.Dto;
+using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.ItemDtos;
 using Mapster;
 using MapsterMapper;
@@ -44,9 +45,13 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
             var skuIds = item.SKUItems.Select(x => x.Id).ToList();
             var costumePrices = await _dbContext.ItemPriceTypes.Where(x => skuIds.Contains(x.Id)).ProjectToType<ItemPriceTypeDto>(_mapper.Config).ToListAsync();
 
+            var unitIds = item.SKUItems.Select(x => x.UnitId).ToList();
+            var units = await _dbContext.ItemUnits.Where(x => unitIds.Contains(x.Id)).ProjectToType<ItemUnitDto>(_mapper.Config).ToListAsync();
+
             item.SKUItems = item.SKUItems.Select(x =>
             {
                 x.CostumePrices = costumePrices.Where(x => x.SKUItemId == x.Id).ToList();
+                x.Unit = units.FirstOrDefault(u => u.Id == x.UnitId!.Value);
                 return x;
 
             }).ToList();

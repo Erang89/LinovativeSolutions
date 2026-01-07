@@ -2,9 +2,8 @@
 
 namespace LinoVative.Shared.Dto.Commons
 {
-    public class IdWithNameDto : IEntityDto
+    public class IdWithNameDto : EntityDtoBase, IEntityDto
     {
-        public Guid Id { get; set; }
-        public string? Name { get; set; }
+        public virtual string? Name { get; set; }
     }
 }

@@ -23,7 +23,8 @@
                   Variant="@variant"
                   ClearIcon="@ClearIcon"
                   IconSize="@IconSize"
-                  Adornment="@Adornment"
+                  @ref="@input"
+                  FullWidth=@FullWidth
                   OnClearButtonClick="@OnClearButtonClick"></MudTextField>
 }
 else
@@ -36,6 +37,7 @@ else
                   Label="@_label"
                   Immediate="true"
                   id="@Id"
+                  @ref="@input"
                   @onclick="@(async () => await OnClick.InvokeAsync())"
                   T="T"
                   Disabled="@Disabled"
@@ -46,7 +48,7 @@ else
                   Variant="@variant"
                   ClearIcon="@ClearIcon"
                   IconSize="@IconSize"
-                  Adornment="@Adornment"
+                  FullWidth=@FullWidth
                   OnClearButtonClick="@OnClearButtonClick"></MudTextField>
 }
 
@@ -58,7 +60,7 @@ else
     string? _errorMessage => Error ? ErrorMessage : _containErrors ? string.Join(" ", getError()) : (IsRequired && string.IsNullOrEmpty(Value.ToString())) ? _requiredMessage : "";
     string? _label => !string.IsNullOrEmpty(Label) ? Label : string.IsNullOrWhiteSpace(LocalizerKey) ? "" : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
     string? _requiredMessage => !string.IsNullOrWhiteSpace(RequiredMessage) ? RequiredMessage : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Required.ErrorMessage"];
-
+    MudTextField<T> input { get; set; }
     List<string> getError() => Errors is not null && !string.IsNullOrEmpty(ErrorKey) && Errors.ContainsKey(ErrorKey) ? Errors[ErrorKey] : new List<string>();
 
     protected override async Task OnInitializedAsync()

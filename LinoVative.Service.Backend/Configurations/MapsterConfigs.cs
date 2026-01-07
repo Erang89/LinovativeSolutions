@@ -50,7 +50,8 @@ namespace LinoVative.Service.Backend.Configurations
 
 
             // Items
-            config.NewConfig<CreateItemCommand, Item>();
+            config.NewConfig<CreateItemCommand, Item>()
+                .Ignore(x => x.Category);
 
             config.NewConfig<UpdateItemCommand, Item>();
             config.NewConfig<Item, ItemViewDto>();
@@ -71,7 +72,15 @@ namespace LinoVative.Service.Backend.Configurations
             config.NewConfig<SKUItem, SKUItemViewDto>()
                 .Map(x => x.CategoryName, src => src.Item.Category.Name)
                 .Map(x => x.GroupName, src => src.Item.Category.Group!.Name)
-                .Map(x => x.ItemName, src => src.Item.Name);
+                .Map(x => x.ItemName, src => src.Item.Name)
+                .Map(x => x.UnitName, src => src.Unit.Name);
+
+            config.NewConfig<UpdateItemCommand, Item>()
+                .Ignore(x => x.Category);
+
+            config.NewConfig<SKUItemInputDto, SKUItem>()
+                .Ignore(x => x.Unit)
+                .Ignore(x => x.PriceTypes);
 
             // Mapping Outlets
             config.NewConfig<Outlet, OutletViewDto>();

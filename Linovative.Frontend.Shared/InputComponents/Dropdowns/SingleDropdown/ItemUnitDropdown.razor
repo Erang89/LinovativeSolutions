@@ -14,7 +14,7 @@
                     Id="@Id"
                     Disabled="@Disabled"
                     TextChanged="@(x => Text = x)"
-                    ValueChanged=@ValueChanged
+                    ValueChanged=@OnChange
                     StringConvert="@((x) => $"{x.Name}")"
                     PageSize=@PageSize
                     Clearable="@Clearable"
@@ -54,6 +54,12 @@
         if (!result) return new();
 
         return result;
+    }
+
+    async Task OnChange(ItemUnitDto? unit)
+    {
+        Value = unit;
+        await ValueChanged.InvokeAsync(unit);
     }
 
 }
