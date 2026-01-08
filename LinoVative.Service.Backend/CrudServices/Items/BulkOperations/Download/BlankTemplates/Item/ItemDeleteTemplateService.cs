@@ -19,9 +19,10 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.B
                 return _lang[$"{BulkUploadSettings.BulkUploadCommand}.{key}.ColumnHeader"];
             };
 
-            worksheet.Cells("A1").Value = header("Id");
-            worksheet.Cells("B1").Value = header("ItemCode");
-            worksheet.Cells("C1").Value = header("ItemName");
+            worksheet.Cells("A1").Value = header("ItemId");
+            worksheet.Cells("B1").Value = header("ItemName");
+            worksheet.Cells("C1").Value = header("SKU");
+            worksheet.Cells("D1").Value = header("VariantName");
 
             return base.FillWorkSheetWithData(worksheet);
         }
