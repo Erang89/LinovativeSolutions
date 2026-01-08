@@ -71,7 +71,6 @@
         await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _state.OnChange += RefreshUI;
-        _state.NotifyStateChanged();
     }
 
     void RefreshUI()

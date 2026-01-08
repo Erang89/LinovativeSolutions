@@ -81,7 +81,6 @@
     {
         await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
-        _state.NotifyStateChanged();
     }
 
 

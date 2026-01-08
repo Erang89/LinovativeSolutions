@@ -72,12 +72,12 @@
                 <LinovativeGap />
                 <ItemCategoryDropdown Value="@itemCategory"
                                       ValueChanged="@(x => {itemCategory = x; item.Category = x; item.CategoryId = x?.Id; })"
-                                       Id="item_category"
-                                       Required="true"
-                                       Disabled="@(!item.IsActive)"
-                                       Errors="@formResponse?.Errors"
-                                       LocalizerResource="@LocalizerResource"
-                                       LocalizerKey="@nameof(ItemDto.CategoryId)" />
+                                      Id="item_category"
+                                      Required="true"
+                                      Disabled="@(!item.IsActive)"
+                                      Errors="@formResponse?.Errors"
+                                      LocalizerResource="@LocalizerResource"
+                                      LocalizerKey="@nameof(ItemDto.CategoryId)" />
 
             }
             else
@@ -129,8 +129,14 @@
 </MudGrid>
 
 
-
-<SKUItemVariantComponent @ref="@SKUItemVariantComponent" Item="@item" />
+@if (loaded)
+{
+    <SKUItemVariantComponent @ref="@SKUItemVariantComponent" Item="@item" />
+}
+else
+{
+    <MudSkeleton Width="100%" Height="56px;" Class="mb-5" Style="transform: scale(1, 1)" />
+}
 
 <LinovativeGap Height="50" />
 <MudText Typo="Typo.h6">@Label("ItemSettingsSection")</MudText>
@@ -187,8 +193,6 @@ else
         _topBarService.SetTitle(EntityPluralName);
         if (Id is not null) await LoadData();
         loaded = true;
-        await Task.Delay(1000);
-        _state.NotifyStateChanged();
     }
 
 
@@ -266,6 +270,7 @@ else
     {
         var itemRequest = await _service.GetForUpdate(new Guid(Id!), cts.Token);
         var itemView = itemRequest.Data!;
+        itemCategory = new ItemCategoryDto() { Id = itemView.CategoryId.Value, Name = itemView.Category?.Name };
         item = itemView;
     }
 

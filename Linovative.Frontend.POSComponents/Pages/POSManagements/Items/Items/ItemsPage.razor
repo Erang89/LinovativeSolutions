@@ -67,6 +67,7 @@
         </MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.SKU))" T="ItemViewDto">@_loc[$"{LocalizerResource}.ItemCode.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.ItemName))" T="ItemViewDto">@_loc[$"{LocalizerResource}.ItemName.Label"]</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.VarianName))" T="ItemViewDto">@_loc[$"{LocalizerResource}.VarianName.Label"]</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.UnitName))" T="ItemViewDto">@Label(nameof(SKUItemViewDto.UnitId))</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.GroupName))" T="ItemViewDto">@Label("GroupId")</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortLabel="@(nameof(SKUItemViewDto.CategoryName))" T="ItemViewDto">@Label("CategoryId")</MudTableSortLabel></MudTh>
@@ -79,6 +80,7 @@
         </MudTd>
         <MudTd DataLabel="ItemCode">@context.SKU</MudTd>
         <MudTd DataLabel="ItemName">@context.ItemName</MudTd>
+        <MudTd DataLabel="ItemName">@context.VarianName</MudTd>
         <MudTd DataLabel="Unit">@context.UnitName</MudTd>
         <MudTd DataLabel="Group">@context.GroupName</MudTd>
         <MudTd DataLabel="Category">@context.CategoryName</MudTd>
