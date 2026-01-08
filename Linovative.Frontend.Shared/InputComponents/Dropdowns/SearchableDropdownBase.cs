@@ -21,7 +21,7 @@ namespace Linovative.Frontend.Shared.InputComponents.Dropdowns
         [Parameter] public Func<string?, int, Task<Response<List<TItem>>>> SearchFunction { get; set; } = (x, _) => Task.FromResult((new Response<List<TItem>>() { Data = new() }).Result(true));
         [Parameter] public bool Error { get; set; }
         [Parameter] public string? ErrorMessage { get; set; }
-        [Parameter] public int PageSize { get; set; }
+        [Parameter] public int PageSize { get; set; } = 10;
         [Parameter] public string? Placeholder { get; set; }
         [Parameter] public string? Id { get; set; }
         [Parameter] public bool Clearable { get; set; } = true;
