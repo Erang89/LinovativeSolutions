@@ -187,6 +187,7 @@ else
         _topBarService.SetTitle(EntityPluralName);
         if (Id is not null) await LoadData();
         loaded = true;
+        await Task.Delay(1000);
         _state.NotifyStateChanged();
     }
 
@@ -228,8 +229,6 @@ else
     {
         isFormSubmitting = true;
 
-        //item.UnitId = itemUnit!.Id;
-        //item.CategoryId = itemCategory!.Id;
         formResponse = await _service.Create(item, cts.Token);
         if (formResponse)
         {
@@ -248,8 +247,6 @@ else
     {
         isFormSubmitting = true;
 
-        //item.UnitId = itemUnit!.Id;
-        //item.CategoryId = itemCategory!.Id;
         formResponse = await _service.Update(item, cts.Token);
         if (formResponse)
         {
@@ -270,8 +267,6 @@ else
         var itemRequest = await _service.GetForUpdate(new Guid(Id!), cts.Token);
         var itemView = itemRequest.Data!;
         item = itemView;
-        // itemUnit = new ItemUnitDto() { Id = itemView.Unit!.Id, Name = itemView.Unit.Name };
-        // itemCategory = new ItemCategoryDto() { Id = item.CategoryId!.Value, Name = itemView.Category!.Name };
     }
 
 

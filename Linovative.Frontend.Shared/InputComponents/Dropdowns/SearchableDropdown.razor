@@ -56,10 +56,13 @@
         await autoComplete.OpenMenuAsync();
         await autoComplete.FocusAsync();
     }
+
+
     protected override async Task OnInitializedAsync()
     {
 
         await base.OnInitializedAsync();
+
         _state.OnChange += StateHasChanged;
 
         ErrorKey = ErrorKey ?? LocalizerKey;
@@ -67,6 +70,8 @@
         {
             Text = StringConvert(Value);
         }
+
+        _state.NotifyStateChanged();
     }
 
 
@@ -81,6 +86,7 @@
         Value = item;
         await ValueChanged.InvokeAsync(item);
         await OnDropdownClose.InvokeAsync();
+        _state.NotifyStateChanged();
     }
     
     async Task Clear()

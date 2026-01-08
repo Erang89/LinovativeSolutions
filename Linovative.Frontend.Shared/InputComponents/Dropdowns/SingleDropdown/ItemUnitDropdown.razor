@@ -7,18 +7,17 @@
 
 <SearchableDropdown Required=@Required
                     RequiredMessage=@RequiredMessage
-                    Immediate=true
+                    Immediate=false
                     Label=@_label
                     Value=@Value
                     Text=@Text
-                    Id="@Id"
-                    Disabled="@Disabled"
                     TextChanged="@(x => Text = x)"
-                    ValueChanged=@OnChange
+                    ValueChanged=@ValueChanged
                     StringConvert="@((x) => $"{x.Name}")"
                     PageSize=@PageSize
                     Clearable="@Clearable"
                     TItem="ItemUnitDto"
+                    Disabled="@Disabled"
                     ErrorKey="@ErrorKey"
                     LocalizerResource="@LocalizerResource"
                     LocalizerKey="@LocalizerKey"
@@ -29,11 +28,13 @@
 
 @code {
     private CancellationTokenSource cts { get; set; } = new();
-    protected override Task OnInitializedAsync()
+
+
+    protected override async Task OnInitializedAsync()
     {
         _state.OnChange += StateHasChanged;
+        await base.OnInitializedAsync();
         PageSize = PageSize == 0 ? 10 : PageSize;
-        return base.OnInitializedAsync();
     }
 
     string? _label => !string.IsNullOrEmpty(Label) ? Label : this.JsonLocalizer[$"{LocalizerResource}.{LocalizerKey}.Label"];
@@ -55,11 +56,4 @@
 
         return result;
     }
-
-    async Task OnChange(ItemUnitDto? unit)
-    {
-        Value = unit;
-        await ValueChanged.InvokeAsync(unit);
-    }
-
 }

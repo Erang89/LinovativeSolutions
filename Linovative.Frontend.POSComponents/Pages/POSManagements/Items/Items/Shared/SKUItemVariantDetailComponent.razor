@@ -37,7 +37,11 @@
 
 
             <ItemUnitDropdown Value="@SKUItem.Unit"
-                              ValueChanged="@(x => { SKUItem.Unit = x; SKUItem.UnitId = x?.Id; })"
+                              ValueChanged="@(async (x) => { 
+                                    SKUItem.Unit = x; 
+                                    SKUItem.UnitId = x?.Id;
+                                    _state.NotifyStateChanged(); 
+                                })"
                               Id="unit"
                               Required="true"
                               Disabled="@(!SKUItem.IsActive || !Item.IsActive)"
@@ -60,16 +64,6 @@
 
         </MudItem>
 
-        @*  @if (SKUCount > 1)
-        {
-            <MudItem md="12">
-                <MudButton OnClick="@(() => Remove())"
-                           IconSize="Size.Small"
-                           Color="Color.Error"
-                           EndIcon="@Icons.Material.Filled.Remove"
-                           Variant="Variant.Outlined">@Label("Remove")</MudButton>
-            </MudItem>
-        } *@
     </MudGrid>
 }
 
@@ -83,26 +77,12 @@
     [Parameter] public int SKUCount { get; set; }
     protected override string LocalizerResource => nameof(ItemsPage);
 
-    private ItemUnitDto? unitDto { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
-        _state.OnChange += StateHasChanged;
-        _state.OnChange += GenerateData;
         await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        _state.NotifyStateChanged();
     }
-
-    void GenerateData()
-    {
-        if (SKUItem?.Unit is null)
-        {
-            unitDto = null;
-            return;
-        }
-
-        unitDto = new ItemUnitDto() { Id = SKUItem.UnitId!.Value, Name = SKUItem.Unit.Name };
-    }
-
 
 
     async Task Remove()

@@ -68,9 +68,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _state.OnChange += RefreshUI;
-        await base.OnInitializedAsync();
         _state.NotifyStateChanged();
     }
 
@@ -83,6 +83,7 @@
                 await Task.Delay(500);
                 var panel = expandPanel?.Panels.LastOrDefault();
                 await panel!.ExpandAsync();
+                _state.NotifyStateChanged();
             });
         }
     }

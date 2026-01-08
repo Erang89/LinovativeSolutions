@@ -1,5 +1,6 @@
 ﻿@typeparam T
 @inherits LinovativeInputComponentBase<T>
+@inject IApplicationStateService _state
 
 @if (!Disabled)
 {
@@ -65,6 +66,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        _state.OnChange += StateHasChanged;
         ErrorKey = ErrorKey ?? LocalizerKey;
         await base.OnInitializedAsync();
     }

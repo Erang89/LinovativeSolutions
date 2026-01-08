@@ -21,7 +21,7 @@ namespace LinoVative.Service.Core.EntityBases
 
         public DateTime? DeletedAtUTCTime => LastModifiedAtUtcTime;
 
-        public void CreateBy(IActor actor)
+        public virtual void CreateBy(IActor actor)
         {
             CreatedBy = actor.UserId;
             CreatedAtUtcTime = DateTime.UtcNow;
@@ -50,6 +50,12 @@ namespace LinoVative.Service.Core.EntityBases
     public abstract class AuditableEntityUnderCompany : AuditableEntity, IsEntityManageByCompany
     {
         public Guid? CompanyId { get; set; }
+
+        public override void CreateBy(IActor actor)
+        {
+            base.CreateBy(actor);
+            CompanyId = actor.CompanyId;
+        }
     }
 
 

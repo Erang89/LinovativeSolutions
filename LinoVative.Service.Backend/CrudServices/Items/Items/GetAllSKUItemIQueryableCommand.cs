@@ -7,6 +7,7 @@ using LinoVative.Shared.Dto.Commons;
 using LinoVative.Shared.Dto.ItemDtos;
 using Mapster;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace LinoVative.Service.Backend.CrudServices.Items.Items
 {
@@ -30,7 +31,12 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
             return q;
         }
 
-        public Task<IQueryable<SKUItemViewDto>> Handle(GetAllSKUItemIQueryableCommand request, CancellationToken ct) 
-            => Task.FromResult(base.GetAll(request).ProjectToType<SKUItemViewDto>(_mapper.Config).ApplyFilters(request.Filter));
+        public async Task<IQueryable<SKUItemViewDto>> Handle(GetAllSKUItemIQueryableCommand request, CancellationToken ct)
+        {
+            var q = base.GetAll(request).ProjectToType<SKUItemViewDto>(_mapper.Config).ApplyFilters(request.Filter);
+            
+            return q;
+        }
+            
     }
 }
