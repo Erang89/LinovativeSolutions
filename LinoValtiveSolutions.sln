@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.0.11222.15
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinoVative.Shared.Dto", "LinoVative.Shared.Dto\LinoVative.Shared.Dto.csproj", "{D175EBBA-8621-4F27-80CF-91C3CE2B6A2B}"
 EndProject
@@ -42,7 +42,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.Setting
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.Frontend.POSCashierComponent", "Linovative.Frontend.POSCashierComponent\Linovative.Frontend.POSCashierComponent.csproj", "{63CF2BA3-B0D2-46E0-A381-20E41CCDE0EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Linovative.BackendTest", "Linovative.BackendTest\Linovative.BackendTest.csproj", "{74E135E1-BDED-4767-BB6A-FBDB96112E0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Linovative.BackendTest", "Linovative.BackendTest\Linovative.BackendTest.csproj", "{74E135E1-BDED-4767-BB6A-FBDB96112E0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

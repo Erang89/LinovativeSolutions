@@ -72,7 +72,9 @@ namespace LinoVative.Service.Backend.Configurations
                 .Map(x => x.CategoryName, src => src.Item.Category.Name)
                 .Map(x => x.GroupName, src => src.Item.Category.Group!.Name)
                 .Map(x => x.ItemName, src => src.Item.Name)
-                .Map(x => x.UnitName, src => src.Unit.Name);
+                .Map(x => x.UnitName, src => src.Unit.Name)
+                .Map(x => x.IsPurchaseItem, src => src.Item.CanBePurchased)
+                .Map(x => x.IsSaleItem, src => src.Item.CanBeSell);
 
             config.NewConfig<UpdateItemCommand, Item>()
                 .Ignore(x => x.Category);

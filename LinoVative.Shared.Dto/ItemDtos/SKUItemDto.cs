@@ -44,6 +44,9 @@ namespace LinoVative.Shared.Dto.ItemDtos
         public string CategoryName { get; set; } = null!;
         public string GroupName { get; set; } = null!;
         public string UnitName { get; set; } = null!;
+        public bool IsPurchaseItem { get; set; }
+        public bool IsSaleItem { get; set; }
+        public ItemDto? Item { get; set; }
     }
 
     public class SKUItemInputDto : SKUItemDto

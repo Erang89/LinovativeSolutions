@@ -42,8 +42,10 @@
   "Button.DownloadErrorLog.Text": "Download Error(s)",
 
   "Column.Id.Text": "ID",
+  "Column.SKU.Text": "SKU Code",
   "Column.ItemCode.Text": "Item Code",
   "Column.ItemName.Text": "Item Name",
+  "Column.VarianName.Text": "Variant/ Model Name",
   "Column.Group.Text": "Group",
   "Column.GroupName.Text": "Group Name",
   "Column.Category.Text": "Category",

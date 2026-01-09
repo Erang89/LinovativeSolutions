@@ -35,7 +35,7 @@
                                Variant="@ComponentSettings.InputVariant"
                                Label="@_loc.Global("Label.FilterOperator")"
                                Placeholder="@_loc.Global("Label.FilterOperator")"
-                               T="UIFilterOperator.FilterOperator?"
+                               T="UIFilterOperator.FilterOperator ?"
                                Clearable="false">
                         @foreach (var optr in Operators(GetFieldTypeByName(fv.Column)!.Type))
                         {
@@ -51,7 +51,7 @@
             <td colspan="4">
                 @if (!HideFilterButton)
                 {
-                    <MudButton Class="me-5" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.FilterAlt" OnClick="@(()=> OnFilterButtonClick.InvokeAsync(FieldValues))">@_loc.Global("Label.Filter")</MudButton>
+                    <MudButton Class="me-5" Variant="Variant.Outlined" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.FilterAlt" OnClick="@(() => OnFilterButtonClick.InvokeAsync(FieldValues))">@_loc.Global("Label.Filter")</MudButton>
                 }
 
                 <MudButton Variant="Variant.Text" Color="Color.Primary" StartIcon="@Icons.Material.Outlined.Add" OnClick="@AddFieldValue">@_loc.Global("Label.AddFilter")</MudButton>
@@ -100,34 +100,35 @@
     public RenderFragment? AdditionalButton { get; set; }
 
     public List<DataGridFilterModel> DataGridFilterModels => FieldValues.Select(x => new DataGridFilterModel()
-            {
-                Column = x.Column,
-                Operator = x.Operator,
-                Value = x.Value,
-                Type = GetFieldTypeByName(x.Column)!.Type
-            }).ToList();
+    {
+        Column = x.Column,
+        Operator = x.Operator,
+        Value = x.Value,
+        Type = GetFieldTypeByName(x.Column)!.Type
+    }).ToList();
 
     public RenderFragment? ValueInputDefault(DataGridFilterModel fv)
     {
         RenderFragment? integerUI =
             @<MudTextField Value="@((fv.Value != null ? Convert.ToDecimal(fv.Value) : (decimal?)null))"
-              ValueChanged="@((e) => SetValue(() => fv.Value = e))"
-              Clearable="true"
-              Immediate="true"
-              Variant="@ComponentSettings.InputVariant"
-              T="decimal?"
-              Label="@GetLabel(fv)"
-              Placeholder="@GetPlaceholder(fv)" />;
+                      ValueChanged="@((e) => SetValue(() => fv.Value = e))"
+                      Clearable="true"
+                      Immediate="true"
+                      Variant="@ComponentSettings.InputVariant"
+                      T="decimal?"
+                      Label="@GetLabel(fv)"
+                      Placeholder="@GetPlaceholder(fv)" />;
 
         RenderFragment? decimalUI =
             @<MudTextField Value="@((fv.Value != null ? Convert.ToInt32(fv.Value) : (int?)null))"
-              ValueChanged="@((e) => SetValue(() => fv.Value = e))"
-              Variant="@ComponentSettings.InputVariant"
-              Clearable="true"
-              T="int?"
-              Immediate="true"
-              Label="@GetLabel(fv)"
-              Placeholder="@GetPlaceholder(fv)" />;
+                      ValueChanged="@((e) => SetValue(() => fv.Value = e))"
+                      Variant="@ComponentSettings.InputVariant"
+                      Clearable="true"
+                      T="int?"
+                      Immediate="true"
+                      Label="@GetLabel(fv)"
+                      Placeholder="@GetPlaceholder(fv)" />
+        ;
 
 
         var type = GetFieldTypeByName(fv.Column)!.Type;
@@ -147,8 +148,16 @@
             return null;
         }
 
-        if (fv.Type == DataGridFilterModel.PropertyType.Boolean)
-            fv.Value = true;
+        if (type == DataGridFilterModel.PropertyType.Boolean && fv.Value?.ToString().ToLower() != "true")
+            fv.Value = "false";
+
+        Func<string?, CancellationToken,  Task<IEnumerable<string?>>> search = async (value, token) =>
+        {
+            await Task.CompletedTask;
+            var data = new List<string?>() { "true", "false"};
+            return data;
+        };
+
 
         return type switch
         {
@@ -157,12 +166,13 @@
             DataGridFilterModel.PropertyType.Decimal => decimalUI,
             DataGridFilterModel.PropertyType.DateTime => @<MudDatePicker Clearable="true" Label="@GetLabel(fv)" Placeholder="@GetPlaceholder(fv)" Date="@dateValue" Variant="ComponentSettings.InputVariant" DateChanged="@((e) => SetValue(() => fv.Value = (DateTime?)e))" />,
             DataGridFilterModel.PropertyType.DateOnly => @<MudDatePicker Clearable="true" Label="@GetLabel(fv)" Placeholder="@GetPlaceholder(fv)" Date="@dateValue" Variant="ComponentSettings.InputVariant" DateChanged="@((e) => SetValue(() => fv.Value = (DateTime?)e))" />,
-            DataGridFilterModel.PropertyType.Boolean =>
-    @<MudSelect T="bool?" Value="@((bool?)fv.Value)" ValueChanged="@((e) => SetValue(() => fv.Value = (bool?)e))" Variant="@ComponentSettings.InputVariant" Label="@GetLabel(fv)" Placeholder="@GetPlaceholder(fv)" Clearable="true">
-        <MudSelectItem T="bool?" Value="true">True</MudSelectItem>
-        <MudSelectItem T="bool?" Value="false">False</MudSelectItem>
-    </MudSelect>
-            ,
+            DataGridFilterModel.PropertyType.Boolean => @<MudAutocomplete Label="@GetLabel(fv)"
+                 Variant="ComponentSettings.InputVariant"
+                 SearchFunc="@search"
+                 Value="@(fv.Value?.ToString())"
+                 ValueChanged="@((e) => SetValue(() => fv.Value = e))"
+                 T="string"
+                 ToStringFunc="@((x) => x?.ToString())" />,
             _ => null
         };
     }
@@ -175,6 +185,7 @@
     public FieldType? GetFieldTypeByName(string fieldName) => FieldSources.FirstOrDefault(x => x.FieldName.Contains(fieldName, StringComparison.OrdinalIgnoreCase));
     public string? GetLabel(DataGridFilterModel fv) => GetFieldTypeByName(fv.Column)?.Label;
     public string? GetPlaceholder(DataGridFilterModel fv) => GetFieldTypeByName(fv.Column)?.PlaceHolder;
+
 
     private void ChangeColumn(DataGridFilterModel field, string column)
     {
@@ -190,7 +201,6 @@
     {
         setValueAction();
         FieldValuesChanged.InvokeAsync(FieldValues);
-        _state.NotifyStateChanged();
     }
 
     async Task ClearFields()
@@ -215,6 +225,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+
         _state.OnChange += StateHasChanged;
 
         foreach (var fieldValue in FieldValues)
@@ -228,6 +239,7 @@
             }
         }
 
+        _state.NotifyStateChanged();
     }
 
     private void OnOperatorValueChanged(UIFilterOperator.FilterOperator? value, DataGridFilterModel model)

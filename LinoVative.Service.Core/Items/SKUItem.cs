@@ -22,8 +22,8 @@ namespace LinoVative.Service.Core.Items
         public bool UseOutletSaleTaxAndService { get; set; }
 
         // Purchase Settings
-        public decimal DefaultPurchaseQty { get; set; }
-        public decimal MinimumStockQty { get; set; }
+        public decimal? DefaultPurchaseQty { get; set; }
+        public decimal? MinimumStockQty { get; set; }
 
         // Costume Price
         public bool HasCostumePrice { get; set; }

@@ -16,7 +16,7 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.U
         public List<FilterCondition> Filter { get; set; } = new();
     }
 
-    public class DownloadItemForUpdateHandler : QueryServiceBase<Item, DownloadItemForUpdateCommand>, IRequestHandler<DownloadItemForUpdateCommand, Result>
+    public class DownloadItemForUpdateHandler : QueryServiceBase<SKUItem, DownloadItemForUpdateCommand>, IRequestHandler<DownloadItemForUpdateCommand, Result>
     {
         private readonly IBulkOperationTemplateFactory _bulkOperationFactory;
         public DownloadItemForUpdateHandler(IBulkOperationTemplateFactory bulkOperationFactory, IAppDbContext dbContext, IActor actor, IMapper mapper, IAppCache appCache) :
@@ -32,35 +32,44 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation.Download.U
             var wb = await _bulkOperationFactory.GetService(BulkOperationTemplateType.Item_Update).GetTemplate();
             var ws = wb.Worksheet(1);
            
-            ws.Column("A").Width = 45;
-            ws.Column("B").Width = 30;
-            ws.Column("C").Width = 50;
-            ws.Column("D").Width = 25;
-            ws.Column("E").Width = 25;
-            ws.Column("F").Width = 25;
-            ws.Column("G").Width = 25;
-
-            var groups = base.GetAll().ApplyFilters(request.Filter).Select(x =>
+            var items = base.GetAll().ApplyFilters(request.Filter).Select(x =>
                 new {
                     x.Id,
-                    x.Name,
-                    //UnitName = x.Unit!.Name,
-                    //GroupName = x.Category!.Group!.Name,
-                    //CategoryName = x.Category.Name,
-                    //x.SellPrice,
+                    ItemName = x.Item.Name,
+                    CategoryName = x.Item.Category.Name,
+                    x.SKU,
+                    x.VarianName,
+                    UnitName = x.Unit.Name,
+                    x.IsActive,
+                    x.Item.CanBePurchased,
+                    x.Item.CanBeSell,
+                    x.SalePrice,
+                    x.Item.DefaltPurchaseQty,
+                    x.Item.DefaultMinimumStock,
+                    DetailDefaultPurchaseQty = x.DefaultPurchaseQty,
+                    DetailDefaultMinimumStock = x.MinimumStockQty,
+                    x.Item.Notes,
+                    
                 }).ToList();
 
 
             var rowNumber = 2;
-            foreach(var g in groups)
+            foreach(var item in items)
             {
                 var row = ws.Row(rowNumber);
-                row.Cell("A").Value = g.Id.ToString();
-                row.Cell("C").Value = g.Name;
-                //row.Cell("D").Value = g.UnitName;
-                //row.Cell("E").Value = g.GroupName;
-                //row.Cell("F").Value = g.CategoryName;
-                //row.Cell("G").Value = g.SellPrice;
+                row.Cell("A").Value = item.Id.ToString();
+                row.Cell("B").Value = item.ItemName;
+                row.Cell("C").Value = item.CategoryName;
+                row.Cell("D").Value = item.SKU;
+                row.Cell("E").Value = item.VarianName;
+                row.Cell("F").Value = item.UnitName;
+                row.Cell("G").Value = item.IsActive;
+                row.Cell("H").Value = item.CanBePurchased;
+                row.Cell("I").Value = item.CanBeSell;
+                row.Cell("J").Value = item.SalePrice;
+                row.Cell("K").Value = item.DetailDefaultPurchaseQty?? item.DefaltPurchaseQty;
+                row.Cell("L").Value = item.DetailDefaultMinimumStock ?? item.DefaultMinimumStock;
+                row.Cell("M").Value = item.Notes;
                 rowNumber++;
             }
 

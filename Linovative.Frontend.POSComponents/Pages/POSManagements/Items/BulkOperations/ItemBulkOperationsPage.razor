@@ -48,8 +48,11 @@
 <div style="width: 400px">
     <MudSelect Value="@SelectedOperation"
                ValueChanged="@OnOperationChange"
-               T="BulkOperations ?" Variant="ComponentSettings.InputVariant" Label="@Label("Operation")"
-               Clearable="true" FullWidth="false">
+               T="BulkOperations?"
+               Variant="ComponentSettings.InputVariant"
+               Label="@Label("Operation")"
+               Clearable="true"
+               FullWidth="false">
         <MudSelectItem T="BulkOperations ?" Value="BulkOperations.Create">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Create}")</MudSelectItem>
         <MudSelectItem T="BulkOperations ?" Value="BulkOperations.Update">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Update}")</MudSelectItem>
         <MudSelectItem T="BulkOperations ?" Value="BulkOperations.Delete">@_loc.Enum($"{nameof(BulkOperations)}.{BulkOperations.Delete}")</MudSelectItem>
@@ -405,15 +408,22 @@
         SetValue(() => SelectedEntityType = value);
         fileToUplaod = null;
         await LoadDataUpload();
-        _state.NotifyStateChanged();
     }
 
 
     async Task OnOperationChange(BulkOperations? value)
     {
-        SetValue(() => SelectedOperation = value);
         SelectedEntityType = null;
         SelectedActionTypes = null;
+
+        if (value is null)
+        {
+            SelectedOperation = value;
+            _state.NotifyStateChanged();
+            return;
+        }
+
+        SelectedOperation = value;
         await LoadDataUpload();
         _state.NotifyStateChanged();
     }
@@ -421,10 +431,10 @@
     async Task LoadDataUpload()
     {
         if (SelectedOperation != null && !(
-            SelectedActionTypes == BulkActionTypes.Update_DownloadFromDataMapping || 
-            SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataMapping || 
-            SelectedActionTypes == BulkActionTypes.Create_Upload || 
-            SelectedActionTypes == BulkActionTypes.Delete_Upload || 
+            SelectedActionTypes == BulkActionTypes.Update_DownloadFromDataMapping ||
+            SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataMapping ||
+            SelectedActionTypes == BulkActionTypes.Create_Upload ||
+            SelectedActionTypes == BulkActionTypes.Delete_Upload ||
             SelectedActionTypes == BulkActionTypes.Update_Upload))
             return;
 

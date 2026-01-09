@@ -41,11 +41,11 @@
 
 
 <MudPaper class="@(showFilter ? "rounded-0 rounded-t" : "d-none")">
-    <ItemFilterComponent OnClearFilter="@ClearFilter" OnFilterButtonClick="@(() => table!.ReloadServerData())" FieldValues="@filterFalues" FieldValuesChanged="@(x => filterFalues = x)" @ref=@itemFilterComponent Label="@Label("FilterItem")">
+    <SKUItemFilterComponent OnClearFilter="@ClearFilter" OnFilterButtonClick="@(() => table!.ReloadServerData())" FieldValues="@filterFalues" FieldValuesChanged="@(x => filterFalues = x)" @ref=@itemFilterComponent Label="@Label("FilterItem")">
         <AdditionalButton>
             <MudButton Class="ms-2" Variant="Variant.Text" StartIcon="@Icons.Material.Outlined.Close" OnClick="@(() => showFilter = !showFilter)" Color="Color.Primary">@_loc.Global("Button.Close")</MudButton>
         </AdditionalButton>
-    </ItemFilterComponent>
+    </SKUItemFilterComponent>
 </MudPaper>
 
 <MudTable Class="@(showFilter ? "rounded-0 rounded-b" : "")" ServerData="ServerReload" Dense="false" Hover="true" @ref="@table">
@@ -134,7 +134,7 @@
     private ItemCategoryDto? itemCategory = null;
     private bool showFilter;
     private List<DataGridFilterModel> filterFalues = new();
-    private ItemFilterComponent? itemFilterComponent { get; set; }
+    private SKUItemFilterComponent? itemFilterComponent { get; set; }
 
 
     protected override async Task OnInitializedAsync()

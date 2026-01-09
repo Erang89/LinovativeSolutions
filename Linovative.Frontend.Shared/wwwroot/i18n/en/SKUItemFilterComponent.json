@@ -1,0 +1,12 @@
+{
+  "Title.Label": "Item Filter",
+  "SKU.Label": "SKU Code",
+  "ItemName.Label": "Item Name",
+  "VarianName.Label": "Variant/Model Name",
+  "CategoryName.Label": "Category Name",
+  "UnitName.Label": "Unit Name",
+  "SalePrice.Label": "Sale Price",
+  "IsActive.Label": "Active Status",
+  "IsSaleItem.Label": "Sales Item",
+  "IsPurchaseItem.Label": "Purchase Item"
+}

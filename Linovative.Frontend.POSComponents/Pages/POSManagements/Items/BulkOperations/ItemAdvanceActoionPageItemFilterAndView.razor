@@ -5,91 +5,98 @@
 @using Linovative.Frontend.Shared.InputComponents.FilterComponents
 
 @inherits POSManagementPageBase
-@inject IItemService _itemService
+@inject ISKUItemService _itemService
 @inject IApplicationStateService _state
 
-@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && (
-       SelectedActionTypes == BulkActionTypes.Update_DownloadFromData || 
-       SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
+@if (loaded)
 {
-    
-    <LinovativeGap />
-    <MudCard Style="max-width: 1960px">
-        <ItemFilterComponent 
-            FieldValuesChanged="@OnItemFilterValueChanged"
-            HideFilterButton="true"
-            OnClearFilter="@OnClearFilter"
-            HideColumns="new(){}" />
-    </MudCard>
-    
-}
+
+    @if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && (
+           SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
+           SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
+    {
+
+        <LinovativeGap />
+        <MudCard Style="max-width: 1960px">
+            <SKUItemFilterComponent FieldValuesChanged="@OnItemFilterValueChanged"
+                                    HideFilterButton="true"
+                                    OnClearFilter="@OnClearFilter"
+                                    HideColumns="new(){}" />
+        </MudCard>
+
+    }
 
 
 
-@if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && ShowRecord && (
-       SelectedActionTypes == BulkActionTypes.Update_DownloadFromData || 
-       SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
-{
-    <LinovativeGap />
+    @if (SelectedEntityType == BulkDataEntityTypes.ItemMaster && ShowRecord && (
+           SelectedActionTypes == BulkActionTypes.Update_DownloadFromData ||
+           SelectedActionTypes == BulkActionTypes.Delete_DownloadFromDataFiltering))
+    {
+        <LinovativeGap />
 
-    <MudSimpleTable Style="overflow-x: auto;">
-    <thead>
-        <tr>
-                <th>@ColumHeaderText("ItemCode")</th>
-                <th>@ColumHeaderText("ItemName")</th>
-               @*  <th>@ColumHeaderText("Unit")</th>
-                <th>@ColumHeaderText("Group")</th>
-                <th>@ColumHeaderText("Category")</th> *@
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var row in itemMasters)
-        {
-            <tr>
-               @* <td>@row.Code</td> *@
-               <td>@row.Name</td>
-               @* <td>@row.Unit?.Name</td>
-               <td>@row.Category?.ItemGroup?.Name</td>
-               <td>@row.Category?.Name</td> *@
-            </tr>
-        }
-        <tr>
-            <td colspan="5">
-                @if (itemMasters.Count > 0)
+        <MudSimpleTable Style="overflow-x: auto;">
+            <thead>
+                <tr>
+                    <th>@ColumHeaderText("SKU")</th>
+                    <th>@ColumHeaderText("ItemName")</th>
+                    <th>@ColumHeaderText("VarianName")</th>
+                    <th>@ColumHeaderText("UnitName")</th>
+                    <th>@ColumHeaderText("CategoryName")</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in itemMasters)
                 {
-                  <MudText>@(recordCount < pageSize ? recordCount : pageSize) of @recordCount records</MudText>
+                    <tr>
+                        <td>@row.SKU</td>
+                        <td>@row.ItemName</td>
+                        <td>@row.VarianName</td>
+                        <td>@row.UnitName</td>
+                        <td>@row.CategoryName</td>
+                    </tr>
                 }
-            </td>
-        </tr>
-    </tbody>     
-    <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount"  />
-</MudSimpleTable>
+                <tr>
+                    <td colspan="5">
+                        @if (itemMasters.Count > 0)
+                        {
+                            <MudText>@(recordCount<pageSize? recordCount : pageSize) of @recordCount records</MudText>
+                        }
+                    </td>
+                </tr>
+            </tbody>
+            <MudPagination ShowPageButtons="false" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
+        </MudSimpleTable>
 
+    }
 }
+
 @code {
     // Public Properties
     [Parameter] public BulkOperations? SelectedOperation { get; set; }
     [Parameter] public BulkDataEntityTypes? SelectedEntityType { get; set; }
     [Parameter] public BulkActionTypes? SelectedActionTypes { get; set; }
-    [Parameter] public bool ShowRecord {get; set;}
+    [Parameter] public bool ShowRecord { get; set; }
 
     protected override string LocalizerResource => nameof(ItemBulkOperationsPage);
 
     // Private properties
-    List<ItemViewDto> itemMasters = new();
+    List<SKUItemViewDto> itemMasters = new();
     public List<DataGridFilterModel> FilterModels { get; set; } = new();
-    CancellationTokenSource cts = new();
+    CancellationTokenSource cts { get; set; } = new();
     int currentPage = 0;
-    int pageSize = 10;
+    readonly int pageSize = 10;
     int pageCount = 0;
     int recordCount = 0;
     int itemFilterCount = 0;
+    bool loaded;
 
 
     protected override async Task OnInitializedAsync()
     {
-        _state.OnChange += StateHasChanged;
         await base.OnInitializedAsync();
+        _state.OnChange += StateHasChanged;
+        loaded = true;
     }
 
 
@@ -98,6 +105,7 @@
     void OnItemFilterValueChanged(List<DataGridFilterModel> fieldValues)
     {
         FilterModels = fieldValues;
+        _state.NotifyStateChanged();
     }
 
 
@@ -118,7 +126,7 @@
         var records = result?.Count ?? 0;
         var hasMod = records % pageSize > 0;
         recordCount = records;
-        pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod? 1 : 0);
+        pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
         itemMasters = result?.Data ?? new();
         _state.NotifyStateChanged();
     }

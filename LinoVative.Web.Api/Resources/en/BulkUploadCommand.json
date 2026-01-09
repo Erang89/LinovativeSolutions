@@ -22,6 +22,7 @@
   "ItemCode.ColumnHeader": "Code",
   "ItemSellPrice.ColumnHeader": "Sell Price",
   "Id.ColumnHeader": "ID",
+  "SKUId.ColumnHeader": "SKU ID",
   "ItemId.ColumnHeader": "Item ID",
   "GroupId.ColumnHeader": "Group ID",
   "CategoryId.ColumnHeader": "Category ID",
