@@ -46,6 +46,7 @@ namespace LinoVative.Shared.Dto.ItemDtos
         public string UnitName { get; set; } = null!;
         public bool IsPurchaseItem { get; set; }
         public bool IsSaleItem { get; set; }
+        public bool ItemDescription { get; set; }
         public ItemDto? Item { get; set; }
     }
 

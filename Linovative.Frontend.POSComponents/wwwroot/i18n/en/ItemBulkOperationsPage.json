@@ -41,6 +41,7 @@
   "Button.Save.Text": "Bulk Save Record(s)",
   "Button.DownloadErrorLog.Text": "Download Error(s)",
 
+  "Column.SKUId.Text": "SKU ID",
   "Column.Id.Text": "ID",
   "Column.SKU.Text": "SKU Code",
   "Column.ItemCode.Text": "Item Code",
@@ -53,5 +54,12 @@
   "Column.Unit.Text": "Unit",
   "Column.UnitName.Text": "Unit Name",
   "Column.SellPrice.Text": "Sell Price",
-  "Column.IsActive.Text": "Is Active"
+  "Column.IsActive.Text": "Is Active",
+  "Column.IsPurchaseItem.Text": "Is Purchase Item",
+  "Column.DefaultPurchaseQty.Text": "Default Purchase Qty",
+  "Column.MinimumStockQty.Text": "Minimum Stock Qty",
+  "Column.ItemDescription.Text": "Item Notes",
+  "Column.SalePrice.Text": "Sale Price",
+  "Column.IsSaleItem.Text": "Is Sales Item",
+  "Column.VariantName.Text": "Variant/ Model Name"
 }

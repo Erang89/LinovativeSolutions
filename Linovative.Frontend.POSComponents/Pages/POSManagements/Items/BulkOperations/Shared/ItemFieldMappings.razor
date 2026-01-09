@@ -83,6 +83,12 @@
             {nameof(BulkUploadItemDetailDto.Column5), Columns?.headerColum5??""},
             {nameof(BulkUploadItemDetailDto.Column6), Columns?.headerColum6??""},
             {nameof(BulkUploadItemDetailDto.Column7), Columns?.headerColum7??""},
+            {nameof(BulkUploadItemDetailDto.Column8), Columns?.headerColum8??""},
+            {nameof(BulkUploadItemDetailDto.Column9), Columns?.headerColum9??""},
+            {nameof(BulkUploadItemDetailDto.Column10), Columns?.headerColum10??""},
+            {nameof(BulkUploadItemDetailDto.Column11), Columns?.headerColum11??""},
+            {nameof(BulkUploadItemDetailDto.Column12), Columns?.headerColum12??""},
+            {nameof(BulkUploadItemDetailDto.Column13), Columns?.headerColum13??""},
         })
         .Where(x => !(SelectedPairs.Select(s => s.UploadField.Key)).Contains(x.Key))
         .Where(x => !string.IsNullOrEmpty(x.Value)).Select(x => new KeyValuePair<string, string>(x.Key, x.Value))
@@ -99,14 +105,19 @@
 
         var itemFields = new Dictionary<string, string>()
         {
-            {nameof(ItemViewDto.Id), ColumHeaderText("Id")},
-            //{nameof(ItemViewDto.Code), ColumHeaderText("ItemCode")},
-            {nameof(ItemViewDto.Name), ColumHeaderText("ItemName")},
-            //{nameof(ItemViewDto.Unit), ColumHeaderText("Unit")},
-            //{nameof(ItemViewDto.Category.ItemGroup), ColumHeaderText("Group")},
-            //{nameof(ItemViewDto.Category), ColumHeaderText("Category")},
-            //{nameof(ItemViewDto.SellPrice), ColumHeaderText("SellPrice")},
-            {"IsActive", ColumHeaderText("IsActive")},
+            {nameof(SKUItemViewDto.Id), ColumHeaderText("SKUId")},
+            {nameof(SKUItemViewDto.ItemName), ColumHeaderText("ItemName")},
+            {nameof(SKUItemViewDto.CategoryName), ColumHeaderText("CategoryName")},
+            {nameof(SKUItemViewDto.SKU), ColumHeaderText("SKU")},
+            {nameof(SKUItemViewDto.VarianName), ColumHeaderText("VariantName")},
+            {nameof(SKUItemViewDto.UnitName), ColumHeaderText("UnitName")},
+            {nameof(SKUItemViewDto.IsActive), ColumHeaderText("IsActive")},
+            {nameof(SKUItemViewDto.IsPurchaseItem), ColumHeaderText("IsPurchaseItem")},
+            {nameof(SKUItemViewDto.IsSaleItem), ColumHeaderText("IsSaleItem")},
+            {nameof(SKUItemViewDto.SalePrice), ColumHeaderText("SalePrice")},
+            {nameof(SKUItemViewDto.DefaultPurchaseQty), ColumHeaderText("DefaultPurchaseQty")},
+            {nameof(SKUItemViewDto.MinimumStockQty), ColumHeaderText("MinimumStockQty")},
+            {nameof(SKUItemViewDto.ItemDescription), ColumHeaderText("ItemDescription")},
         };
 
         ItemFields = itemFields.Where(x => !(ExcludeColumns).Contains(x.Key))

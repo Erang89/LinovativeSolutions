@@ -52,6 +52,12 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation
                 var header5 = GetValueString(header.Cell(5));
                 var header6 = GetValueString(header.Cell(6));
                 var header7 = GetValueString(header.Cell(7));
+                var header8 = GetValueString(header.Cell(8));
+                var header9 = GetValueString(header.Cell(9));
+                var header10 = GetValueString(header.Cell(10));
+                var header11 = GetValueString(header.Cell(11));
+                var header12 = GetValueString(header.Cell(12));
+                var header13 = GetValueString(header.Cell(13));
                 exisitingUpload = new ItemBulkUpload() { 
                     headerColum1 = header1, 
                     headerColum2 = header2, 
@@ -60,6 +66,12 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation
                     headerColum5 = header5, 
                     headerColum6 = header6, 
                     headerColum7 = header7, 
+                    headerColum8 = header8, 
+                    headerColum9 = header9, 
+                    headerColum10 = header10, 
+                    headerColum11 = header11, 
+                    headerColum12 = header12, 
+                    headerColum13 = header13, 
                     CompanyId = _actor.CompanyId, 
                     UserId = _actor.UserId, 
                     Operation = request.Operation};
@@ -80,6 +92,12 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation
                     Column5 = GetValueString(row.Cell(5)),
                     Column6 = GetValueString(row.Cell(6)),
                     Column7 = GetValueString(row.Cell(7)),
+                    Column8 = GetValueString(row.Cell(8)),
+                    Column9 = GetValueString(row.Cell(9)),
+                    Column10 = GetValueString(row.Cell(10)),
+                    Column11 = GetValueString(row.Cell(11)),
+                    Column12 = GetValueString(row.Cell(12)),
+                    Column13 = GetValueString(row.Cell(13)),
                 };
 
                 _dbContext.ItemBulkUploadDetails.Add(detail);
@@ -170,7 +188,30 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperation
                 var header1 = GetValueString(header.Cell(1));
                 var header2 = GetValueString(header.Cell(2));
                 var header3 = GetValueString(header.Cell(3));
-                if (header1?.ToLower() != existingUpload.headerColum1?.ToLower() || header2?.ToLower() != existingUpload.headerColum2?.ToLower() || header3?.ToLower() != existingUpload.headerColum3?.ToLower())
+                var header4 = GetValueString(header.Cell(4));
+                var header5 = GetValueString(header.Cell(5));
+                var header6 = GetValueString(header.Cell(6));
+                var header7 = GetValueString(header.Cell(7));
+                var header8 = GetValueString(header.Cell(8));
+                var header9 = GetValueString(header.Cell(9));
+                var header10 = GetValueString(header.Cell(10));
+                var header11 = GetValueString(header.Cell(11));
+                var header12 = GetValueString(header.Cell(12));
+                var header13 = GetValueString(header.Cell(13));
+
+                if (header1?.ToLower() != existingUpload.headerColum1?.ToLower() || 
+                    header2?.ToLower() != existingUpload.headerColum2?.ToLower() || 
+                    header3?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header4?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header5?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header6?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header7?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header8?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header9?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header10?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header11?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header12?.ToLower() != existingUpload.headerColum3?.ToLower() ||
+                    header13?.ToLower() != existingUpload.headerColum3?.ToLower())
                     return Result.Failed(_lang[$"{BulkUploadSettings.BulkUploadCommand}.InvalidHeader"]);
             }
 

@@ -264,7 +264,7 @@
     private ItemUnitBulkUploadRecords bulkItemUnitRecords { get; set; } = default!;
 
     private bool ShowRecord { get; set; }
-    private CancellationTokenSource cts = new();
+    private CancellationTokenSource cts { get; set; } = new();
     AppSuccessAllert? successAllert = null;
     AppErrorAlert? formErrorAlert = null;
     Response? SaveResponse { get; set; }

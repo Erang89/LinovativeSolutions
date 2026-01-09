@@ -10,6 +10,12 @@
         public string? headerColum5 { get; set; }
         public string? headerColum6 { get; set; }
         public string? headerColum7 { get; set; }
+        public string? headerColum8 { get; set; }
+        public string? headerColum9 { get; set; }
+        public string? headerColum10 { get; set; }
+        public string? headerColum11 { get; set; }
+        public string? headerColum12 { get; set; }
+        public string? headerColum13 { get; set; }
         public List<BulkUploadItemDetailDto> Details { get; set; } = new();
     }
 
@@ -23,5 +29,11 @@
         public string? Column5 { get; set; }
         public string? Column6 { get; set; }
         public string? Column7 { get; set; }
+        public string? Column8 { get; set; }
+        public string? Column9 { get; set; }
+        public string? Column10 { get; set; }
+        public string? Column11 { get; set; }
+        public string? Column12 { get; set; }
+        public string? Column13 { get; set; }
     }
 }
