@@ -122,7 +122,7 @@
             <div class="d-flex">
                 <div class="d-flex"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.CanBePurchased" Label="@Label("CanBePurchased")" Color="Color.Info" /></div>
                 <LinovativeGap />
-                <div class="d-flex ms-3"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.HasVariant" Label="@Label("HasVariant")" Color="Color.Info" /></div>
+                <div class="d-flex ms-3"><MudSwitch Disabled="@(!item.IsActive)" @bind-Value="@item.CanBeSell" Label="@Label("CanBeSale")" Color="Color.Info" /></div>
             </div>
         }
     </MudItem>

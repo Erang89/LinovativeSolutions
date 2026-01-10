@@ -3,19 +3,17 @@
 @inherits POSManagementPageBase
 @inject IApplicationStateService _state
 
-@if (Item?.HasVariant ?? false)
-{
 
-    <LinovativeGap Height="50" />
-    <div class="d-flex">
-        <MudText Typo="Typo.h6">@Label("ItemVariantSection")</MudText>
-        <MudSpacer />
-        <MudButton Disabled="@(!Item.IsActive)" OnClick="@(() => AddNew())"
-                   IconSize="Size.Small"
-                   EndIcon="@Icons.Material.Filled.Add"
-                   Variant="Variant.Outlined">@Label("AddNewSKU")</MudButton>
-    </div>
-}
+<LinovativeGap Height="50" />
+<div class="d-flex">
+    <MudText Typo="Typo.h6">@Label("ItemVariantSection")</MudText>
+    <MudSpacer />
+    <MudButton Disabled="@(!Item.IsActive)" OnClick="@(() => AddNew())"
+               IconSize="Size.Small"
+               EndIcon="@Icons.Material.Filled.Add"
+               Variant="Variant.Outlined">@Label("AddNewSKU")</MudButton>
+</div>
+
 
 
 <LinovativeGap />
@@ -57,7 +55,7 @@
         variantName = variantName == "-" ? "New Variant" : variantName;
 
         if (!(Item.SKUItems.Count == 1 && (string.IsNullOrWhiteSpace(skuItem.VarianName) || skuItem.VarianName == "-")))
-            return $"{displayText} - {(variantName)}"; 
+            return $"{displayText} - {(variantName)}";
 
         return displayText;
     }
@@ -117,5 +115,6 @@
     {
         await expandPanel!.CollapseAllAsync();
         Item.SKUItems.Remove(item);
+        _state.NotifyStateChanged();
     }
 }

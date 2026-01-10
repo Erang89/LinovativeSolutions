@@ -20,6 +20,7 @@
   "IsActive.Label": "Active",
   "SellPriceIncludeTaxService.Label": "Sell Price contains service and tax",
   "CanBePurchased.Label": "Purchasing Item",
+  "CanBeSale.Label": "Sale Item",
   "CustomePrice.Label": "Custome Selling Price",
   "ItemSettingsSection.Label": "Item Settings",
   "ItemVariantSection.Label": "Variants/ Models",

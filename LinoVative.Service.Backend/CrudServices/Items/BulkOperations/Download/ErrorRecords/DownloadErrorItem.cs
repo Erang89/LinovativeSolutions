@@ -52,10 +52,17 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperations.Download.
             row.Cell(5).Value = upload.headerColum5;
             row.Cell(6).Value = upload.headerColum6;
             row.Cell(7).Value = upload.headerColum7;
-            row.Cell(1).CopyTo(row.Cell(8));
-            row.Cell(8).Value = _lang[$"BulkUploadCommand.Errors.ColumnHeader"];
-            worksheet.Column(8).Width = 50;
-            worksheet.Column(8).Style.Font.FontColor = XLColor.Red;
+            row.Cell(8).Value = upload.headerColum8;
+            row.Cell(9).Value = upload.headerColum9;
+            row.Cell(10).Value = upload.headerColum10;
+            row.Cell(11).Value = upload.headerColum11;
+            row.Cell(12).Value = upload.headerColum12;
+            row.Cell(13).Value = upload.headerColum13;
+
+            row.Cell(1).CopyTo(row.Cell(14));
+            row.Cell(14).Value = _lang[$"BulkUploadCommand.Errors.ColumnHeader"];
+            worksheet.Column(14).Width = 50;
+            worksheet.Column(14).Style.Font.FontColor = XLColor.Red;
 
             var rowIndex = 2;
 
@@ -69,7 +76,13 @@ namespace LinoVative.Service.Backend.CrudServices.Items.BulkOperations.Download.
                 row.Cell(5).Value = data.Column5;
                 row.Cell(6).Value = data.Column6;
                 row.Cell(7).Value = data.Column7;
-                row.Cell(8).Value = data.Errors;
+                row.Cell(8).Value = data.Column8;
+                row.Cell(9).Value = data.Column9;
+                row.Cell(10).Value = data.Column10;
+                row.Cell(11).Value = data.Column11;
+                row.Cell(12).Value = data.Column12;
+                row.Cell(13).Value = data.Column13;
+                row.Cell(14).Value = data.Errors;
 
                 rowIndex++;
             }

@@ -15,7 +15,7 @@
             @foreach (var f in ItemFields.Where(x => !(SelectedPairs.Select(s => s.ItemField.Key)).Contains(x.Key)))
             {
                 <MudListItem Value="@f.Value"
-                             @ondblclick="@(() => { SelectedItemField = f; Mapping(); })"
+                             @ondblclick="@(async () => { SelectedItemField = f; await Mapping(); })"
                              OnClick="@(() => SelectedItemField = f)" Text="@($"{f.Value} {RequiredSign(f)}")" />
             }
         </MudList>
@@ -31,7 +31,7 @@
             @foreach (var f in UploadFields())
             {
                 <MudListItem Value="@f.Value"
-                             @ondblclick="@(() => { SelectedUploadField = f; Mapping(); })"
+                             @ondblclick="@(async () => { SelectedUploadField = f; await Mapping(); })"
                              OnClick="@(() => SelectedUploadField = f)" Text="@f.Value" />
             }
         </MudList>

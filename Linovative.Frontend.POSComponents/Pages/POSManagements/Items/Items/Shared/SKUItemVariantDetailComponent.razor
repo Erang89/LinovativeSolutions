@@ -52,7 +52,7 @@
 
 
             <LinovativeInputGeneric T="decimal?"
-                                    Disabled="@(!SKUItem.IsActive || !Item.IsActive)"
+                                    Disabled="@(!SKUItem.IsActive || !Item.IsActive || !Item.CanBeSell)"
                                     Value="@SKUItem.SalePrice"
                                     ValueChanged="@(x => SKUItem.SalePrice = x)"
                                     IsRequired="true"

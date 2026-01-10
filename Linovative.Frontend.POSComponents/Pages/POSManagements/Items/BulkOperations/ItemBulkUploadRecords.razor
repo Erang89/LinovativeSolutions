@@ -303,7 +303,7 @@
     }
 
     List<string> RequiredFields => SelectedOperation is BulkOperations.Create ?
-         new List<string>() { "Name", "Unit", "Category", "SellPrice", "Code" } :
+         new List<string>() { nameof(SKUItemViewDto.ItemName), nameof(SKUItemViewDto.SKU), nameof(SKUItemViewDto.CategoryName), nameof(SKUItemViewDto.UnitName), nameof(SKUItemViewDto.VarianName) } :
          new List<string>() { "Id" };
 
     async Task DownloadError()
