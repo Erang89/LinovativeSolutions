@@ -13,7 +13,7 @@
             <LinovativeGap />
 
             <LinovativeInputText Value="@SKUItem.SKU"
-                                 ValueChanged="@((x) => SKUItem.SKU = x)"
+                                 ValueChanged="@((x) => { SKUItem.SKU = x; _state.NotifyStateChanged();})"
                                  Id="item_code"
                                  Immediate=true
                                  IsRequired="true"
@@ -25,7 +25,7 @@
 
 
             <LinovativeInputText Value="@SKUItem.VarianName"
-                                 ValueChanged="@((x) => SKUItem.VarianName = x)"
+                                 ValueChanged="@((x) => { SKUItem.VarianName = x; _state.NotifyStateChanged(); })"
                                  Id="item_code"
                                  IsRequired="@(SKUCount > 1)"
                                  Immediate=true

@@ -20,7 +20,7 @@
 <MudExpansionPanels @ref="@expandPanel" MultiExpansion="false">
     @foreach (var skuItem in Item?.SKUItems ?? new())
     {
-        <MudExpansionPanel Text="@($"{skuItem.SKU ?? "SKU"} - {skuItem.VarianName ?? "New Model"}")">
+        <MudExpansionPanel Text="@($"{skuItem.SKU.ToUpper() ?? "SKU"} - {skuItem.VarianName.ToUpper() ?? "New Model"}")">
             <TitleContent>
                 <div class="d-flex align-center">
                     <div>@GetExpandTitle(skuItem)</div>
