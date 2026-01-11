@@ -45,12 +45,14 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items.Helpers
                         skuItem.ModifyBy(_actor);
 
                     await MappingCustomePrice(skuItem, customePrices, dto);
+                    skuItem.HasCostumePrice = dto.CostumePrices.Any(x => x.IsActive);
                     continue;
                 }
 
                 skuItem = _mapper.Map<SKUItem>(dto);
                 skuItem.ItemId = entity.Id;
                 skuItem.CreateBy(_actor);
+                skuItem.HasCostumePrice = dto.CostumePrices.Any(x => x.IsActive);
                 _dbContext.SKUItems.Add(skuItem);
                 await MappingCustomePrice(skuItem, customePrices, dto);
             }

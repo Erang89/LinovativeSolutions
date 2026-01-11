@@ -2,7 +2,7 @@
 @using System.Threading.Tasks
 @inherits POSManagementPageBase
 @inject IApplicationStateService _state
-
+@inject IPriceTypeService _priceTypeService
 
 <LinovativeGap Height="50" />
 <div class="d-flex">
@@ -18,34 +18,49 @@
 
 <LinovativeGap />
 <MudExpansionPanels @ref="@expandPanel" MultiExpansion="false">
-    @foreach (var skuItem in Item?.SKUItems ?? new())
+    @if (loaded)
     {
-        <MudExpansionPanel Text="@($"{skuItem.SKU.ToUpper() ?? "SKU"} - {skuItem.VarianName.ToUpper() ?? "New Model"}")">
-            <TitleContent>
-                <div class="d-flex align-center">
-                    <div>@GetExpandTitle(skuItem)</div>
-                    <MudSpacer />
-                    @if (Item!.SKUItems.Count > 1)
-                    {
-                        <MudButton Color="Color.Error" Size="Size.Small" OnClick="@(() => Remove(skuItem))">
-                            <MudIcon Size="Size.Small" @onclick:preventDefault Icon="@Icons.Material.Filled.Delete" Class="me-3" />
-                        </MudButton>
-                    }
-                </div>
-            </TitleContent>
-            <ChildContent>
-                <SKUItemVariantDetailComponent Item="Item" SKUCount="@Item!.SKUItems.Count" OnRemove="Remove" SKUItem="@skuItem" />
-            </ChildContent>
-        </MudExpansionPanel>
+        @foreach (var skuItem in Item?.SKUItems ?? new())
+        {
+            <MudExpansionPanel Text="@($"{skuItem.SKU?.ToUpper() ?? "SKU"} - {skuItem.VarianName?.ToUpper() ?? "New Model"}")">
+                
+                <TitleContent>
+                    <div class="d-flex align-center">
+                        <div>@GetExpandTitle(skuItem)</div>
+                        <MudSpacer />
+                        @if (Item!.SKUItems.Count > 1)
+                        {
+                            <MudButton Color="Color.Error" Size="Size.Small" OnClick="@(() => Remove(skuItem))">
+                                <MudIcon Size="Size.Small" @onclick:preventDefault Icon="@Icons.Material.Filled.Delete" Class="me-3" />
+                            </MudButton>
+                        }
+                    </div>
+                </TitleContent>
+
+                <ChildContent>
+                    <SKUItemVariantDetailComponent 
+                        PriceTypeSources="@priceTypeSources" 
+                        Item="Item" 
+                        SKUCount="@Item!.SKUItems.Count" 
+                        OnRemove="Remove" 
+                        SKUItem="@skuItem" />
+                </ChildContent>
+
+            </MudExpansionPanel>
+        }
     }
 </MudExpansionPanels>
 
 
-@code
-    {
+@code {
+
     [Parameter] public ItemInputDto Item { get; set; } = new();
     [Parameter] public SKUItemInputDto? SelectedSKUitem { get; set; } = null;
     [Parameter] public EventCallback<SKUItemInputDto?> SelectedItemChange { get; set; }
+
+    private List<PriceTypeDto> priceTypeSources { get; set; } = new();
+    private CancellationTokenSource cts { get; set; } = new();
+    private bool loaded { get; set; }
 
     string GetExpandTitle(SKUItemDto skuItem)
     {
@@ -61,14 +76,18 @@
     }
 
     private MudExpansionPanels? expandPanel { get; set; }
-
     protected override string LocalizerResource => nameof(ItemsPage);
+
 
     protected override async Task OnInitializedAsync()
     {
+        loaded = false;
         await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
         _state.OnChange += RefreshUI;
+        await LoadData();
+        loaded = true;
+        _state.NotifyStateChanged();
     }
 
     void RefreshUI()
@@ -84,6 +103,17 @@
             });
         }
     }
+
+
+    async Task LoadData()
+    {
+        var result = await _priceTypeService.GetAll(cts.Token);
+        if (!result) return;
+
+        var data = result.Data!;
+        priceTypeSources = data;
+    }
+
 
     async Task Delete(SKUItemInputDto item)
     {

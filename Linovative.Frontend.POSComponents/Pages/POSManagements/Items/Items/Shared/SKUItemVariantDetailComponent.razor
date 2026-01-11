@@ -6,7 +6,7 @@
 
 @if (SKUItem is not null && Item is not null)
 {
-    <MudGrid>
+    <MudGrid Class="gap-10">
         <MudItem md="6" xl="3" xxl="2">
 
             <div class="d-flex" style="min-width: 150px"><MudSwitch Disabled="@(!Item.IsActive)" @bind-Value="@SKUItem.IsActive" Label="@Label("IsActive")" Color="Color.Info" /></div>
@@ -64,6 +64,38 @@
 
         </MudItem>
 
+
+        <MudItem md="6" xl="5" xxl="4">    
+            <LinovativeGap Height="38" />
+            <MudSimpleTable>
+                <tbody>
+                    @foreach(var dto in priceTypes)
+                    {
+                        <tr>
+
+                            <td style="min-width: 200px">
+                                <div class="d-flex"><MudSwitch Disabled="@(!SKUItem.IsActive || !Item.IsActive || !Item.CanBeSell)" @bind-Value="@dto.Value.IsActive" Label="@dto.Key.Name" Color="Color.Info" /></div>
+                            </td>
+
+
+                            <td style="width: 300px">
+                                <LinovativeInputGeneric Disabled="@(!SKUItem.IsActive || !dto.Value.IsActive || !Item.IsActive || !Item.CanBeSell)"
+                                                    T="decimal?"
+                                                    Value="@dto.Value.Price"
+                                                    ValueChanged="@(x => dto.Value.Price = x)"
+                                                    IsRequired="true"
+                                                    FullWidth=true
+                                                    Errors="@FormResponse?.Errors"
+                                                    LocalizerResource="@LocalizerResource"
+                                                    LocalizerKey="Price" />
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>            
+        </MudItem>
+
     </MudGrid>
 }
 
@@ -75,17 +107,39 @@
     [Parameter] public Response? FormResponse { get; set; } = null;
     [Parameter] public EventCallback<SKUItemInputDto> OnRemove { get; set; }
     [Parameter] public int SKUCount { get; set; }
+    [Parameter] public List<PriceTypeDto> PriceTypeSources { get; set; } = new();
+
     protected override string LocalizerResource => nameof(ItemsPage);
+    private List<KeyValuePair<PriceTypeDto, ItemPriceTypeDto>> priceTypes { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
         _state.OnChange += StateHasChanged;
+        GenerateData();
+        
     }
 
 
     async Task Remove()
     {
         await OnRemove.InvokeAsync(SKUItem);
+    }
+
+
+    void GenerateData()
+    {
+        
+        Func<PriceTypeDto, ItemPriceTypeDto> getItemPriceTypeDto = (priceType) =>
+        {
+            var p = SKUItem?.CostumePrices.FirstOrDefault(x => x.PriceTypeId == priceType.Id);
+            if (p is not null) return p;
+
+            p = new() { SKUItemId = SKUItem?.Id, PriceTypeId = priceType.Id, IsActive = false };
+            SKUItem!.CostumePrices.Add(p);
+            return p;
+        };
+
+        priceTypes = PriceTypeSources.Select(x => new KeyValuePair<PriceTypeDto, ItemPriceTypeDto>(x, getItemPriceTypeDto(x))).ToList();
     }
 }

@@ -43,14 +43,14 @@ namespace LinoVative.Service.Backend.CrudServices.Items.Items
                 .ProjectToType<SKUItemInputDto>(_mapper.Config).ToListAsync();
 
             var skuIds = item.SKUItems.Select(x => x.Id).ToList();
-            var costumePrices = await _dbContext.ItemPriceTypes.Where(x => skuIds.Contains(x.Id)).ProjectToType<ItemPriceTypeDto>(_mapper.Config).ToListAsync();
+            var costumePrices = await _dbContext.ItemPriceTypes.Where(x => skuIds.Contains(x.SKUItemId!.Value)).ProjectToType<ItemPriceTypeDto>(_mapper.Config).ToListAsync();
 
             var unitIds = item.SKUItems.Select(x => x.UnitId).ToList();
             var units = await _dbContext.ItemUnits.Where(x => unitIds.Contains(x.Id)).ProjectToType<ItemUnitDto>(_mapper.Config).ToListAsync();
 
             item.SKUItems = item.SKUItems.Select(x =>
             {
-                x.CostumePrices = costumePrices.Where(x => x.SKUItemId == x.Id).ToList();
+                x.CostumePrices = costumePrices.Where(cp => cp.SKUItemId == x.Id).ToList();
                 x.Unit = units.FirstOrDefault(u => u.Id == x.UnitId!.Value);
                 return x;
 

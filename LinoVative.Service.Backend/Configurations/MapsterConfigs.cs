@@ -80,6 +80,7 @@ namespace LinoVative.Service.Backend.Configurations
                 .Ignore(x => x.Category);
 
             config.NewConfig<SKUItemInputDto, SKUItem>()
+                .Ignore(x => x.PriceTypes)
                 .Ignore(x => x.Unit)
                 .Ignore(x => x.PriceTypes);
 
