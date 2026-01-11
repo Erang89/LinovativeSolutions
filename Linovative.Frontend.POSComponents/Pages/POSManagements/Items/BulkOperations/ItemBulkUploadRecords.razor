@@ -23,113 +23,115 @@
 {
     <LinovativeGap />
 
-    <MudSimpleTable Style="overflow-x: auto;">
-        <thead>
-            @if (details is not null && details.Count > 0)
-            {
-                <tr>
-                    <th>@(item?.headerColum1)</th>
-                    <th>@(item?.headerColum2)</th>
-                    <th>@(item?.headerColum3)</th>
-                    <th>@(item?.headerColum4)</th>
-                    <th>@(item?.headerColum5)</th>
-                    <th>@(item?.headerColum6)</th>
-                    <th>@(item?.headerColum7)</th>
-                    <th>@(item?.headerColum8)</th>
-                    <th>@(item?.headerColum9)</th>
-                    <th>@(item?.headerColum10)</th>
-                    <th>@(item?.headerColum11)</th>
-                    <th>@(item?.headerColum12)</th>
-                    <th>@(item?.headerColum13)</th>
-                </tr>
-            }else
-            {
-                <tr>
-                    <th>A</th>
-                    <th>B</th>
-                    <th>C</th>
-                    <th>D</th>
-                    <th>E</th>
-                    <th>F</th>
-                    <th>G</th>
-                    <th>H</th>
-                    <th>I</th>
-                    <th>J</th>
-                    <th>K</th>
-                    <th>L</th>
-                    <th>M</th>
-                </tr>
-            }
-        </thead>
-        <tbody>
-            @if (details is not null)
-            {
-                @foreach (var row in details)
+    <div class="overflow-x-scroll">
+        <MudSimpleTable Style="overflow-x: auto; width: 2600px">
+            <thead>
+                @if (details is not null && details.Count > 0)
                 {
                     <tr>
-                        <td>@row.Column1</td>
-                        <td>@row.Column2</td>
-                        <td>@row.Column3</td>
-                        <td>@row.Column4</td>
-                        <td>@row.Column5</td>
-                        <td>@row.Column6</td>
-                        <td>@row.Column7</td>
-                        <td>@row.Column8</td>
-                        <td>@row.Column9</td>
-                        <td>@row.Column10</td>
-                        <td>@row.Column11</td>
-                        <td>@row.Column12</td>
-                        <td>@row.Column13</td>
+                        <th>@(item?.headerColum1)</th>
+                        <th>@(item?.headerColum2)</th>
+                        <th>@(item?.headerColum3)</th>
+                        <th>@(item?.headerColum4)</th>
+                        <th>@(item?.headerColum5)</th>
+                        <th>@(item?.headerColum6)</th>
+                        <th>@(item?.headerColum7)</th>
+                        <th>@(item?.headerColum8)</th>
+                        <th>@(item?.headerColum9)</th>
+                        <th>@(item?.headerColum10)</th>
+                        <th>@(item?.headerColum11)</th>
+                        <th>@(item?.headerColum12)</th>
+                        <th>@(item?.headerColum13)</th>
                     </tr>
                 }
-                <tr>
-                    <td colspan="5">
-                        @if (details.Count > 0)
-                        {
-                            <div class="d-flex">
-                                <div style="width: 200px" class="mr-2"><MudText>@Lang($"{LocalizerResource}.RecordInfo.Label", details.Count, recordCount)</MudText></div>
-                                <div style="width: 100%">
-                                    <MudButton Disabled="@(item is null || details.Count == 0)"
-                                               Variant="ComponentSettings.AddNewButtonVariant"
-                                               StartIcon="@Icons.Material.Filled.Delete"
-                                               OnClick="@DeleteRecords"
-                                               Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
+                else
+                {
+                    <tr>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                        <th>E</th>
+                        <th>F</th>
+                        <th>G</th>
+                        <th>H</th>
+                        <th>I</th>
+                        <th>J</th>
+                        <th>K</th>
+                        <th>L</th>
+                        <th>M</th>
+                    </tr>
+                }
+            </thead>
+            <tbody>
+                @if (details is not null)
+                {
+                    @foreach (var row in details)
+                    {
+                        <tr>
+                            <td>@row.Column1</td>
+                            <td>@row.Column2</td>
+                            <td>@row.Column3</td>
+                            <td>@row.Column4</td>
+                            <td>@row.Column5</td>
+                            <td>@row.Column6</td>
+                            <td>@row.Column7</td>
+                            <td>@row.Column8</td>
+                            <td>@row.Column9</td>
+                            <td>@row.Column10</td>
+                            <td>@row.Column11</td>
+                            <td>@row.Column12</td>
+                            <td>@row.Column13</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="5">
+                            @if (details.Count > 0)
+                            {
+                                <div class="d-flex">
+                                    <div style="width: 200px" class="mr-2"><MudText>@Lang($"{LocalizerResource}.RecordInfo.Label", details.Count, recordCount)</MudText></div>
+                                    <div style="width: 100%">
+                                        <MudButton Disabled="@(item is null || details.Count == 0)"
+                                                   Variant="ComponentSettings.AddNewButtonVariant"
+                                                   StartIcon="@Icons.Material.Filled.Delete"
+                                                   OnClick="@DeleteRecords"
+                                                   Color="Color.Primary">@ButtonText("ClearRecord")</MudButton>
 
 
-                                    <MudButton Disabled="@(saveResult is null || details.Count == 0 || saveResult)"
-                                               Variant="ComponentSettings.AddNewButtonVariant"
-                                               StartIcon="@Icons.Material.Filled.Download"
-                                               Class="ms-2"
-                                               OnClick="@DownloadError"
-                                               Color="Color.Warning">@ButtonText("DownloadErrorLog")</MudButton>
+                                        <MudButton Disabled="@(saveResult is null || details.Count == 0 || saveResult)"
+                                                   Variant="ComponentSettings.AddNewButtonVariant"
+                                                   StartIcon="@Icons.Material.Filled.Download"
+                                                   Class="ms-2"
+                                                   OnClick="@DownloadError"
+                                                   Color="Color.Warning">@ButtonText("DownloadErrorLog")</MudButton>
+                                    </div>
                                 </div>
-                            </div>
 
-                        }
-                    </td>
-                </tr>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+            @if (details?.Count == 0)
+            {
+                <tbody>
+                    <tr>
+                        <td colspan="6">
+                            <MudText Typo="Typo.body2">@Label("NoRecordUploaded")</MudText>
+                        </td>
+                    </tr>
+                </tbody>
             }
-        </tbody>
-
-        @if(details?.Count == 0)
-        {
             <tbody>
                 <tr>
                     <td colspan="6">
-                        <MudText Typo="Typo.body2">@Label("NoRecordUploaded")</MudText>
-                     </td>
+                        <MudPagination Selected="@currentPage" ShowPageButtons="true" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
+                    </td>
                 </tr>
             </tbody>
-        }
-        <tbody>
-            <tr>
-                <td colspan="6">
-                    <MudPagination Selected="@currentPage" ShowPageButtons="true" ShowFirstButton="true" ShowLastButton="true" SelectedChanged="@OnSelectedPageChanged" Count="@pageCount" />
-                </td>
-            </tr>
-        </tbody>       
-    </MudSimpleTable>
-
+        </MudSimpleTable>
+    </div>
 
 
 
@@ -137,12 +139,11 @@
     {
         <LinovativeGap />
         <MudText Typo="Typo.caption">@Label("MappingItemFields")</MudText>
-        <ItemFieldMappings 
-            @ref="@MappingFieldUI"
-            RequiredFields="@RequiredFields"
-            RequiredFieldMappingChanged="@((x) => RequiredFieldsHasMapped = x)"
-            FieldMappingChanged="@((mapping) => FieldMapping = mapping)"
-            Operations="@SelectedOperation" Columns="@item" />
+        <ItemFieldMappings @ref="@MappingFieldUI"
+                           RequiredFields="@RequiredFields"
+                           RequiredFieldMappingChanged="@((x) => RequiredFieldsHasMapped = x)"
+                           FieldMappingChanged="@((mapping) => FieldMapping = mapping)"
+                           Operations="@SelectedOperation" Columns="@item" />
     }
 
 
@@ -224,12 +225,12 @@
         await OnSubmiting.InvokeAsync();
         var result = await _bulkItem.Save(type, FieldMapping, cts.Token);
         saveResult = result;
-        if(result)
+        if (result)
         {
             item = null;
             details = new();
             await MappingFieldUI!.Reset();
-            FieldMapping.Clear();            
+            FieldMapping.Clear();
         }
         if (!result) formErrorAlert?.ShowAlert(result);
         await SaveResponseChanged.InvokeAsync(result);
@@ -269,7 +270,7 @@
         item = result?.Data?.FirstOrDefault() ?? new();
         details = result2?.Data ?? new();
 
-        var records = result2?.Count??0;
+        var records = result2?.Count ?? 0;
         var hasMod = records % pageSize > 0;
         recordCount = records;
         pageCount = records == 0 ? 0 : records <= pageSize ? 1 : (records - (records % pageSize)) / pageSize + (hasMod ? 1 : 0);
